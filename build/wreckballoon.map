@@ -1,0 +1,17 @@
+ROM0 bank #0:
+  SECTION: $0000-$00df ($00e0 bytes) ["Tile data"]
+           $0000 = Tiles
+           $00e0 = TilesEnd
+  SECTION: $0100-$018d ($008e bytes) ["Header"]
+           $0150 = EntryPoint
+           $0154 = WaitVBlank
+           $0168 = CopyTiles
+           $017a = CopyTilemap
+           $018b = Done
+  SECTION: $018e-$03cd ($0240 bytes) ["Tilemap"]
+           $018e = Tilemap
+           $03ce = TilemapEnd
+    SLACK: $3c52 bytes
+
+USED:
+    ROM0: $03ae bytes in 1 bank
