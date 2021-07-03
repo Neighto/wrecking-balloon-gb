@@ -1,9 +1,7 @@
 INCLUDE "hardware.inc"
 
-SECTION "Header", ROM0[$100]
-
+SECTION "rom", ROM0[$100]
 	jp EntryPoint
-
 	ds $150 - @, 0 ; Make room for the header
 
 EntryPoint:
@@ -12,44 +10,25 @@ EntryPoint:
 	ld [rNR52], a
 
 	; Do not turn the LCD off outside of VBlank
-WaitVBlank:
-	ld a, [rLY]
-	cp 144
-	jp c, WaitVBlank
+	call Wait_VBlank
 
 	; Turn the LCD off
-	ld a, 0
-	ld [rLCDC], a
+	call LCD_Off
 
-	; Copy the tile data
-	ld de, Tiles
+; 	; Copy the tile data
+	ld bc, Tiles
 	ld hl, $9000
-	ld bc, TilesEnd - Tiles
-CopyTiles:
-	ld a, [de]
-	ld [hli], a
-	inc de
-	dec bc
-	ld a, b
-	or a, c
-	jp nz, CopyTiles
+	ld de, TilesEnd - Tiles
+	call memcpy
 
 	; Copy the tilemap
-	ld de, Tilemap
+	ld bc, Tilemap
 	ld hl, $9800
-	ld bc, TilemapEnd - Tilemap
-CopyTilemap:
-	ld a, [de]
-	ld [hli], a
-	inc de
-	dec bc
-	ld a, b
-	or a, c
-	jp nz, CopyTilemap
+	ld de, TilemapEnd - Tilemap
+	call memcpy
 
 	; Turn the LCD on
-	ld a, LCDCF_ON | LCDCF_BGON
-	ld [rLCDC], a
+	call LCD_On
 
 	; During the first (blank) frame, initialize display registers
 	ld a, %11100100

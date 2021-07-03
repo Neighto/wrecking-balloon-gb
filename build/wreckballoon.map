@@ -2,16 +2,45 @@ ROM0 bank #0:
   SECTION: $0000-$00df ($00e0 bytes) ["Tile data"]
            $0000 = Tiles
            $00e0 = TilesEnd
-  SECTION: $0100-$018d ($008e bytes) ["Header"]
+  SECTION: $0100-$017b ($007c bytes) ["rom"]
            $0150 = EntryPoint
-           $0154 = WaitVBlank
-           $0168 = CopyTiles
-           $017a = CopyTilemap
-           $018b = Done
-  SECTION: $018e-$03cd ($0240 bytes) ["Tilemap"]
-           $018e = Tilemap
-           $03ce = TilemapEnd
-    SLACK: $3c52 bytes
+           $0179 = Done
+  SECTION: $017c-$03bb ($0240 bytes) ["Tilemap"]
+           $017c = Tilemap
+           $03bc = TilemapEnd
+    SLACK: $3c64 bytes
+
+ROMX bank #1:
+  SECTION: $4000-$4074 ($0075 bytes) ["player"]
+           $4000 = player_sprite_init
+           $404a = player_set_position
+  SECTION: $4075-$40b0 ($003c bytes) ["joypad"]
+           $4075 = read_joypad
+           $409c = clear_joypad
+  SECTION: $40b1-$40d1 ($0021 bytes) ["lcd"]
+           $40b1 = LCD_Off
+           $40b6 = LCD_On
+           $40bb = Wait_VBlank
+           $40c2 = Clear_BGMap
+           $40c5 = Clear_BGMap.clear_Loop
+  SECTION: $40d2-$40db ($000a bytes) ["memory"]
+           $40d2 = memcpy.memcpy_loop
+           $40d2 = memcpy
+           $40d6 = memcpy.memcpy_check_limit
+    SLACK: $3f24 bytes
+
+WRAM0 bank #0:
+  SECTION: $c000-$c003 ($0004 bytes) ["joypad_vars"]
+           $c000 = IO_P14
+           $c001 = IO_P15
+           $c002 = IO_P14_OLD
+           $c003 = IO_P15_OLD
+  SECTION: $c004-$c005 ($0002 bytes) ["player_vars"]
+           $c004 = player_x
+           $c005 = player_y
+    SLACK: $0ffa bytes
 
 USED:
-    ROM0: $03ae bytes in 1 bank
+    ROM0: $039c bytes in 1 bank
+    ROMX: $00dc bytes in 1 bank
+    WRAM0: $0006 bytes in 1 bank
