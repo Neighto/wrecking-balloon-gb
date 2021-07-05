@@ -1,46 +1,135 @@
 ROM0 bank #0:
-  SECTION: $0000-$00df ($00e0 bytes) ["Tile data"]
-           $0000 = Tiles
-           $00e0 = TilesEnd
-  SECTION: $0100-$017b ($007c bytes) ["rom"]
+  SECTION: $0000-$0042 ($0043 bytes) ["HARDWARE SPRITES"]
+           $0000 = SetHardwareSprite
+           $0017 = LoadTestSprite
+  SECTION: $0043-$0075 ($0033 bytes) ["Math Div 16 Code"]
+           $0043 = DIVIDE
+           $004f = DIVIDE.nxtbit
+           $0073 = DIVIDE.noadd
+  SECTION: $0076-$008b ($0016 bytes) ["OAM DMA routine"]
+           $0076 = CopyDMARoutine
+           $007d = CopyDMARoutine.copy
+           $0084 = DMARoutine
+           $0088 = DMARoutine.wait
+           $008c = DMARoutineEnd
+  SECTION: $0100-$0189 ($008a bytes) ["rom"]
            $0150 = EntryPoint
-           $0179 = Done
-  SECTION: $017c-$03bb ($0240 bytes) ["Tilemap"]
-           $017c = Tilemap
-           $03bc = TilemapEnd
-    SLACK: $3c64 bytes
+           $017c = Done
+  SECTION: $018a-$03c9 ($0240 bytes) ["Tilemap"]
+           $018a = Tilemap
+           $03ca = TilemapEnd
+  SECTION: $03ca-$056a ($01a1 bytes) ["Player"]
+           $03ca = PLAYER_LOAD
+           $03ff = PLAYER_CHECK_TOP
+           $0423 = PLAYER_CHECK_SIDE
+           $0443 = PLAYER_CHECK_SIDE.right
+           $0448 = PLAYER_CHECK_SIDE.con
+           $0457 = PLAYER_MOVE
+           $046e = PLAYER_MOVE.left
+           $048e = PLAYER_MOVE.right
+           $04ac = PLAYER_MOVE.set_nonidle
+           $04b0 = PLAYER_MOVE.up
+           $04bf = PLAYER_MOVE.end
+           $04c0 = PLAYER_UPDATE
+           $04c0 = PLAYER_UPDATE.update
+           $04c3 = PLAYER_UPDATE.end
+           $04c4 = PLAYER_OAM
+           $04cd = PLAYER_OAM.loop
+           $04d4 = PLAYER_OAM.next_frame
+           $04de = PLAYER_OAM.check_flip
+           $04ed = PLAYER_OAM.set_tiles
+           $050b = PLAYER_OAM.loop_set
+           $051a = PLAYER_OAM.set_y
+           $052e = PLAYER_OAM.set_x
+           $0544 = PLAYER_OAM.flip
+           $055b = PLAYER_OAM.flip_flags
+           $0560 = PLAYER_OAM.dont_flip
+           $0566 = PLAYER_OAM.end
+  SECTION: $056b-$06aa ($0140 bytes) ["Tiles"]
+           $056b = Tiles
+           $06ab = TilesEnd
+    SLACK: $39c9 bytes
 
 ROMX bank #1:
-  SECTION: $4000-$4074 ($0075 bytes) ["player"]
-           $4000 = player_sprite_init
-           $404a = player_set_position
-  SECTION: $4075-$40b0 ($003c bytes) ["joypad"]
-           $4075 = read_joypad
-           $409c = clear_joypad
-  SECTION: $40b1-$40d1 ($0021 bytes) ["lcd"]
-           $40b1 = LCD_Off
-           $40b6 = LCD_On
-           $40bb = Wait_VBlank
-           $40c2 = Clear_BGMap
-           $40c5 = Clear_BGMap.clear_Loop
-  SECTION: $40d2-$40db ($000a bytes) ["memory"]
-           $40d2 = memcpy.memcpy_loop
-           $40d2 = memcpy
-           $40d6 = memcpy.memcpy_check_limit
-    SLACK: $3f24 bytes
+  SECTION: $4000-$4105 ($0106 bytes) ["lcd"]
+           $4000 = LCD_Off
+           $4005 = LCD_On
+           $400a = Wait_VBlank
+           $4011 = CLEAR_MAP
+           $4018 = CLEAR_MAP.clear_map_loop
+           $402b = LOAD_TILES
+           $402f = LOAD_TILES.load_tiles_loop
+           $4042 = LOAD_MAP
+           $4046 = LOAD_MAP.load_map_loop
+           $4059 = GET_TILE
+           $4063 = GET_TILE.loop_y
+           $4069 = GET_TILE.add_y
+           $4070 = GET_TILE.end
+           $4076 = GET_TILE.wall
+           $407f = GET_TILE.floor
+           $4082 = GET_TILE.fin
+           $4083 = READ_JOYPAD
+           $40b3 = JOY_RIGHT
+           $40bd = JOY_LEFT
+           $40c7 = JOY_UP
+           $40d1 = JOY_DOWN
+           $40db = JOY_A
+           $40e5 = JOY_B
+           $40ef = JOY_SELECT
+           $40f9 = JOY_START
+           $4103 = JOY_FALSE
+  SECTION: $4106-$4141 ($003c bytes) ["joypad"]
+           $4106 = read_joypad
+           $412d = clear_joypad
+  SECTION: $4142-$414b ($000a bytes) ["memory"]
+           $4142 = memcpy.memcpy_loop
+           $4142 = memcpy
+           $4146 = memcpy.memcpy_check_limit
+    SLACK: $3eb4 bytes
 
 WRAM0 bank #0:
-  SECTION: $c000-$c003 ($0004 bytes) ["joypad_vars"]
-           $c000 = IO_P14
-           $c001 = IO_P15
-           $c002 = IO_P14_OLD
-           $c003 = IO_P15_OLD
-  SECTION: $c004-$c005 ($0002 bytes) ["player_vars"]
-           $c004 = player_x
-           $c005 = player_y
-    SLACK: $0ffa bytes
+  SECTION: $c000-$c09f ($00a0 bytes) ["Shadow OAM"]
+           $c000 = wShadowOAM
+  SECTION: $c0a0-$c0a3 ($0004 bytes) ["joypad_vars"]
+           $c0a0 = IO_P14
+           $c0a1 = IO_P15
+           $c0a2 = IO_P14_OLD
+           $c0a3 = IO_P15_OLD
+  SECTION: $c0a4-$c0a6 ($0003 bytes) ["Math Div 16 Ram"]
+           $c0a4 = _MD16temp
+           $c0a6 = _MD16count
+  SECTION: $c100-$c148 ($0049 bytes) ["RAM Vars"]
+           $c100 = joypad_down
+           $c101 = joypad_pressed
+           $c102 = bullets_alive
+           $c103 = player_ground
+           $c104 = player_idle
+           $c105 = player_fset
+           $c106 = player_fcount
+           $c107 = player_gcount
+           $c108 = player_fstart
+           $c109 = player_fend
+           $c10a = player_y
+           $c10b = player_x
+           $c10c = player_y_temp
+           $c10d = player_x_temp
+           $c10e = player_yvel
+           $c10f = player_frame
+           $c110 = player_tile
+           $c111 = player_flags
+           $c112 = player_hp
+           $c113 = arb_counter
+           $c114 = my_sprites
+           $c148 = GAME_MAP_DATA
+    SLACK: $0f10 bytes
+
+HRAM bank #0:
+  SECTION: $ff80-$ff87 ($0008 bytes) ["OAM DMA"]
+           $ff80 = hOAMDMA
+    SLACK: $0077 bytes
 
 USED:
-    ROM0: $039c bytes in 1 bank
-    ROMX: $00dc bytes in 1 bank
-    WRAM0: $0006 bytes in 1 bank
+    ROM0: $0637 bytes in 1 bank
+    ROMX: $014c bytes in 1 bank
+    WRAM0: $00f0 bytes in 1 bank
+    HRAM: $0008 bytes in 1 bank
