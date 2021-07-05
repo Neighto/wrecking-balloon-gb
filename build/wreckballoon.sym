@@ -42,7 +42,7 @@
 00:0563 PLAYER_OAM.dont_flip
 00:0569 PLAYER_OAM.end
 00:056e Tiles
-00:06ae TilesEnd
+00:06be TilesEnd
 01:4000 LCD_Off
 01:4005 LCD_On
 01:400a Wait_VBlank
