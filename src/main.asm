@@ -15,7 +15,7 @@ EntryPoint:
 	; Turn the LCD off
 	call LCD_Off
 
-; 	; Copy the tile data
+; 	; Copy the tiles
 	ld bc, Tiles
 	ld hl, $9000
 	ld de, TilesEnd - Tiles
@@ -41,6 +41,13 @@ Done:
 
 	; Wait for the display to finish updating
 	call Wait_VBlank
+
+	call VBlank_HScroll
+
+	; Scroll screen
+	; ldh a, [rSCX]
+	; add 1
+	; ldh  [rSCX], a
 
 	; Load sprites in buffer
 	call LoadTestSprite
@@ -111,9 +118,9 @@ SetHardwareSprite:
 
 LoadTestSprite:
 	ld bc, $4840 ;xy
-	ld e, 164
-	ld h, 0 ;sprite
-	ld a, 0
+	ld e, 164 ;pattern
+	ld h, 0 ;tiledetails
+	ld a, 0 ;sprite
 	call SetHardwareSprite
 	ld a, 8
 	add b
@@ -136,6 +143,29 @@ LoadTestSprite:
 	call SetHardwareSprite
 	ret
 
+SECTION "Scrolling", ROM0 
+VBlank_HScroll:
+	di
+	push af
+
+	; Increment Scroll Timer
+	ld a, [scroll_timer]
+	inc	a
+	ld [scroll_timer], a
+
+	; Can We Scroll (every 16th vblank)
+	and	%00001111
+	jr nz, .end
+
+	; Horizontal Scroll
+	ldh a, [rSCX]
+	add 1
+	ldh  [rSCX], a
+
+.end:
+	pop af
+	ei		; enable interrupts
+	reti	; and done
 
 SECTION "Tiles", ROM0
 Tiles:

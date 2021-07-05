@@ -24,6 +24,7 @@ SECTION "RAM Vars",WRAM0[$C100]
 
 	;other
 	arb_counter::  DB
+	scroll_timer:: DB ; temp variable for slowing down scroll speed
 
 	my_sprites:: DS 4*13
 
