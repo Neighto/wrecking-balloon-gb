@@ -48,10 +48,10 @@ ROM0 bank #0:
            $055e = PLAYER_OAM.flip_flags
            $0563 = PLAYER_OAM.dont_flip
            $0569 = PLAYER_OAM.end
-  SECTION: $056e-$06ad ($0140 bytes) ["Tiles"]
+  SECTION: $056e-$06bd ($0150 bytes) ["Tiles"]
            $056e = Tiles
-           $06ae = TilesEnd
-    SLACK: $39b0 bytes
+           $06be = TilesEnd
+    SLACK: $39a0 bytes
 
 ROMX bank #1:
   SECTION: $4000-$4105 ($0106 bytes) ["lcd"]
@@ -133,7 +133,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $0650 bytes in 1 bank
+    ROM0: $0660 bytes in 1 bank
     ROMX: $014c bytes in 1 bank
     WRAM0: $00f1 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

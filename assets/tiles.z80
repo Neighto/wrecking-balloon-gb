@@ -10,7 +10,7 @@
 ;   Compression          : None.
 ;   Counter              : None.
 ;   Tile size            : 8 x 8
-;   Tiles                : 0 to 19
+;   Tiles                : 0 to 20
 ;
 ;   Palette colors       : None.
 ;   SGB Palette          : None.
@@ -24,6 +24,8 @@
 
 ; Start of tile array.
 TileLabel::
+DB $00,$00,$00,$00,$00,$00,$00,$00
+DB $00,$00,$00,$00,$00,$00,$00,$00
 DB $6F,$33,$14,$1B,$2F,$08,$1F,$1F
 DB $10,$1F,$1F,$1F,$08,$0F,$07,$07
 DB $F6,$CC,$28,$D8,$F4,$10,$F8,$F8
