@@ -47,10 +47,10 @@ CLEAR_RAM::
 CLEAR_SPRITES::
 	ld hl, wShadowOAM
 .clear_sprites
-    ld a,$FF
-    ld [hl],a
+    ld a, $0
+    ld [hl], a
     inc l
-    ld a,l
-    cp $FF
+    ld a, l
+    cp $0
     jp nz, .clear_sprites
     ret

@@ -1,16 +1,16 @@
-; TILES.INC
+; CACTUS_TILES.INC
 ;
 ; Include File.
 ;
 ; Info:
-;   Section              : Tiles
+;   Section              : Cactus_Tiles
 ;   Bank                 : 0
 ;   Form                 : All tiles as one unit.
 ;   Format               : Gameboy 4 color.
 ;   Compression          : None.
 ;   Counter              : None.
 ;   Tile size            : 8 x 8
-;   Tiles                : 0 to 20
+;   Tiles                : 0 to 6
 ;
 ;   Palette colors       : None.
 ;   SGB Palette          : None.
@@ -27,4 +27,4 @@ TileLabelBank EQU 0
 ; Start of tile array.
  GLOBAL TileLabel
 
-; End of TILES.INC
+; End of CACTUS_TILES.INC

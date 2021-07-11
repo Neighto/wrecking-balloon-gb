@@ -12,27 +12,36 @@ ROM0 bank #0:
            $0058 = SERIAL_VECT
   SECTION: $0060-$0060 ($0001 byte) ["Joypad IRQ Vector"]
            $0060 = JOYPAD_VECT
-  SECTION: $0061-$0091 ($0031 bytes) ["rom"]
-           $0061 = START
-           $0084 = GameLoop
-  SECTION: $0092-$00a7 ($0016 bytes) ["Scrolling"]
-           $0092 = VBlank_HScroll
-           $00a5 = VBlank_HScroll.end
-  SECTION: $00a8-$00bd ($0016 bytes) ["OAM DMA routine"]
-           $00a8 = CopyDMARoutine
-           $00af = CopyDMARoutine.copy
-           $00b6 = DMARoutine
-           $00ba = DMARoutine.wait
-           $00be = DMARoutineEnd
+  SECTION: $0061-$00d0 ($0070 bytes) ["Cactus_Tiles"]
+           $0061 = CactusTiles
+           $00d1 = CactusTilesEnd
+  SECTION: $00d1-$00e6 ($0016 bytes) ["Scrolling"]
+           $00d1 = VBlank_HScroll
+           $00e4 = VBlank_HScroll.end
+  SECTION: $00e7-$00fc ($0016 bytes) ["OAM DMA routine"]
+           $00e7 = CopyDMARoutine
+           $00ee = CopyDMARoutine.copy
+           $00f5 = DMARoutine
+           $00f9 = DMARoutine.wait
+           $00fd = DMARoutineEnd
   SECTION: $0100-$0151 ($0052 bytes) ["Start"]
   SECTION: $0152-$03b9 ($0268 bytes) ["Tilemap"]
            $0152 = Tilemap
            $0392 = LoadGameData
            $0392 = TilemapEnd
-  SECTION: $03ba-$0509 ($0150 bytes) ["Tiles"]
-           $03ba = Tiles
-           $050a = TilesEnd
-    SLACK: $3b61 bytes
+  SECTION: $03ba-$05f9 ($0240 bytes) ["Background_Map"]
+           $03ba = BackgroundMap
+           $05fa = BackgroundMapEnd
+  SECTION: $05fa-$0659 ($0060 bytes) ["Background_Tiles"]
+           $05fa = BackgroundTiles
+           $065a = BackgroundTilesEnd
+  SECTION: $065a-$06b9 ($0060 bytes) ["Tiles"]
+           $065a = Tiles
+           $06ba = TilesEnd
+  SECTION: $06ba-$06ea ($0031 bytes) ["rom"]
+           $06ba = START
+           $06dd = GameLoop
+    SLACK: $3941 bytes
 
 ROMX bank #1:
   SECTION: $4000-$4042 ($0043 bytes) ["player"]
@@ -102,7 +111,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $049f bytes in 1 bank
+    ROM0: $06bf bytes in 1 bank
     ROMX: $00e0 bytes in 1 bank
     WRAM0: $00f1 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
