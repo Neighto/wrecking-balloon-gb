@@ -1,63 +1,60 @@
 INCLUDE "hardware.inc"
+INCLUDE "header.inc"
 
-SECTION "rom", ROM0[$100]
-	jp EntryPoint
-	ds $150 - @, 0 ; Make room for the header
+SECTION "rom", ROM0
 
-EntryPoint:
-	; Shut down audio circuitry
+START::
+
+	; ;enable interrupts
+	; ei
+
+	; ;enable vblank interrupt
+	; ld  sp,$FFFE
+	; ld  a,IEF_VBLANK
+	; 	ld  [rIE],a
+
+	; ; Shut down audio circuitry
 	ld a, 0
 	ld [rNR52], a
 
 	; Do not turn the LCD off outside of VBlank
 	call Wait_VBlank
-
-	; Turn the LCD off
 	call LCD_Off
 
-; 	; Copy the tiles
-	ld bc, Tiles
-	ld hl, $9000
-	ld de, TilesEnd - Tiles
-	call memcpy
+	;shade palettes
+	ld  a,%11100100
+	ldh [rBGP],a
+	ldh [rOCPD],a
+	ldh [rOBP0],a
+	ldh [rOBP1],a
 
-	; Copy the tilemap
-	ld bc, Tilemap
-	ld hl, $9800
-	ld de, TilemapEnd - Tilemap
-	call memcpy
+	;clear everything
+	call CLEAR_MAP
+	call CLEAR_OAM
+	call CLEAR_RAM
 
-	; Turn the LCD on
-	call LCD_On
+	; Load tiles, draw sprites and draw tilemap
+	call LoadGameData
 
-	; During the first (blank) frame, initialize display registers
-	ld a, %11100100
-	ld [rBGP], a
+	call CLEAR_OAM
 
 	; Move DMA routine to HRAM
 	call CopyDMARoutine
 
-Done:
+	call LCD_On
 
+GameLoop:
 	; Wait for the display to finish updating
 	call Wait_VBlank
 
-	call VBlank_HScroll
-
 	; Scroll screen
-	; ldh a, [rSCX]
-	; add 1
-	; ldh  [rSCX], a
-
-	; Load sprites in buffer
-	call LoadTestSprite
+	call VBlank_HScroll
 	
-	; Call the DMA subroutine we copied to HRAM
-  	; which then copies the bytes to the OAM and sprites begin to draw
+  	; Call DMA subroutine to copy the bytes to OAM for sprites begin to draw
 	ld  a, HIGH(wShadowOAM)
 	call hOAMDMA
 
-	jp Done
+	jp GameLoop
 
 
 SECTION "OAM DMA routine", ROM0
@@ -85,66 +82,14 @@ DMARoutine:
 DMARoutineEnd:
 
 SECTION "OAM DMA", HRAM
-hOAMDMA: ds DMARoutineEnd - DMARoutine ; Reserve space to copy the routine to
+hOAMDMA:: ds DMARoutineEnd - DMARoutine ; Reserve space to copy the routine to
 
 SECTION "Shadow OAM", WRAM0,ALIGN[8]
-wShadowOAM: ds 4 * 40 ; This is the buffer we'll write sprite data to
+wShadowOAM:: ds 4 * 40 ; This is the buffer we'll write sprite data to
 
-SECTION "HARDWARE SPRITES", rom0
-SetHardwareSprite:	
-	;A=Hardware Sprite No. BC = X,Y , E = Source Data, H=Palette etc
-	;On the gameboy You need to set XY to 8,16 to get the top corner of the screen
-	push af
-		rlca							;4 bytes per sprite
-		rlca		
-		push hl
-		push de
-			push hl
-				ld hl, wShadowOAM
-				ld l,a					;L address for selected sprite
-				ld a,c					;y
-				ldi [hl], a
-				ld a,b					;x
-				ldi [hl], a
-				ld a,e					;tile
-				ldi [hl], a
-			pop de
-			ld a,d						;attribs
-			ldi [hl],a
-		pop de
-		pop hl
-	pop af
-	ret
+SECTION "Scrolling", ROM0
 
-LoadTestSprite:
-	ld bc, $4840 ;xy
-	ld e, 164 ;pattern
-	ld h, 0 ;tiledetails
-	ld a, 0 ;sprite
-	call SetHardwareSprite
-	ld a, 8
-	add b
-	ld b, a
-	inc e
-	ld a, 1
-	call SetHardwareSprite
-	ld a, 8
-	add c
-	ld c, a
-	inc e
-	inc e
-	ld a, 2
-	call SetHardwareSprite
-	ld a, -8
-	add b
-	ld b, a
-	dec e
-	ld a, 3
-	call SetHardwareSprite
-	ret
-
-SECTION "Scrolling", ROM0 
-VBlank_HScroll:
+VBlank_HScroll::
 	di
 	push af
 
@@ -274,3 +219,26 @@ Tilemap:
 	DB $00,$00,$00,$00,$00,$00,$00,$00,$00,$00
 	DB $00,$00,$00,$00,$00,$00
 TilemapEnd:
+
+LoadGameData:
+
+	; Copy the tiles $8800
+	ld bc, Tiles
+	ld hl, $8800
+	ld de, TilesEnd - Tiles
+	call memcpy
+
+ 	; Copy the tiles $9000
+	ld bc, Tiles
+	ld hl, $9000
+	ld de, TilesEnd - Tiles
+	call memcpy
+
+	; ; Copy the tilemap
+	ld bc, Tilemap
+	ld hl, $9800
+	ld de, TilemapEnd - Tilemap
+	call memcpy
+
+	call player_sprite_init
+	ret

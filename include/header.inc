@@ -1,31 +1,81 @@
-SECTION "header", ROM0
+;-------------
+;	Header
+;-------------
 
-    NINTENDO_LOGO
+SECTION "VBlank IRQ",ROM0[$40]
+	; ld  a,$1
+	; ld  [vblank_flag],a
+    ; call VBlank_HScroll
+	reti
 
-; $0134 - $013E: The title, in upper-case letters, followed by zeroes.
-DB "BITNENFER "
-DS 7 ; padding
-; $013F - $0142: The manufacturer code.
-DS 4
-; $0143: Gameboy Color compatibility flag.    
-DB $00
-; $0144 - $0145: "New" Licensee Code, a two character name.
-DB "OK"
-; $0146: Super Gameboy compatibility flag.
-DB $00
-; $0147: Cartridge type. Either no ROM or MBC5 is recommended.
-DB $00
-; $0148: Rom size.
-DB $00
-; $0149: Ram size.
-DB $00
-; $014A: Destination code.
-DB $01
-; $014B: Old licensee code.
-DB $33
-; $014C: ROM version number
-DB $00
-; $014D: Header checksum.
-DB $FF
-; $014E- $014F: Global checksum.
-DW $FACE
+SECTION	"LCD IRQ Vector",ROM0[$48]
+LCD_VECT:
+	reti
+
+SECTION	"Timer IRQ Vector",ROM0[$50]
+TIMER_VECT:
+	reti
+
+SECTION	"Serial IRQ Vector",ROM0[$58]
+SERIAL_VECT:
+	reti
+
+SECTION	"Joypad IRQ Vector",ROM0[$60]
+JOYPAD_VECT:
+	reti
+
+SECTION "Start",ROM0[$100]
+	nop
+	call START
+
+	; $0104-$0133 Nintendo logo !DONT MODIFY!
+	DB  $CE,$ED,$66,$66,$CC,$0D,$00,$0B,$03,$73,$00,$83,$00,$0C,$00,$0D
+	DB  $00,$08,$11,$1F,$88,$89,$00,$0E,$DC,$CC,$6E,$E6,$DD,$DD,$D9,$99
+	DB  $BB,$BB,$67,$63,$6E,$0E,$EC,$CC,$DD,$DC,$99,$9F,$BB,$B9,$33,$3E
+
+	; $0134-$013E Game title
+	DB	"wreck-balloon"
+		  ;0123456789A
+
+	; $013F-$0142 Product code, leave blank
+	DB	"    "
+		;0123
+
+	; $0143 compatibility mode
+	DB	$00	; $00 - DMG 
+			; $80 - DMG/GBC
+			; $C0 - GBC Only cartridge
+
+	; $0144 (High-nibble of license code - normally $00 if $014B != $33)
+	DB	$00
+
+	; $0145 (Low-nibble of license code - normally $00 if $014B != $33)
+	DB	$00
+
+	; $0146 (GameBoy/Super GameBoy indicator)
+	DB	$00	; $00 - GameBoy
+
+	; $0147 (Cartridge type - all Color GameBoy cartridges are at least $19)
+	DB	$00	; $00 - ROM Only
+
+	; $0148 (ROM size)
+	DB	$00	; $00 - 256Kbit = 32Kbyte = 2 banks
+
+	; $0149 (RAM size)
+	DB	$00	; $00 - None
+
+	; $014A (Destination code)
+	DB	$01	; $01 - All others
+			; $00 - Japan
+
+	; $014B (Licensee code - this _must_ be $33)
+	DB	$33	; $33 - Check $0144/$0145 for Licensee code.
+
+	; $014C (Mask ROM version - handled by RGBFIX)
+	DB	$00
+
+	; $014D (Complement check - handled by RGBFIX)
+	DB	$00
+
+	; $014E-$014F (Cartridge checksum - handled by RGBFIX)
+	DW	$00
