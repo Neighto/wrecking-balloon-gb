@@ -12,8 +12,8 @@ SECTION "RAM Vars",WRAM0[$C100]
 	player_gcount::DB
 	player_fstart::DB
 	player_fend::  DB
-	player_y::     DB
-	player_x::     DB
+	; player_y::     DB
+	; player_x::     DB
 	player_y_temp::DB
 	player_x_temp::DB
 	player_yvel::  DB
