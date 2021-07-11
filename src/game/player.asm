@@ -18,7 +18,7 @@ player_sprite_init::
   inc L
   ld [HL], PLAYER_START_X
   inc L
-  ld [HL], $83
+  ld [HL], $82
   inc L
   ld [HL], %00000000
   ; Top right
@@ -27,18 +27,18 @@ player_sprite_init::
   inc L
   ld [HL], PLAYER_START_X + 8
   inc L
-  ld [HL], $84
+  ld [HL], $82
   inc L
-  ld [HL], %00000000
+  ld [HL], %00100000
   ; Bottom right
   ld HL, wShadowOAM+8
   ld [HL], PLAYER_START_Y + 8
   inc L
   ld [HL], PLAYER_START_X + 8
   inc L
-  ld [HL], $82
+  ld [HL], $81
   inc L
-  ld [HL], %00000000
+  ld [HL], %00100000
   ; Bottom left
   ld HL, wShadowOAM+12
   ld [HL], PLAYER_START_Y + 8

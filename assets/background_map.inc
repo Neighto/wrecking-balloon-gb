@@ -1,9 +1,9 @@
-; BACKGROUND.INC
+; BACKGROUND_MAP.INC
 ;
 ; Map Include File.
 ;
 ; Info:
-;   Section       : Sky
+;   Section       : Background_Map
 ;   Bank          : 0
 ;   Map size      : 32 x 18
 ;   Tile set      : tiles.gbr
@@ -20,4 +20,4 @@ BackgroundBank   EQU 0
 
  GLOBAL Background
 
-; End of BACKGROUND.INC
+; End of BACKGROUND_MAP.INC
