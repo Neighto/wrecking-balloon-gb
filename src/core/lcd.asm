@@ -40,39 +40,3 @@ CLEAR_MAP::
     jr  nz, .clear_map_loop
     pop hl
     ret
-
-CLEAR_OAM::
-    ld  hl,_OAMRAM
-    ld  bc,$A0
-.clear_oam_loop
-    ld  a,$0
-    ld  [hli],a
-    dec bc
-    ld  a,b
-    or  c
-    jr  nz,.clear_oam_loop
-    ret
-  
-CLEAR_RAM::
-    ld  hl,$C100
-    ld  bc,$A0
-.clear_ram_loop
-    ld  a,$0
-    ld  [hli],a
-    dec bc
-    ld  a,b
-    or  c
-    jr  nz,.clear_ram_loop
-    ret
-
-; CLEAR_TILES::
-;     ld hl, $8000
-;     ld bc, $9800 - $8000
-; .clear_tiles_loop
-;     ld a, 0
-;     ld [hli], a
-;     dec bc
-;     ld a, b
-;     or c
-;     jr  nz, .clear_tiles_loop
-;     ret
