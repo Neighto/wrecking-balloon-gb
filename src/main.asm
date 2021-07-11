@@ -21,22 +21,21 @@ START::
 	call Wait_VBlank
 	call LCD_Off
 
-	;shade palettes
+	; Shade palettes
 	ld  a,%11100100
 	ldh [rBGP],a
 	ldh [rOCPD],a
 	ldh [rOBP0],a
 	ldh [rOBP1],a
 
-	;clear everything
+	; Clear everything
 	call CLEAR_MAP
-	call CLEAR_OAM
-	call CLEAR_RAM
+	; call CLEAR_OAM
+	; call CLEAR_RAM
+	call CLEAR_SPRITES
 
 	; Load tiles, draw sprites and draw tilemap
 	call LoadGameData
-
-	call CLEAR_OAM
 
 	; Move DMA routine to HRAM
 	call CopyDMARoutine
@@ -88,25 +87,20 @@ SECTION "Shadow OAM", WRAM0,ALIGN[8]
 wShadowOAM:: ds 4 * 40 ; This is the buffer we'll write sprite data to
 
 SECTION "Scrolling", ROM0
-
 VBlank_HScroll::
 	di
 	push af
-
 	; Increment Scroll Timer
 	ld a, [scroll_timer]
 	inc	a
 	ld [scroll_timer], a
-
 	; Can We Scroll (every 16th vblank)
 	and	%00001111
 	jr nz, .end
-
 	; Horizontal Scroll
 	ldh a, [rSCX]
 	add 1
 	ldh  [rSCX], a
-
 .end:
 	pop af
 	ei		; enable interrupts
@@ -221,24 +215,21 @@ Tilemap:
 TilemapEnd:
 
 LoadGameData:
-
 	; Copy the tiles $8800
 	ld bc, Tiles
 	ld hl, $8800
 	ld de, TilesEnd - Tiles
 	call memcpy
-
  	; Copy the tiles $9000
 	ld bc, Tiles
 	ld hl, $9000
 	ld de, TilesEnd - Tiles
 	call memcpy
-
-	; ; Copy the tilemap
+	; Copy the tilemap
 	ld bc, Tilemap
 	ld hl, $9800
 	ld de, TilemapEnd - Tilemap
 	call memcpy
-
+	; Initialize player
 	call player_sprite_init
 	ret
