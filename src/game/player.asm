@@ -6,7 +6,7 @@ PLAYER_START_X EQU (160 / 2 - 20)
 PLAYER_START_Y EQU (144 / 2 + 16)
 PLAYER_BALLOON_START_Y EQU (PLAYER_START_Y - 16)
 
-player_sprite_init::
+InitializePlayer::
   ; Set variables
   ld HL, player_x
   ld [HL], PLAYER_START_X
@@ -89,6 +89,7 @@ player_sprite_init::
   ld [HL], %00000000
   ret
 
-  SECTION "player_vars", WRAM0
+
+SECTION "player_vars", WRAM0
   player_x:: DS 1
   player_y:: DS 1
