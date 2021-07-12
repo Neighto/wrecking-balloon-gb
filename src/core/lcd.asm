@@ -2,20 +2,21 @@ INCLUDE "hardware.inc"
 
 SECTION "lcd", ROMX
 
-LCD_Off::
+LCD_OFF::
     ld a, 0
     ld [rLCDC], a
     ret
 
-LCD_On::
+LCD_ON::
     ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJON
     ld [rLCDC], a
     ret
 
-Wait_VBlank::
+; Wait for the display to finish updating
+WAIT_VBLANK::
     ld a, [rLY]
     cp 144
-    jr c, Wait_VBlank
+    jr c, WAIT_VBLANK
     ret
 
 CLEAR_MAP::

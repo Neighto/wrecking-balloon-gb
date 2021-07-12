@@ -1,8 +1,7 @@
 ROM0 bank #0:
-  SECTION: $0000-$0032 ($0033 bytes) ["Math Div 16 Code"]
-           $0000 = DIVIDE
-           $000c = DIVIDE.nxtbit
-           $0030 = DIVIDE.noadd
+  SECTION: $0000-$0036 ($0037 bytes) ["rom"]
+           $0000 = START
+           $0029 = GameLoop
   SECTION: $0040-$0040 ($0001 byte) ["VBlank IRQ"]
   SECTION: $0048-$0048 ($0001 byte) ["LCD IRQ Vector"]
            $0048 = LCD_VECT
@@ -15,57 +14,53 @@ ROM0 bank #0:
   SECTION: $0061-$00d0 ($0070 bytes) ["Cactus_Tiles"]
            $0061 = CactusTiles
            $00d1 = CactusTilesEnd
-  SECTION: $00d1-$00e6 ($0016 bytes) ["Scrolling"]
-           $00d1 = VBlank_HScroll
-           $00e4 = VBlank_HScroll.end
-  SECTION: $00e7-$00fc ($0016 bytes) ["OAM DMA routine"]
-           $00e7 = CopyDMARoutine
-           $00ee = CopyDMARoutine.copy
-           $00f5 = DMARoutine
-           $00f9 = DMARoutine.wait
-           $00fd = DMARoutineEnd
+  SECTION: $00d1-$00f8 ($0028 bytes) ["Graphics"]
+           $00d1 = LoadGameData
   SECTION: $0100-$0151 ($0052 bytes) ["Start"]
-  SECTION: $0152-$03b9 ($0268 bytes) ["Tilemap"]
-           $0152 = Tilemap
-           $0392 = LoadGameData
-           $0392 = TilemapEnd
-  SECTION: $03ba-$05f9 ($0240 bytes) ["Background_Map"]
-           $03ba = BackgroundMap
-           $05fa = BackgroundMapEnd
-  SECTION: $05fa-$0659 ($0060 bytes) ["Background_Tiles"]
-           $05fa = BackgroundTiles
-           $065a = BackgroundTilesEnd
-  SECTION: $065a-$06b9 ($0060 bytes) ["Tiles"]
-           $065a = Tiles
-           $06ba = TilesEnd
-  SECTION: $06ba-$06ea ($0031 bytes) ["rom"]
-           $06ba = START
-           $06dd = GameLoop
-    SLACK: $3941 bytes
+  SECTION: $0152-$0391 ($0240 bytes) ["Background_Map"]
+           $0152 = BackgroundMap
+           $0392 = BackgroundMapEnd
+  SECTION: $0392-$03f1 ($0060 bytes) ["Background_Tiles"]
+           $0392 = BackgroundTiles
+           $03f2 = BackgroundTilesEnd
+  SECTION: $03f2-$0424 ($0033 bytes) ["Math Div 16 Code"]
+           $03f2 = DIVIDE
+           $03fe = DIVIDE.nxtbit
+           $0422 = DIVIDE.noadd
+  SECTION: $0425-$043a ($0016 bytes) ["Scrolling"]
+           $0425 = VBlank_HScroll
+           $0438 = VBlank_HScroll.end
+  SECTION: $043b-$0450 ($0016 bytes) ["OAM DMA routine"]
+           $043b = CopyDMARoutine
+           $0442 = CopyDMARoutine.copy
+           $0449 = DMARoutine
+           $044d = DMARoutine.wait
+           $0451 = DMARoutineEnd
+    SLACK: $3bdb bytes
 
 ROMX bank #1:
-  SECTION: $4000-$4042 ($0043 bytes) ["player"]
+  SECTION: $4000-$407a ($007b bytes) ["player"]
            $4000 = player_sprite_init
-  SECTION: $4043-$407e ($003c bytes) ["joypad"]
-           $4043 = read_joypad
-           $406a = clear_joypad
-  SECTION: $407f-$40b4 ($0036 bytes) ["memory"]
-           $407f = memcpy.memcpy_loop
-           $407f = memcpy
-           $4083 = memcpy.memcpy_check_limit
-           $4089 = CLEAR_OAM
-           $408f = CLEAR_OAM.clear_oam_loop
-           $4098 = CLEAR_RAM
-           $409e = CLEAR_RAM.clear_ram_loop
-           $40a7 = CLEAR_SPRITES
-           $40aa = CLEAR_SPRITES.clear_sprites
-  SECTION: $40b5-$40df ($002b bytes) ["lcd"]
-           $40b5 = LCD_Off
-           $40ba = LCD_On
-           $40bf = Wait_VBlank
-           $40c6 = CLEAR_MAP
-           $40cd = CLEAR_MAP.clear_map_loop
-    SLACK: $3f20 bytes
+  SECTION: $407b-$40b6 ($003c bytes) ["joypad"]
+           $407b = read_joypad
+           $40a2 = clear_joypad
+  SECTION: $40b7-$40ec ($0036 bytes) ["memory"]
+           $40b7 = memcpy.memcpy_loop
+           $40b7 = memcpy
+           $40bb = memcpy.memcpy_check_limit
+           $40c1 = CLEAR_OAM
+           $40c7 = CLEAR_OAM.clear_oam_loop
+           $40d0 = CLEAR_RAM
+           $40d6 = CLEAR_RAM.clear_ram_loop
+           $40df = CLEAR_SPRITES
+           $40e2 = CLEAR_SPRITES.clear_sprites
+  SECTION: $40ed-$4117 ($002b bytes) ["lcd"]
+           $40ed = LCD_OFF
+           $40f2 = LCD_ON
+           $40f7 = WAIT_VBLANK
+           $40fe = CLEAR_MAP
+           $4105 = CLEAR_MAP.clear_map_loop
+    SLACK: $3ee8 bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c09f ($00a0 bytes) ["Shadow OAM"]
@@ -111,7 +106,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $06bf bytes in 1 bank
-    ROMX: $00e0 bytes in 1 bank
+    ROM0: $0425 bytes in 1 bank
+    ROMX: $0118 bytes in 1 bank
     WRAM0: $00f1 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
