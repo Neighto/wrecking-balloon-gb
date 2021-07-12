@@ -1,7 +1,8 @@
 ROM0 bank #0:
-  SECTION: $0000-$0036 ($0037 bytes) ["rom"]
-           $0000 = START
-           $0029 = GameLoop
+  SECTION: $0000-$0032 ($0033 bytes) ["Math Div 16 Code"]
+           $0000 = DIVIDE
+           $000c = DIVIDE.nxtbit
+           $0030 = DIVIDE.noadd
   SECTION: $0040-$0040 ($0001 byte) ["VBlank IRQ"]
   SECTION: $0048-$0048 ($0001 byte) ["LCD IRQ Vector"]
            $0048 = LCD_VECT
@@ -11,43 +12,54 @@ ROM0 bank #0:
            $0058 = SERIAL_VECT
   SECTION: $0060-$0060 ($0001 byte) ["Joypad IRQ Vector"]
            $0060 = JOYPAD_VECT
-  SECTION: $0061-$00d0 ($0070 bytes) ["Cactus_Tiles"]
-           $0061 = CactusTiles
-           $00d1 = CactusTilesEnd
-  SECTION: $00d1-$00f8 ($0028 bytes) ["Graphics"]
-           $00d1 = LoadGameData
-  SECTION: $0100-$0151 ($0052 bytes) ["Start"]
-  SECTION: $0152-$0391 ($0240 bytes) ["Background_Map"]
-           $0152 = BackgroundMap
-           $0392 = BackgroundMapEnd
-  SECTION: $0392-$03f1 ($0060 bytes) ["Background_Tiles"]
-           $0392 = BackgroundTiles
-           $03f2 = BackgroundTilesEnd
-  SECTION: $03f2-$0424 ($0033 bytes) ["Math Div 16 Code"]
-           $03f2 = DIVIDE
-           $03fe = DIVIDE.nxtbit
-           $0422 = DIVIDE.noadd
-  SECTION: $0425-$043a ($0016 bytes) ["Scrolling"]
-           $0425 = VBlank_HScroll
-           $0438 = VBlank_HScroll.end
-  SECTION: $043b-$0450 ($0016 bytes) ["OAM DMA routine"]
-           $043b = CopyDMARoutine
-           $0442 = CopyDMARoutine.copy
-           $0449 = DMARoutine
-           $044d = DMARoutine.wait
-           $0451 = DMARoutineEnd
-    SLACK: $3bdb bytes
+  SECTION: $0061-$00e3 ($0083 bytes) ["Input"]
+           $0061 = ReadInput
+           $0091 = JOY_RIGHT
+           $009b = JOY_LEFT
+           $00a5 = JOY_UP
+           $00af = JOY_DOWN
+           $00b9 = JOY_A
+           $00c3 = JOY_B
+           $00cd = JOY_SELECT
+           $00d7 = JOY_START
+           $00e1 = JOY_FALSE
+  SECTION: $00e4-$00f9 ($0016 bytes) ["Scrolling"]
+           $00e4 = VBlank_HScroll
+           $00f7 = VBlank_HScroll.end
+  SECTION: $0100-$014f ($0050 bytes) ["Start"]
+  SECTION: $0150-$038f ($0240 bytes) ["Background_Map"]
+           $0150 = BackgroundMap
+           $0390 = BackgroundMapEnd
+  SECTION: $0390-$03ff ($0070 bytes) ["Cactus_Tiles"]
+           $0390 = CactusTiles
+           $0400 = CactusTilesEnd
+  SECTION: $0400-$045f ($0060 bytes) ["Background_Tiles"]
+           $0400 = BackgroundTiles
+           $0460 = BackgroundTilesEnd
+  SECTION: $0460-$04a1 ($0042 bytes) ["rom"]
+           $0460 = START
+           $0489 = GAMELOOP
+           $049a = GAMELOOP.skip
+  SECTION: $04a2-$04c9 ($0028 bytes) ["Graphics"]
+           $04a2 = LoadGameData
+  SECTION: $04ca-$04df ($0016 bytes) ["OAM DMA routine"]
+           $04ca = CopyDMARoutine
+           $04d1 = CopyDMARoutine.copy
+           $04d8 = DMARoutine
+           $04dc = DMARoutine.wait
+           $04e0 = DMARoutineEnd
+    SLACK: $3b4f bytes
 
 ROMX bank #1:
   SECTION: $4000-$407a ($007b bytes) ["player"]
-           $4000 = player_sprite_init
+           $4000 = InitializePlayer
   SECTION: $407b-$40b6 ($003c bytes) ["joypad"]
            $407b = read_joypad
            $40a2 = clear_joypad
   SECTION: $40b7-$40ec ($0036 bytes) ["memory"]
-           $40b7 = memcpy.memcpy_loop
-           $40b7 = memcpy
-           $40bb = memcpy.memcpy_check_limit
+           $40b7 = MEMCPY.memcpy_loop
+           $40b7 = MEMCPY
+           $40bb = MEMCPY.memcpy_check_limit
            $40c1 = CLEAR_OAM
            $40c7 = CLEAR_OAM.clear_oam_loop
            $40d0 = CLEAR_RAM
@@ -76,29 +88,11 @@ WRAM0 bank #0:
   SECTION: $c0a7-$c0a8 ($0002 bytes) ["player_vars"]
            $c0a7 = player_x
            $c0a8 = player_y
-  SECTION: $c100-$c147 ($0048 bytes) ["RAM Vars"]
-           $c100 = joypad_down
-           $c101 = joypad_pressed
-           $c102 = bullets_alive
-           $c103 = player_ground
-           $c104 = player_idle
-           $c105 = player_fset
-           $c106 = player_fcount
-           $c107 = player_gcount
-           $c108 = player_fstart
-           $c109 = player_fend
-           $c10a = player_y_temp
-           $c10b = player_x_temp
-           $c10c = player_yvel
-           $c10d = player_frame
-           $c10e = player_tile
-           $c10f = player_flags
-           $c110 = player_hp
-           $c111 = arb_counter
-           $c112 = scroll_timer
-           $c113 = my_sprites
-           $c147 = GAME_MAP_DATA
-    SLACK: $0f0f bytes
+  SECTION: $c100-$c102 ($0003 bytes) ["RAM Vars"]
+           $c100 = scroll_timer
+           $c101 = joypad_down
+           $c102 = joypad_pressed
+    SLACK: $0f54 bytes
 
 HRAM bank #0:
   SECTION: $ff80-$ff87 ($0008 bytes) ["OAM DMA"]
@@ -106,7 +100,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $0425 bytes in 1 bank
+    ROM0: $04b1 bytes in 1 bank
     ROMX: $0118 bytes in 1 bank
-    WRAM0: $00f1 bytes in 1 bank
+    WRAM0: $00ac bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

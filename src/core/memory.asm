@@ -2,7 +2,7 @@ SECTION "memory", ROMX
 
 INCLUDE "hardware.inc"
 
-memcpy::
+MEMCPY::
     ; de = block size
     ; bc = source address
     ; hl = destination address

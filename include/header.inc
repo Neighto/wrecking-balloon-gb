@@ -34,8 +34,8 @@ SECTION "Start",ROM0[$100]
 	DB  $BB,$BB,$67,$63,$6E,$0E,$EC,$CC,$DD,$DC,$99,$9F,$BB,$B9,$33,$3E
 
 	; $0134-$013E Game title
-	DB	"wreck-balloon"
-		  ;0123456789A
+	DB	"WREKN-BLN  "
+		;0123456789A
 
 	; $013F-$0142 Product code, leave blank
 	DB	"    "
