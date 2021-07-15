@@ -89,6 +89,123 @@ InitializePlayer::
   ld [HL], %00000000
   ret
 
+IncrementPosition:
+  ; hl = address
+  ld a, [hl]
+  inc a
+  ld [hl], a
+  ret
+
+DecrementPosition:
+  ; hl = address
+  ld a, [hl]
+  dec a
+  ld [hl], a
+  ret
+
+MoveRight:
+  ld hl, wShadowOAM+1
+  call IncrementPosition
+  ld hl, wShadowOAM+5
+  call IncrementPosition
+  ld hl, wShadowOAM+9
+  call IncrementPosition
+  ld hl, wShadowOAM+13
+  call IncrementPosition
+  ld hl, wShadowOAM+17
+  call IncrementPosition
+  ld hl, wShadowOAM+21
+  call IncrementPosition
+  ld hl, wShadowOAM+25
+  call IncrementPosition
+  ld hl, wShadowOAM+29
+  call IncrementPosition
+  ret
+
+MoveLeft:
+  ld hl, wShadowOAM+1
+  call DecrementPosition
+  ld hl, wShadowOAM+5
+  call DecrementPosition
+  ld hl, wShadowOAM+9
+  call DecrementPosition
+  ld hl, wShadowOAM+13
+  call DecrementPosition
+  ld hl, wShadowOAM+17
+  call DecrementPosition
+  ld hl, wShadowOAM+21
+  call DecrementPosition
+  ld hl, wShadowOAM+25
+  call DecrementPosition
+  ld hl, wShadowOAM+29
+  call DecrementPosition
+  ret
+
+MoveUp:
+  ld hl, wShadowOAM
+  call IncrementPosition
+  ld hl, wShadowOAM+4
+  call IncrementPosition
+  ld hl, wShadowOAM+8
+  call IncrementPosition
+  ld hl, wShadowOAM+12
+  call IncrementPosition
+  ld hl, wShadowOAM+16
+  call IncrementPosition
+  ld hl, wShadowOAM+20
+  call IncrementPosition
+  ld hl, wShadowOAM+24
+  call IncrementPosition
+  ld hl, wShadowOAM+28
+  call IncrementPosition
+  ret
+
+MoveDown:
+  ld hl, wShadowOAM
+  call DecrementPosition
+  ld hl, wShadowOAM+4
+  call DecrementPosition
+  ld hl, wShadowOAM+8
+  call DecrementPosition
+  ld hl, wShadowOAM+12
+  call DecrementPosition
+  ld hl, wShadowOAM+16
+  call DecrementPosition
+  ld hl, wShadowOAM+20
+  call DecrementPosition
+  ld hl, wShadowOAM+24
+  call DecrementPosition
+  ld hl, wShadowOAM+28
+  call DecrementPosition
+  ret
+
+PlayerMovement::
+	call ReadInput
+  ; Right
+	ld  a, [joypad_down]
+	call JOY_RIGHT
+	jr  z, .endRight
+	call MoveRight
+.endRight:
+  ; Left
+  ld  a, [joypad_down]
+	call JOY_LEFT
+	jr  z, .endLeft
+	call MoveLeft
+.endLeft:
+  ; Up
+  ld  a, [joypad_down]
+	call JOY_UP
+	jr  z, .endUp
+	call MoveUp
+.endUp:
+  ; Down
+  ld  a, [joypad_down]
+	call JOY_DOWN
+	jr  z, .endDown
+	call MoveDown
+.endDown:
+  ret
 
 SECTION "player_vars", WRAM0
   player_x:: DS 1
