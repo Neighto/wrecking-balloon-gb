@@ -58,37 +58,37 @@ JOY_LEFT::
 	ret
 JOY_UP::
 	and %01000000
-	cp  %01000000
-	jp  nz, JOY_FALSE
+	; cp  %01000000
+	jp  z, JOY_FALSE
 	ld  a, $1
 	ret
 JOY_DOWN::
 	and %10000000
-	cp  %10000000
-	jp  nz, JOY_FALSE
+	; cp  %10000000
+	jp  z, JOY_FALSE
 	ld  a, $1
 	ret
 JOY_A::
 	and %00000001
-	cp  %00000001
-	jp  nz, JOY_FALSE
+	; cp  %00000001
+	jp  z, JOY_FALSE
 	ld  a, $1
 	ret
 JOY_B::
 	and %00000010
-	cp  %00000010
-	jp  nz, JOY_FALSE
+	; cp  %00000010
+	jp  z, JOY_FALSE
 	ld  a, $1
 	ret
 JOY_SELECT::
 	and %00000100
-	cp  %00000100
+	cp  %00000100 ;update
 	jp  nz, JOY_FALSE
 	ld  a, $1
 	ret
 JOY_START::
 	and %00001000
-	cp  %00001000
+	cp  %00001000 ;update
 	jp  nz, JOY_FALSE
 	ld  a, $1
 	ret

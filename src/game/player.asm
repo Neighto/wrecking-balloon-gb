@@ -12,6 +12,8 @@ InitializePlayer::
   ld [HL], PLAYER_START_X
   ld HL, player_y
   ld [HL], PLAYER_START_Y
+  ld HL, player_speed
+  ld [HL], 1
   ; Set Attributes
   ; BALLOON *****
   ; Top left
@@ -91,14 +93,17 @@ InitializePlayer::
 
 IncrementPosition:
   ; hl = address
-  ld a, [hl]
-  inc a
+  ld a, [player_speed]
+  add [hl]
   ld [hl], a
   ret
 
 DecrementPosition:
   ; hl = address
   ld a, [hl]
+  ; ld [de], hl
+  ; ld hl, [player_speed]
+  ; sub [hl]
   dec a
   ld [hl], a
   ret
@@ -141,27 +146,27 @@ MoveLeft:
   call DecrementPosition
   ret
 
-MoveUp:
-  ld hl, wShadowOAM
-  call IncrementPosition
-  ld hl, wShadowOAM+4
-  call IncrementPosition
-  ld hl, wShadowOAM+8
-  call IncrementPosition
-  ld hl, wShadowOAM+12
-  call IncrementPosition
-  ld hl, wShadowOAM+16
-  call IncrementPosition
-  ld hl, wShadowOAM+20
-  call IncrementPosition
-  ld hl, wShadowOAM+24
-  call IncrementPosition
-  ld hl, wShadowOAM+28
-  call IncrementPosition
-  ret
-
 MoveDown:
   ld hl, wShadowOAM
+  call IncrementPosition
+  ld hl, wShadowOAM+4
+  call IncrementPosition
+  ld hl, wShadowOAM+8
+  call IncrementPosition
+  ld hl, wShadowOAM+12
+  call IncrementPosition
+  ld hl, wShadowOAM+16
+  call IncrementPosition
+  ld hl, wShadowOAM+20
+  call IncrementPosition
+  ld hl, wShadowOAM+24
+  call IncrementPosition
+  ld hl, wShadowOAM+28
+  call IncrementPosition
+  ret
+
+MoveUp:
+  ld hl, wShadowOAM
   call DecrementPosition
   ld hl, wShadowOAM+4
   call DecrementPosition
@@ -179,7 +184,23 @@ MoveDown:
   call DecrementPosition
   ret
 
-PlayerMovement::
+SpeedUp:
+  ld hl, player_speed
+  ld [hl], 2
+  ret
+
+ResetSpeedUp:
+  ld hl, player_speed
+  ld [hl], 1
+  ret
+
+PlayerUpdate::
+  ; Timer (Stall by every 8th vblank)
+  ld a, [movement_timer]
+	inc	a
+	ld [movement_timer], a
+	and	%00000011
+	jr nz, .end
 	call ReadInput
   ; Right
 	ld  a, [joypad_down]
@@ -205,7 +226,16 @@ PlayerMovement::
 	jr  z, .endDown
 	call MoveDown
 .endDown:
-  ret
+  ; A
+  ld  a, [joypad_down]
+	call JOY_A
+	jr  z, .endA
+  call SpeedUp
+  ret ; TODO: sloppy
+.endA:
+  call ResetSpeedUp
+.end:
+  ret  
 
 SECTION "player_vars", WRAM0
   player_x:: DS 1
