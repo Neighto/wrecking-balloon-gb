@@ -37,16 +37,9 @@ START::
 
 GAMELOOP:
 	call WAIT_VBLANK
-
-	; Scroll screen
 	call VBlank_HScroll
-
-	; Player updates
-	call PlayerMovement
-	
-  	; Call DMA subroutine to copy the bytes to OAM for sprites begin to draw
-	ld  a, HIGH(wShadowOAM)
-	call hOAMDMA
+	call PlayerUpdate
+	call OAMDMA
 
 	jp GAMELOOP
 
@@ -73,6 +66,12 @@ DMARoutine:
 	jr  nz, .wait
 	ret
 DMARoutineEnd:
+
+OAMDMA:
+  	; Call DMA subroutine to copy the bytes to OAM for sprites begin to draw
+	ld  a, HIGH(wShadowOAM)
+	call hOAMDMA
+	ret
 
 SECTION "OAM DMA", HRAM
 hOAMDMA:: ds DMARoutineEnd - DMARoutine ; Reserve space to copy the routine to
