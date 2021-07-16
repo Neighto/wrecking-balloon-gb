@@ -22,36 +22,18 @@ InitializePlayer::
   inc L
   ld [HL], PLAYER_START_X
   inc L
-  ld [HL], $84
+  ld [HL], $82
   inc L
   ld [HL], %00000000
   ; Top right
-  ld HL, wShadowOAM+4
+  ld HL, wShadowOAM+8
   ld [HL], PLAYER_BALLOON_START_Y
   inc L
   ld [HL], PLAYER_START_X + 8
   inc L
-  ld [HL], $84
+  ld [HL], $82
   inc L
   ld [HL], %00100000
-  ; Bottom right
-  ld HL, wShadowOAM+8
-  ld [HL], PLAYER_BALLOON_START_Y + 8
-  inc L
-  ld [HL], PLAYER_START_X + 8
-  inc L
-  ld [HL], $83
-  inc L
-  ld [HL], %00100000
-  ; Bottom left
-  ld HL, wShadowOAM+12
-  ld [HL], PLAYER_BALLOON_START_Y + 8
-  inc L
-  ld [HL], PLAYER_START_X
-  inc L
-  ld [HL], $83
-  inc L
-  ld [HL], %00000000
   ; CACTUS *****
   ; Top left
   ld HL, wShadowOAM+16
@@ -59,36 +41,18 @@ InitializePlayer::
   inc L
   ld [HL], PLAYER_START_X
   inc L
-  ld [HL], $82
+  ld [HL], $80
   inc L
   ld [HL], %00000000
   ; Top right
-  ld HL, wShadowOAM+20
+  ld HL, wShadowOAM+24
   ld [HL], PLAYER_START_Y
   inc L
   ld [HL], PLAYER_START_X + 8
   inc L
-  ld [HL], $82
+  ld [HL], $80
   inc L
   ld [HL], %00100000
-  ; Bottom right
-  ld HL, wShadowOAM+24
-  ld [HL], PLAYER_START_Y + 8
-  inc L
-  ld [HL], PLAYER_START_X + 8
-  inc L
-  ld [HL], $81
-  inc L
-  ld [HL], %00100000
-  ; Bottom left
-  ld HL, wShadowOAM+28
-  ld [HL], PLAYER_START_Y + 8
-  inc L
-  ld [HL], PLAYER_START_X
-  inc L
-  ld [HL], $81
-  inc L
-  ld [HL], %00000000
   ret
 
 IncrementPosition:
@@ -110,76 +74,44 @@ DecrementPosition:
 MoveRight:
   ld hl, wShadowOAM+1
   call IncrementPosition
-  ld hl, wShadowOAM+5
-  call IncrementPosition
   ld hl, wShadowOAM+9
-  call IncrementPosition
-  ld hl, wShadowOAM+13
   call IncrementPosition
   ld hl, wShadowOAM+17
   call IncrementPosition
-  ld hl, wShadowOAM+21
-  call IncrementPosition
   ld hl, wShadowOAM+25
-  call IncrementPosition
-  ld hl, wShadowOAM+29
   call IncrementPosition
   ret
 
 MoveLeft:
   ld hl, wShadowOAM+1
   call DecrementPosition
-  ld hl, wShadowOAM+5
-  call DecrementPosition
   ld hl, wShadowOAM+9
-  call DecrementPosition
-  ld hl, wShadowOAM+13
   call DecrementPosition
   ld hl, wShadowOAM+17
   call DecrementPosition
-  ld hl, wShadowOAM+21
-  call DecrementPosition
   ld hl, wShadowOAM+25
-  call DecrementPosition
-  ld hl, wShadowOAM+29
   call DecrementPosition
   ret
 
 MoveDown:
   ld hl, wShadowOAM
   call IncrementPosition
-  ld hl, wShadowOAM+4
-  call IncrementPosition
   ld hl, wShadowOAM+8
-  call IncrementPosition
-  ld hl, wShadowOAM+12
   call IncrementPosition
   ld hl, wShadowOAM+16
   call IncrementPosition
-  ld hl, wShadowOAM+20
-  call IncrementPosition
   ld hl, wShadowOAM+24
-  call IncrementPosition
-  ld hl, wShadowOAM+28
   call IncrementPosition
   ret
 
 MoveUp:
   ld hl, wShadowOAM
   call DecrementPosition
-  ld hl, wShadowOAM+4
-  call DecrementPosition
   ld hl, wShadowOAM+8
-  call DecrementPosition
-  ld hl, wShadowOAM+12
   call DecrementPosition
   ld hl, wShadowOAM+16
   call DecrementPosition
-  ld hl, wShadowOAM+20
-  call DecrementPosition
   ld hl, wShadowOAM+24
-  call DecrementPosition
-  ld hl, wShadowOAM+28
   call DecrementPosition
   ret
 
