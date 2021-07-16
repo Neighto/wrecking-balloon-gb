@@ -51,40 +51,40 @@ ROM0 bank #0:
     SLACK: $3b5f bytes
 
 ROMX bank #1:
-  SECTION: $4000-$41a3 ($01a4 bytes) ["player"]
+  SECTION: $4000-$41a7 ($01a8 bytes) ["player"]
            $4000 = InitializePlayer
            $4080 = IncrementPosition
            $4086 = DecrementPosition
-           $408a = MoveRight
-           $40bb = MoveLeft
-           $40ec = MoveDown
-           $411d = MoveUp
-           $414e = SpeedUp
-           $4154 = ResetSpeedUp
-           $415a = PlayerUpdate
-           $4173 = PlayerUpdate.endRight
-           $417e = PlayerUpdate.endLeft
-           $4189 = PlayerUpdate.endUp
-           $4194 = PlayerUpdate.endDown
-           $41a0 = PlayerUpdate.endA
-           $41a3 = PlayerUpdate.end
-  SECTION: $41a4-$41d9 ($0036 bytes) ["memory"]
-           $41a4 = MEMCPY.memcpy_loop
-           $41a4 = MEMCPY
-           $41a8 = MEMCPY.memcpy_check_limit
-           $41ae = CLEAR_OAM
-           $41b4 = CLEAR_OAM.clear_oam_loop
-           $41bd = CLEAR_RAM
-           $41c3 = CLEAR_RAM.clear_ram_loop
-           $41cc = CLEAR_SPRITES
-           $41cf = CLEAR_SPRITES.clear_sprites
-  SECTION: $41da-$4204 ($002b bytes) ["lcd"]
-           $41da = LCD_OFF
-           $41df = LCD_ON
-           $41e4 = WAIT_VBLANK
-           $41eb = CLEAR_MAP
-           $41f2 = CLEAR_MAP.clear_map_loop
-    SLACK: $3dfb bytes
+           $408e = MoveRight
+           $40bf = MoveLeft
+           $40f0 = MoveDown
+           $4121 = MoveUp
+           $4152 = SpeedUp
+           $4158 = ResetSpeedUp
+           $415e = PlayerUpdate
+           $4177 = PlayerUpdate.endRight
+           $4182 = PlayerUpdate.endLeft
+           $418d = PlayerUpdate.endUp
+           $4198 = PlayerUpdate.endDown
+           $41a4 = PlayerUpdate.endA
+           $41a7 = PlayerUpdate.end
+  SECTION: $41a8-$41dd ($0036 bytes) ["memory"]
+           $41a8 = MEMCPY.memcpy_loop
+           $41a8 = MEMCPY
+           $41ac = MEMCPY.memcpy_check_limit
+           $41b2 = CLEAR_OAM
+           $41b8 = CLEAR_OAM.clear_oam_loop
+           $41c1 = CLEAR_RAM
+           $41c7 = CLEAR_RAM.clear_ram_loop
+           $41d0 = CLEAR_SPRITES
+           $41d3 = CLEAR_SPRITES.clear_sprites
+  SECTION: $41de-$4208 ($002b bytes) ["lcd"]
+           $41de = LCD_OFF
+           $41e3 = LCD_ON
+           $41e8 = WAIT_VBLANK
+           $41ef = CLEAR_MAP
+           $41f6 = CLEAR_MAP.clear_map_loop
+    SLACK: $3df7 bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c09f ($00a0 bytes) ["Shadow OAM"]
@@ -110,6 +110,6 @@ HRAM bank #0:
 
 USED:
     ROM0: $04a1 bytes in 1 bank
-    ROMX: $0205 bytes in 1 bank
+    ROMX: $0209 bytes in 1 bank
     WRAM0: $00aa bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
