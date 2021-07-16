@@ -100,11 +100,10 @@ IncrementPosition:
 
 DecrementPosition:
   ; hl = address
-  ld a, [hl]
-  ; ld [de], hl
-  ; ld hl, [player_speed]
-  ; sub [hl]
-  dec a
+  ld a, [player_speed]
+  cpl 
+  inc a
+  add [hl]
   ld [hl], a
   ret
 
@@ -195,7 +194,7 @@ ResetSpeedUp:
   ret
 
 PlayerUpdate::
-  ; Timer (Stall by every 8th vblank)
+  ; Timer (Stall by every 4th vblank)
   ld a, [movement_timer]
 	inc	a
 	ld [movement_timer], a
