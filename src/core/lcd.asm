@@ -8,7 +8,7 @@ LCD_OFF::
     ret
 
 LCD_ON::
-    ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJON
+    ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJON | LCDCF_OBJ16
     ld [rLCDC], a
     ret
 
