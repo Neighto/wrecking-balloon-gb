@@ -43,14 +43,15 @@ CLEAR_RAM::
     jr  nz,.clear_ram_loop
     ret
 
-
-CLEAR_SPRITES::
-	ld hl, wShadowOAM
-.clear_sprites
-    ld a, $0
-    ld [hl], a
-    inc l
-    ld a, l
-    cp $0
-    jp nz, .clear_sprites
-    ret
+; [deprecated, for now]
+; CLEAR_SPRITES::
+;     ;; Clear what's in "Shadow OAM"
+; 	ld hl, wShadowOAM
+; .clear_sprites
+;     ld a, $0
+;     ld [hl], a
+;     inc l
+;     ld a, l
+;     cp $0
+;     jp nz, .clear_sprites
+;     ret

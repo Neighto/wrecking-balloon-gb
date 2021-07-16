@@ -29,7 +29,6 @@ START::
 	call CLEAR_MAP
 	call CLEAR_OAM
 	call CLEAR_RAM
-	call CLEAR_SPRITES
 	call LoadGameData
 	call CopyDMARoutine
 
@@ -69,15 +68,16 @@ DMARoutineEnd:
 
 OAMDMA:
   	; Call DMA subroutine to copy the bytes to OAM for sprites begin to draw
-	ld  a, HIGH(wShadowOAM)
+	; ld  a, HIGH(wShadowOAM)
+	ld a, HIGH(player_balloon)
 	call hOAMDMA
 	ret
 
 SECTION "OAM DMA", HRAM
 hOAMDMA:: ds DMARoutineEnd - DMARoutine ; Reserve space to copy the routine to
 
-SECTION "Shadow OAM", WRAM0,ALIGN[8]
-wShadowOAM:: ds 4 * 40 ; This is the buffer we'll write sprite data to
+; SECTION "Shadow OAM", WRAM0,ALIGN[8]
+; wShadowOAM:: ds 4 * 40 ; This is the buffer we'll write sprite data to
 
 SECTION "Scrolling", ROM0
 VBlank_HScroll::

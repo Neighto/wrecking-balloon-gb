@@ -2,8 +2,8 @@ SECTION "player", ROMX
 
 INCLUDE "hardware.inc"
 
-PLAYER_START_X EQU (160 / 2 - 20)
-PLAYER_START_Y EQU (144 / 2 + 16)
+PLAYER_START_X EQU 80
+PLAYER_START_Y EQU 80
 PLAYER_BALLOON_START_Y EQU (PLAYER_START_Y - 16)
 
 InitializePlayer::
@@ -17,7 +17,7 @@ InitializePlayer::
   ; Set Attributes
   ; BALLOON *****
   ; Top left
-  ld HL, wShadowOAM
+  ld HL, player_balloon
   ld [HL], PLAYER_BALLOON_START_Y
   inc L
   ld [HL], PLAYER_START_X
@@ -26,7 +26,7 @@ InitializePlayer::
   inc L
   ld [HL], %00000000
   ; Top right
-  ld HL, wShadowOAM+4
+  ld HL, player_balloon+4
   ld [HL], PLAYER_BALLOON_START_Y
   inc L
   ld [HL], PLAYER_START_X + 8
@@ -36,7 +36,7 @@ InitializePlayer::
   ld [HL], %00100000
   ; CACTUS *****
   ; Top left
-  ld HL, wShadowOAM+8
+  ld HL, player_cactus
   ld [HL], PLAYER_START_Y
   inc L
   ld [HL], PLAYER_START_X
@@ -45,7 +45,7 @@ InitializePlayer::
   inc L
   ld [HL], %00000000
   ; Top right
-  ld HL, wShadowOAM+12
+  ld HL, player_cactus+4
   ld [HL], PLAYER_START_Y
   inc L
   ld [HL], PLAYER_START_X + 8
@@ -72,46 +72,46 @@ DecrementPosition:
   ret
 
 MoveRight:
-  ld hl, wShadowOAM+1
+  ld hl, player_balloon+1
   call IncrementPosition
-  ld hl, wShadowOAM+5
+  ld hl, player_balloon+5
   call IncrementPosition
-  ld hl, wShadowOAM+9
+  ld hl, player_cactus+1
   call IncrementPosition
-  ld hl, wShadowOAM+13
+  ld hl, player_cactus+5
   call IncrementPosition
   ret
 
 MoveLeft:
-  ld hl, wShadowOAM+1
+  ld hl, player_balloon+1
   call DecrementPosition
-  ld hl, wShadowOAM+5
+  ld hl, player_balloon+5
   call DecrementPosition
-  ld hl, wShadowOAM+9
+  ld hl, player_cactus+1
   call DecrementPosition
-  ld hl, wShadowOAM+13
+  ld hl, player_cactus+5
   call DecrementPosition
   ret
 
 MoveDown:
-  ld hl, wShadowOAM
+  ld hl, player_balloon
   call IncrementPosition
-  ld hl, wShadowOAM+4
+  ld hl, player_balloon+4
   call IncrementPosition
-  ld hl, wShadowOAM+8
+  ld hl, player_cactus
   call IncrementPosition
-  ld hl, wShadowOAM+12
+  ld hl, player_cactus+4
   call IncrementPosition
   ret
 
 MoveUp:
-  ld hl, wShadowOAM
+  ld hl, player_balloon
   call DecrementPosition
-  ld hl, wShadowOAM+4
+  ld hl, player_balloon+4
   call DecrementPosition
-  ld hl, wShadowOAM+8
+  ld hl, player_cactus
   call DecrementPosition
-  ld hl, wShadowOAM+12
+  ld hl, player_cactus+4
   call DecrementPosition
   ret
 
@@ -126,16 +126,16 @@ ResetSpeedUp:
   ret
 
 MoveCactusUp:
-  ld hl, wShadowOAM+8
+  ld hl, player_cactus
   call DecrementPosition
-  ld hl, wShadowOAM+12
+  ld hl, player_cactus+4
   call DecrementPosition
   ret
 
 MoveCactusDown:
-  ld hl, wShadowOAM+8
+  ld hl, player_cactus
   call IncrementPosition
-  ld hl, wShadowOAM+12
+  ld hl, player_cactus+4
   call IncrementPosition
   ret
 
@@ -208,7 +208,3 @@ PlayerUpdate::
   call PlayerMovement
   call PlayerAnimate
   ret
-
-SECTION "player_vars", WRAM0
-  player_x:: DS 1
-  player_y:: DS 1

@@ -1,7 +1,7 @@
 ROM0 bank #0:
-  SECTION: $0000-$0037 ($0038 bytes) ["rom"]
+  SECTION: $0000-$0034 ($0035 bytes) ["rom"]
            $0000 = START
-           $0029 = GAMELOOP
+           $0026 = GAMELOOP
   SECTION: $0040-$0040 ($0001 byte) ["VBlank IRQ"]
   SECTION: $0048-$0048 ($0001 byte) ["LCD IRQ Vector"]
            $0048 = LCD_VECT
@@ -48,7 +48,7 @@ ROM0 bank #0:
   SECTION: $04c2-$04d7 ($0016 bytes) ["Scrolling"]
            $04c2 = VBlank_HScroll
            $04d5 = VBlank_HScroll.end
-    SLACK: $3b4f bytes
+    SLACK: $3b52 bytes
 
 ROMX bank #1:
   SECTION: $4000-$4154 ($0155 bytes) ["player"]
@@ -75,42 +75,40 @@ ROMX bank #1:
            $4145 = PlayerAnimate.bobDown
            $414d = PlayerAnimate.end
            $414e = PlayerUpdate
-  SECTION: $4155-$418a ($0036 bytes) ["memory"]
-           $4155 = MEMCPY.memcpy_loop
-           $4155 = MEMCPY
-           $4159 = MEMCPY.memcpy_check_limit
-           $415f = CLEAR_OAM
-           $4165 = CLEAR_OAM.clear_oam_loop
-           $416e = CLEAR_RAM
-           $4174 = CLEAR_RAM.clear_ram_loop
-           $417d = CLEAR_SPRITES
-           $4180 = CLEAR_SPRITES.clear_sprites
-  SECTION: $418b-$41b5 ($002b bytes) ["lcd"]
-           $418b = LCD_OFF
-           $4190 = LCD_ON
-           $4195 = WAIT_VBLANK
-           $419c = CLEAR_MAP
-           $41a3 = CLEAR_MAP.clear_map_loop
-    SLACK: $3e4a bytes
+  SECTION: $4155-$417f ($002b bytes) ["lcd"]
+           $4155 = LCD_OFF
+           $415a = LCD_ON
+           $415f = WAIT_VBLANK
+           $4166 = CLEAR_MAP
+           $416d = CLEAR_MAP.clear_map_loop
+  SECTION: $4180-$41a7 ($0028 bytes) ["memory"]
+           $4180 = MEMCPY.memcpy_loop
+           $4180 = MEMCPY
+           $4184 = MEMCPY.memcpy_check_limit
+           $418a = CLEAR_OAM
+           $4190 = CLEAR_OAM.clear_oam_loop
+           $4199 = CLEAR_RAM
+           $419f = CLEAR_RAM.clear_ram_loop
+    SLACK: $3e58 bytes
 
 WRAM0 bank #0:
-  SECTION: $c000-$c09f ($00a0 bytes) ["Shadow OAM"]
-           $c000 = wShadowOAM
-  SECTION: $c0a0-$c0a2 ($0003 bytes) ["Math Div 16 Ram"]
-           $c0a0 = _MD16temp
-           $c0a2 = _MD16count
-  SECTION: $c0a3-$c0a4 ($0002 bytes) ["player_vars"]
-           $c0a3 = player_x
-           $c0a4 = player_y
-  SECTION: $c100-$c106 ($0007 bytes) ["RAM Vars"]
-           $c100 = scroll_timer
-           $c101 = movement_timer
-           $c102 = player_bob_timer
-           $c103 = player_bobbed_up
-           $c104 = joypad_down
-           $c105 = joypad_pressed
-           $c106 = player_speed
-    SLACK: $0f54 bytes
+  SECTION: $c000-$c008 ($0009 bytes) ["RAM Vars"]
+           $c000 = scroll_timer
+           $c001 = movement_timer
+           $c002 = player_bob_timer
+           $c003 = player_bobbed_up
+           $c004 = joypad_down
+           $c005 = joypad_pressed
+           $c006 = player_speed
+           $c007 = player_x
+           $c008 = player_y
+  SECTION: $c009-$c00b ($0003 bytes) ["Math Div 16 Ram"]
+           $c009 = _MD16temp
+           $c00b = _MD16count
+  SECTION: $c100-$c10f ($0010 bytes) ["OAM Vars"]
+           $c100 = player_balloon
+           $c108 = player_cactus
+    SLACK: $0fe4 bytes
 
 HRAM bank #0:
   SECTION: $ff80-$ff87 ($0008 bytes) ["OAM DMA"]
@@ -118,7 +116,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $04b1 bytes in 1 bank
-    ROMX: $01b6 bytes in 1 bank
-    WRAM0: $00ac bytes in 1 bank
+    ROM0: $04ae bytes in 1 bank
+    ROMX: $01a8 bytes in 1 bank
+    WRAM0: $001c bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
