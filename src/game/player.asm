@@ -125,7 +125,21 @@ ResetSpeedUp:
   ld [hl], 1
   ret
 
-PlayerUpdate::
+MoveCactusUp:
+  ld hl, wShadowOAM+16
+  call DecrementPosition
+  ld hl, wShadowOAM+24
+  call DecrementPosition
+  ret
+
+MoveCactusDown:
+  ld hl, wShadowOAM+16
+  call IncrementPosition
+  ld hl, wShadowOAM+24
+  call IncrementPosition
+  ret
+
+PlayerMovement::
   ; Timer (Stall by every 4th vblank)
   ld a, [movement_timer]
 	inc	a
@@ -170,7 +184,6 @@ PlayerUpdate::
 
 PlayerAnimate::
   ; Lift Up and Down Slowly
-  ; Timer
   ld a, [player_bob_timer]
   inc	a
   ld [player_bob_timer], a
@@ -179,23 +192,21 @@ PlayerAnimate::
   ld a, [player_bobbed_up]
   and 1
   jr nz, .bobDown
-  ; Move Up (TODO make func like MoveCactus)
+.bobUp:
   ld a, 1
   ld [player_bobbed_up], a
-  ld hl, wShadowOAM+16
-  call DecrementPosition
-  ld hl, wShadowOAM+24
-  call DecrementPosition
+  call MoveCactusUp
   ret
 .bobDown:
-  ; Move Down (TODO make func like MoveCactus)
   ld a, 0
   ld [player_bobbed_up], a
-  ld hl, wShadowOAM+16
-  call IncrementPosition
-  ld hl, wShadowOAM+24
-  call IncrementPosition
+  call MoveCactusDown
 .end
+  ret
+
+PlayerUpdate::
+  call PlayerMovement
+  call PlayerAnimate
   ret
 
 SECTION "player_vars", WRAM0

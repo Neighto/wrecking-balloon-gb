@@ -1,5 +1,5 @@
 ROM0 bank #0:
-  SECTION: $0000-$003a ($003b bytes) ["rom"]
+  SECTION: $0000-$0037 ($0038 bytes) ["rom"]
            $0000 = START
            $0029 = GAMELOOP
   SECTION: $0040-$0040 ($0001 byte) ["VBlank IRQ"]
@@ -48,10 +48,10 @@ ROM0 bank #0:
   SECTION: $04c2-$04d7 ($0016 bytes) ["Scrolling"]
            $04c2 = VBlank_HScroll
            $04d5 = VBlank_HScroll.end
-    SLACK: $3b4c bytes
+    SLACK: $3b4f bytes
 
 ROMX bank #1:
-  SECTION: $4000-$4145 ($0146 bytes) ["player"]
+  SECTION: $4000-$4154 ($0155 bytes) ["player"]
            $4000 = InitializePlayer
            $4048 = IncrementPosition
            $404e = DecrementPosition
@@ -61,33 +61,37 @@ ROMX bank #1:
            $40a1 = MoveUp
            $40ba = SpeedUp
            $40c0 = ResetSpeedUp
-           $40c6 = PlayerUpdate
-           $40df = PlayerUpdate.endRight
-           $40ea = PlayerUpdate.endLeft
-           $40f5 = PlayerUpdate.endUp
-           $4100 = PlayerUpdate.endDown
-           $410c = PlayerUpdate.endA
-           $410f = PlayerUpdate.end
-           $4110 = PlayerAnimate
-           $4134 = PlayerAnimate.bobDown
-           $4145 = PlayerAnimate.end
-  SECTION: $4146-$417b ($0036 bytes) ["memory"]
-           $4146 = MEMCPY.memcpy_loop
-           $4146 = MEMCPY
-           $414a = MEMCPY.memcpy_check_limit
-           $4150 = CLEAR_OAM
-           $4156 = CLEAR_OAM.clear_oam_loop
-           $415f = CLEAR_RAM
-           $4165 = CLEAR_RAM.clear_ram_loop
-           $416e = CLEAR_SPRITES
-           $4171 = CLEAR_SPRITES.clear_sprites
-  SECTION: $417c-$41a6 ($002b bytes) ["lcd"]
-           $417c = LCD_OFF
-           $4181 = LCD_ON
-           $4186 = WAIT_VBLANK
-           $418d = CLEAR_MAP
-           $4194 = CLEAR_MAP.clear_map_loop
-    SLACK: $3e59 bytes
+           $40c6 = MoveCactusUp
+           $40d3 = MoveCactusDown
+           $40e0 = PlayerMovement
+           $40f9 = PlayerMovement.endRight
+           $4104 = PlayerMovement.endLeft
+           $410f = PlayerMovement.endUp
+           $411a = PlayerMovement.endDown
+           $4126 = PlayerMovement.endA
+           $4129 = PlayerMovement.end
+           $412a = PlayerAnimate
+           $413c = PlayerAnimate.bobUp
+           $4145 = PlayerAnimate.bobDown
+           $414d = PlayerAnimate.end
+           $414e = PlayerUpdate
+  SECTION: $4155-$418a ($0036 bytes) ["memory"]
+           $4155 = MEMCPY.memcpy_loop
+           $4155 = MEMCPY
+           $4159 = MEMCPY.memcpy_check_limit
+           $415f = CLEAR_OAM
+           $4165 = CLEAR_OAM.clear_oam_loop
+           $416e = CLEAR_RAM
+           $4174 = CLEAR_RAM.clear_ram_loop
+           $417d = CLEAR_SPRITES
+           $4180 = CLEAR_SPRITES.clear_sprites
+  SECTION: $418b-$41b5 ($002b bytes) ["lcd"]
+           $418b = LCD_OFF
+           $4190 = LCD_ON
+           $4195 = WAIT_VBLANK
+           $419c = CLEAR_MAP
+           $41a3 = CLEAR_MAP.clear_map_loop
+    SLACK: $3e4a bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c09f ($00a0 bytes) ["Shadow OAM"]
@@ -114,7 +118,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $04b4 bytes in 1 bank
-    ROMX: $01a7 bytes in 1 bank
+    ROM0: $04b1 bytes in 1 bank
+    ROMX: $01b6 bytes in 1 bank
     WRAM0: $00ac bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
