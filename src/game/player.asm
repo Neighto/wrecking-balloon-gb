@@ -26,7 +26,7 @@ InitializePlayer::
   inc L
   ld [HL], %00000000
   ; Top right
-  ld HL, wShadowOAM+8
+  ld HL, wShadowOAM+4
   ld [HL], PLAYER_BALLOON_START_Y
   inc L
   ld [HL], PLAYER_START_X + 8
@@ -36,7 +36,7 @@ InitializePlayer::
   ld [HL], %00100000
   ; CACTUS *****
   ; Top left
-  ld HL, wShadowOAM+16
+  ld HL, wShadowOAM+8
   ld [HL], PLAYER_START_Y
   inc L
   ld [HL], PLAYER_START_X
@@ -45,7 +45,7 @@ InitializePlayer::
   inc L
   ld [HL], %00000000
   ; Top right
-  ld HL, wShadowOAM+24
+  ld HL, wShadowOAM+12
   ld [HL], PLAYER_START_Y
   inc L
   ld [HL], PLAYER_START_X + 8
@@ -74,44 +74,44 @@ DecrementPosition:
 MoveRight:
   ld hl, wShadowOAM+1
   call IncrementPosition
+  ld hl, wShadowOAM+5
+  call IncrementPosition
   ld hl, wShadowOAM+9
   call IncrementPosition
-  ld hl, wShadowOAM+17
-  call IncrementPosition
-  ld hl, wShadowOAM+25
+  ld hl, wShadowOAM+13
   call IncrementPosition
   ret
 
 MoveLeft:
   ld hl, wShadowOAM+1
   call DecrementPosition
+  ld hl, wShadowOAM+5
+  call DecrementPosition
   ld hl, wShadowOAM+9
   call DecrementPosition
-  ld hl, wShadowOAM+17
-  call DecrementPosition
-  ld hl, wShadowOAM+25
+  ld hl, wShadowOAM+13
   call DecrementPosition
   ret
 
 MoveDown:
   ld hl, wShadowOAM
   call IncrementPosition
+  ld hl, wShadowOAM+4
+  call IncrementPosition
   ld hl, wShadowOAM+8
   call IncrementPosition
-  ld hl, wShadowOAM+16
-  call IncrementPosition
-  ld hl, wShadowOAM+24
+  ld hl, wShadowOAM+12
   call IncrementPosition
   ret
 
 MoveUp:
   ld hl, wShadowOAM
   call DecrementPosition
+  ld hl, wShadowOAM+4
+  call DecrementPosition
   ld hl, wShadowOAM+8
   call DecrementPosition
-  ld hl, wShadowOAM+16
-  call DecrementPosition
-  ld hl, wShadowOAM+24
+  ld hl, wShadowOAM+12
   call DecrementPosition
   ret
 
@@ -126,16 +126,16 @@ ResetSpeedUp:
   ret
 
 MoveCactusUp:
-  ld hl, wShadowOAM+16
+  ld hl, wShadowOAM+8
   call DecrementPosition
-  ld hl, wShadowOAM+24
+  ld hl, wShadowOAM+12
   call DecrementPosition
   ret
 
 MoveCactusDown:
-  ld hl, wShadowOAM+16
+  ld hl, wShadowOAM+8
   call IncrementPosition
-  ld hl, wShadowOAM+24
+  ld hl, wShadowOAM+12
   call IncrementPosition
   ret
 
