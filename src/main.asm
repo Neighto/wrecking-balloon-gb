@@ -39,7 +39,6 @@ GAMELOOP:
 	call WAIT_VBLANK
 	call VBlank_HScroll
 	call PlayerUpdate
-	call PlayerAnimate ; just move to player update
 	call OAMDMA
 
 	jp GAMELOOP
