@@ -85,7 +85,7 @@ ROMX bank #1:
            $414b = PlayerAnimate.bobDown
            $4153 = PlayerAnimate.end
            $4154 = PlayerUpdate
-  SECTION: $415b-$41e3 ($0089 bytes) ["point balloon"]
+  SECTION: $415b-$41ee ($0094 bytes) ["point balloon"]
            $415b = InitializePointBalloon
            $4178 = DecrementPosition
            $417f = FloatPointBalloonUp
@@ -93,46 +93,47 @@ ROMX bank #1:
            $4196 = PointBalloonMovement.end
            $4197 = PopPointBalloonAnimation
            $4198 = CollisionCheck
-           $41a9 = CollisionCheck.tryOtherY
-           $41bc = CollisionCheck.checkX
-           $41cd = CollisionCheck.tryOtherX
-           $41e0 = CollisionCheck.doSomething
-           $41e3 = CollisionCheck.end
-  SECTION: $41e4-$420e ($002b bytes) ["lcd"]
-           $41e4 = LCD_OFF
-           $41e9 = LCD_ON
-           $41ee = WAIT_VBLANK
-           $41f5 = ClearMap
-           $41fc = ClearMap.clear_map_loop
-  SECTION: $420f-$4236 ($0028 bytes) ["memory"]
-           $420f = MEMCPY.memcpy_loop
-           $420f = MEMCPY
-           $4213 = MEMCPY.memcpy_check_limit
-           $4219 = ClearOAM
-           $421f = ClearOAM.clear_oam_loop
-           $4228 = ClearRAM
-           $422e = ClearRAM.clear_ram_loop
-    SLACK: $3dc9 bytes
+           $41b4 = CollisionCheck.tryOtherY
+           $41c7 = CollisionCheck.checkX
+           $41d8 = CollisionCheck.tryOtherX
+           $41eb = CollisionCheck.doSomething
+           $41ee = CollisionCheck.end
+  SECTION: $41ef-$4219 ($002b bytes) ["lcd"]
+           $41ef = LCD_OFF
+           $41f4 = LCD_ON
+           $41f9 = WAIT_VBLANK
+           $4200 = ClearMap
+           $4207 = ClearMap.clear_map_loop
+  SECTION: $421a-$4241 ($0028 bytes) ["memory"]
+           $421a = MEMCPY.memcpy_loop
+           $421a = MEMCPY
+           $421e = MEMCPY.memcpy_check_limit
+           $4224 = ClearOAM
+           $422a = ClearOAM.clear_oam_loop
+           $4233 = ClearRAM
+           $4239 = ClearRAM.clear_ram_loop
+    SLACK: $3dbe bytes
 
 WRAM0 bank #0:
-  SECTION: $c000-$c008 ($0009 bytes) ["RAM vars"]
+  SECTION: $c000-$c009 ($000a bytes) ["RAM vars"]
            $c000 = scroll_timer
            $c001 = movement_timer
-           $c002 = player_bob_timer
-           $c003 = player_bobbed_up
-           $c004 = joypad_down
-           $c005 = joypad_pressed
-           $c006 = player_speed
-           $c007 = player_x
-           $c008 = player_y
-  SECTION: $c009-$c00b ($0003 bytes) ["Math Div 16 Ram"]
-           $c009 = _MD16temp
-           $c00b = _MD16count
+           $c002 = collision_timer
+           $c003 = player_bob_timer
+           $c004 = player_bobbed_up
+           $c005 = joypad_down
+           $c006 = joypad_pressed
+           $c007 = player_speed
+           $c008 = player_x
+           $c009 = player_y
+  SECTION: $c00a-$c00c ($0003 bytes) ["Math Div 16 Ram"]
+           $c00a = _MD16temp
+           $c00c = _MD16count
   SECTION: $c100-$c113 ($0014 bytes) ["OAM vars"]
            $c100 = player_balloon
            $c108 = player_cactus
            $c110 = point_balloon
-    SLACK: $0fe0 bytes
+    SLACK: $0fdf bytes
 
 HRAM bank #0:
   SECTION: $ff80-$ff87 ($0008 bytes) ["OAM DMA"]
@@ -141,6 +142,6 @@ HRAM bank #0:
 
 USED:
     ROM0: $04bd bytes in 1 bank
-    ROMX: $0237 bytes in 1 bank
-    WRAM0: $0020 bytes in 1 bank
+    ROMX: $0242 bytes in 1 bank
+    WRAM0: $0021 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
