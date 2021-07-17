@@ -29,7 +29,7 @@ START::
 
 GAMELOOP:
 	call WAIT_VBLANK
-	; call VBlankHScroll
+	call VBlankHScroll
 	call CollisionCheck
 	call PlayerUpdate
 	call PointBalloonUpdate

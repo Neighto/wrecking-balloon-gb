@@ -2,6 +2,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	scroll_timer:: 	 DB
 	movement_timer:: DB
 	collision_timer:: DB
+	balloon_pop_timer:: DB
 	player_bob_timer:: DB
 	player_bobbed_up:: DB
 	joypad_down::    DB
@@ -15,4 +16,4 @@ SECTION "OAM vars", WRAM0[$C100]
 	player_balloon:: DS 4*2
 	player_cactus:: DS 4*2
 	point_balloon:: DS 4
-	balloon_pop:: DS 4*8
+	balloon_pop:: DS 4*4

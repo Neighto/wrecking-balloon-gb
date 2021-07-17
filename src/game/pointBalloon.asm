@@ -58,26 +58,34 @@ PointBalloonUpdate::
     ret
 
 PopBalloonAnimation:
-    ; at specific X and Y => spawn balloon pop sprites
-    ; run for a second, then clear it
+    ; need to specify the X and the Y
+    ; Run for a second, then clear it
+    ; ld a, [balloon_pop_timer]
+	; inc	a
+	; ld [balloon_pop_timer], a
+	; and	%00001000
+    ; jr nz, .end
+
+    ; Tell some loop code to run
+
     ; Popped Left - Frame 1
-    ; ld HL, balloon_pop
-    ; ld [HL], 120 ; Y
-    ; inc L
-    ; ld [HL], 120 ; X
-    ; inc L
-    ; ld [HL], $88
-    ; inc L
-    ; ld [HL], %00000000
-    ; ; Popped Right - Frame 1
-    ; ld HL, balloon_pop+4
-    ; ld [HL], 120 ; Y
-    ; inc L
-    ; ld [HL], 120 + 8 ; X
-    ; inc L
-    ; ld [HL], $88
-    ; inc L
-    ; ld [HL], %00100000
+    ld HL, balloon_pop
+    ld [HL], 120 ; Y
+    inc L
+    ld [HL], 120 ; X
+    inc L
+    ld [HL], $88
+    inc L
+    ld [HL], %00000000
+    ; Popped Right - Frame 1
+    ld HL, balloon_pop+4
+    ld [HL], 120 ; Y
+    inc L
+    ld [HL], 120 + 8 ; X
+    inc L
+    ld [HL], $88
+    inc L
+    ld [HL], %00100000
     ret
 
 DeathOfPointBalloon:
@@ -95,14 +103,7 @@ DeathOfPointBalloon:
     ld [hl], 0
     inc l
     ld [hl], 0
-    ld hl, point_balloon+4
-    ld [hl], 0
-    inc l
-    ld [hl], 0
-    inc l
-    ld [hl], 0
-    inc l
-    ld [hl], 0
+    ; TODO: for some reason I don't have to clear from point_balloon+4 ??
     ret
 
 CollisionCheck::
