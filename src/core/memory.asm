@@ -1,6 +1,6 @@
-SECTION "memory", ROMX
-
 INCLUDE "hardware.inc"
+
+SECTION "memory", ROMX
 
 MEMCPY::
     ; de = block size
@@ -17,8 +17,7 @@ MEMCPY::
 	jp nz, .memcpy_loop
     ret
 
-
-CLEAR_OAM::
+ClearOAM::
     ld  hl,_OAMRAM
     ld  bc,$A0
 .clear_oam_loop
@@ -30,8 +29,7 @@ CLEAR_OAM::
     jr  nz,.clear_oam_loop
     ret
 
-
-CLEAR_RAM::
+ClearRAM::
     ld  hl,$C100
     ld  bc,$A0
 .clear_ram_loop

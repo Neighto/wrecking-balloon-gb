@@ -19,12 +19,12 @@ WAIT_VBLANK::
     jr c, WAIT_VBLANK
     ret
 
-CLEAR_MAP::
+ClearMap::
     ld hl, _SCRN0
     ld  bc,$400
     push hl
 
-    .clear_map_loop
+.clear_map_loop
     ;wait for hblank
     ld  hl, rSTAT
     bit 1, [hl]
@@ -41,3 +41,20 @@ CLEAR_MAP::
     jr  nz, .clear_map_loop
     pop hl
     ret
+
+SECTION "scroll", ROM0
+VBlankHScroll::
+    di ; TODO: might not need this?
+    push af
+    ld a, [scroll_timer]
+    inc	a
+    ld [scroll_timer], a
+    and	%00001111
+    jr nz, .end
+    ldh a, [rSCX]
+    add 1
+    ldh  [rSCX], a
+.end:
+    pop af
+    ei
+    reti

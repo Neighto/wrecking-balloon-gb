@@ -1,6 +1,6 @@
-SECTION "joypad", ROM0
-
 INCLUDE "hardware.inc"
+
+SECTION "joypad", ROM0
 
 ReadInput::
 	;select dpad

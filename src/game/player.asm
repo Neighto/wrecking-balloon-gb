@@ -7,16 +7,14 @@ PLAYER_START_Y EQU 80
 PLAYER_BALLOON_START_Y EQU (PLAYER_START_Y - 16)
 
 InitializePlayer::
-  ; Set variables
+  ; Set Variables
   ld HL, player_x
   ld [HL], PLAYER_START_X
   ld HL, player_y
   ld [HL], PLAYER_START_Y
   ld HL, player_speed
   ld [HL], 1
-  ; Set Attributes
-  ; BALLOON *****
-  ; Top left
+  ; Balloon Left
   ld HL, player_balloon
   ld [HL], PLAYER_BALLOON_START_Y
   inc L
@@ -25,7 +23,7 @@ InitializePlayer::
   ld [HL], $82
   inc L
   ld [HL], %00000000
-  ; Top right
+  ; Balloon Right
   ld HL, player_balloon+4
   ld [HL], PLAYER_BALLOON_START_Y
   inc L
@@ -34,8 +32,7 @@ InitializePlayer::
   ld [HL], $82
   inc L
   ld [HL], %00100000
-  ; CACTUS *****
-  ; Top left
+  ; Cactus Left
   ld HL, player_cactus
   ld [HL], PLAYER_START_Y
   inc L
@@ -44,7 +41,7 @@ InitializePlayer::
   ld [HL], $80
   inc L
   ld [HL], %00000000
-  ; Top right
+  ; Cactus Right
   ld HL, player_cactus+4
   ld [HL], PLAYER_START_Y
   inc L
@@ -71,48 +68,96 @@ DecrementPosition:
   ld [hl], a
   ret
 
-MoveRight:
+MoveBalloonUp:
+  ld hl, player_balloon
+  call DecrementPosition
+  ld hl, player_balloon+4
+  call DecrementPosition
+  ret
+
+MoveBalloonRight:
   ld hl, player_balloon+1
   call IncrementPosition
   ld hl, player_balloon+5
   call IncrementPosition
+  ret 
+
+MoveBalloonLeft:
+  ld hl, player_balloon+1
+  call DecrementPosition
+  ld hl, player_balloon+5
+  call DecrementPosition
+  ret
+
+MoveBalloonDown:
+  ld hl, player_balloon
+  call IncrementPosition
+  ld hl, player_balloon+4
+  call IncrementPosition
+  ret
+
+MoveCactusUp:
+  ld hl, player_cactus
+  call DecrementPosition
+  ld hl, player_cactus+4
+  call DecrementPosition
+  ret
+
+MoveCactusRight:
   ld hl, player_cactus+1
   call IncrementPosition
   ld hl, player_cactus+5
   call IncrementPosition
+  ret
+
+MoveCactusLeft:
+  ld hl, player_cactus+1
+  call DecrementPosition
+  ld hl, player_cactus+5
+  call DecrementPosition
+  ret
+
+MoveCactusDown:
+  ld hl, player_cactus
+  call IncrementPosition
+  ld hl, player_cactus+4
+  call IncrementPosition
+  ret
+
+; BobCactusUp:
+;   ld hl, player_cactus
+;   call DecrementPosition
+;   ld hl, player_cactus+4
+;   call DecrementPosition
+;   ret
+
+; BobCactusDown:
+;   ld hl, player_cactus
+;   call IncrementPosition
+;   ld hl, player_cactus+4
+;   call IncrementPosition
+;   ret
+
+BobCactusDown:
+
+MoveRight:
+  call MoveBalloonRight
+  call MoveCactusRight
   ret
 
 MoveLeft:
-  ld hl, player_balloon+1
-  call DecrementPosition
-  ld hl, player_balloon+5
-  call DecrementPosition
-  ld hl, player_cactus+1
-  call DecrementPosition
-  ld hl, player_cactus+5
-  call DecrementPosition
+  call MoveBalloonLeft
+  call MoveCactusLeft
   ret
 
 MoveDown:
-  ld hl, player_balloon
-  call IncrementPosition
-  ld hl, player_balloon+4
-  call IncrementPosition
-  ld hl, player_cactus
-  call IncrementPosition
-  ld hl, player_cactus+4
-  call IncrementPosition
+  call MoveBalloonDown
+  call MoveCactusDown
   ret
 
 MoveUp:
-  ld hl, player_balloon
-  call DecrementPosition
-  ld hl, player_balloon+4
-  call DecrementPosition
-  ld hl, player_cactus
-  call DecrementPosition
-  ld hl, player_cactus+4
-  call DecrementPosition
+  call MoveBalloonUp
+  call MoveCactusUp
   ret
 
 SpeedUp:
@@ -125,21 +170,7 @@ ResetSpeedUp:
   ld [hl], 1
   ret
 
-MoveCactusUp:
-  ld hl, player_cactus
-  call DecrementPosition
-  ld hl, player_cactus+4
-  call DecrementPosition
-  ret
-
-MoveCactusDown:
-  ld hl, player_cactus
-  call IncrementPosition
-  ld hl, player_cactus+4
-  call IncrementPosition
-  ret
-
-PlayerMovement::
+PlayerMovement:
   ; Timer (Stall by every 4th vblank)
   ld a, [movement_timer]
 	inc	a
@@ -182,7 +213,7 @@ PlayerMovement::
 .end:
   ret
 
-PlayerAnimate::
+PlayerAnimate:
   ; Lift Up and Down Slowly
   ld a, [player_bob_timer]
   inc	a
