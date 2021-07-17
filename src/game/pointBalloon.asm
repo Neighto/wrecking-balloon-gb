@@ -5,6 +5,9 @@ POINT_BALLOON_START_X EQU 120
 POINT_BALLOON_START_Y EQU 120
 
 InitializePointBalloon::
+    ; Initialize Variables
+    ld hl, point_balloon_alive
+    ld [hl], 1
     ; Balloon Left
     ld HL, point_balloon
     ld [HL], POINT_BALLOON_START_Y
@@ -41,7 +44,12 @@ FloatPointBalloonUp:
     call DecrementPosition
     ret
 
-PointBalloonMovement::
+PointBalloonUpdate::
+    ; check if alive
+    ld a, [point_balloon_alive]
+    and 1
+    jr z, .end
+    ; check if we can move
     ld a, [movement_timer]
     and	%00000011
     jr nz, .end
@@ -49,7 +57,52 @@ PointBalloonMovement::
 .end:
     ret
 
-PopPointBalloonAnimation:
+PopBalloonAnimation:
+    ; at specific X and Y => spawn balloon pop sprites
+    ; run for a second, then clear it
+    ; Popped Left - Frame 1
+    ; ld HL, balloon_pop
+    ; ld [HL], 120 ; Y
+    ; inc L
+    ; ld [HL], 120 ; X
+    ; inc L
+    ; ld [HL], $88
+    ; inc L
+    ; ld [HL], %00000000
+    ; ; Popped Right - Frame 1
+    ; ld HL, balloon_pop+4
+    ; ld [HL], 120 ; Y
+    ; inc L
+    ; ld [HL], 120 + 8 ; X
+    ; inc L
+    ; ld [HL], $88
+    ; inc L
+    ; ld [HL], %00100000
+    ret
+
+DeathOfPointBalloon:
+    ; death
+    ld hl, point_balloon_alive
+    ld [hl], 0
+    ; animation
+    call PopBalloonAnimation
+    ; remove from sprites
+    ld hl, point_balloon
+    ld [hl], 0
+    inc l
+    ld [hl], 0
+    inc l
+    ld [hl], 0
+    inc l
+    ld [hl], 0
+    ld hl, point_balloon+4
+    ld [hl], 0
+    inc l
+    ld [hl], 0
+    inc l
+    ld [hl], 0
+    inc l
+    ld [hl], 0
     ret
 
 CollisionCheck::
@@ -58,6 +111,11 @@ CollisionCheck::
 	ld [collision_timer], a
 	and	%00001000
     jr nz, .end
+
+    ; check if alive
+    ld a, [point_balloon_alive]
+    and 1
+    jr z, .end
 
     ; CHECK Y
     ld hl, point_balloon
@@ -119,6 +177,6 @@ CollisionCheck::
     ; cactus_x'[c'] < balloon_x'[a']
 
 .doSomething:
-    call VBlankHScroll
+    call DeathOfPointBalloon
 .end:
     ret
