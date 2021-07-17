@@ -9,8 +9,10 @@ SECTION "RAM vars", WRAM0[$C000]
 	player_speed:: 	 DB
 	player_x:: DB
 	player_y:: DB
+	point_balloon_alive:: DB
 
 SECTION "OAM vars", WRAM0[$C100]
 	player_balloon:: DS 4*2
 	player_cactus:: DS 4*2
 	point_balloon:: DS 4
+	balloon_pop:: DS 4*8

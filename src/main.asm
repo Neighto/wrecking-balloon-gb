@@ -32,7 +32,7 @@ GAMELOOP:
 	; call VBlankHScroll
 	call CollisionCheck
 	call PlayerUpdate
-	call PointBalloonMovement
+	call PointBalloonUpdate
 	call OAMDMA
 	jp GAMELOOP
 
