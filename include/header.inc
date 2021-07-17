@@ -3,9 +3,6 @@
 ;-------------
 
 SECTION "VBlank IRQ",ROM0[$40]
-	; ld  a,$1
-	; ld  [vblank_flag],a
-    ; call VBlank_HScroll
 	reti
 
 SECTION	"LCD IRQ Vector",ROM0[$48]
