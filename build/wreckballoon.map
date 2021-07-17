@@ -85,7 +85,7 @@ ROMX bank #1:
            $414b = PlayerAnimate.bobDown
            $4153 = PlayerAnimate.end
            $4154 = PlayerUpdate
-  SECTION: $415b-$41a5 ($004b bytes) ["point balloon"]
+  SECTION: $415b-$41e3 ($0089 bytes) ["point balloon"]
            $415b = InitializePointBalloon
            $4178 = DecrementPosition
            $417f = FloatPointBalloonUp
@@ -93,22 +93,26 @@ ROMX bank #1:
            $4196 = PointBalloonMovement.end
            $4197 = PopPointBalloonAnimation
            $4198 = CollisionCheck
-           $41a5 = CollisionCheck.end
-  SECTION: $41a6-$41d0 ($002b bytes) ["lcd"]
-           $41a6 = LCD_OFF
-           $41ab = LCD_ON
-           $41b0 = WAIT_VBLANK
-           $41b7 = ClearMap
-           $41be = ClearMap.clear_map_loop
-  SECTION: $41d1-$41f8 ($0028 bytes) ["memory"]
-           $41d1 = MEMCPY.memcpy_loop
-           $41d1 = MEMCPY
-           $41d5 = MEMCPY.memcpy_check_limit
-           $41db = ClearOAM
-           $41e1 = ClearOAM.clear_oam_loop
-           $41ea = ClearRAM
-           $41f0 = ClearRAM.clear_ram_loop
-    SLACK: $3e07 bytes
+           $41a9 = CollisionCheck.tryOtherY
+           $41bc = CollisionCheck.checkX
+           $41cd = CollisionCheck.tryOtherX
+           $41e0 = CollisionCheck.doSomething
+           $41e3 = CollisionCheck.end
+  SECTION: $41e4-$420e ($002b bytes) ["lcd"]
+           $41e4 = LCD_OFF
+           $41e9 = LCD_ON
+           $41ee = WAIT_VBLANK
+           $41f5 = ClearMap
+           $41fc = ClearMap.clear_map_loop
+  SECTION: $420f-$4236 ($0028 bytes) ["memory"]
+           $420f = MEMCPY.memcpy_loop
+           $420f = MEMCPY
+           $4213 = MEMCPY.memcpy_check_limit
+           $4219 = ClearOAM
+           $421f = ClearOAM.clear_oam_loop
+           $4228 = ClearRAM
+           $422e = ClearRAM.clear_ram_loop
+    SLACK: $3dc9 bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c008 ($0009 bytes) ["RAM vars"]
@@ -137,6 +141,6 @@ HRAM bank #0:
 
 USED:
     ROM0: $04bd bytes in 1 bank
-    ROMX: $01f9 bytes in 1 bank
+    ROMX: $0237 bytes in 1 bank
     WRAM0: $0020 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

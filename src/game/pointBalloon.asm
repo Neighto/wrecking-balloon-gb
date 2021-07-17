@@ -53,19 +53,66 @@ PopPointBalloonAnimation:
     ret
 
 CollisionCheck::
-    ; If any point of x + 16, to y + 32 
-    ; Hits a point inside Cactus, do something
-
     ; CHECK Y
+    ld hl, point_balloon
+    ld a, [hl]
+    ld hl, player_cactus
+    cp a, [hl]
+    jr nc, .tryOtherY
+    ; cactus_y > balloon_y
+    add 16
+    cp a, [hl]
+    jr c, .tryOtherY
+    ; cactus_y < balloon_y'
+    jr .checkX
+
+.tryOtherY
+    ; also check OR cactus_y' !!!
     ld hl, player_cactus
     ld a, [hl]
+    add 16 ; a = cactus_y'
+    ld c, a
     ld hl, point_balloon
-    cp a, [hl]
-    jr c, .end
-    ; cactus_y > balloon_y
-    cp a, [hl+32]
+    ld a, [hl]
+    cp a, c
     jr nc, .end
-    call VBlankHScroll
+    ; cactus_y'[c'] > balloon_y[a]
+    add 16
+    cp a, c
+    jr c, .end
+    ; cactus_y'[c'] < balloon_y'[a']
+
+.checkX:
     ; CHECK X
+    ld hl, point_balloon+1
+    ld a, [hl]
+    ld hl, player_cactus+1
+    cp a, [hl]
+    jr nc, .tryOtherX
+    ; cactus_x > balloon_x
+    add 16
+    cp a, [hl]
+    jr c, .tryOtherX
+    ; cactus_x < balloon_x'
+    jr .doSomething
+
+.tryOtherX:
+    ; also check OR cactus_x' !!!
+    ld hl, player_cactus+1
+    ld a, [hl]
+    add 16 ; a = cactus_y'
+    ld c, a
+    ld hl, point_balloon+1
+    ld a, [hl]
+    cp a, c
+    jr nc, .end
+    ; cactus_x'[c'] > balloon_x[a]
+    add 16
+    cp a, c
+    jr c, .end
+    ; cactus_x'[c'] < balloon_x'[a']
+
+.doSomething:
+    call VBlankHScroll
 .end:
     ret
