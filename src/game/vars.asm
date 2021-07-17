@@ -1,6 +1,7 @@
 SECTION "RAM vars", WRAM0[$C000]
 	scroll_timer:: 	 DB
 	movement_timer:: DB
+	collision_timer:: DB
 	player_bob_timer:: DB
 	player_bobbed_up:: DB
 	joypad_down::    DB

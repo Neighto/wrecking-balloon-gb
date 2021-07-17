@@ -53,6 +53,12 @@ PopPointBalloonAnimation:
     ret
 
 CollisionCheck::
+    ld a, [collision_timer]
+	inc	a
+	ld [collision_timer], a
+	and	%00001000
+    jr nz, .end
+
     ; CHECK Y
     ld hl, point_balloon
     ld a, [hl]
