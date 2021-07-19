@@ -11,6 +11,10 @@ SECTION "RAM vars", WRAM0[$C000]
 	player_x:: DB
 	player_y:: DB
 	point_balloon_alive:: DB
+	point_balloon_popping:: DB
+	point_balloon_popping_frame:: DB
+	point_balloon_x:: DB
+	point_balloon_y:: DB
 
 SECTION "OAM vars", WRAM0[$C100]
 	player_balloon:: DS 4*2
