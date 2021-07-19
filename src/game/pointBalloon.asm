@@ -42,18 +42,35 @@ InitializePointBalloon::
 
 DecrementPosition:
     ; hl = address
-    ld a, 1
-    cpl 
-    inc a
-    add [hl]
+    ; ld a, 1
+    ; cpl 
+    ; inc a
+    ; add [hl]
+    ; ld [hl], a
+
+    ld a, [point_balloon_y]
+    dec a
     ld [hl], a
+    ; please make better
+    ld hl, point_balloon_y
+    ld [hl], a
+
     ret
 
 FloatPointBalloonUp:
     ld hl, point_balloon
-    call DecrementPosition
+    ld a, [hl]
+    dec a
+    ld [hl], a
+    ld hl, point_balloon_y
+    ld [hl], a
+
     ld hl, point_balloon+4
-    call DecrementPosition
+    ld a, [hl]
+    dec a
+    ld [hl], a
+    ld hl, point_balloon_y
+    ld [hl], a
     ret
 
 PointBalloonUpdate::
