@@ -102,7 +102,7 @@ PopBalloonAnimation:
     ld a, [balloon_pop_timer]
 	inc	a
 	ld [balloon_pop_timer], a
-    cp a, 80
+    cp a, 30
     jr z, .special
     ret
 
