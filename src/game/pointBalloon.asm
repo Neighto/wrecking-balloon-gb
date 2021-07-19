@@ -18,6 +18,8 @@ InitializePointBalloon::
     ld [hl], 0
     ld hl, balloon_pop_timer
     ld [hl], 0
+    ld hl, balloon_pop_timer+1
+    ld [hl], 0
     ; Balloon Left
     ld HL, point_balloon
     ld [HL], POINT_BALLOON_START_Y
@@ -83,14 +85,21 @@ PopBalloonAnimation:
     ld a, [balloon_pop_timer]
 	inc	a
 	ld [balloon_pop_timer], a
-	and	%11110000
-    jp nz, .end
+    cp a, 80
+    jr z, .special
+    ret
 
+.special:
+    ld a, 0
+    ld [balloon_pop_timer], a
+
+    ; check what frame we are on
     ld a, [point_balloon_popping_frame]
     cp a, 1
     jp z, .frame1
     cp a, 2
     jp z, .clear
+    ret
 
 .frame0:
     ; Popped Left - Frame 0
