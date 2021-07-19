@@ -8,6 +8,16 @@ InitializePointBalloon::
     ; Initialize Variables
     ld hl, point_balloon_alive
     ld [hl], 1
+    ld hl, point_balloon_popping
+    ld [hl], 0
+    ld hl, point_balloon_y
+    ld [hl], POINT_BALLOON_START_Y
+    ld hl, point_balloon_x
+    ld [hl], POINT_BALLOON_START_X
+    ld hl, point_balloon_popping_frame
+    ld [hl], 0
+    ld hl, balloon_pop_timer
+    ld [hl], 0
     ; Balloon Left
     ld HL, point_balloon
     ld [HL], POINT_BALLOON_START_Y
@@ -48,52 +58,128 @@ PointBalloonUpdate::
     ; check if alive
     ld a, [point_balloon_alive]
     and 1
-    jr z, .end
+    jr z, .popped
     ; check if we can move
     ld a, [movement_timer]
     and	%00000011
-    jr nz, .end
+    jr nz, .popped
     call FloatPointBalloonUp
-.end:
+    ret
+.popped:
+    ; check if we need to play popping animation
+    ld a, [point_balloon_popping]
+    and 1
+    jr z, .end
+    call PopBalloonAnimation
+.end
     ret
 
 PopBalloonAnimation:
-    ; need to specify the X and the Y
-    ; Run for a second, then clear it
-    ; ld a, [balloon_pop_timer]
-	; inc	a
-	; ld [balloon_pop_timer], a
-	; and	%00001000
-    ; jr nz, .end
+    ; check what frame we are on
+    ld a, [point_balloon_popping_frame]
+    cp a, 0
+    jp z, .frame0
 
-    ; Tell some loop code to run
+    ld a, [balloon_pop_timer]
+	inc	a
+	ld [balloon_pop_timer], a
+	and	%11110000
+    jp nz, .end
 
-    ; Popped Left - Frame 1
+    ld a, [point_balloon_popping_frame]
+    cp a, 1
+    jp z, .frame1
+    cp a, 2
+    jp z, .clear
+
+.frame0:
+    ; Popped Left - Frame 0
     ld HL, balloon_pop
-    ld [HL], 120 ; Y
+    ld a, [point_balloon_y]
+    ld [HL], a
     inc L
-    ld [HL], 120 ; X
+    ld a, [point_balloon_x]
+    ld [HL], a
     inc L
     ld [HL], $88
     inc L
     ld [HL], %00000000
-    ; Popped Right - Frame 1
+    ; Popped Right - Frame 0
     ld HL, balloon_pop+4
-    ld [HL], 120 ; Y
+    ld a, [point_balloon_y]
+    ld [HL], a
     inc L
-    ld [HL], 120 + 8 ; X
+    ld a, [point_balloon_x]
+    add 8
+    ld [HL], a
     inc L
     ld [HL], $88
     inc L
     ld [HL], %00100000
+    ld hl, point_balloon_popping_frame
+    ld [hl], 1
+    ret
+.frame1:
+    ; Popped Left - Frame 1
+    ld HL, balloon_pop
+    ld a, [point_balloon_y]
+    ld [HL], a
+    inc L
+    ld a, [point_balloon_x]
+    ld [HL], a
+    inc L
+    ld [HL], $8A
+    inc L
+    ld [HL], %00000000
+    ; Popped Right - Frame 1
+    ld HL, balloon_pop+4
+    ld a, [point_balloon_y]
+    ld [HL], a
+    inc L
+    ld a, [point_balloon_x]
+    add 8
+    ld [HL], a
+    inc L
+    ld [HL], $8A
+    inc L
+    ld [HL], %00100000
+    ld hl, point_balloon_popping_frame
+    ld [hl], 2
+    ret
+.clear:
+    ; Remove sprites
+    ld hl, balloon_pop
+    ld [hl], 0
+    inc l
+    ld [hl], 0
+    inc l
+    ld [hl], 0
+    inc l
+    ld [hl], 0
+    inc l
+    ld [hl], 0
+    inc l
+    ld [hl], 0
+    inc l
+    ld [hl], 0
+    inc l
+    ld [hl], 0
+    ld hl, point_balloon_popping
+    ld [hl], 0
+    ld hl, balloon_pop_timer
+    ld [hl], 0
+    ld hl, point_balloon_popping_frame
+    ld [hl], 0
+.end:
     ret
 
 DeathOfPointBalloon:
     ; death
     ld hl, point_balloon_alive
     ld [hl], 0
-    ; animation
-    call PopBalloonAnimation
+    ; animation trigger
+    ld hl, point_balloon_popping
+    ld [hl], 1
     ; remove from sprites
     ld hl, point_balloon
     ld [hl], 0
