@@ -13,7 +13,7 @@ START::
 
 	call TurnOffAudio
 
-	call WAIT_VBLANK
+	call WaitVBlank
 	call LCD_OFF
 
 	call SetupPalettes
@@ -28,7 +28,7 @@ START::
 	call LCD_ON
 
 GAMELOOP:
-	call WAIT_VBLANK
+	call WaitVBlank
 	call VBlankHScroll
 	call CollisionCheck
 	call PlayerUpdate

@@ -13,10 +13,10 @@ LCD_ON::
     ret
 
 ; Wait for the display to finish updating
-WAIT_VBLANK::
+WaitVBlank::
     ld a, [rLY]
     cp 144
-    jr c, WAIT_VBLANK
+    jr c, WaitVBlank
     ret
 
 ClearMap::
