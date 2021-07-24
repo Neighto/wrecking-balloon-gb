@@ -39,6 +39,12 @@ InitializePointBalloon::
     ld [hl], %00100000
     ret
 
+SpawnPointBalloon::
+    ld a, 0
+    ld [point_balloon_respawn_timer], a
+    call InitializePointBalloon
+    ret
+
 DecrementPosition:
     ; hl = address
     ld bc, point_balloon_y
@@ -71,10 +77,18 @@ PointBalloonUpdate::
     ; Check if we can move
     ld a, [movement_timer]
     and	%00000011
-    jr nz, .popped
+    jr nz, .end
     call FloatPointBalloonUp
     ret
 .popped:
+    ; Can we respawn
+    ld a, [point_balloon_respawn_timer]
+    inc a
+    ld [point_balloon_respawn_timer], a
+    cp a, 150
+    jr nz, .respawnSkip
+    call SpawnPointBalloon
+.respawnSkip:
     ; Check if we need to play popping animation
     ld a, [point_balloon_popping]
     and 1
