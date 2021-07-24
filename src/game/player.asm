@@ -4,52 +4,52 @@ INCLUDE "hardware.inc"
 
 PLAYER_START_X EQU 80
 PLAYER_START_Y EQU 80
-PLAYER_BALLOON_START_Y EQU (PLAYER_START_Y - 16)
+PLAYER_BALLOON_START_Y EQU (PLAYER_START_Y-16)
 
 InitializePlayer::
   ; Set variables
-  ld HL, player_x
-  ld [HL], PLAYER_START_X
-  ld HL, player_y
-  ld [HL], PLAYER_START_Y
-  ld HL, player_speed
-  ld [HL], 1
+  ld hl, player_x
+  ld [hl], PLAYER_START_X
+  ld hl, player_y
+  ld [hl], PLAYER_START_Y
+  ld hl, player_speed
+  ld [hl], 1
   ; Balloon left
-  ld HL, player_balloon
-  ld [HL], PLAYER_BALLOON_START_Y
-  inc L
-  ld [HL], PLAYER_START_X
-  inc L
-  ld [HL], $82
-  inc L
-  ld [HL], %00000000
+  ld hl, player_balloon
+  ld [hl], PLAYER_BALLOON_START_Y
+  inc l
+  ld [hl], PLAYER_START_X
+  inc l
+  ld [hl], $82
+  inc l
+  ld [hl], %00000000
   ; Balloon right
-  ld HL, player_balloon+4
-  ld [HL], PLAYER_BALLOON_START_Y
-  inc L
-  ld [HL], PLAYER_START_X + 8
-  inc L
-  ld [HL], $82
-  inc L
-  ld [HL], %00100000
+  ld hl, player_balloon+4
+  ld [hl], PLAYER_BALLOON_START_Y
+  inc l
+  ld [hl], PLAYER_START_X+8
+  inc l
+  ld [hl], $82
+  inc l
+  ld [hl], %00100000
   ; Cactus left
-  ld HL, player_cactus
-  ld [HL], PLAYER_START_Y
-  inc L
-  ld [HL], PLAYER_START_X
-  inc L
-  ld [HL], $80
-  inc L
-  ld [HL], %00000000
+  ld hl, player_cactus
+  ld [hl], PLAYER_START_Y
+  inc l
+  ld [hl], PLAYER_START_X
+  inc l
+  ld [hl], $80
+  inc l
+  ld [hl], %00000000
   ; Cactus right
-  ld HL, player_cactus+4
-  ld [HL], PLAYER_START_Y
-  inc L
-  ld [HL], PLAYER_START_X + 8
-  inc L
-  ld [HL], $80
-  inc L
-  ld [HL], %00100000
+  ld hl, player_cactus+4
+  ld [hl], PLAYER_START_Y
+  inc l
+  ld [hl], PLAYER_START_X+8
+  inc l
+  ld [hl], $80
+  inc l
+  ld [hl], %00100000
   ret
 
 IncrementPosition:

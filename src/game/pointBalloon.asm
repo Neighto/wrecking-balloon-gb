@@ -6,38 +6,37 @@ POINT_BALLOON_START_Y EQU 120
 
 InitializePointBalloon::
     ; Initialize variables
+    ld a, 0
     ld hl, point_balloon_alive
     ld [hl], 1
     ld hl, point_balloon_popping
-    ld [hl], 0
+    ld [hl], a
     ld hl, point_balloon_y
     ld [hl], POINT_BALLOON_START_Y
     ld hl, point_balloon_x
     ld [hl], POINT_BALLOON_START_X
     ld hl, point_balloon_popping_frame
-    ld [hl], 0
+    ld [hl], a
     ld hl, balloon_pop_timer
-    ld [hl], 0
-    ld hl, balloon_pop_timer+1
-    ld [hl], 0
-    ; Balloon Left
-    ld HL, point_balloon
-    ld [HL], POINT_BALLOON_START_Y
-    inc L
-    ld [HL], POINT_BALLOON_START_X
-    inc L
-    ld [HL], $86
-    inc L
-    ld [HL], %00000000
-    ; Balloon Right
-    ld HL, point_balloon+4
-    ld [HL], POINT_BALLOON_START_Y
-    inc L
-    ld [HL], POINT_BALLOON_START_X + 8
-    inc L
-    ld [HL], $86
-    inc L
-    ld [HL], %00100000
+    ld [hl], a
+    ; Balloon left
+    ld hl, point_balloon
+    ld [hl], POINT_BALLOON_START_Y
+    inc l
+    ld [hl], POINT_BALLOON_START_X
+    inc l
+    ld [hl], $86
+    inc l
+    ld [hl], %00000000
+    ; Balloon right
+    ld hl, point_balloon+4
+    ld [hl], POINT_BALLOON_START_Y
+    inc l
+    ld [hl], POINT_BALLOON_START_X + 8
+    inc l
+    ld [hl], $86
+    inc l
+    ld [hl], %00100000
     ret
 
 DecrementPosition:
@@ -56,7 +55,6 @@ FloatPointBalloonUp:
     ld [hl], a
     ld hl, point_balloon_y
     ld [hl], a
-
     ld hl, point_balloon+4
     ld a, [hl]
     dec a
@@ -166,47 +164,40 @@ PopBalloonAnimation:
     ret
 .clear:
     ; Remove sprites
+    ld a, 0
     ld hl, balloon_pop
-    ld [hl], 0
-    inc l
-    ld [hl], 0
-    inc l
-    ld [hl], 0
-    inc l
-    ld [hl], 0
-    inc l
-    ld [hl], 0
-    inc l
-    ld [hl], 0
-    inc l
-    ld [hl], 0
-    inc l
-    ld [hl], 0
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hl], a
+    ; Reset variables
     ld hl, point_balloon_popping
-    ld [hl], 0
+    ld [hl], a
     ld hl, balloon_pop_timer
-    ld [hl], 0
+    ld [hl], a
     ld hl, point_balloon_popping_frame
-    ld [hl], 0
+    ld [hl], a
 .end:
     ret
 
 DeathOfPointBalloon:
     ; Death
+    ld a, 0
     ld hl, point_balloon_alive
-    ld [hl], 0
+    ld [hl], a
     ; Animation trigger
     ld hl, point_balloon_popping
     ld [hl], 1
     ; Remove from sprites
     ld hl, point_balloon
-    ld [hl], 0
-    inc l
-    ld [hl], 0
-    inc l
-    ld [hl], 0
-    inc l
-    ld [hl], 0
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hl], a
     ; TODO: for some reason I don't have to clear from point_balloon+4 ??
     ret
 
