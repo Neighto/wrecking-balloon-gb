@@ -7,14 +7,14 @@ PLAYER_START_Y EQU 80
 PLAYER_BALLOON_START_Y EQU (PLAYER_START_Y - 16)
 
 InitializePlayer::
-  ; Set Variables
+  ; Set variables
   ld HL, player_x
   ld [HL], PLAYER_START_X
   ld HL, player_y
   ld [HL], PLAYER_START_Y
   ld HL, player_speed
   ld [HL], 1
-  ; Balloon Left
+  ; Balloon left
   ld HL, player_balloon
   ld [HL], PLAYER_BALLOON_START_Y
   inc L
@@ -23,7 +23,7 @@ InitializePlayer::
   ld [HL], $82
   inc L
   ld [HL], %00000000
-  ; Balloon Right
+  ; Balloon right
   ld HL, player_balloon+4
   ld [HL], PLAYER_BALLOON_START_Y
   inc L
@@ -32,7 +32,7 @@ InitializePlayer::
   ld [HL], $82
   inc L
   ld [HL], %00100000
-  ; Cactus Left
+  ; Cactus left
   ld HL, player_cactus
   ld [HL], PLAYER_START_Y
   inc L
@@ -41,7 +41,7 @@ InitializePlayer::
   ld [HL], $80
   inc L
   ld [HL], %00000000
-  ; Cactus Right
+  ; Cactus right
   ld HL, player_cactus+4
   ld [HL], PLAYER_START_Y
   inc L
@@ -124,22 +124,6 @@ MoveCactusDown:
   call IncrementPosition
   ret
 
-; BobCactusUp:
-;   ld hl, player_cactus
-;   call DecrementPosition
-;   ld hl, player_cactus+4
-;   call DecrementPosition
-;   ret
-
-; BobCactusDown:
-;   ld hl, player_cactus
-;   call IncrementPosition
-;   ld hl, player_cactus+4
-;   call IncrementPosition
-;   ret
-
-BobCactusDown:
-
 MoveRight:
   call MoveBalloonRight
   call MoveCactusRight
@@ -171,7 +155,6 @@ ResetSpeedUp:
   ret
 
 PlayerMovement:
-  ; Timer (Stall by every 4th vblank)
   ld a, [movement_timer]
 	inc	a
 	ld [movement_timer], a
@@ -179,42 +162,48 @@ PlayerMovement:
 	jr nz, .end
 	call ReadInput
   ; Right
-	ld  a, [joypad_down]
+	ld a, [joypad_down]
 	call JOY_RIGHT
-	jr  z, .endRight
+	jr z, .endRight
 	call MoveRight
 .endRight:
   ; Left
-  ld  a, [joypad_down]
+  ld a, [joypad_down]
 	call JOY_LEFT
-	jr  z, .endLeft
+	jr z, .endLeft
 	call MoveLeft
 .endLeft:
   ; Up
-  ld  a, [joypad_down]
+  ld a, [joypad_down]
 	call JOY_UP
-	jr  z, .endUp
+	jr z, .endUp
 	call MoveUp
 .endUp:
   ; Down
-  ld  a, [joypad_down]
+  ld a, [joypad_down]
 	call JOY_DOWN
-	jr  z, .endDown
+	jr z, .endDown
 	call MoveDown
 .endDown:
   ; A
-  ld  a, [joypad_down]
+  ld a, [joypad_down]
 	call JOY_A
-	jr  z, .endA
-  call SpeedUp
-  ret ; TODO: sloppy
+	jr z, .endA
+  ; Do something
 .endA:
+  ; B
+  ld a, [joypad_down]
+	call JOY_B
+	jr z, .endB
+  call SpeedUp
+  ret
+.endB:
   call ResetSpeedUp
 .end:
   ret
 
 PlayerAnimate:
-  ; Lift Up and Down Slowly
+  ; Lift up and down slowly
   ld a, [player_bob_timer]
   inc	a
   ld [player_bob_timer], a

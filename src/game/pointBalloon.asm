@@ -1,11 +1,11 @@
 SECTION "point balloon", ROMX
 
-; balloons will spawn and fly upward AND can be popped
+; Balloons will spawn and fly upward AND can be popped
 POINT_BALLOON_START_X EQU 120
 POINT_BALLOON_START_Y EQU 120
 
 InitializePointBalloon::
-    ; Initialize Variables
+    ; Initialize variables
     ld hl, point_balloon_alive
     ld [hl], 1
     ld hl, point_balloon_popping
@@ -42,19 +42,11 @@ InitializePointBalloon::
 
 DecrementPosition:
     ; hl = address
-    ; ld a, 1
-    ; cpl 
-    ; inc a
-    ; add [hl]
-    ; ld [hl], a
-
-    ld a, [point_balloon_y]
+    ld bc, point_balloon_y
+    ld a, [bc]
     dec a
     ld [hl], a
-    ; please make better
-    ld hl, point_balloon_y
-    ld [hl], a
-
+    ld [bc], a
     ret
 
 FloatPointBalloonUp:
@@ -74,18 +66,18 @@ FloatPointBalloonUp:
     ret
 
 PointBalloonUpdate::
-    ; check if alive
+    ; Check if alive
     ld a, [point_balloon_alive]
     and 1
     jr z, .popped
-    ; check if we can move
+    ; Check if we can move
     ld a, [movement_timer]
     and	%00000011
     jr nz, .popped
     call FloatPointBalloonUp
     ret
 .popped:
-    ; check if we need to play popping animation
+    ; Check if we need to play popping animation
     ld a, [point_balloon_popping]
     and 1
     jr z, .end
@@ -94,7 +86,7 @@ PointBalloonUpdate::
     ret
 
 PopBalloonAnimation:
-    ; check what frame we are on
+    ; Check what frame we are on
     ld a, [point_balloon_popping_frame]
     cp a, 0
     jp z, .frame0
@@ -110,7 +102,7 @@ PopBalloonAnimation:
     ld a, 0
     ld [balloon_pop_timer], a
 
-    ; check what frame we are on
+    ; Check what frame we are on
     ld a, [point_balloon_popping_frame]
     cp a, 1
     jp z, .frame1
@@ -119,7 +111,7 @@ PopBalloonAnimation:
     ret
 
 .frame0:
-    ; Popped Left - Frame 0
+    ; Popped left - frame 0
     ld HL, balloon_pop
     ld a, [point_balloon_y]
     ld [HL], a
@@ -130,7 +122,7 @@ PopBalloonAnimation:
     ld [HL], $88
     inc L
     ld [HL], %00000000
-    ; Popped Right - Frame 0
+    ; Popped right - frame 0
     ld HL, balloon_pop+4
     ld a, [point_balloon_y]
     ld [HL], a
@@ -146,7 +138,7 @@ PopBalloonAnimation:
     ld [hl], 1
     ret
 .frame1:
-    ; Popped Left - Frame 1
+    ; Popped left - frame 1
     ld HL, balloon_pop
     ld a, [point_balloon_y]
     ld [HL], a
@@ -157,7 +149,7 @@ PopBalloonAnimation:
     ld [HL], $8A
     inc L
     ld [HL], %00000000
-    ; Popped Right - Frame 1
+    ; Popped right - frame 1
     ld HL, balloon_pop+4
     ld a, [point_balloon_y]
     ld [HL], a
@@ -200,13 +192,13 @@ PopBalloonAnimation:
     ret
 
 DeathOfPointBalloon:
-    ; death
+    ; Death
     ld hl, point_balloon_alive
     ld [hl], 0
-    ; animation trigger
+    ; Animation trigger
     ld hl, point_balloon_popping
     ld [hl], 1
-    ; remove from sprites
+    ; Remove from sprites
     ld hl, point_balloon
     ld [hl], 0
     inc l
@@ -222,10 +214,10 @@ CollisionCheck::
     ld a, [collision_timer]
 	inc	a
 	ld [collision_timer], a
-	and	%00001000
+	and	%00001100
     jr nz, .end
 
-    ; check if alive
+    ; Check if alive
     ld a, [point_balloon_alive]
     and 1
     jr z, .end
@@ -244,7 +236,7 @@ CollisionCheck::
     jr .checkX
 
 .tryOtherY
-    ; also check OR cactus_y' !!!
+    ; Also check OR cactus_y' !!!
     ld hl, player_cactus
     ld a, [hl]
     add 16 ; a = cactus_y'
@@ -274,7 +266,7 @@ CollisionCheck::
     jr .doSomething
 
 .tryOtherX:
-    ; also check OR cactus_x' !!!
+    ; Also check OR cactus_x' !!!
     ld hl, player_cactus+1
     ld a, [hl]
     add 16 ; a = cactus_y'
