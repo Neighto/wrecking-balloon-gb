@@ -11,6 +11,8 @@ SECTION "RAM vars", WRAM0[$C000]
 	player_speed:: 	 DB
 	player_x:: DB
 	player_y:: DB
+	player_cactus_x:: DB 
+	player_cactus_y:: DB
 	point_balloon_alive:: DB
 	point_balloon_popping:: DB
 	point_balloon_popping_frame:: DB

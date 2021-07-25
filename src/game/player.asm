@@ -6,11 +6,58 @@ PLAYER_START_X EQU 80
 PLAYER_START_Y EQU 80
 PLAYER_BALLOON_START_Y EQU (PLAYER_START_Y-16)
 
+UpdateBalloonPosition:
+  ld hl, player_balloon
+  ; Update Y
+  ld a, [player_y]
+  ld [hli], a
+  ; Update X
+  ld a, [player_x]
+  ld [hl], a
+
+  ld hl, player_balloon+4
+  ; Update Y
+  ld a, [player_y]
+  ld [hli], a
+  ; Update X
+  ld a, [player_x]
+  add 8
+  ld [hl], a
+  ret
+
+UpdateCactusPosition:
+  ld hl, player_cactus
+  ; Update Y
+  ld a, [player_cactus_y]
+  ld [hli], a
+  ; Update X
+  ld a, [player_cactus_x]
+  ld [hl], a
+
+  ld hl, player_cactus+4
+  ; Update Y
+  ld a, [player_cactus_y]
+  ld [hli], a
+  ; Update X
+  ld a, [player_cactus_x]
+  add 8
+  ld [hl], a
+  ret
+
+UpdatePlayerPosition:
+  call UpdateBalloonPosition
+  call UpdateCactusPosition
+  ret
+
 InitializePlayer::
   ; Set variables
   ld hl, player_x
   ld [hl], PLAYER_START_X
   ld hl, player_y
+  ld [hl], PLAYER_BALLOON_START_Y
+  ld hl, player_cactus_x
+  ld [hl], PLAYER_START_X
+  ld hl, player_cactus_y
   ld [hl], PLAYER_START_Y
   ld hl, player_speed
   ld [hl], 1
@@ -69,58 +116,42 @@ DecrementPosition:
   ret
 
 MoveBalloonUp:
-  ld hl, player_balloon
-  call DecrementPosition
-  ld hl, player_balloon+4
+  ld hl, player_y
   call DecrementPosition
   ret
 
 MoveBalloonRight:
-  ld hl, player_balloon+1
-  call IncrementPosition
-  ld hl, player_balloon+5
+  ld hl, player_x
   call IncrementPosition
   ret 
 
 MoveBalloonLeft:
-  ld hl, player_balloon+1
-  call DecrementPosition
-  ld hl, player_balloon+5
+  ld hl, player_x
   call DecrementPosition
   ret
 
 MoveBalloonDown:
-  ld hl, player_balloon
-  call IncrementPosition
-  ld hl, player_balloon+4
+  ld hl, player_y
   call IncrementPosition
   ret
 
 MoveCactusUp:
-  ld hl, player_cactus
-  call DecrementPosition
-  ld hl, player_cactus+4
+  ld hl, player_cactus_y
   call DecrementPosition
   ret
 
 MoveCactusRight:
-  ld hl, player_cactus+1
-  call IncrementPosition
-  ld hl, player_cactus+5
+  ld hl, player_cactus_x
   call IncrementPosition
   ret
 
 MoveCactusLeft:
-  ld hl, player_cactus+1
-  call DecrementPosition
-  ld hl, player_cactus+5
+  ld hl, player_cactus_x
   call DecrementPosition
   ret
 
 MoveCactusDown:
-  ld hl, player_cactus
-  call IncrementPosition
-  ld hl, player_cactus+4
+  ld hl, player_cactus_y
   call IncrementPosition
   ret
 
@@ -156,8 +187,6 @@ ResetSpeedUp:
 
 PlayerMovement:
   ld a, [movement_timer]
-	inc	a
-	ld [movement_timer], a
 	and	%00000011
 	jr nz, .end
 	call ReadInput
@@ -196,10 +225,11 @@ PlayerMovement:
 	call JOY_B
 	jr z, .endB
   call SpeedUp
-  ret
+  ret ; FIX this breaks new stuff
 .endB:
   call ResetSpeedUp
 .end:
+  call UpdatePlayerPosition
   ret
 
 PlayerAnimate:

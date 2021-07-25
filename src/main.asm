@@ -31,6 +31,7 @@ GAMELOOP:
 	call WaitVBlank
 	call VBlankHScroll
 	call CollisionCheck
+	call UpdateGlobalTimer
 	call PlayerUpdate
 	call PointBalloonUpdate
 	call OAMDMA
@@ -41,4 +42,12 @@ SECTION "audio", ROM0
 TurnOffAudio:
 	ld a, 0
 	ld [rNR52], a
+	ret
+
+SECTION "timer", ROM0 
+
+UpdateGlobalTimer:
+	ld a, [movement_timer]
+	inc	a
+	ld [movement_timer], a
 	ret
