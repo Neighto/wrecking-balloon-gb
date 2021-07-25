@@ -50,74 +50,83 @@ ROM0 bank #0:
     SLACK: $3b37 bytes
 
 ROMX bank #1:
-  SECTION: $4000-$4194 ($0195 bytes) ["point balloon"]
+  SECTION: $4000-$41b5 ($01b6 bytes) ["point balloon"]
            $4000 = InitializePointBalloon
-           $403a = SpawnPointBalloon
-           $4043 = DecrementPosition
-           $404b = FloatPointBalloonUp
-           $4060 = PointBalloonUpdate
-           $4072 = PointBalloonUpdate.popped
-           $4080 = PointBalloonUpdate.respawnSkip
-           $408a = PointBalloonUpdate.end
-           $408b = PopBalloonAnimation
-           $409f = PopBalloonAnimation.special
-           $40b2 = PopBalloonAnimation.frame0
-           $40de = PopBalloonAnimation.frame1
-           $410a = PopBalloonAnimation.clear
-           $4123 = PopBalloonAnimation.end
-           $4124 = DeathOfPointBalloon
-           $4137 = CollisionCheck
-           $415a = CollisionCheck.tryOtherY
-           $416d = CollisionCheck.checkX
-           $417e = CollisionCheck.tryOtherX
-           $4191 = CollisionCheck.doSomething
-           $4194 = CollisionCheck.end
-  SECTION: $4195-$42f7 ($0163 bytes) ["player"]
-           $4195 = InitializePlayer
-           $41dd = IncrementPosition
-           $41e3 = DecrementPosition
-           $41eb = MoveBalloonUp
-           $41f8 = MoveBalloonRight
-           $4205 = MoveBalloonLeft
-           $4212 = MoveBalloonDown
-           $421f = MoveCactusUp
-           $422c = MoveCactusRight
-           $4239 = MoveCactusLeft
-           $4246 = MoveCactusDown
-           $4253 = MoveRight
-           $425a = MoveLeft
-           $4261 = MoveDown
-           $4268 = MoveUp
-           $426f = SpeedUp
-           $4275 = ResetSpeedUp
-           $427b = PlayerMovement
-           $4294 = PlayerMovement.endRight
-           $429f = PlayerMovement.endLeft
-           $42aa = PlayerMovement.endUp
-           $42b5 = PlayerMovement.endDown
-           $42bd = PlayerMovement.endA
-           $42c9 = PlayerMovement.endB
-           $42cc = PlayerMovement.end
-           $42cd = PlayerAnimate
-           $42df = PlayerAnimate.bobUp
-           $42e8 = PlayerAnimate.bobDown
-           $42f0 = PlayerAnimate.end
-           $42f1 = PlayerUpdate
-  SECTION: $42f8-$4322 ($002b bytes) ["lcd"]
-           $42f8 = LCD_OFF
-           $42fd = LCD_ON
-           $4302 = WaitVBlank
-           $4309 = ClearMap
-           $4310 = ClearMap.clear_map_loop
-  SECTION: $4323-$434a ($0028 bytes) ["memory"]
-           $4323 = MEMCPY.memcpy_loop
-           $4323 = MEMCPY
-           $4327 = MEMCPY.memcpy_check_limit
-           $432d = ClearOAM
-           $4333 = ClearOAM.clear_oam_loop
-           $433c = ClearRAM
-           $4342 = ClearRAM.clear_ram_loop
-    SLACK: $3cb5 bytes
+           $401d = InitializePointBalloon.nextSpawnPoint
+           $4039 = InitializePointBalloon.spawn0
+           $403d = InitializePointBalloon.spawn1
+           $4041 = InitializePointBalloon.spawn2
+           $4045 = InitializePointBalloon.spawn3
+           $4047 = InitializePointBalloon.EndNextSpawnPoint
+           $406a = SpawnPointBalloon
+           $4072 = FloatPointBalloonUp
+           $4081 = PointBalloonUpdate
+           $4093 = PointBalloonUpdate.popped
+           $40a1 = PointBalloonUpdate.respawnSkip
+           $40ab = PointBalloonUpdate.end
+           $40ac = PopBalloonAnimation
+           $40c0 = PopBalloonAnimation.special
+           $40d3 = PopBalloonAnimation.frame0
+           $40ff = PopBalloonAnimation.frame1
+           $412b = PopBalloonAnimation.clear
+           $4144 = PopBalloonAnimation.end
+           $4145 = DeathOfPointBalloon
+           $4158 = CollisionCheck
+           $417b = CollisionCheck.tryOtherY
+           $418e = CollisionCheck.checkX
+           $419f = CollisionCheck.tryOtherX
+           $41b2 = CollisionCheck.doSomething
+           $41b5 = CollisionCheck.end
+  SECTION: $41b6-$4318 ($0163 bytes) ["player"]
+           $41b6 = InitializePlayer
+           $41fe = IncrementPosition
+           $4204 = DecrementPosition
+           $420c = MoveBalloonUp
+           $4219 = MoveBalloonRight
+           $4226 = MoveBalloonLeft
+           $4233 = MoveBalloonDown
+           $4240 = MoveCactusUp
+           $424d = MoveCactusRight
+           $425a = MoveCactusLeft
+           $4267 = MoveCactusDown
+           $4274 = MoveRight
+           $427b = MoveLeft
+           $4282 = MoveDown
+           $4289 = MoveUp
+           $4290 = SpeedUp
+           $4296 = ResetSpeedUp
+           $429c = PlayerMovement
+           $42b5 = PlayerMovement.endRight
+           $42c0 = PlayerMovement.endLeft
+           $42cb = PlayerMovement.endUp
+           $42d6 = PlayerMovement.endDown
+           $42de = PlayerMovement.endA
+           $42ea = PlayerMovement.endB
+           $42ed = PlayerMovement.end
+           $42ee = PlayerAnimate
+           $4300 = PlayerAnimate.bobUp
+           $4309 = PlayerAnimate.bobDown
+           $4311 = PlayerAnimate.end
+           $4312 = PlayerUpdate
+  SECTION: $4319-$4343 ($002b bytes) ["lcd"]
+           $4319 = LCD_OFF
+           $431e = LCD_ON
+           $4323 = WaitVBlank
+           $432a = ClearMap
+           $4331 = ClearMap.clear_map_loop
+  SECTION: $4344-$436b ($0028 bytes) ["memory"]
+           $4344 = MEMCPY.memcpy_loop
+           $4344 = MEMCPY
+           $4348 = MEMCPY.memcpy_check_limit
+           $434e = ClearOAM
+           $4354 = ClearOAM.clear_oam_loop
+           $435d = ClearRAM
+           $4363 = ClearRAM.clear_ram_loop
+  SECTION: $436c-$4373 ($0008 bytes) ["math"]
+           $436c = RANDOM
+           $436d = RANDOM.seed
+           $436f = RANDOM.loop
+    SLACK: $3c8c bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c010 ($0011 bytes) ["RAM vars"]
@@ -152,6 +161,6 @@ HRAM bank #0:
 
 USED:
     ROM0: $04c9 bytes in 1 bank
-    ROMX: $034b bytes in 1 bank
+    ROMX: $0374 bytes in 1 bank
     WRAM0: $0035 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
