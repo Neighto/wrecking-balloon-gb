@@ -1,20 +1,5 @@
 SECTION "vblank IRQ",ROM0[$40]
-	reti
-
-SECTION	"LCD IRQ Vector",ROM0[$48]
-LCD_VECT:
-	reti
-
-SECTION	"Timer IRQ Vector",ROM0[$50]
-TIMER_VECT:
-	reti
-
-SECTION	"Serial IRQ Vector",ROM0[$58]
-SERIAL_VECT:
-	reti
-
-SECTION	"Joypad IRQ Vector",ROM0[$60]
-JOYPAD_VECT:
+VBLANK_VECT:
 	reti
 
 SECTION "header", ROM0[$100]

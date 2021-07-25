@@ -1,36 +1,28 @@
 ROM0 bank #0:
-  SECTION: $0000-$0035 ($0036 bytes) ["graphics"]
-           $0000 = LoadGameData
-           $002b = SetupPalettes
-  SECTION: $0036-$003a ($0005 bytes) ["audio"]
-           $0036 = TurnOffAudio
+  SECTION: $0000-$003a ($003b bytes) ["rom"]
+           $0000 = START
+           $0026 = GAMELOOP
+  SECTION: $003b-$003f ($0005 bytes) ["audio"]
+           $003b = TurnOffAudio
   SECTION: $0040-$0040 ($0001 byte) ["vblank IRQ"]
-  SECTION: $0048-$0048 ($0001 byte) ["LCD IRQ Vector"]
-           $0048 = LCD_VECT
-  SECTION: $0050-$0050 ($0001 byte) ["Timer IRQ Vector"]
-           $0050 = TIMER_VECT
-  SECTION: $0058-$0058 ($0001 byte) ["Serial IRQ Vector"]
-           $0058 = SERIAL_VECT
-  SECTION: $0060-$0060 ($0001 byte) ["Joypad IRQ Vector"]
-           $0060 = JOYPAD_VECT
-  SECTION: $0061-$00d3 ($0073 bytes) ["joypad"]
-           $0061 = ReadInput
-           $0091 = JOY_RIGHT
-           $0099 = JOY_LEFT
-           $00a1 = JOY_UP
-           $00a9 = JOY_DOWN
-           $00b1 = JOY_A
-           $00b9 = JOY_B
-           $00c1 = JOY_SELECT
-           $00c9 = JOY_START
-           $00d1 = JOY_FALSE
-  SECTION: $00d4-$00ef ($001c bytes) ["OAM DMA routine"]
-           $00d4 = CopyDMARoutine
-           $00db = CopyDMARoutine.copy
-           $00e2 = DMARoutine
-           $00e6 = DMARoutine.wait
-           $00ea = DMARoutineEnd
-           $00ea = OAMDMA
+           $0040 = VBLANK_VECT
+  SECTION: $0041-$00b3 ($0073 bytes) ["joypad"]
+           $0041 = ReadInput
+           $0071 = JOY_RIGHT
+           $0079 = JOY_LEFT
+           $0081 = JOY_UP
+           $0089 = JOY_DOWN
+           $0091 = JOY_A
+           $0099 = JOY_B
+           $00a1 = JOY_SELECT
+           $00a9 = JOY_START
+           $00b1 = JOY_FALSE
+  SECTION: $00b4-$00e9 ($0036 bytes) ["graphics"]
+           $00b4 = LoadGameData
+           $00df = SetupPalettes
+  SECTION: $00ea-$00ff ($0016 bytes) ["scroll"]
+           $00ea = VBlankHScroll
+           $00fd = VBlankHScroll.end
   SECTION: $0100-$014f ($0050 bytes) ["header"]
   SECTION: $0150-$038f ($0240 bytes) ["Background_Map"]
            $0150 = BackgroundMap
@@ -41,13 +33,14 @@ ROM0 bank #0:
   SECTION: $0450-$04af ($0060 bytes) ["Background_Tiles"]
            $0450 = BackgroundTiles
            $04b0 = BackgroundTilesEnd
-  SECTION: $04b0-$04e3 ($0034 bytes) ["rom"]
-           $04b0 = START
-           $04cf = GAMELOOP
-  SECTION: $04e4-$04f9 ($0016 bytes) ["scroll"]
-           $04e4 = VBlankHScroll
-           $04f7 = VBlankHScroll.end
-    SLACK: $3b37 bytes
+  SECTION: $04b0-$04cb ($001c bytes) ["OAM DMA routine"]
+           $04b0 = CopyDMARoutine
+           $04b7 = CopyDMARoutine.copy
+           $04be = DMARoutine
+           $04c2 = DMARoutine.wait
+           $04c6 = DMARoutineEnd
+           $04c6 = OAMDMA
+    SLACK: $3b34 bytes
 
 ROMX bank #1:
   SECTION: $4000-$41b4 ($01b5 bytes) ["point balloon"]
@@ -160,7 +153,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $04c9 bytes in 1 bank
+    ROM0: $04cc bytes in 1 bank
     ROMX: $0373 bytes in 1 bank
     WRAM0: $0035 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
