@@ -16,7 +16,7 @@ POINT_BALLOON_START_Y EQU 156
 
 InitializePointBalloon::
     ; Initialize variables
-    ld a, 0
+    xor a ; ld a, 0
     ld hl, point_balloon_alive
     ld [hl], 1
     ld hl, point_balloon_popping

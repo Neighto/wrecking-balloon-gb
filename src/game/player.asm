@@ -1,6 +1,6 @@
-SECTION "player", ROMX
-
 INCLUDE "hardware.inc"
+
+SECTION "player", ROMX
 
 PLAYER_START_X EQU 80
 PLAYER_START_Y EQU 80
