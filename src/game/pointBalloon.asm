@@ -2,7 +2,17 @@ SECTION "point balloon", ROMX
 
 ; Balloons will spawn and fly upward AND can be popped
 POINT_BALLOON_START_X EQU 120
-POINT_BALLOON_START_Y EQU 120
+POINT_BALLOON_START_Y EQU 156
+
+; UpdatePointBalloonPosition:
+;     ; Update Y
+;     ld hl, point_balloon
+;     ld a, [point_balloon_y]
+;     ld [hli], a
+;     ; Update X
+;     ld a, [point_balloon_x]
+;     ld [hl], a
+;     ret
 
 InitializePointBalloon::
     ; Initialize variables
@@ -19,11 +29,39 @@ InitializePointBalloon::
     ld [hl], a
     ld hl, balloon_pop_timer
     ld [hl], a
+    
+.nextSpawnPoint:
+    ; TODO: weird to set point_balloon_x to update x, instead of vice-versa
+    ld hl, point_balloon_x
+    ld a, 4
+    call RANDOM
+    cp a, 0
+    jp z, .spawn0
+    cp a, 1
+    jp z, .spawn1
+    cp a, 2
+    jp z, .spawn2
+    cp a, 3
+    jp z, .spawn3
+.spawn0:
+    ld [hl], 32
+    jr .EndNextSpawnPoint
+.spawn1:
+    ld [hl], 64
+    jr .EndNextSpawnPoint
+.spawn2:
+    ld [hl], 96
+    jr .EndNextSpawnPoint
+.spawn3:
+    ld [hl], 128
+.EndNextSpawnPoint:
+
     ; Balloon left
     ld hl, point_balloon
     ld [hl], POINT_BALLOON_START_Y
     inc l
-    ld [hl], POINT_BALLOON_START_X
+    ld a, [point_balloon_x]
+    ld [hl], a
     inc l
     ld [hl], $86
     inc l
@@ -32,7 +70,9 @@ InitializePointBalloon::
     ld hl, point_balloon+4
     ld [hl], POINT_BALLOON_START_Y
     inc l
-    ld [hl], POINT_BALLOON_START_X + 8
+    ld a, [point_balloon_x]
+    add 8
+    ld [hl], a
     inc l
     ld [hl], $86
     inc l
@@ -40,32 +80,19 @@ InitializePointBalloon::
     ret
 
 SpawnPointBalloon::
-    ld a, 0
-    ld [point_balloon_respawn_timer], a
+    xor a ; ld a, 0
+    ld [point_balloon_respawn_timer], a    
     call InitializePointBalloon
     ret
 
-DecrementPosition:
-    ; hl = address
+FloatPointBalloonUp:
+    ld hl, point_balloon
     ld bc, point_balloon_y
     ld a, [bc]
     dec a
     ld [hl], a
     ld [bc], a
-    ret
-
-FloatPointBalloonUp:
-    ld hl, point_balloon
-    ld a, [hl]
-    dec a
-    ld [hl], a
-    ld hl, point_balloon_y
-    ld [hl], a
     ld hl, point_balloon+4
-    ld a, [hl]
-    dec a
-    ld [hl], a
-    ld hl, point_balloon_y
     ld [hl], a
     ret
 
