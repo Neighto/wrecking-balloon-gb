@@ -36,7 +36,7 @@ GAMELOOP:
 	call OAMDMA
 	jp GAMELOOP
 
-SECTION "otherfornow", ROM0
+SECTION "audio", ROM0
 
 TurnOffAudio:
 	ld a, 0
