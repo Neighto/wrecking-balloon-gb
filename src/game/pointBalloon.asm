@@ -227,7 +227,7 @@ PopBalloonAnimation:
 
 DeathOfPointBalloon:
     ; Death
-    ld a, 0
+    xor a ; ld a, 0
     ld hl, point_balloon_alive
     ld [hl], a
     ; Animation trigger
