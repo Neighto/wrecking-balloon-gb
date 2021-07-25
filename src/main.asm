@@ -7,9 +7,9 @@ START::
 	ei
 
 	; Enable Vblank Interrupt
-	; ld sp, $FFFE
-	; ld a, IEF_VBLANK
-	; ld [rIE], a
+	ld sp, $FFFE
+	ld a, IEF_VBLANK
+	ld [rIE], a
 
 	call TurnOffAudio
 
