@@ -45,6 +45,7 @@ ROM0 bank #0:
     SLACK: $3b29 bytes
 
 ROMX bank #1:
+  SECTION: $4000 (0 bytes) ["enemy"]
   SECTION: $4000-$41b3 ($01b4 bytes) ["point balloon"]
            $4000 = InitializePointBalloon
            $401c = InitializePointBalloon.nextSpawnPoint
@@ -72,59 +73,61 @@ ROMX bank #1:
            $419d = CollisionCheck.tryOtherX
            $41b0 = CollisionCheck.doSomething
            $41b3 = CollisionCheck.end
-  SECTION: $41b4-$4328 ($0175 bytes) ["player"]
+  SECTION: $41b4-$434d ($019a bytes) ["player"]
            $41b4 = UpdateBalloonPosition
            $41cd = UpdateCactusPosition
            $41e6 = UpdatePlayerPosition
            $41ed = InitializePlayer
            $423f = IncrementPosition
-           $4245 = DecrementPosition
-           $424d = MoveBalloonUp
-           $4254 = MoveBalloonRight
+           $4242 = DecrementPosition
+           $4247 = MoveBalloonUp
+           $4251 = MoveBalloonRight
            $425b = MoveBalloonLeft
-           $4262 = MoveBalloonDown
-           $4269 = MoveCactusUp
-           $4270 = MoveCactusRight
-           $4277 = MoveCactusLeft
-           $427e = MoveCactusDown
-           $4285 = MoveRight
-           $428c = MoveLeft
-           $4293 = MoveDown
-           $429a = MoveUp
-           $42a1 = SpeedUp
-           $42a7 = ResetSpeedUp
-           $42ad = PlayerMovement
-           $42c2 = PlayerMovement.endRight
-           $42cd = PlayerMovement.endLeft
-           $42d8 = PlayerMovement.endUp
-           $42e3 = PlayerMovement.endDown
-           $42eb = PlayerMovement.endA
-           $42f7 = PlayerMovement.endB
-           $42fa = PlayerMovement.end
-           $42fe = PlayerAnimate
-           $4310 = PlayerAnimate.bobUp
-           $4319 = PlayerAnimate.bobDown
-           $4321 = PlayerAnimate.end
-           $4322 = PlayerUpdate
-  SECTION: $4329-$4353 ($002b bytes) ["lcd"]
-           $4329 = LCD_OFF
-           $432e = LCD_ON
-           $4333 = WaitVBlank
-           $433a = ClearMap
-           $4341 = ClearMap.clear_map_loop
-  SECTION: $4354-$437b ($0028 bytes) ["memory"]
-           $4354 = MEMCPY.memcpy_loop
-           $4354 = MEMCPY
-           $4358 = MEMCPY.memcpy_check_limit
-           $435e = ClearOAM
-           $4364 = ClearOAM.clear_oam_loop
-           $436d = ClearRAM
-           $4373 = ClearRAM.clear_ram_loop
-  SECTION: $437c-$4383 ($0008 bytes) ["math"]
-           $437c = RANDOM
-           $437d = RANDOM.seed
-           $437f = RANDOM.loop
-    SLACK: $3c7c bytes
+           $4265 = MoveBalloonDown
+           $426f = MoveCactusUp
+           $4279 = MoveCactusRight
+           $4283 = MoveCactusLeft
+           $428d = MoveCactusDown
+           $4297 = BobCactusUp
+           $42a0 = BobCactusDown
+           $42a9 = MoveRight
+           $42b0 = MoveLeft
+           $42b7 = MoveDown
+           $42be = MoveUp
+           $42c5 = SpeedUp
+           $42cb = ResetSpeedUp
+           $42d1 = PlayerMovement
+           $42e6 = PlayerMovement.endRight
+           $42f1 = PlayerMovement.endLeft
+           $42fc = PlayerMovement.endUp
+           $4307 = PlayerMovement.endDown
+           $430f = PlayerMovement.endA
+           $431c = PlayerMovement.endB
+           $431f = PlayerMovement.end
+           $4323 = PlayerAnimate
+           $4335 = PlayerAnimate.bobUp
+           $433e = PlayerAnimate.bobDown
+           $4346 = PlayerAnimate.end
+           $4347 = PlayerUpdate
+  SECTION: $434e-$4378 ($002b bytes) ["lcd"]
+           $434e = LCD_OFF
+           $4353 = LCD_ON
+           $4358 = WaitVBlank
+           $435f = ClearMap
+           $4366 = ClearMap.clear_map_loop
+  SECTION: $4379-$43a0 ($0028 bytes) ["memory"]
+           $4379 = MEMCPY.memcpy_loop
+           $4379 = MEMCPY
+           $437d = MEMCPY.memcpy_check_limit
+           $4383 = ClearOAM
+           $4389 = ClearOAM.clear_oam_loop
+           $4392 = ClearRAM
+           $4398 = ClearRAM.clear_ram_loop
+  SECTION: $43a1-$43a8 ($0008 bytes) ["math"]
+           $43a1 = RANDOM
+           $43a2 = RANDOM.seed
+           $43a4 = RANDOM.loop
+    SLACK: $3c57 bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c012 ($0013 bytes) ["RAM vars"]
@@ -161,6 +164,6 @@ HRAM bank #0:
 
 USED:
     ROM0: $04d7 bytes in 1 bank
-    ROMX: $0384 bytes in 1 bank
+    ROMX: $03a9 bytes in 1 bank
     WRAM0: $0037 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
