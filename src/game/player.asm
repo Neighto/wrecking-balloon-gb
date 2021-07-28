@@ -6,6 +6,7 @@ PLAYER_START_X EQU 80
 PLAYER_START_Y EQU 80
 PLAYER_BALLOON_START_Y EQU (PLAYER_START_Y-16)
 PLAYER_MAX_DRIFT_X EQU 2
+PLAYER_MAX_DRIFT_Y EQU 2
 
 UpdateBalloonPosition:
   ld hl, player_balloon
@@ -152,61 +153,6 @@ MoveCactusRight:
   call IncrementPosition
   ret
 
-MoveCactusDriftLeft:
-  ; Move left until limit is reached
-  ld a, [player_drift_timer]
-  inc	a
-  ld [player_drift_timer], a
-  and	%00000001
-  jr nz, .end
-  ld hl, player_x
-  ld a, PLAYER_MAX_DRIFT_X
-  cpl
-  add [hl]
-  ld hl, player_cactus_x
-  cp a, [hl]
-  jr nc, .end
-  dec [hl]
-.end:
-  ret
-
-MoveCactusDriftRight:
-  ; Move right until limit is reached
-  ld a, [player_drift_timer]
-  inc	a
-  ld [player_drift_timer], a
-  and	%00000001
-  jr nz, .end
-  ld hl, player_x
-  ld a, PLAYER_MAX_DRIFT_X
-  add [hl]
-  ld hl, player_cactus_x
-  cp a, [hl]
-  jr c, .end
-  inc [hl]
-.end:
-  ret
-
-MoveCactusDriftCenter:
-  ; Move back to center
-  ld a, [player_drift_timer]
-  inc	a
-  ld [player_drift_timer], a
-  and	%00000001
-  jr nz, .end
-  ld a, [player_x]
-  ld hl, player_cactus_x
-  cp a, [hl]
-  jr z, .end
-  jr c, .moveLeft
-.moveRight:
-  inc [hl]
-  ret
-.moveLeft:
-  dec [hl]
-.end:
-  ret
-
 MoveCactusLeft:
   ld hl, player_cactus_x
   ld a, [player_speed]
@@ -231,6 +177,120 @@ BobCactusDown:
   call IncrementPosition
   ret
 
+MoveCactusDriftLeft:
+  ; Move left until limit is reached
+  ld a, [player_drift_timer_x]
+  inc	a
+  ld [player_drift_timer_x], a
+  and	%00000001
+  jr nz, .end
+  ld hl, player_x
+  ld a, PLAYER_MAX_DRIFT_X
+  cpl
+  add [hl]
+  ld hl, player_cactus_x
+  cp a, [hl]
+  jr nc, .end
+  dec [hl]
+.end:
+  ret
+
+; TODO: Add basic deceleration so if you stop it keeps swinging
+MoveCactusDriftRight:
+  ; Move right until limit is reached
+  ld a, [player_drift_timer_x]
+  inc	a
+  ld [player_drift_timer_x], a
+  and	%00000001
+  jr nz, .end
+  ld hl, player_x
+  ld a, PLAYER_MAX_DRIFT_X
+  add [hl]
+  ld hl, player_cactus_x
+  cp a, [hl]
+  jr c, .end
+  inc [hl]
+.end:
+  ret
+
+MoveCactusDriftCenterX:
+  ; Move back to center
+  ld a, [player_drift_timer_x]
+  inc	a
+  ld [player_drift_timer_x], a
+  and	%00000001
+  jr nz, .end
+  ld a, [player_x]
+  ld hl, player_cactus_x
+  cp a, [hl]
+  jr z, .end
+  jr c, .moveLeft
+.moveRight:
+  inc [hl]
+  ret
+.moveLeft:
+  dec [hl]
+.end:
+  ret
+
+MoveCactusDriftUp:
+  ; Move up until limit is reached
+  ld a, [player_drift_timer_y]
+  inc	a
+  ld [player_drift_timer_y], a
+  and	%00000001
+  jr nz, .end
+  ld hl, player_y
+  ld a, PLAYER_MAX_DRIFT_Y-16
+  cpl
+  add [hl]
+  ld hl, player_cactus_y
+  cp a, [hl]
+  jr nc, .end
+  dec [hl]
+.end:
+  ret
+
+MoveCactusDriftDown:
+  ; Move down until limit is reached
+  ld a, [player_drift_timer_y]
+  inc	a
+  ld [player_drift_timer_y], a
+  and	%00000001
+  jr nz, .end
+  ld hl, player_y
+  ld a, PLAYER_MAX_DRIFT_Y+16
+  add [hl]
+  ld hl, player_cactus_y
+  cp a, [hl]
+  jr c, .end
+  inc [hl]
+.end:
+  ret
+
+MoveCactusDriftCenterY:
+  ; Move back to center
+  ld a, [player_drift_timer_y]
+  inc	a
+  ld [player_drift_timer_y], a
+  and	%00000001
+  jr nz, .end
+  ; In what direction is cactus_y off from player_y
+  ld hl, player_y
+  ld a, 16
+  add [hl]
+  ld hl, player_cactus_y
+  cp a, [hl]
+  jr z, .end
+  jr nc, .moveDown
+.moveUp:
+  dec [hl]
+  ret
+.moveDown:
+  inc [hl]
+.end
+  ret
+
 MoveRight:
   call MoveBalloonRight
   call MoveCactusRight
@@ -246,11 +306,13 @@ MoveLeft:
 MoveDown:
   call MoveBalloonDown
   call MoveCactusDown
+  call MoveCactusDriftUp
   ret
 
 MoveUp:
   call MoveBalloonUp
   call MoveCactusUp
+  ; call MoveCactusDriftDown
   ret
 
 SpeedUp:
@@ -296,12 +358,21 @@ PlayerMovement:
   ; TODO: clean up quite inefficient
   ld a, [joypad_down]
 	call JOY_RIGHT
-	jr nz, .endDriftToCenter
+	jr nz, .endDriftToCenterX
   ld a, [joypad_down]
 	call JOY_LEFT
-  jr nz, .endDriftToCenter
-  call MoveCactusDriftCenter
-.endDriftToCenter:
+  jr nz, .endDriftToCenterX
+  call MoveCactusDriftCenterX
+.endDriftToCenterX:
+  ; Drift to center if Up / Down not held
+  ld a, [joypad_down]
+	call JOY_UP
+	jr nz, .endDriftToCenterY
+  ld a, [joypad_down]
+	call JOY_DOWN
+  jr nz, .endDriftToCenterY
+  call MoveCactusDriftCenterY
+.endDriftToCenterY:
   ; A
   ld a, [joypad_down]
 	call JOY_A
@@ -344,5 +415,5 @@ PlayerAnimate:
 
 PlayerUpdate::
   call PlayerMovement
-  call PlayerAnimate
+  ; call PlayerAnimate ; Broken.. For now
   ret

@@ -46,7 +46,7 @@ ROM0 bank #0:
 
 ROMX bank #1:
   SECTION: $4000 (0 bytes) ["enemy"]
-  SECTION: $4000-$41ff ($0200 bytes) ["player"]
+  SECTION: $4000-$4265 ($0266 bytes) ["player"]
            $4000 = UpdateBalloonPosition
            $4019 = UpdateCactusPosition
            $4032 = UpdatePlayerPosition
@@ -59,113 +59,123 @@ ROMX bank #1:
            $40b1 = MoveBalloonDown
            $40bb = MoveCactusUp
            $40c5 = MoveCactusRight
-           $40cf = MoveCactusDriftLeft
-           $40e8 = MoveCactusDriftLeft.end
-           $40e9 = MoveCactusDriftRight
-           $4101 = MoveCactusDriftRight.end
-           $4102 = MoveCactusDriftCenter
-           $4118 = MoveCactusDriftCenter.moveRight
-           $411a = MoveCactusDriftCenter.moveLeft
-           $411b = MoveCactusDriftCenter.end
-           $411c = MoveCactusLeft
-           $4126 = MoveCactusDown
-           $4130 = BobCactusUp
-           $4139 = BobCactusDown
-           $4142 = MoveRight
-           $414c = MoveLeft
-           $4156 = MoveDown
-           $415d = MoveUp
-           $4164 = SpeedUp
-           $416a = ResetSpeedUp
-           $4170 = PlayerMovement
-           $4185 = PlayerMovement.endRight
-           $4190 = PlayerMovement.endLeft
-           $419b = PlayerMovement.endUp
-           $41a6 = PlayerMovement.endDown
-           $41b9 = PlayerMovement.endDriftToCenter
-           $41c1 = PlayerMovement.endA
-           $41ce = PlayerMovement.endB
-           $41d1 = PlayerMovement.end
-           $41d5 = PlayerAnimate
-           $41e7 = PlayerAnimate.bobUp
-           $41f0 = PlayerAnimate.bobDown
-           $41f8 = PlayerAnimate.end
-           $41f9 = PlayerUpdate
-  SECTION: $4200-$43b3 ($01b4 bytes) ["point balloon"]
-           $4200 = InitializePointBalloon
-           $421c = InitializePointBalloon.nextSpawnPoint
-           $4238 = InitializePointBalloon.spawn0
-           $423c = InitializePointBalloon.spawn1
-           $4240 = InitializePointBalloon.spawn2
-           $4244 = InitializePointBalloon.spawn3
-           $4246 = InitializePointBalloon.EndNextSpawnPoint
-           $4269 = SpawnPointBalloon
-           $4271 = FloatPointBalloonUp
-           $4280 = PointBalloonUpdate
-           $4292 = PointBalloonUpdate.popped
-           $42a0 = PointBalloonUpdate.respawnSkip
-           $42aa = PointBalloonUpdate.end
-           $42ab = PopBalloonAnimation
-           $42bf = PopBalloonAnimation.special
-           $42d2 = PopBalloonAnimation.frame0
-           $42fe = PopBalloonAnimation.frame1
-           $432a = PopBalloonAnimation.clear
-           $4343 = PopBalloonAnimation.end
-           $4344 = DeathOfPointBalloon
-           $4356 = CollisionCheck
-           $4379 = CollisionCheck.tryOtherY
-           $438c = CollisionCheck.checkX
-           $439d = CollisionCheck.tryOtherX
-           $43b0 = CollisionCheck.doSomething
-           $43b3 = CollisionCheck.end
-  SECTION: $43b4-$43de ($002b bytes) ["lcd"]
-           $43b4 = LCD_OFF
-           $43b9 = LCD_ON
-           $43be = WaitVBlank
-           $43c5 = ClearMap
-           $43cc = ClearMap.clear_map_loop
-  SECTION: $43df-$4406 ($0028 bytes) ["memory"]
-           $43df = MEMCPY.memcpy_loop
-           $43df = MEMCPY
-           $43e3 = MEMCPY.memcpy_check_limit
-           $43e9 = ClearOAM
-           $43ef = ClearOAM.clear_oam_loop
-           $43f8 = ClearRAM
-           $43fe = ClearRAM.clear_ram_loop
-  SECTION: $4407-$440e ($0008 bytes) ["math"]
-           $4407 = RANDOM
-           $4408 = RANDOM.seed
-           $440a = RANDOM.loop
-    SLACK: $3bf1 bytes
+           $40cf = MoveCactusLeft
+           $40d9 = MoveCactusDown
+           $40e3 = BobCactusUp
+           $40ec = BobCactusDown
+           $40f5 = MoveCactusDriftLeft
+           $410e = MoveCactusDriftLeft.end
+           $410f = MoveCactusDriftRight
+           $4127 = MoveCactusDriftRight.end
+           $4128 = MoveCactusDriftCenterX
+           $413e = MoveCactusDriftCenterX.moveRight
+           $4140 = MoveCactusDriftCenterX.moveLeft
+           $4141 = MoveCactusDriftCenterX.end
+           $4142 = MoveCactusDriftUp
+           $415b = MoveCactusDriftUp.end
+           $415c = MoveCactusDriftDown
+           $4174 = MoveCactusDriftDown.end
+           $4175 = MoveCactusDriftCenterY
+           $418e = MoveCactusDriftCenterY.moveUp
+           $4190 = MoveCactusDriftCenterY.moveDown
+           $4191 = MoveCactusDriftCenterY.end
+           $4192 = MoveRight
+           $419c = MoveLeft
+           $41a6 = MoveDown
+           $41b0 = MoveUp
+           $41b7 = SpeedUp
+           $41bd = ResetSpeedUp
+           $41c3 = PlayerMovement
+           $41d8 = PlayerMovement.endRight
+           $41e3 = PlayerMovement.endLeft
+           $41ee = PlayerMovement.endUp
+           $41f9 = PlayerMovement.endDown
+           $420c = PlayerMovement.endDriftToCenterX
+           $421f = PlayerMovement.endDriftToCenterY
+           $4227 = PlayerMovement.endA
+           $4234 = PlayerMovement.endB
+           $4237 = PlayerMovement.end
+           $423b = PlayerAnimate
+           $424d = PlayerAnimate.bobUp
+           $4256 = PlayerAnimate.bobDown
+           $425e = PlayerAnimate.end
+           $425f = PlayerUpdate
+  SECTION: $4266-$4419 ($01b4 bytes) ["point balloon"]
+           $4266 = InitializePointBalloon
+           $4282 = InitializePointBalloon.nextSpawnPoint
+           $429e = InitializePointBalloon.spawn0
+           $42a2 = InitializePointBalloon.spawn1
+           $42a6 = InitializePointBalloon.spawn2
+           $42aa = InitializePointBalloon.spawn3
+           $42ac = InitializePointBalloon.EndNextSpawnPoint
+           $42cf = SpawnPointBalloon
+           $42d7 = FloatPointBalloonUp
+           $42e6 = PointBalloonUpdate
+           $42f8 = PointBalloonUpdate.popped
+           $4306 = PointBalloonUpdate.respawnSkip
+           $4310 = PointBalloonUpdate.end
+           $4311 = PopBalloonAnimation
+           $4325 = PopBalloonAnimation.special
+           $4338 = PopBalloonAnimation.frame0
+           $4364 = PopBalloonAnimation.frame1
+           $4390 = PopBalloonAnimation.clear
+           $43a9 = PopBalloonAnimation.end
+           $43aa = DeathOfPointBalloon
+           $43bc = CollisionCheck
+           $43df = CollisionCheck.tryOtherY
+           $43f2 = CollisionCheck.checkX
+           $4403 = CollisionCheck.tryOtherX
+           $4416 = CollisionCheck.doSomething
+           $4419 = CollisionCheck.end
+  SECTION: $441a-$4444 ($002b bytes) ["lcd"]
+           $441a = LCD_OFF
+           $441f = LCD_ON
+           $4424 = WaitVBlank
+           $442b = ClearMap
+           $4432 = ClearMap.clear_map_loop
+  SECTION: $4445-$446c ($0028 bytes) ["memory"]
+           $4445 = MEMCPY.memcpy_loop
+           $4445 = MEMCPY
+           $4449 = MEMCPY.memcpy_check_limit
+           $444f = ClearOAM
+           $4455 = ClearOAM.clear_oam_loop
+           $445e = ClearRAM
+           $4464 = ClearRAM.clear_ram_loop
+  SECTION: $446d-$4474 ($0008 bytes) ["math"]
+           $446d = RANDOM
+           $446e = RANDOM.seed
+           $4470 = RANDOM.loop
+    SLACK: $3b8b bytes
 
 WRAM0 bank #0:
-  SECTION: $c000-$c013 ($0014 bytes) ["RAM vars"]
+  SECTION: $c000-$c014 ($0015 bytes) ["RAM vars"]
            $c000 = scroll_timer
            $c001 = movement_timer
            $c002 = collision_timer
            $c003 = balloon_pop_timer
            $c004 = player_bob_timer
-           $c005 = player_drift_timer
-           $c006 = point_balloon_respawn_timer
-           $c007 = player_bobbed_up
-           $c008 = joypad_down
-           $c009 = joypad_pressed
-           $c00a = player_speed
-           $c00b = player_x
-           $c00c = player_y
-           $c00d = player_cactus_x
-           $c00e = player_cactus_y
-           $c00f = point_balloon_alive
-           $c010 = point_balloon_popping
-           $c011 = point_balloon_popping_frame
-           $c012 = point_balloon_x
-           $c013 = point_balloon_y
+           $c005 = player_drift_timer_x
+           $c006 = player_drift_timer_y
+           $c007 = point_balloon_respawn_timer
+           $c008 = player_bobbed_up
+           $c009 = joypad_down
+           $c00a = joypad_pressed
+           $c00b = player_speed
+           $c00c = player_x
+           $c00d = player_y
+           $c00e = player_cactus_x
+           $c00f = player_cactus_y
+           $c010 = point_balloon_alive
+           $c011 = point_balloon_popping
+           $c012 = point_balloon_popping_frame
+           $c013 = point_balloon_x
+           $c014 = point_balloon_y
   SECTION: $c100-$c123 ($0024 bytes) ["OAM vars"]
            $c100 = player_balloon
            $c108 = player_cactus
            $c110 = point_balloon
            $c114 = balloon_pop
-    SLACK: $0fc8 bytes
+    SLACK: $0fc7 bytes
 
 HRAM bank #0:
   SECTION: $ff80-$ff87 ($0008 bytes) ["OAM DMA"]
@@ -174,6 +184,6 @@ HRAM bank #0:
 
 USED:
     ROM0: $04d7 bytes in 1 bank
-    ROMX: $040f bytes in 1 bank
-    WRAM0: $0038 bytes in 1 bank
+    ROMX: $0475 bytes in 1 bank
+    WRAM0: $0039 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
