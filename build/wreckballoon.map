@@ -46,7 +46,7 @@ ROM0 bank #0:
 
 ROMX bank #1:
   SECTION: $4000 (0 bytes) ["enemy"]
-  SECTION: $4000-$4265 ($0266 bytes) ["player"]
+  SECTION: $4000-$4262 ($0263 bytes) ["player"]
            $4000 = UpdateBalloonPosition
            $4019 = UpdateCactusPosition
            $4032 = UpdatePlayerPosition
@@ -100,52 +100,52 @@ ROMX bank #1:
            $4256 = PlayerAnimate.bobDown
            $425e = PlayerAnimate.end
            $425f = PlayerUpdate
-  SECTION: $4266-$4419 ($01b4 bytes) ["point balloon"]
-           $4266 = InitializePointBalloon
-           $4282 = InitializePointBalloon.nextSpawnPoint
-           $429e = InitializePointBalloon.spawn0
-           $42a2 = InitializePointBalloon.spawn1
-           $42a6 = InitializePointBalloon.spawn2
-           $42aa = InitializePointBalloon.spawn3
-           $42ac = InitializePointBalloon.EndNextSpawnPoint
-           $42cf = SpawnPointBalloon
-           $42d7 = FloatPointBalloonUp
-           $42e6 = PointBalloonUpdate
-           $42f8 = PointBalloonUpdate.popped
-           $4306 = PointBalloonUpdate.respawnSkip
-           $4310 = PointBalloonUpdate.end
-           $4311 = PopBalloonAnimation
-           $4325 = PopBalloonAnimation.special
-           $4338 = PopBalloonAnimation.frame0
-           $4364 = PopBalloonAnimation.frame1
-           $4390 = PopBalloonAnimation.clear
-           $43a9 = PopBalloonAnimation.end
-           $43aa = DeathOfPointBalloon
-           $43bc = CollisionCheck
-           $43df = CollisionCheck.tryOtherY
-           $43f2 = CollisionCheck.checkX
-           $4403 = CollisionCheck.tryOtherX
-           $4416 = CollisionCheck.doSomething
-           $4419 = CollisionCheck.end
-  SECTION: $441a-$4444 ($002b bytes) ["lcd"]
-           $441a = LCD_OFF
-           $441f = LCD_ON
-           $4424 = WaitVBlank
-           $442b = ClearMap
-           $4432 = ClearMap.clear_map_loop
-  SECTION: $4445-$446c ($0028 bytes) ["memory"]
-           $4445 = MEMCPY.memcpy_loop
-           $4445 = MEMCPY
-           $4449 = MEMCPY.memcpy_check_limit
-           $444f = ClearOAM
-           $4455 = ClearOAM.clear_oam_loop
-           $445e = ClearRAM
-           $4464 = ClearRAM.clear_ram_loop
-  SECTION: $446d-$4474 ($0008 bytes) ["math"]
-           $446d = RANDOM
-           $446e = RANDOM.seed
-           $4470 = RANDOM.loop
-    SLACK: $3b8b bytes
+  SECTION: $4263-$4416 ($01b4 bytes) ["point balloon"]
+           $4263 = InitializePointBalloon
+           $427f = InitializePointBalloon.nextSpawnPoint
+           $429b = InitializePointBalloon.spawn0
+           $429f = InitializePointBalloon.spawn1
+           $42a3 = InitializePointBalloon.spawn2
+           $42a7 = InitializePointBalloon.spawn3
+           $42a9 = InitializePointBalloon.EndNextSpawnPoint
+           $42cc = SpawnPointBalloon
+           $42d4 = FloatPointBalloonUp
+           $42e3 = PointBalloonUpdate
+           $42f5 = PointBalloonUpdate.popped
+           $4303 = PointBalloonUpdate.respawnSkip
+           $430d = PointBalloonUpdate.end
+           $430e = PopBalloonAnimation
+           $4322 = PopBalloonAnimation.special
+           $4335 = PopBalloonAnimation.frame0
+           $4361 = PopBalloonAnimation.frame1
+           $438d = PopBalloonAnimation.clear
+           $43a6 = PopBalloonAnimation.end
+           $43a7 = DeathOfPointBalloon
+           $43b9 = CollisionCheck
+           $43dc = CollisionCheck.tryOtherY
+           $43ef = CollisionCheck.checkX
+           $4400 = CollisionCheck.tryOtherX
+           $4413 = CollisionCheck.doSomething
+           $4416 = CollisionCheck.end
+  SECTION: $4417-$4441 ($002b bytes) ["lcd"]
+           $4417 = LCD_OFF
+           $441c = LCD_ON
+           $4421 = WaitVBlank
+           $4428 = ClearMap
+           $442f = ClearMap.clear_map_loop
+  SECTION: $4442-$4469 ($0028 bytes) ["memory"]
+           $4442 = MEMCPY.memcpy_loop
+           $4442 = MEMCPY
+           $4446 = MEMCPY.memcpy_check_limit
+           $444c = ClearOAM
+           $4452 = ClearOAM.clear_oam_loop
+           $445b = ClearRAM
+           $4461 = ClearRAM.clear_ram_loop
+  SECTION: $446a-$4471 ($0008 bytes) ["math"]
+           $446a = RANDOM
+           $446b = RANDOM.seed
+           $446d = RANDOM.loop
+    SLACK: $3b8e bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c014 ($0015 bytes) ["RAM vars"]
@@ -171,8 +171,8 @@ WRAM0 bank #0:
            $c013 = point_balloon_x
            $c014 = point_balloon_y
   SECTION: $c100-$c123 ($0024 bytes) ["OAM vars"]
-           $c100 = player_balloon
-           $c108 = player_cactus
+           $c100 = player_cactus
+           $c108 = player_balloon
            $c110 = point_balloon
            $c114 = balloon_pop
     SLACK: $0fc7 bytes
@@ -184,6 +184,6 @@ HRAM bank #0:
 
 USED:
     ROM0: $04d7 bytes in 1 bank
-    ROMX: $0475 bytes in 1 bank
+    ROMX: $0472 bytes in 1 bank
     WRAM0: $0039 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
