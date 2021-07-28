@@ -4,6 +4,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	collision_timer:: DB
 	balloon_pop_timer:: DB
 	player_bob_timer:: DB
+	player_drift_timer:: DB
 	point_balloon_respawn_timer:: DB
 	player_bobbed_up:: DB
 	joypad_down::    DB
