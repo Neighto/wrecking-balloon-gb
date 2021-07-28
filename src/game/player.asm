@@ -101,14 +101,14 @@ InitializePlayer::
 
 IncrementPosition:
   ; hl = address
-  ld a, [player_speed]
+  ; a = amount
   add [hl]
   ld [hl], a
   ret
 
 DecrementPosition:
   ; hl = address
-  ld a, [player_speed]
+  ; a = amount
   cpl 
   inc a
   add [hl]
@@ -117,41 +117,61 @@ DecrementPosition:
 
 MoveBalloonUp:
   ld hl, player_y
+  ld a, [player_speed]
   call DecrementPosition
   ret
 
 MoveBalloonRight:
   ld hl, player_x
+  ld a, [player_speed]
   call IncrementPosition
   ret 
 
 MoveBalloonLeft:
   ld hl, player_x
+  ld a, [player_speed]
   call DecrementPosition
   ret
 
 MoveBalloonDown:
   ld hl, player_y
+  ld a, [player_speed]
   call IncrementPosition
   ret
 
 MoveCactusUp:
   ld hl, player_cactus_y
+  ld a, [player_speed]
   call DecrementPosition
   ret
 
 MoveCactusRight:
   ld hl, player_cactus_x
+  ld a, [player_speed]
   call IncrementPosition
   ret
 
 MoveCactusLeft:
   ld hl, player_cactus_x
+  ld a, [player_speed]
   call DecrementPosition
   ret
 
 MoveCactusDown:
   ld hl, player_cactus_y
+  ld a, [player_speed]
+  call IncrementPosition
+  ret
+
+BobCactusUp:
+  ld hl, player_cactus_y
+  ld a, 1
+  call DecrementPosition
+  ret
+
+BobCactusDown:
+  ld hl, player_cactus_y
+  ld a, 1
   call IncrementPosition
   ret
 
@@ -225,7 +245,7 @@ PlayerMovement:
 	call JOY_B
 	jr z, .endB
   call SpeedUp
-  ret ; FIX this breaks new stuff
+  jr .end
 .endB:
   call ResetSpeedUp
 .end:
@@ -245,12 +265,12 @@ PlayerAnimate:
 .bobUp:
   ld a, 1
   ld [player_bobbed_up], a
-  call MoveCactusUp
+  call BobCactusUp
   ret
 .bobDown:
   ld a, 0
   ld [player_bobbed_up], a
-  call MoveCactusDown
+  call BobCactusDown
 .end
   ret
 

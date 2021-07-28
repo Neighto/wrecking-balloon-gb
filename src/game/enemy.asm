@@ -1,0 +1,2 @@
+SECTION "enemy", ROMX
+
