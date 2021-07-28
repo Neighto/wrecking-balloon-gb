@@ -22,7 +22,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	point_balloon_y:: DB
 
 SECTION "OAM vars", WRAM0[$C100]
-	player_balloon:: DS 4*2
 	player_cactus:: DS 4*2
+	player_balloon:: DS 4*2
 	point_balloon:: DS 4
 	balloon_pop:: DS 4*4
