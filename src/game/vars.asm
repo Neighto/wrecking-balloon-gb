@@ -3,6 +3,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	movement_timer:: DB
 	collision_timer:: DB
 	balloon_pop_timer:: DB
+	enemy_pop_timer:: DB
 	player_bob_timer:: DB
 	player_drift_timer_x:: DB
 	player_drift_timer_y:: DB
@@ -24,6 +25,9 @@ SECTION "RAM vars", WRAM0[$C000]
 	enemy_y:: DB
 	enemy_cactus_x:: DB 
 	enemy_cactus_y:: DB
+	enemy_alive:: DB
+	enemy_popping:: DB
+	enemy_popping_frame:: DB
 
 SECTION "OAM vars", WRAM0[$C100]
 	player_cactus:: DS 4*2
