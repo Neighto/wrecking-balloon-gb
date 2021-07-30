@@ -34,6 +34,7 @@ GAMELOOP:
 	call UpdateGlobalTimer
 	call PlayerUpdate
 	call PointBalloonUpdate
+	call EnemyUpdate
 	call OAMDMA
 	jp GAMELOOP
 
