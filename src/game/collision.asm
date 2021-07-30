@@ -99,6 +99,6 @@ CollisionUpdate::
     and 1
     jr z, .endEnemy
     ; Collided
-    call DeathOfEnemy
+    ; call DeathOfEnemy
 .endEnemy:
     ret

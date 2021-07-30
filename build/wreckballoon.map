@@ -1,12 +1,10 @@
 ROM0 bank #0:
-  SECTION: $0000-$0038 ($0039 bytes) ["graphics"]
-           $0000 = LoadGameData
-           $002e = SetupPalettes
-  SECTION: $0039-$003d ($0005 bytes) ["audio"]
-           $0039 = TurnOffAudio
+  SECTION: $0000-$003d ($003e bytes) ["rom"]
+           $0000 = START
+           $0026 = GAMELOOP
   SECTION: $0040-$0040 ($0001 byte) ["vblank IRQ"]
            $0040 = VBLANK_VECT
-  SECTION: $0041-$00b7 ($0077 bytes) ["collision"]
+  SECTION: $0041-$00b4 ($0074 bytes) ["collision"]
            $0041 = CollisionCheck
            $005a = CollisionCheck.tryOtherY
            $006a = CollisionCheck.checkX
@@ -15,10 +13,14 @@ ROM0 bank #0:
            $008c = CollisionCheck.end
            $008f = CollisionUpdate
            $00a3 = CollisionUpdate.endPointBalloon
-           $00b7 = CollisionUpdate.endEnemy
-  SECTION: $00b8-$00f8 ($0041 bytes) ["rom"]
-           $00b8 = START
-           $00de = GAMELOOP
+           $00b4 = CollisionUpdate.endEnemy
+  SECTION: $00b5-$00ed ($0039 bytes) ["graphics"]
+           $00b5 = LoadGameData
+           $00e3 = SetupPalettes
+  SECTION: $00ee-$00f5 ($0008 bytes) ["timer"]
+           $00ee = UpdateGlobalTimer
+  SECTION: $00f6-$00fa ($0005 bytes) ["audio"]
+           $00f6 = TurnOffAudio
   SECTION: $0100-$014f ($0050 bytes) ["header"]
   SECTION: $0150-$038f ($0240 bytes) ["Background_Map"]
            $0150 = BackgroundMap
@@ -50,9 +52,7 @@ ROM0 bank #0:
   SECTION: $053f-$0554 ($0016 bytes) ["scroll"]
            $053f = VBlankHScroll
            $0552 = VBlankHScroll.end
-  SECTION: $0555-$055c ($0008 bytes) ["timer"]
-           $0555 = UpdateGlobalTimer
-    SLACK: $3aac bytes
+    SLACK: $3ab2 bytes
 
 ROMX bank #1:
   SECTION: $4000-$4262 ($0263 bytes) ["player"]
@@ -109,59 +109,59 @@ ROMX bank #1:
            $4256 = PlayerAnimate.bobDown
            $425e = PlayerAnimate.end
            $425f = PlayerUpdate
-  SECTION: $4263-$43b8 ($0156 bytes) ["point balloon"]
-           $4263 = InitializePointBalloon
-           $427f = InitializePointBalloon.nextSpawnPoint
-           $429b = InitializePointBalloon.spawn0
-           $429f = InitializePointBalloon.spawn1
-           $42a3 = InitializePointBalloon.spawn2
-           $42a7 = InitializePointBalloon.spawn3
-           $42a9 = InitializePointBalloon.EndNextSpawnPoint
-           $42cc = SpawnPointBalloon
-           $42d4 = FloatPointBalloonUp
-           $42e3 = PointBalloonUpdate
-           $42f5 = PointBalloonUpdate.popped
-           $4303 = PointBalloonUpdate.respawnSkip
-           $430d = PointBalloonUpdate.end
-           $430e = PopBalloonAnimation
-           $4322 = PopBalloonAnimation.special
-           $4335 = PopBalloonAnimation.frame0
-           $4361 = PopBalloonAnimation.frame1
-           $438d = PopBalloonAnimation.clear
-           $43a6 = PopBalloonAnimation.end
-           $43a7 = DeathOfPointBalloon
-  SECTION: $43b9-$44dc ($0124 bytes) ["enemy"]
-           $43b9 = InitializeEnemy
-           $4418 = EnemyUpdate
-           $4427 = EnemyUpdate.popped
-           $4427 = EnemyUpdate.respawnSkip
-           $4431 = EnemyUpdate.end
-           $4432 = DeathOfEnemy
+  SECTION: $4263-$4386 ($0124 bytes) ["enemy"]
+           $4263 = InitializeEnemy
+           $42c2 = EnemyUpdate
+           $42d1 = EnemyUpdate.popped
+           $42d1 = EnemyUpdate.respawnSkip
+           $42db = EnemyUpdate.end
+           $42dc = DeathOfEnemy
+           $42ee = PopBalloonAnimation
+           $4302 = PopBalloonAnimation.special
+           $4315 = PopBalloonAnimation.frame0
+           $4341 = PopBalloonAnimation.frame1
+           $436d = PopBalloonAnimation.clear
+           $4386 = PopBalloonAnimation.end
+  SECTION: $4387-$4443 ($00bd bytes) ["point balloon"]
+           $4387 = InitializePointBalloon
+           $43a3 = InitializePointBalloon.nextSpawnPoint
+           $43bf = InitializePointBalloon.spawn0
+           $43c3 = InitializePointBalloon.spawn1
+           $43c7 = InitializePointBalloon.spawn2
+           $43cb = InitializePointBalloon.spawn3
+           $43cd = InitializePointBalloon.EndNextSpawnPoint
+           $43f0 = SpawnPointBalloon
+           $43f8 = FloatPointBalloonUp
+           $4407 = PointBalloonUpdate
+           $4419 = PointBalloonUpdate.popped
+           $4427 = PointBalloonUpdate.respawnSkip
+           $4431 = PointBalloonUpdate.end
+           $4432 = DeathOfPointBalloon
+  SECTION: $4444-$44da ($0097 bytes) ["animation"]
            $4444 = PopBalloonAnimation
-           $4458 = PopBalloonAnimation.special
-           $446b = PopBalloonAnimation.frame0
-           $4497 = PopBalloonAnimation.frame1
-           $44c3 = PopBalloonAnimation.clear
-           $44dc = PopBalloonAnimation.end
-  SECTION: $44dd-$4507 ($002b bytes) ["lcd"]
-           $44dd = LCD_OFF
-           $44e2 = LCD_ON
-           $44e7 = WaitVBlank
-           $44ee = ClearMap
-           $44f5 = ClearMap.clear_map_loop
-  SECTION: $4508-$452f ($0028 bytes) ["memory"]
-           $4508 = MEMCPY.memcpy_loop
-           $4508 = MEMCPY
-           $450c = MEMCPY.memcpy_check_limit
-           $4512 = ClearOAM
-           $4518 = ClearOAM.clear_oam_loop
-           $4521 = ClearRAM
-           $4527 = ClearRAM.clear_ram_loop
-  SECTION: $4530-$4537 ($0008 bytes) ["math"]
-           $4530 = RANDOM
-           $4531 = RANDOM.seed
-           $4533 = RANDOM.loop
-    SLACK: $3ac8 bytes
+           $4469 = PopBalloonAnimation.frame0
+           $4495 = PopBalloonAnimation.frame1
+           $44c1 = PopBalloonAnimation.clear
+           $44da = PopBalloonAnimation.end
+  SECTION: $44db-$4505 ($002b bytes) ["lcd"]
+           $44db = LCD_OFF
+           $44e0 = LCD_ON
+           $44e5 = WaitVBlank
+           $44ec = ClearMap
+           $44f3 = ClearMap.clear_map_loop
+  SECTION: $4506-$452d ($0028 bytes) ["memory"]
+           $4506 = MEMCPY.memcpy_loop
+           $4506 = MEMCPY
+           $450a = MEMCPY.memcpy_check_limit
+           $4510 = ClearOAM
+           $4516 = ClearOAM.clear_oam_loop
+           $451f = ClearRAM
+           $4525 = ClearRAM.clear_ram_loop
+  SECTION: $452e-$4535 ($0008 bytes) ["math"]
+           $452e = RANDOM
+           $452f = RANDOM.seed
+           $4531 = RANDOM.loop
+    SLACK: $3aca bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c01c ($001d bytes) ["RAM vars"]
@@ -209,7 +209,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $0554 bytes in 1 bank
-    ROMX: $0538 bytes in 1 bank
+    ROM0: $054e bytes in 1 bank
+    ROMX: $0536 bytes in 1 bank
     WRAM0: $0051 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
