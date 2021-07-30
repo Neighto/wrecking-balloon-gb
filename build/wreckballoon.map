@@ -29,27 +29,29 @@ ROM0 bank #0:
   SECTION: $0390-$044f ($00c0 bytes) ["Cactus_Tiles"]
            $0390 = CactusTiles
            $0450 = CactusTilesEnd
-  SECTION: $0450-$04af ($0060 bytes) ["Background_Tiles"]
-           $0450 = BackgroundTiles
-           $04b0 = BackgroundTilesEnd
-  SECTION: $04b0-$050d ($005e bytes) ["collision"]
-           $04b0 = CollisionCheck
-           $04d3 = CollisionCheck.tryOtherY
-           $04e6 = CollisionCheck.checkX
-           $04f7 = CollisionCheck.tryOtherX
-           $050a = CollisionCheck.collision
-           $050d = CollisionCheck.end
-  SECTION: $050e-$0529 ($001c bytes) ["OAM DMA routine"]
-           $050e = CopyDMARoutine
-           $0515 = CopyDMARoutine.copy
-           $051c = DMARoutine
-           $0520 = DMARoutine.wait
-           $0524 = DMARoutineEnd
-           $0524 = OAMDMA
-  SECTION: $052a-$053f ($0016 bytes) ["scroll"]
-           $052a = VBlankHScroll
-           $053d = VBlankHScroll.end
-    SLACK: $3ac5 bytes
+  SECTION: $0450-$04b8 ($0069 bytes) ["collision"]
+           $0450 = CollisionCheck
+           $0469 = CollisionCheck.tryOtherY
+           $047c = CollisionCheck.checkX
+           $048b = CollisionCheck.tryOtherX
+           $049e = CollisionCheck.collision
+           $04a1 = CollisionCheck.end
+           $04a4 = CollisionUpdate
+           $04b8 = CollisionUpdate.end
+  SECTION: $04b9-$0518 ($0060 bytes) ["Background_Tiles"]
+           $04b9 = BackgroundTiles
+           $0519 = BackgroundTilesEnd
+  SECTION: $0519-$0534 ($001c bytes) ["OAM DMA routine"]
+           $0519 = CopyDMARoutine
+           $0520 = CopyDMARoutine.copy
+           $0527 = DMARoutine
+           $052b = DMARoutine.wait
+           $052f = DMARoutineEnd
+           $052f = OAMDMA
+  SECTION: $0535-$054a ($0016 bytes) ["scroll"]
+           $0535 = VBlankHScroll
+           $0548 = VBlankHScroll.end
+    SLACK: $3aba bytes
 
 ROMX bank #1:
   SECTION: $4000-$4262 ($0263 bytes) ["player"]
@@ -192,7 +194,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $053b bytes in 1 bank
+    ROM0: $0546 bytes in 1 bank
     ROMX: $0462 bytes in 1 bank
     WRAM0: $004d bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
