@@ -1,7 +1,9 @@
 SECTION "collision", ROM0
 
 CollisionCheck:
-    ; bc = target colliding with player cactus
+    ; bc = argument for target colliding with player cactus
+    ; d = used for temporary value
+    ; a = return result
 
     ld a, [collision_timer]
 	inc	a
@@ -10,7 +12,6 @@ CollisionCheck:
     jr nz, .end
 
     ; CHECK Y
-    ; ld hl, point_balloon
     ld a, [bc]
     ld hl, player_cactus
     cp a, [hl]
@@ -27,9 +28,8 @@ CollisionCheck:
     ld hl, player_cactus
     ld a, [hl]
     add 16
-    ld d, a
-    ld hl, point_balloon
-    ld a, [hl]
+    ld d, a ; can we not use d?
+    ld a, [bc]
     cp a, d
     jr nc, .end
     ; cactus_y'[c'] > balloon_y[a]
@@ -40,8 +40,7 @@ CollisionCheck:
 
 .checkX:
     ; CHECK X
-    ; ld hl, point_balloon+1
-    inc c
+    inc c ; target+1
     ld a, [bc]
     ld hl, player_cactus+1
     cp a, [hl]
@@ -58,9 +57,8 @@ CollisionCheck:
     ld hl, player_cactus+1
     ld a, [hl]
     add 16
-    ld d, a
-    ld hl, point_balloon+1
-    ld a, [hl]
+    ld d, a ; not use d?
+    ld a, [bc]
     cp a, d
     jr nc, .end
     ; cactus_x'[c'] > balloon_x[a]
@@ -77,18 +75,30 @@ CollisionCheck:
     ret
 
 CollisionUpdate::
-
+    ; Point Balloon
     ; Check if alive
     ld a, [point_balloon_alive]
     and 1
-    jr z, .end
+    jr z, .endPointBalloon
     ; Check collision
     ld bc, point_balloon
     call CollisionCheck
     and 1
-    jr z, .end
+    jr z, .endPointBalloon
     ; Collided
     call DeathOfPointBalloon
-
-.end:
+.endPointBalloon:
+    ; Enemy
+    ; Check if alive
+    ld a, [enemy_alive]
+    and 1
+    jr z, .endEnemy
+    ; Check collision
+    ld bc, enemy_balloon
+    call CollisionCheck
+    and 1
+    jr z, .endEnemy
+    ; Collided
+    call DeathOfEnemy
+.endEnemy:
     ret
