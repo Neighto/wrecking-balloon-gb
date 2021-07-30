@@ -225,7 +225,7 @@ PopBalloonAnimation:
 .end:
     ret
 
-DeathOfPointBalloon:
+DeathOfPointBalloon::
     ; Death
     xor a ; ld a, 0
     ld hl, point_balloon_alive
@@ -242,78 +242,78 @@ DeathOfPointBalloon:
     ; TODO: for some reason I don't have to clear from point_balloon+4 ??
     ret
 
-CollisionCheck::
-    ld a, [collision_timer]
-	inc	a
-	ld [collision_timer], a
-	and	%00001100
-    jr nz, .end
+; CollisionCheck::
+;     ld a, [collision_timer]
+; 	inc	a
+; 	ld [collision_timer], a
+; 	and	%00001100
+;     jr nz, .end
 
-    ; Check if alive
-    ld a, [point_balloon_alive]
-    and 1
-    jr z, .end
+;     ; Check if alive
+;     ld a, [point_balloon_alive]
+;     and 1
+;     jr z, .end
 
-    ; CHECK Y
-    ld hl, point_balloon
-    ld a, [hl]
-    ld hl, player_cactus
-    cp a, [hl]
-    jr nc, .tryOtherY
-    ; cactus_y > balloon_y
-    add 16
-    cp a, [hl]
-    jr c, .tryOtherY
-    ; cactus_y < balloon_y'
-    jr .checkX
+;     ; CHECK Y
+;     ld hl, point_balloon
+;     ld a, [hl]
+;     ld hl, player_cactus
+;     cp a, [hl]
+;     jr nc, .tryOtherY
+;     ; cactus_y > balloon_y
+;     add 16
+;     cp a, [hl]
+;     jr c, .tryOtherY
+;     ; cactus_y < balloon_y'
+;     jr .checkX
 
-.tryOtherY
-    ; Also check OR cactus_y' !!!
-    ld hl, player_cactus
-    ld a, [hl]
-    add 16 ; a = cactus_y'
-    ld c, a
-    ld hl, point_balloon
-    ld a, [hl]
-    cp a, c
-    jr nc, .end
-    ; cactus_y'[c'] > balloon_y[a]
-    add 16
-    cp a, c
-    jr c, .end
-    ; cactus_y'[c'] < balloon_y'[a']
+; .tryOtherY
+;     ; Also check OR cactus_y' !!!
+;     ld hl, player_cactus
+;     ld a, [hl]
+;     add 16 ; a = cactus_y'
+;     ld c, a
+;     ld hl, point_balloon
+;     ld a, [hl]
+;     cp a, c
+;     jr nc, .end
+;     ; cactus_y'[c'] > balloon_y[a]
+;     add 16
+;     cp a, c
+;     jr c, .end
+;     ; cactus_y'[c'] < balloon_y'[a']
 
-.checkX:
-    ; CHECK X
-    ld hl, point_balloon+1
-    ld a, [hl]
-    ld hl, player_cactus+1
-    cp a, [hl]
-    jr nc, .tryOtherX
-    ; cactus_x > balloon_x
-    add 16
-    cp a, [hl]
-    jr c, .tryOtherX
-    ; cactus_x < balloon_x'
-    jr .doSomething
+; .checkX:
+;     ; CHECK X
+;     ld hl, point_balloon+1
+;     ld a, [hl]
+;     ld hl, player_cactus+1
+;     cp a, [hl]
+;     jr nc, .tryOtherX
+;     ; cactus_x > balloon_x
+;     add 16
+;     cp a, [hl]
+;     jr c, .tryOtherX
+;     ; cactus_x < balloon_x'
+;     jr .doSomething
 
-.tryOtherX:
-    ; Also check OR cactus_x' !!!
-    ld hl, player_cactus+1
-    ld a, [hl]
-    add 16 ; a = cactus_y'
-    ld c, a
-    ld hl, point_balloon+1
-    ld a, [hl]
-    cp a, c
-    jr nc, .end
-    ; cactus_x'[c'] > balloon_x[a]
-    add 16
-    cp a, c
-    jr c, .end
-    ; cactus_x'[c'] < balloon_x'[a']
+; .tryOtherX:
+;     ; Also check OR cactus_x' !!!
+;     ld hl, player_cactus+1
+;     ld a, [hl]
+;     add 16 ; a = cactus_y'
+;     ld c, a
+;     ld hl, point_balloon+1
+;     ld a, [hl]
+;     cp a, c
+;     jr nc, .end
+;     ; cactus_x'[c'] > balloon_x[a]
+;     add 16
+;     cp a, c
+;     jr c, .end
+;     ; cactus_x'[c'] < balloon_x'[a']
 
-.doSomething:
-    call DeathOfPointBalloon
-.end:
-    ret
+; .doSomething:
+;     call DeathOfPointBalloon
+; .end:
+;     ret

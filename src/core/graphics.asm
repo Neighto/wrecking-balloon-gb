@@ -55,6 +55,7 @@ LoadGameData::
 	; Initialize
 	call InitializePlayer
 	call InitializePointBalloon
+	call InitializeEnemy
 	ret
 
 SetupPalettes::

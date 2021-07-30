@@ -1,7 +1,9 @@
 ROM0 bank #0:
-  SECTION: $0000-$003d ($003e bytes) ["rom"]
-           $0000 = START
-           $0026 = GAMELOOP
+  SECTION: $0000-$0038 ($0039 bytes) ["graphics"]
+           $0000 = LoadGameData
+           $002e = SetupPalettes
+  SECTION: $0039-$003d ($0005 bytes) ["audio"]
+           $0039 = TurnOffAudio
   SECTION: $0040-$0040 ($0001 byte) ["vblank IRQ"]
            $0040 = VBLANK_VECT
   SECTION: $0041-$00b3 ($0073 bytes) ["joypad"]
@@ -15,12 +17,11 @@ ROM0 bank #0:
            $00a1 = JOY_SELECT
            $00a9 = JOY_START
            $00b1 = JOY_FALSE
-  SECTION: $00b4-$00e9 ($0036 bytes) ["graphics"]
-           $00b4 = LoadGameData
-           $00df = SetupPalettes
-  SECTION: $00ea-$00ff ($0016 bytes) ["scroll"]
-           $00ea = VBlankHScroll
-           $00fd = VBlankHScroll.end
+  SECTION: $00b4-$00f4 ($0041 bytes) ["rom"]
+           $00b4 = START
+           $00da = GAMELOOP
+  SECTION: $00f5-$00fc ($0008 bytes) ["timer"]
+           $00f5 = UpdateGlobalTimer
   SECTION: $0100-$014f ($0050 bytes) ["header"]
   SECTION: $0150-$038f ($0240 bytes) ["Background_Map"]
            $0150 = BackgroundMap
@@ -31,21 +32,26 @@ ROM0 bank #0:
   SECTION: $0450-$04af ($0060 bytes) ["Background_Tiles"]
            $0450 = BackgroundTiles
            $04b0 = BackgroundTilesEnd
-  SECTION: $04b0-$04cb ($001c bytes) ["OAM DMA routine"]
-           $04b0 = CopyDMARoutine
-           $04b7 = CopyDMARoutine.copy
-           $04be = DMARoutine
-           $04c2 = DMARoutine.wait
-           $04c6 = DMARoutineEnd
-           $04c6 = OAMDMA
-  SECTION: $04cc-$04d3 ($0008 bytes) ["timer"]
-           $04cc = UpdateGlobalTimer
-  SECTION: $04d4-$04d8 ($0005 bytes) ["audio"]
-           $04d4 = TurnOffAudio
-    SLACK: $3b29 bytes
+  SECTION: $04b0-$050d ($005e bytes) ["collision"]
+           $04b0 = CollisionCheck
+           $04d3 = CollisionCheck.tryOtherY
+           $04e6 = CollisionCheck.checkX
+           $04f7 = CollisionCheck.tryOtherX
+           $050a = CollisionCheck.collision
+           $050d = CollisionCheck.end
+  SECTION: $050e-$0529 ($001c bytes) ["OAM DMA routine"]
+           $050e = CopyDMARoutine
+           $0515 = CopyDMARoutine.copy
+           $051c = DMARoutine
+           $0520 = DMARoutine.wait
+           $0524 = DMARoutineEnd
+           $0524 = OAMDMA
+  SECTION: $052a-$053f ($0016 bytes) ["scroll"]
+           $052a = VBlankHScroll
+           $053d = VBlankHScroll.end
+    SLACK: $3ac5 bytes
 
 ROMX bank #1:
-  SECTION: $4000 (0 bytes) ["enemy"]
   SECTION: $4000-$4262 ($0263 bytes) ["player"]
            $4000 = UpdateBalloonPosition
            $4019 = UpdateCactusPosition
@@ -100,7 +106,7 @@ ROMX bank #1:
            $4256 = PlayerAnimate.bobDown
            $425e = PlayerAnimate.end
            $425f = PlayerUpdate
-  SECTION: $4263-$4416 ($01b4 bytes) ["point balloon"]
+  SECTION: $4263-$43b8 ($0156 bytes) ["point balloon"]
            $4263 = InitializePointBalloon
            $427f = InitializePointBalloon.nextSpawnPoint
            $429b = InitializePointBalloon.spawn0
@@ -121,34 +127,31 @@ ROMX bank #1:
            $438d = PopBalloonAnimation.clear
            $43a6 = PopBalloonAnimation.end
            $43a7 = DeathOfPointBalloon
-           $43b9 = CollisionCheck
-           $43dc = CollisionCheck.tryOtherY
-           $43ef = CollisionCheck.checkX
-           $4400 = CollisionCheck.tryOtherX
-           $4413 = CollisionCheck.doSomething
-           $4416 = CollisionCheck.end
-  SECTION: $4417-$4441 ($002b bytes) ["lcd"]
-           $4417 = LCD_OFF
-           $441c = LCD_ON
-           $4421 = WaitVBlank
-           $4428 = ClearMap
-           $442f = ClearMap.clear_map_loop
-  SECTION: $4442-$4469 ($0028 bytes) ["memory"]
-           $4442 = MEMCPY.memcpy_loop
-           $4442 = MEMCPY
-           $4446 = MEMCPY.memcpy_check_limit
-           $444c = ClearOAM
-           $4452 = ClearOAM.clear_oam_loop
-           $445b = ClearRAM
-           $4461 = ClearRAM.clear_ram_loop
-  SECTION: $446a-$4471 ($0008 bytes) ["math"]
-           $446a = RANDOM
-           $446b = RANDOM.seed
-           $446d = RANDOM.loop
-    SLACK: $3b8e bytes
+  SECTION: $43b9-$4406 ($004e bytes) ["enemy"]
+           $43b9 = InitializeEnemy
+           $4406 = EnemyUpdate
+  SECTION: $4407-$4431 ($002b bytes) ["lcd"]
+           $4407 = LCD_OFF
+           $440c = LCD_ON
+           $4411 = WaitVBlank
+           $4418 = ClearMap
+           $441f = ClearMap.clear_map_loop
+  SECTION: $4432-$4459 ($0028 bytes) ["memory"]
+           $4432 = MEMCPY.memcpy_loop
+           $4432 = MEMCPY
+           $4436 = MEMCPY.memcpy_check_limit
+           $443c = ClearOAM
+           $4442 = ClearOAM.clear_oam_loop
+           $444b = ClearRAM
+           $4451 = ClearRAM.clear_ram_loop
+  SECTION: $445a-$4461 ($0008 bytes) ["math"]
+           $445a = RANDOM
+           $445b = RANDOM.seed
+           $445d = RANDOM.loop
+    SLACK: $3b9e bytes
 
 WRAM0 bank #0:
-  SECTION: $c000-$c014 ($0015 bytes) ["RAM vars"]
+  SECTION: $c000-$c018 ($0019 bytes) ["RAM vars"]
            $c000 = scroll_timer
            $c001 = movement_timer
            $c002 = collision_timer
@@ -170,12 +173,18 @@ WRAM0 bank #0:
            $c012 = point_balloon_popping_frame
            $c013 = point_balloon_x
            $c014 = point_balloon_y
-  SECTION: $c100-$c123 ($0024 bytes) ["OAM vars"]
+           $c015 = enemy_x
+           $c016 = enemy_y
+           $c017 = enemy_cactus_x
+           $c018 = enemy_cactus_y
+  SECTION: $c100-$c133 ($0034 bytes) ["OAM vars"]
            $c100 = player_cactus
            $c108 = player_balloon
            $c110 = point_balloon
            $c114 = balloon_pop
-    SLACK: $0fc7 bytes
+           $c124 = enemy_cactus
+           $c12c = enemy_balloon
+    SLACK: $0fb3 bytes
 
 HRAM bank #0:
   SECTION: $ff80-$ff87 ($0008 bytes) ["OAM DMA"]
@@ -183,7 +192,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $04d7 bytes in 1 bank
-    ROMX: $0472 bytes in 1 bank
-    WRAM0: $0039 bytes in 1 bank
+    ROM0: $053b bytes in 1 bank
+    ROMX: $0462 bytes in 1 bank
+    WRAM0: $004d bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
