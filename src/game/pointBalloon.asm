@@ -206,11 +206,4 @@ DeathOfPointBalloon::
     ; Animation trigger
     ld hl, point_balloon_popping
     ld [hl], 1
-    ; Remove from sprites
-    ; ld hl, point_balloon
-    ; ld [hli], a
-    ; ld [hli], a
-    ; ld [hli], a
-    ; ld [hl], a
-    ; TODO: for some reason I don't have to clear from point_balloon+4 ??
     ret
