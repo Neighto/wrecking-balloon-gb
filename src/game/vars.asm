@@ -32,7 +32,6 @@ SECTION "RAM vars", WRAM0[$C000]
 SECTION "OAM vars", WRAM0[$C100]
 	player_cactus:: DS 4*2
 	player_balloon:: DS 4*2
-	point_balloon:: DS 4
-	balloon_pop:: DS 4*4
+	point_balloon:: DS 4*2
 	enemy_cactus:: DS 4*2
 	enemy_balloon:: DS 4*2
