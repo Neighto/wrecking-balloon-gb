@@ -29,7 +29,7 @@ CollisionCheck:
     ; Also check OR cactus_y'
     ld a, [hl]
     add 16
-    ld [hl], a
+    ld [hl], a ; dumb idea
 
     ld a, [bc]
     cp a, [hl]
@@ -79,7 +79,7 @@ CollisionCheck:
     ret
 
 CollisionUpdate::
-    ; Point Balloon
+    ; Point balloon
     ; Check if alive
     ld a, [point_balloon_alive]
     and 1
@@ -107,4 +107,18 @@ CollisionUpdate::
     ; Collided
     call DeathOfEnemy
 .endEnemy:
+    ; Enemy colliding with player
+    ; Check if alive
+    ld a, [player_alive]
+    and 1
+    jr z, .endEnemyHitPlayer
+    ; ; Check collision
+    ld bc, player_balloon
+    ld de, enemy_cactus
+    call CollisionCheck
+    ; and 1
+    ; jr z, .endEnemyHitPlayer
+    ; ; Collided
+    ; call DeathOfPlayer
+.endEnemyHitPlayer
     ret

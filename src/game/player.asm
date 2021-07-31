@@ -53,6 +53,26 @@ UpdatePlayerPosition:
 
 InitializePlayer::
   ; Set variables
+  xor a ; ld a, 0
+  ld hl, player_popping
+  ld [hl], a
+  ld hl, player_popping_frame
+  ld [hl], a
+  ld hl, player_pop_timer
+  ld [hl], a
+  ld hl, player_falling
+  ld [hl], a
+  ld hl, player_delay_falling_timer
+  ld [hl], a
+  ld hl, player_falling_timer
+  ld [hl], a
+  ld hl, player_respawn_timer
+  ld [hl], a
+  ld hl, player_alive
+  ld [hl], 1
+  ld hl, player_fall_speed
+  ld [hl], 1
+
   ld hl, player_x
   ld [hl], PLAYER_START_X
   ld hl, player_y
@@ -398,6 +418,125 @@ PlayerAnimate:
   ret
 
 PlayerUpdate::
-  call PlayerMovement
-  ; call PlayerAnimate ; Broken.. For now
+    ; Check if alive
+    ld a, [player_alive]
+    and 1
+    jr z, .popped
+    ; Get movement
+    call PlayerMovement
+    ; call PlayerAnimate ; Broken.. For now
+    ret
+.popped:
+    ; Can we respawn
+    ld a, [player_respawn_timer]
+    inc a
+    ld [player_respawn_timer], a
+    cp a, 255
+    jr nz, .respawnSkip
+    ; call SpawnEnemy
+.respawnSkip:
+    ; Check if we need to play popping animation
+    ld a, [player_popping]
+    and 1
+    jr z, .notPopping
+    ; call PopBalloonAnimation
+.notPopping:
+    ; Check if we need to drop the cactus
+    ld a, [player_falling]
+    and 1
+    jr z, .end
+    ; call CactusFalling
+.end
+  ret
+
+DeathOfPlayer::
+  ; Death
+  xor a ; ld a, 0
+  ld hl, player_alive
+  ld [hl], a
+  ; Animation trigger
+  inc a
+  ld hl, player_popping
+  ld [hl], a
+  ld hl, player_falling
+  ld [hl], a
+  ; Screaming cactus
+  ; ld hl, enemy_cactus+2
+  ; ld [hl], $8E
+  ; ld hl, enemy_cactus+6
+  ; ld [hl], $8E
+  ret
+
+PopBalloonAnimation:
+  ; Check what frame we are on
+  ld a, [player_popping_frame]
+  cp a, 0
+  jr z, .frame0
+
+  ld a, [player_pop_timer]
+  inc	a
+  ld [player_pop_timer], a
+  cp a, 30
+  jp nz, .end
+
+  ; Can do next frame
+  ; Reset timer
+  xor a ; ld a, 0
+  ld [player_pop_timer], a
+  ; Check what frame we are on
+  ld a, [player_popping_frame]
+  cp a, 1
+  jp z, .frame1
+  cp a, 2
+  jp z, .clear
+  ret
+
+.frame0:
+  ; Popped left - frame 0
+  ld hl, player_balloon+2
+  ld [hl], $88
+  inc l
+  ld [hl], %00000000
+  ; Popped right - frame 0
+  ld hl, player_balloon+6
+  ld [hl], $88
+  inc l
+  ld [hl], %00100000
+  ld hl, player_popping_frame
+  ld [hl], 1
+  ret
+.frame1:
+  ; Popped left - frame 1
+  ld hl, player_balloon+2
+  ld [hl], $8A
+  inc l
+  ld [hl], %00000000
+  ; Popped right - frame 1
+  ld hl, player_balloon+6
+  ld [hl], $8A
+  inc l
+  ld [hl], %00100000
+  ld hl, player_popping_frame
+  ld [hl], 2
+  ret
+.clear:
+  ; Remove sprites
+  xor a ; ld a, 0
+  ld hl, player_balloon
+  ld [hli], a
+  ld [hli], a
+  ld [hli], a
+  ld [hli], a
+  ld [hli], a
+  ld [hli], a
+  ld [hli], a
+  ld [hl], a
+  ; Reset variables
+  ld hl, player_popping
+  ld [hl], a
+  ld hl, player_pop_timer
+  ld [hl], a
+  ld hl, player_popping_frame
+  ld [hl], a
+.end:
   ret
