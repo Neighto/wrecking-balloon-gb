@@ -1,7 +1,7 @@
 # Simple makefile for assembling and linking a GB program.
 rwildcard		=	$(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2) $(filter $(subst *,%,$2),$d))
 BUILD_DIR		:=	build
-PROJECT_NAME	?=	wreckballoon
+PROJECT_NAME	?=	WRECKINGBALLOON
 OUTPUT			:=	$(BUILD_DIR)/$(PROJECT_NAME)
 SRC_DIR			:=	src
 INC_DIR			:=	include

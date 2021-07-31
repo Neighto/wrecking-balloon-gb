@@ -165,7 +165,7 @@ ROMX bank #1:
            $45b6 = InitializePointBalloon.spawnB
            $45ba = InitializePointBalloon.spawnC
            $45be = InitializePointBalloon.spawnD
-           $45c0 = InitializePointBalloon.EndNextSpawnPoint
+           $45c0 = InitializePointBalloon.endNextSpawnPoint
            $45e3 = SpawnPointBalloon
            $45eb = FloatPointBalloonUp
            $45f5 = PopBalloonAnimation
