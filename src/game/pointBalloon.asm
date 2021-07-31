@@ -29,6 +29,7 @@ InitializePointBalloon::
     ld [hl], a
     ld hl, balloon_pop_timer
     ld [hl], a
+    ld [point_balloon_respawn_timer], a
     
 .nextSpawnPoint:
     ; TODO: weird to set point_balloon_x to update x, instead of vice-versa
