@@ -145,7 +145,7 @@
 01:45b6 InitializePointBalloon.spawnB
 01:45ba InitializePointBalloon.spawnC
 01:45be InitializePointBalloon.spawnD
-01:45c0 InitializePointBalloon.EndNextSpawnPoint
+01:45c0 InitializePointBalloon.endNextSpawnPoint
 01:45e3 SpawnPointBalloon
 01:45eb FloatPointBalloonUp
 01:45f5 PopBalloonAnimation
