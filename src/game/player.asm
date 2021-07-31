@@ -121,6 +121,13 @@ InitializePlayer::
   ld [hl], %00100000
   ret
 
+SpawnPlayer:
+  ; Probably temporary
+  xor a ; ld a, 0
+  ld [player_respawn_timer], a    
+  call InitializePlayer
+  ret
+
 MoveBalloonUp:
   ld hl, player_y
   ld a, [player_speed]
@@ -417,54 +424,44 @@ PlayerAnimate:
 .end
   ret
 
-PlayerUpdate::
-    ; Check if alive
-    ld a, [player_alive]
-    and 1
-    jr z, .popped
-    ; Get movement
-    call PlayerMovement
-    ; call PlayerAnimate ; Broken.. For now
-    ret
-.popped:
-    ; Can we respawn
-    ld a, [player_respawn_timer]
-    inc a
-    ld [player_respawn_timer], a
-    cp a, 255
-    jr nz, .respawnSkip
-    ; call SpawnEnemy
-.respawnSkip:
-    ; Check if we need to play popping animation
-    ld a, [player_popping]
-    and 1
-    jr z, .notPopping
-    ; call PopBalloonAnimation
-.notPopping:
-    ; Check if we need to drop the cactus
-    ld a, [player_falling]
-    and 1
-    jr z, .end
-    ; call CactusFalling
-.end
+FallCactusDown:
+  ld hl, player_fall_speed
+  ld a, [player_delay_falling_timer]
+  inc a
+  ld [player_delay_falling_timer], a
+  cp a, 7
+  jr c, .skipAcceleration
+  xor a ; ld a, 0
+  ld [player_delay_falling_timer], a
+  ld a, [hl]
+  add a, a
+  ld [hl], a
+.skipAcceleration
+  ld a, [hl]
+  ld hl, player_cactus_y
+  call IncrementPosition
   ret
 
-DeathOfPlayer::
-  ; Death
-  xor a ; ld a, 0
-  ld hl, player_alive
-  ld [hl], a
-  ; Animation trigger
+CactusFalling:
+  ld a, [player_falling_timer]
   inc a
-  ld hl, player_popping
-  ld [hl], a
-  ld hl, player_falling
-  ld [hl], a
-  ; Screaming cactus
-  ; ld hl, enemy_cactus+2
-  ; ld [hl], $8E
-  ; ld hl, enemy_cactus+6
-  ; ld [hl], $8E
+  ld [player_falling_timer], a
+  and %00000101
+  jr nz, .end
+  ; Can we move cactus down
+  ld a, 160
+  ld hl, player_cactus_y
+  cp a, [hl]
+  jr c, .offScreen
+  call FallCactusDown
+  call UpdateCactusPosition
+  ret
+.offScreen:
+  ; Reset variables
+  ld hl, enemy_falling
+  ld [hl], 0
+  ; Here I "could" clear the sprite info, but no point
+.end
   ret
 
 PopBalloonAnimation:
@@ -539,4 +536,54 @@ PopBalloonAnimation:
   ld hl, player_popping_frame
   ld [hl], a
 .end:
+  ret
+
+PlayerUpdate::
+  ; Check if alive
+  ld a, [player_alive]
+  and 1
+  jr z, .popped
+  ; Get movement
+  call PlayerMovement
+  ; call PlayerAnimate ; Broken.. For now
+  ret
+.popped:
+  ; Can we respawn
+  ld a, [player_respawn_timer]
+  inc a
+  ld [player_respawn_timer], a
+  cp a, 255
+  jr nz, .respawnSkip
+  call SpawnPlayer
+.respawnSkip:
+  ; Check if we need to play popping animation
+  ld a, [player_popping]
+  and 1
+  jr z, .notPopping
+  call PopBalloonAnimation
+.notPopping:
+  ; Check if we need to drop the cactus
+  ld a, [player_falling]
+  and 1
+  jr z, .end
+  call CactusFalling
+.end
+  ret
+
+DeathOfPlayer::
+  ; Death
+  xor a ; ld a, 0
+  ld hl, player_alive
+  ld [hl], a
+  ; Animation trigger
+  inc a
+  ld hl, player_popping
+  ld [hl], a
+  ld hl, player_falling
+  ld [hl], a
+  ; Screaming cactus
+  ld hl, player_cactus+2
+  ld [hl], $90
+  ld hl, player_cactus+6
+  ld [hl], $90
   ret
