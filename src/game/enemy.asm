@@ -50,8 +50,6 @@ UpdateEnemyPosition:
 InitializeEnemy::
     ; Set variables
     xor a ; ld a, 0
-    ld hl, enemy_alive
-    ld [hl], 1
     ld hl, enemy_popping
     ld [hl], a
     ld hl, enemy_popping_frame
@@ -60,6 +58,14 @@ InitializeEnemy::
     ld [hl], a
     ld hl, enemy_falling
     ld [hl], a
+    ld hl, enemy_delay_falling_timer
+    ld [hl], a
+    ld hl, enemy_falling_timer
+    ld [hl], a
+    ld hl, enemy_alive
+    ld [hl], 1
+    ld hl, enemy_fall_speed
+    ld [hl], 1
     ld hl, enemy_x
     ld [hl], ENEMY_START_X
     ld hl, enemy_y
@@ -133,6 +139,24 @@ MoveBalloonDown:
 MoveCactusDown:
     ld hl, enemy_cactus_y
     ld a, 1
+    call IncrementPosition
+    ret
+
+FallCactusDown:
+    ld hl, enemy_fall_speed
+    ld a, [enemy_delay_falling_timer]
+    inc a
+    ld [enemy_delay_falling_timer], a
+    cp a, 3
+    jr nz, .skipAcceleration
+    ; ; xor a ; ld a, 0
+    ; ; ld [enemy_delay_falling_timer], a
+    ld a, [hl]
+    add a, a
+    ld [hl], a
+.skipAcceleration
+    ld a, [hl]
+    ld hl, enemy_cactus_y
     call IncrementPosition
     ret
 
@@ -230,18 +254,25 @@ PopBalloonAnimation:
     ret
 
 CactusFalling:
+    ld a, [enemy_falling_timer]
+    inc a
+    ld [enemy_falling_timer], a
+    and %00000101
+    jr nz, .end
+    ; Can we move cactus down
     ld a, 160
     ld hl, enemy_cactus_y
     cp a, [hl]
-    jr c, .end
-    call MoveCactusDown
+    jr c, .offScreen
+    call FallCactusDown
     call UpdateCactusPosition
     ret
-.end:
+.offScreen:
     ; Reset variables
     ld hl, enemy_falling
     ld [hl], 0
     ; Here I "could" clear the sprite info, but no point
+.end
     ret
 
 EnemyUpdate::
@@ -260,7 +291,7 @@ EnemyUpdate::
     ld a, [enemy_respawn_timer]
     inc a
     ld [enemy_respawn_timer], a
-    cp a, 250
+    cp a, 255
     jr nz, .respawnSkip
     call SpawnEnemy
 .respawnSkip:
@@ -289,4 +320,9 @@ DeathOfEnemy::
     ld [hl], a
     ld hl, enemy_falling
     ld [hl], a
+    ; Screaming cactus
+    ld hl, enemy_cactus+2
+    ld [hl], $8E
+    ld hl, enemy_cactus+6
+    ld [hl], $8E
     ret
