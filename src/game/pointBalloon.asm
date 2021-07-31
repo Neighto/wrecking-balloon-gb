@@ -3,16 +3,30 @@ SECTION "point balloon", ROMX
 ; Balloons will spawn and fly upward AND can be popped
 POINT_BALLOON_START_X EQU 120
 POINT_BALLOON_START_Y EQU 156
+POINT_BALLOON_SPAWN_A EQU 32
+POINT_BALLOON_SPAWN_B EQU 64
+POINT_BALLOON_SPAWN_C EQU 96
+POINT_BALLOON_SPAWN_D EQU 128
 
-; UpdatePointBalloonPosition:
-;     ; Update Y
-;     ld hl, point_balloon
-;     ld a, [point_balloon_y]
-;     ld [hli], a
-;     ; Update X
-;     ld a, [point_balloon_x]
-;     ld [hl], a
-;     ret
+
+UpdateBalloonPosition:
+    ld hl, point_balloon
+    ; Update Y
+    ld a, [point_balloon_y]
+    ld [hli], a
+    ; Update X
+    ld a, [point_balloon_x]
+    ld [hl], a
+  
+    ld hl, point_balloon+4
+    ; Update Y
+    ld a, [point_balloon_y]
+    ld [hli], a
+    ; Update X
+    ld a, [point_balloon_x]
+    add 8
+    ld [hl], a
+    ret
 
 InitializePointBalloon::
     ; Initialize variables
@@ -27,35 +41,34 @@ InitializePointBalloon::
     ld [hl], POINT_BALLOON_START_X
     ld hl, point_balloon_popping_frame
     ld [hl], a
-    ld hl, balloon_pop_timer
+    ld hl, point_balloon_pop_timer
     ld [hl], a
     ld [point_balloon_respawn_timer], a
     
 .nextSpawnPoint:
-    ; TODO: weird to set point_balloon_x to update x, instead of vice-versa
     ld hl, point_balloon_x
     ld a, 4
     call RANDOM
     cp a, 0
-    jp z, .spawn0
+    jp z, .spawnA
     cp a, 1
-    jp z, .spawn1
+    jp z, .spawnB
     cp a, 2
-    jp z, .spawn2
+    jp z, .spawnC
     cp a, 3
-    jp z, .spawn3
-.spawn0:
-    ld [hl], 32
-    jr .EndNextSpawnPoint
-.spawn1:
-    ld [hl], 64
-    jr .EndNextSpawnPoint
-.spawn2:
-    ld [hl], 96
-    jr .EndNextSpawnPoint
-.spawn3:
-    ld [hl], 128
-.EndNextSpawnPoint:
+    jp z, .spawnD
+.spawnA:
+    ld [hl], POINT_BALLOON_SPAWN_A
+    jr .endNextSpawnPoint
+.spawnB:
+    ld [hl], POINT_BALLOON_SPAWN_B
+    jr .endNextSpawnPoint
+.spawnC:
+    ld [hl], POINT_BALLOON_SPAWN_C
+    jr .endNextSpawnPoint
+.spawnD:
+    ld [hl], POINT_BALLOON_SPAWN_D
+.endNextSpawnPoint:
 
     ; Balloon left
     ld hl, point_balloon
@@ -87,14 +100,11 @@ SpawnPointBalloon:
     ret
 
 FloatPointBalloonUp:
-    ld hl, point_balloon
-    ld bc, point_balloon_y
-    ld a, [bc]
+    ld hl, point_balloon_y
+    ld a, [hl]
     dec a
     ld [hl], a
-    ld [bc], a
-    ld hl, point_balloon+4
-    ld [hl], a
+    call UpdateBalloonPosition
     ret
 
 PopBalloonAnimation:
@@ -103,16 +113,16 @@ PopBalloonAnimation:
     cp a, 0
     jr z, .frame0
 
-    ld a, [balloon_pop_timer]
+    ld a, [point_balloon_pop_timer]
 	inc	a
-	ld [balloon_pop_timer], a
+	ld [point_balloon_pop_timer], a
     cp a, 30
     jp nz, .end
 
     ; Can do next frame
     ; Reset timer
     xor a ; ld a, 0
-    ld [balloon_pop_timer], a
+    ld [point_balloon_pop_timer], a
     ; Check what frame we are on
     ld a, [point_balloon_popping_frame]
     cp a, 1
@@ -164,7 +174,7 @@ PopBalloonAnimation:
     ; Reset variables
     ld hl, point_balloon_popping
     ld [hl], a
-    ld hl, balloon_pop_timer
+    ld hl, point_balloon_pop_timer
     ld [hl], a
     ld hl, point_balloon_popping_frame
     ld [hl], a
