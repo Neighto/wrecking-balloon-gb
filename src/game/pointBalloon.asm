@@ -79,7 +79,7 @@ InitializePointBalloon::
     ld [hl], %00100000
     ret
 
-SpawnPointBalloon::
+SpawnPointBalloon:
     xor a ; ld a, 0
     ld [point_balloon_respawn_timer], a    
     call InitializePointBalloon

@@ -1,7 +1,7 @@
 SECTION "enemy", ROMX
 
-ENEMY_START_X EQU 20
-ENEMY_START_Y EQU 50
+ENEMY_START_X EQU 0
+ENEMY_START_Y EQU 55
 ENEMY_BALLOON_START_Y EQU (ENEMY_START_Y-16)
 
 UpdateBalloonPosition:
@@ -104,6 +104,12 @@ InitializeEnemy::
     ld [hl], $84
     inc l
     ld [hl], %00100000
+    ret
+
+SpawnEnemy:
+    xor a ; ld a, 0
+    ld [enemy_respawn_timer], a    
+    call InitializeEnemy
     ret
 
 MoveBalloonRight:
@@ -235,6 +241,7 @@ CactusFalling:
     ; Reset variables
     ld hl, enemy_falling
     ld [hl], 0
+    ; Here I "could" clear the sprite info, but no point
     ret
 
 EnemyUpdate::
@@ -250,12 +257,12 @@ EnemyUpdate::
     ret
 .popped:
     ; Can we respawn
-    ; ld a, [point_balloon_respawn_timer]
-    ; inc a
-    ; ld [point_balloon_respawn_timer], a
-    ; cp a, 150
-    ; jr nz, .respawnSkip
-    ; call SpawnPointBalloon
+    ld a, [enemy_respawn_timer]
+    inc a
+    ld [enemy_respawn_timer], a
+    cp a, 250
+    jr nz, .respawnSkip
+    call SpawnEnemy
 .respawnSkip:
     ; Check if we need to play popping animation
     ld a, [enemy_popping]

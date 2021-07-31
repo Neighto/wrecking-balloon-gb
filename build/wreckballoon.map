@@ -110,74 +110,75 @@ ROMX bank #1:
            $424e = PlayerAnimate.bobDown
            $4256 = PlayerAnimate.end
            $4257 = PlayerUpdate
-  SECTION: $425b-$43eb ($0191 bytes) ["enemy"]
+  SECTION: $425b-$4401 ($01a7 bytes) ["enemy"]
            $425b = UpdateBalloonPosition
            $4274 = UpdateCactusPosition
            $428d = UpdateEnemyPosition
            $4294 = InitializeEnemy
-           $42f7 = MoveBalloonRight
-           $4300 = MoveCactusRight
-           $4309 = MoveBalloonDown
-           $4312 = MoveCactusDown
-           $431b = MoveRight
-           $4322 = MoveDown
-           $4329 = MoveEnemy
-           $4336 = MoveEnemy.end
-           $4337 = PopBalloonAnimation
-           $435c = PopBalloonAnimation.frame0
-           $4372 = PopBalloonAnimation.frame1
-           $4388 = PopBalloonAnimation.clear
-           $43a0 = PopBalloonAnimation.end
-           $43a1 = CactusFalling
-           $43b0 = CactusFalling.end
-           $43b6 = EnemyUpdate
-           $43c8 = EnemyUpdate.popped
-           $43c8 = EnemyUpdate.respawnSkip
-           $43d2 = EnemyUpdate.notPopping
-           $43dc = EnemyUpdate.end
-           $43dd = DeathOfEnemy
-  SECTION: $43ec-$450b ($0120 bytes) ["point balloon"]
-           $43ec = InitializePointBalloon
-           $4408 = InitializePointBalloon.nextSpawnPoint
-           $4424 = InitializePointBalloon.spawn0
-           $4428 = InitializePointBalloon.spawn1
-           $442c = InitializePointBalloon.spawn2
-           $4430 = InitializePointBalloon.spawn3
-           $4432 = InitializePointBalloon.EndNextSpawnPoint
-           $4455 = SpawnPointBalloon
-           $445d = FloatPointBalloonUp
-           $446c = PopBalloonAnimation
-           $4491 = PopBalloonAnimation.frame0
-           $44a7 = PopBalloonAnimation.frame1
-           $44bd = PopBalloonAnimation.clear
-           $44d5 = PopBalloonAnimation.end
-           $44d6 = PointBalloonUpdate
-           $44e8 = PointBalloonUpdate.popped
-           $44f6 = PointBalloonUpdate.respawnSkip
-           $4500 = PointBalloonUpdate.end
-           $4501 = DeathOfPointBalloon
-  SECTION: $450c-$4536 ($002b bytes) ["lcd"]
-           $450c = LCD_OFF
-           $4511 = LCD_ON
-           $4516 = WaitVBlank
-           $451d = ClearMap
-           $4524 = ClearMap.clear_map_loop
-  SECTION: $4537-$455e ($0028 bytes) ["memory"]
-           $4537 = MEMCPY.memcpy_loop
-           $4537 = MEMCPY
-           $453b = MEMCPY.memcpy_check_limit
-           $4541 = ClearOAM
-           $4547 = ClearOAM.clear_oam_loop
-           $4550 = ClearRAM
-           $4556 = ClearRAM.clear_ram_loop
-  SECTION: $455f-$4566 ($0008 bytes) ["math"]
-           $455f = RANDOM
-           $4560 = RANDOM.seed
-           $4562 = RANDOM.loop
-    SLACK: $3a99 bytes
+           $42f7 = SpawnEnemy
+           $42ff = MoveBalloonRight
+           $4308 = MoveCactusRight
+           $4311 = MoveBalloonDown
+           $431a = MoveCactusDown
+           $4323 = MoveRight
+           $432a = MoveDown
+           $4331 = MoveEnemy
+           $433e = MoveEnemy.end
+           $433f = PopBalloonAnimation
+           $4364 = PopBalloonAnimation.frame0
+           $437a = PopBalloonAnimation.frame1
+           $4390 = PopBalloonAnimation.clear
+           $43a8 = PopBalloonAnimation.end
+           $43a9 = CactusFalling
+           $43b8 = CactusFalling.end
+           $43be = EnemyUpdate
+           $43d0 = EnemyUpdate.popped
+           $43de = EnemyUpdate.respawnSkip
+           $43e8 = EnemyUpdate.notPopping
+           $43f2 = EnemyUpdate.end
+           $43f3 = DeathOfEnemy
+  SECTION: $4402-$4521 ($0120 bytes) ["point balloon"]
+           $4402 = InitializePointBalloon
+           $441e = InitializePointBalloon.nextSpawnPoint
+           $443a = InitializePointBalloon.spawn0
+           $443e = InitializePointBalloon.spawn1
+           $4442 = InitializePointBalloon.spawn2
+           $4446 = InitializePointBalloon.spawn3
+           $4448 = InitializePointBalloon.EndNextSpawnPoint
+           $446b = SpawnPointBalloon
+           $4473 = FloatPointBalloonUp
+           $4482 = PopBalloonAnimation
+           $44a7 = PopBalloonAnimation.frame0
+           $44bd = PopBalloonAnimation.frame1
+           $44d3 = PopBalloonAnimation.clear
+           $44eb = PopBalloonAnimation.end
+           $44ec = PointBalloonUpdate
+           $44fe = PointBalloonUpdate.popped
+           $450c = PointBalloonUpdate.respawnSkip
+           $4516 = PointBalloonUpdate.end
+           $4517 = DeathOfPointBalloon
+  SECTION: $4522-$454c ($002b bytes) ["lcd"]
+           $4522 = LCD_OFF
+           $4527 = LCD_ON
+           $452c = WaitVBlank
+           $4533 = ClearMap
+           $453a = ClearMap.clear_map_loop
+  SECTION: $454d-$4574 ($0028 bytes) ["memory"]
+           $454d = MEMCPY.memcpy_loop
+           $454d = MEMCPY
+           $4551 = MEMCPY.memcpy_check_limit
+           $4557 = ClearOAM
+           $455d = ClearOAM.clear_oam_loop
+           $4566 = ClearRAM
+           $456c = ClearRAM.clear_ram_loop
+  SECTION: $4575-$457c ($0008 bytes) ["math"]
+           $4575 = RANDOM
+           $4576 = RANDOM.seed
+           $4578 = RANDOM.loop
+    SLACK: $3a83 bytes
 
 WRAM0 bank #0:
-  SECTION: $c000-$c01d ($001e bytes) ["RAM vars"]
+  SECTION: $c000-$c01e ($001f bytes) ["RAM vars"]
            $c000 = scroll_timer
            $c001 = movement_timer
            $c002 = collision_timer
@@ -208,13 +209,14 @@ WRAM0 bank #0:
            $c01b = enemy_popping
            $c01c = enemy_popping_frame
            $c01d = enemy_falling
+           $c01e = enemy_respawn_timer
   SECTION: $c100-$c127 ($0028 bytes) ["OAM vars"]
            $c100 = player_cactus
            $c108 = player_balloon
            $c110 = point_balloon
            $c118 = enemy_cactus
            $c120 = enemy_balloon
-    SLACK: $0fba bytes
+    SLACK: $0fb9 bytes
 
 HRAM bank #0:
   SECTION: $ff80-$ff87 ($0008 bytes) ["OAM DMA"]
@@ -223,6 +225,6 @@ HRAM bank #0:
 
 USED:
     ROM0: $055c bytes in 1 bank
-    ROMX: $0567 bytes in 1 bank
-    WRAM0: $0046 bytes in 1 bank
+    ROMX: $057d bytes in 1 bank
+    WRAM0: $0047 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
