@@ -2,7 +2,7 @@ SECTION "collision", ROM0
 
 CollisionCheck:
     ; bc = argument for target colliding with player cactus
-    ; de = argument for collider
+    ; hl = argument for collider
     ; d = used for temporary value
     ; a = return result
 
@@ -13,8 +13,6 @@ CollisionCheck:
     jr nz, .end
 
     ; CHECK Y
-    ld h, d
-    ld l, e
     ld a, [bc]
     cp a, [hl]
     jr nc, .tryOtherY
@@ -29,21 +27,19 @@ CollisionCheck:
     ; Also check OR cactus_y'
     ld a, [hl]
     add 16
-    ld [hl], a ; dumb idea
+    ld d, a
 
     ld a, [bc]
-    cp a, [hl]
+    cp a, d
     jr nc, .end
     ; cactus_y'[c'] > balloon_y[a]
     add 16
-    cp a, [hl]
+    cp a, d
     jr c, .end
     ; cactus_y'[c'] < balloon_y'[a']
 
 .checkX:
     ; CHECK X
-    ld h, d
-    ld l, e
     inc l ; collider+1
     inc c ; target+1
     ld a, [bc]
@@ -60,14 +56,14 @@ CollisionCheck:
     ; Also check OR cactus_x'
     ld a, [hl]
     add 16
-    ld [hl], a
+    ld d, a
 
     ld a, [bc]
-    cp a, [hl]
+    cp a, d
     jr nc, .end
     ; cactus_x'[c'] > balloon_x[a]
     add 16
-    cp a, [hl]
+    cp a, d
     jr c, .end
     ; cactus_x'[c'] < balloon_x'[a']
 
@@ -86,7 +82,7 @@ CollisionUpdate::
     jr z, .endPointBalloon
     ; Check collision
     ld bc, point_balloon
-    ld de, player_cactus
+    ld hl, player_cactus
     call CollisionCheck
     and 1
     jr z, .endPointBalloon
@@ -100,7 +96,7 @@ CollisionUpdate::
     jr z, .endEnemy
     ; Check collision
     ld bc, enemy_balloon
-    ld de, player_cactus
+    ld hl, player_cactus
     call CollisionCheck
     and 1
     jr z, .endEnemy
@@ -114,11 +110,11 @@ CollisionUpdate::
     jr z, .endEnemyHitPlayer
     ; ; Check collision
     ld bc, player_balloon
-    ld de, enemy_cactus
+    ld hl, enemy_cactus
     call CollisionCheck
-    ; and 1
-    ; jr z, .endEnemyHitPlayer
-    ; ; Collided
-    ; call DeathOfPlayer
+    and 1
+    jr z, .endEnemyHitPlayer
+    ; Collided
+    call DeathOfPlayer
 .endEnemyHitPlayer
     ret
