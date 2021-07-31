@@ -157,45 +157,46 @@ ROMX bank #1:
            $453a = EnemyUpdate.notPopping
            $4544 = EnemyUpdate.end
            $4545 = DeathOfEnemy
-  SECTION: $455e-$4680 ($0123 bytes) ["point balloon"]
-           $455e = InitializePointBalloon
-           $457d = InitializePointBalloon.nextSpawnPoint
-           $4599 = InitializePointBalloon.spawn0
-           $459d = InitializePointBalloon.spawn1
-           $45a1 = InitializePointBalloon.spawn2
-           $45a5 = InitializePointBalloon.spawn3
-           $45a7 = InitializePointBalloon.EndNextSpawnPoint
-           $45ca = SpawnPointBalloon
-           $45d2 = FloatPointBalloonUp
-           $45e1 = PopBalloonAnimation
-           $4606 = PopBalloonAnimation.frame0
-           $461c = PopBalloonAnimation.frame1
-           $4632 = PopBalloonAnimation.clear
-           $464a = PopBalloonAnimation.end
-           $464b = PointBalloonUpdate
-           $465d = PointBalloonUpdate.popped
-           $466b = PointBalloonUpdate.respawnSkip
-           $4675 = PointBalloonUpdate.end
-           $4676 = DeathOfPointBalloon
-  SECTION: $4681-$46ab ($002b bytes) ["lcd"]
-           $4681 = LCD_OFF
-           $4686 = LCD_ON
-           $468b = WaitVBlank
-           $4692 = ClearMap
-           $4699 = ClearMap.clear_map_loop
-  SECTION: $46ac-$46d3 ($0028 bytes) ["memory"]
-           $46ac = MEMCPY.memcpy_loop
-           $46ac = MEMCPY
-           $46b0 = MEMCPY.memcpy_check_limit
-           $46b6 = ClearOAM
-           $46bc = ClearOAM.clear_oam_loop
-           $46c5 = ClearRAM
-           $46cb = ClearRAM.clear_ram_loop
-  SECTION: $46d4-$46db ($0008 bytes) ["math"]
-           $46d4 = RANDOM
-           $46d5 = RANDOM.seed
-           $46d7 = RANDOM.loop
-    SLACK: $3924 bytes
+  SECTION: $455e-$4694 ($0137 bytes) ["point balloon"]
+           $455e = UpdateBalloonPosition
+           $4577 = InitializePointBalloon
+           $4596 = InitializePointBalloon.nextSpawnPoint
+           $45b2 = InitializePointBalloon.spawnA
+           $45b6 = InitializePointBalloon.spawnB
+           $45ba = InitializePointBalloon.spawnC
+           $45be = InitializePointBalloon.spawnD
+           $45c0 = InitializePointBalloon.EndNextSpawnPoint
+           $45e3 = SpawnPointBalloon
+           $45eb = FloatPointBalloonUp
+           $45f5 = PopBalloonAnimation
+           $461a = PopBalloonAnimation.frame0
+           $4630 = PopBalloonAnimation.frame1
+           $4646 = PopBalloonAnimation.clear
+           $465e = PopBalloonAnimation.end
+           $465f = PointBalloonUpdate
+           $4671 = PointBalloonUpdate.popped
+           $467f = PointBalloonUpdate.respawnSkip
+           $4689 = PointBalloonUpdate.end
+           $468a = DeathOfPointBalloon
+  SECTION: $4695-$46bf ($002b bytes) ["lcd"]
+           $4695 = LCD_OFF
+           $469a = LCD_ON
+           $469f = WaitVBlank
+           $46a6 = ClearMap
+           $46ad = ClearMap.clear_map_loop
+  SECTION: $46c0-$46e7 ($0028 bytes) ["memory"]
+           $46c0 = MEMCPY.memcpy_loop
+           $46c0 = MEMCPY
+           $46c4 = MEMCPY.memcpy_check_limit
+           $46ca = ClearOAM
+           $46d0 = ClearOAM.clear_oam_loop
+           $46d9 = ClearRAM
+           $46df = ClearRAM.clear_ram_loop
+  SECTION: $46e8-$46ef ($0008 bytes) ["math"]
+           $46e8 = RANDOM
+           $46e9 = RANDOM.seed
+           $46eb = RANDOM.loop
+    SLACK: $3910 bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c02a ($002b bytes) ["RAM vars"]
@@ -227,7 +228,7 @@ WRAM0 bank #0:
            $c019 = point_balloon_alive
            $c01a = point_balloon_popping
            $c01b = point_balloon_popping_frame
-           $c01c = balloon_pop_timer
+           $c01c = point_balloon_pop_timer
            $c01d = point_balloon_respawn_timer
            $c01e = enemy_x
            $c01f = enemy_y
@@ -257,6 +258,6 @@ HRAM bank #0:
 
 USED:
     ROM0: $05ce bytes in 1 bank
-    ROMX: $06dc bytes in 1 bank
+    ROMX: $06f0 bytes in 1 bank
     WRAM0: $0053 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

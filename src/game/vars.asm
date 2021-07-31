@@ -29,7 +29,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	point_balloon_alive:: DB
 	point_balloon_popping:: DB
 	point_balloon_popping_frame:: DB
-	balloon_pop_timer:: DB
+	point_balloon_pop_timer:: DB
 	point_balloon_respawn_timer:: DB
 
 	enemy_x:: DB
