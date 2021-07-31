@@ -147,10 +147,10 @@ FallCactusDown:
     ld a, [enemy_delay_falling_timer]
     inc a
     ld [enemy_delay_falling_timer], a
-    cp a, 3
-    jr nz, .skipAcceleration
-    ; ; xor a ; ld a, 0
-    ; ; ld [enemy_delay_falling_timer], a
+    cp a, 7
+    jr c, .skipAcceleration
+    xor a ; ld a, 0
+    ld [enemy_delay_falling_timer], a
     ld a, [hl]
     add a, a
     ld [hl], a
