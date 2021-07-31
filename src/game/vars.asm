@@ -28,6 +28,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	enemy_alive:: DB
 	enemy_popping:: DB
 	enemy_popping_frame:: DB
+	enemy_falling:: DB
 
 SECTION "OAM vars", WRAM0[$C100]
 	player_cactus:: DS 4*2
