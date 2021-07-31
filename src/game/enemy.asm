@@ -58,6 +58,8 @@ InitializeEnemy::
     ld [hl], a
     ld hl, enemy_pop_timer
     ld [hl], a
+    ld hl, enemy_falling
+    ld [hl], a
     ld hl, enemy_x
     ld [hl], ENEMY_START_X
     ld hl, enemy_y
@@ -116,12 +118,33 @@ MoveCactusRight:
     call IncrementPosition
     ret
 
+MoveBalloonDown:
+    ld hl, enemy_y
+    ld a, 1
+    call IncrementPosition
+    ret
+
+MoveCactusDown:
+    ld hl, enemy_cactus_y
+    ld a, 1
+    call IncrementPosition
+    ret
+
+MoveRight:
+    call MoveBalloonRight
+    call MoveCactusRight
+    ret
+
+MoveDown:
+    call MoveBalloonDown
+    call MoveCactusDown
+    ret
+
 MoveEnemy:
     ld a, [movement_timer]
 	and	%00000111
 	jr nz, .end
-    call MoveBalloonRight
-    call MoveCactusRight
+    call MoveRight
     call UpdateEnemyPosition
 .end:
     ret
@@ -200,6 +223,20 @@ PopBalloonAnimation:
 .end:
     ret
 
+CactusFalling:
+    ld a, 160
+    ld hl, enemy_cactus_y
+    cp a, [hl]
+    jr c, .end
+    call MoveCactusDown
+    call UpdateCactusPosition
+    ret
+.end:
+    ; Reset variables
+    ld hl, enemy_falling
+    ld [hl], 0
+    ret
+
 EnemyUpdate::
     ; Check if alive
     ld a, [enemy_alive]
@@ -223,8 +260,14 @@ EnemyUpdate::
     ; Check if we need to play popping animation
     ld a, [enemy_popping]
     and 1
-    jr z, .end
+    jr z, .notPopping
     call PopBalloonAnimation
+.notPopping:
+    ; Check if we need to drop the cactus
+    ld a, [enemy_falling]
+    and 1
+    jr z, .end
+    call CactusFalling
 .end
     ret
 
@@ -234,6 +277,9 @@ DeathOfEnemy::
     ld hl, enemy_alive
     ld [hl], a
     ; Animation trigger
+    inc a
     ld hl, enemy_popping
-    ld [hl], 1
+    ld [hl], a
+    ld hl, enemy_falling
+    ld [hl], a
     ret
