@@ -62,6 +62,8 @@ InitializeEnemy::
     ld [hl], a
     ld hl, enemy_falling_timer
     ld [hl], a
+    ld hl, enemy_respawn_timer
+    ld [hl], a
     ld hl, enemy_alive
     ld [hl], 1
     ld hl, enemy_fall_speed
