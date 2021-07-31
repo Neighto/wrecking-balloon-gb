@@ -6,22 +6,27 @@ ROM0 bank #0:
            $0039 = TurnOffAudio
   SECTION: $0040-$0040 ($0001 byte) ["vblank IRQ"]
            $0040 = VBLANK_VECT
-  SECTION: $0041-$00b3 ($0073 bytes) ["joypad"]
-           $0041 = ReadInput
-           $0071 = JOY_RIGHT
-           $0079 = JOY_LEFT
-           $0081 = JOY_UP
-           $0089 = JOY_DOWN
-           $0091 = JOY_A
-           $0099 = JOY_B
-           $00a1 = JOY_SELECT
-           $00a9 = JOY_START
-           $00b1 = JOY_FALSE
-  SECTION: $00b4-$00f4 ($0041 bytes) ["rom"]
-           $00b4 = START
-           $00da = GAMELOOP
-  SECTION: $00f5-$00fc ($0008 bytes) ["timer"]
-           $00f5 = UpdateGlobalTimer
+  SECTION: $0041-$00c9 ($0089 bytes) ["collision"]
+           $0041 = CollisionCheck
+           $0057 = CollisionCheck.tryOtherY
+           $0064 = CollisionCheck.checkX
+           $0071 = CollisionCheck.tryOtherX
+           $007e = CollisionCheck.collision
+           $0081 = CollisionCheck.end
+           $0084 = CollisionUpdate
+           $009b = CollisionUpdate.endPointBalloon
+           $00b2 = CollisionUpdate.endEnemy
+           $00c9 = CollisionUpdate.endEnemyHitPlayer
+  SECTION: $00ca-$00e5 ($001c bytes) ["OAM DMA routine"]
+           $00ca = CopyDMARoutine
+           $00d1 = CopyDMARoutine.copy
+           $00d8 = DMARoutine
+           $00dc = DMARoutine.wait
+           $00e0 = DMARoutineEnd
+           $00e0 = OAMDMA
+  SECTION: $00e6-$00fb ($0016 bytes) ["scroll"]
+           $00e6 = VBlankHScroll
+           $00f9 = VBlankHScroll.end
   SECTION: $0100-$014f ($0050 bytes) ["header"]
   SECTION: $0150-$038f ($0240 bytes) ["Background_Map"]
            $0150 = BackgroundMap
@@ -29,34 +34,29 @@ ROM0 bank #0:
   SECTION: $0390-$048f ($0100 bytes) ["Cactus_Tiles"]
            $0390 = CactusTiles
            $0490 = CactusTilesEnd
-  SECTION: $0490-$04fe ($006f bytes) ["collision"]
-           $0490 = CollisionCheck
-           $04a8 = CollisionCheck.tryOtherY
-           $04b5 = CollisionCheck.checkX
-           $04c4 = CollisionCheck.tryOtherX
-           $04d1 = CollisionCheck.collision
-           $04d4 = CollisionCheck.end
-           $04d7 = CollisionUpdate
-           $04ee = CollisionUpdate.endPointBalloon
-           $04ee = CollisionUpdate.endEnemy
-           $04fe = CollisionUpdate.endEnemyHitPlayer
-  SECTION: $04ff-$055e ($0060 bytes) ["Background_Tiles"]
-           $04ff = BackgroundTiles
-           $055f = BackgroundTilesEnd
-  SECTION: $055f-$057a ($001c bytes) ["OAM DMA routine"]
-           $055f = CopyDMARoutine
-           $0566 = CopyDMARoutine.copy
-           $056d = DMARoutine
-           $0571 = DMARoutine.wait
-           $0575 = DMARoutineEnd
-           $0575 = OAMDMA
-  SECTION: $057b-$0590 ($0016 bytes) ["scroll"]
-           $057b = VBlankHScroll
-           $058e = VBlankHScroll.end
-  SECTION: $0591-$0598 ($0008 bytes) ["tools"]
-           $0591 = IncrementPosition
-           $0594 = DecrementPosition
-    SLACK: $3a6c bytes
+  SECTION: $0490-$0502 ($0073 bytes) ["joypad"]
+           $0490 = ReadInput
+           $04c0 = JOY_RIGHT
+           $04c8 = JOY_LEFT
+           $04d0 = JOY_UP
+           $04d8 = JOY_DOWN
+           $04e0 = JOY_A
+           $04e8 = JOY_B
+           $04f0 = JOY_SELECT
+           $04f8 = JOY_START
+           $0500 = JOY_FALSE
+  SECTION: $0503-$0562 ($0060 bytes) ["Background_Tiles"]
+           $0503 = BackgroundTiles
+           $0563 = BackgroundTilesEnd
+  SECTION: $0563-$05a3 ($0041 bytes) ["rom"]
+           $0563 = START
+           $0589 = GAMELOOP
+  SECTION: $05a4-$05ab ($0008 bytes) ["timer"]
+           $05a4 = UpdateGlobalTimer
+  SECTION: $05ac-$05b3 ($0008 bytes) ["tools"]
+           $05ac = IncrementPosition
+           $05af = DecrementPosition
+    SLACK: $3a52 bytes
 
 ROMX bank #1:
   SECTION: $4000-$431b ($031c bytes) ["player"]
@@ -250,7 +250,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $0594 bytes in 1 bank
+    ROM0: $05ae bytes in 1 bank
     ROMX: $0684 bytes in 1 bank
     WRAM0: $0053 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
