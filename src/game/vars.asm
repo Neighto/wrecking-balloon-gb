@@ -30,6 +30,9 @@ SECTION "RAM vars", WRAM0[$C000]
 	enemy_popping_frame:: DB
 	enemy_falling:: DB
 	enemy_respawn_timer:: DB
+	enemy_falling_timer:: DB
+	enemy_fall_speed:: DB
+	enemy_delay_falling_timer:: DB
 
 SECTION "OAM vars", WRAM0[$C100]
 	player_cactus:: DS 4*2

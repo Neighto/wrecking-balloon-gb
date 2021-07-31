@@ -87,7 +87,7 @@ InitializePlayer::
   inc l
   ld [hl], PLAYER_START_X
   inc l
-  ld [hl], $80
+  ld [hl], $80 ;$8C
   inc l
   ld [hl], %00000000
   ; Cactus right
@@ -96,7 +96,7 @@ InitializePlayer::
   inc l
   ld [hl], PLAYER_START_X+8
   inc l
-  ld [hl], $80
+  ld [hl], $80 ;$8C
   inc l
   ld [hl], %00100000
   ret
