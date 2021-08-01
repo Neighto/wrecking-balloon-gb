@@ -42,6 +42,13 @@ ClearMap::
     pop hl
     ret
 
+SetupWindow::
+    ld a, 136
+	ld [rWY], a
+	ld a, 7
+	ld [rWX], a
+    ret
+
 SECTION "scroll", ROM0
 VBlankHScroll::
     di ; TODO: might not need this?

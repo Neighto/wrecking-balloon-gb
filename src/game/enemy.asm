@@ -7,6 +7,7 @@ ENEMY_SPAWN_A EQU 32
 ENEMY_SPAWN_B EQU 64
 ENEMY_SPAWN_C EQU 96
 ENEMY_SPAWN_D EQU 128
+ENEMY_POINTS EQU 10
 
 UpdateBalloonPosition:
     ld hl, enemy_balloon
@@ -365,8 +366,11 @@ DeathOfEnemy::
     xor a ; ld a, 0
     ld hl, enemy_alive
     ld [hl], a
+    ; Points
+    ld b, ENEMY_POINTS
+    call AddPoints
     ; Animation trigger
-    inc a
+    ld a, 1
     ld hl, enemy_popping
     ld [hl], a
     ld hl, enemy_falling

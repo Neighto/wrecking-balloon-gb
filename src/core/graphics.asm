@@ -62,7 +62,6 @@ LoadGameData::
 	ld hl, $9C00
 	ld de, WindowMapEnd - WindowMap
 	call MEMCPY
-	call RefreshWindowLayer
 	; Initialize
 	call InitializePlayer
 	call InitializePointBalloon
@@ -77,8 +76,7 @@ SetupPalettes::
     ldh [rOBP1], a
     ret
 
-RefreshWindowLayer:
-
+RefreshScore::
 	; First digit
 	ld a, [score]
 	ld b, 10
@@ -108,7 +106,9 @@ RefreshWindowLayer:
 	add $47
 	ld hl, $9C09
 	ld [hl], a
+	ret
 
+RefreshLives::
 	ld a, [player_lives]
 	add $47 ; Tile number for 0
 	ld hl, $9C10
