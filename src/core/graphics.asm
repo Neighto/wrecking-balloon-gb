@@ -47,10 +47,20 @@ LoadGameData::
 	ld hl, $9000
 	ld de, BackgroundTilesEnd - BackgroundTiles
 	call MEMCPY
+	; Copy the window tiles
+	ld bc, WindowTiles
+	ld hl, $9400
+	ld de, WindowTilesEnd - WindowTiles
+	call MEMCPY
 	; Copy the tilemap
 	ld bc, BackgroundMap
 	ld hl, $9800
 	ld de, BackgroundMapEnd - BackgroundMap
+	call MEMCPY
+	; Copy the window
+	ld bc, WindowMap
+	ld hl, $9800
+	ld de, WindowMapEnd - WindowMap
 	call MEMCPY
 	; Initialize
 	call InitializePlayer

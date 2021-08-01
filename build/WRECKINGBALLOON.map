@@ -1,9 +1,18 @@
 ROM0 bank #0:
-  SECTION: $0000-$0038 ($0039 bytes) ["graphics"]
-           $0000 = LoadGameData
-           $002e = SetupPalettes
-  SECTION: $0039-$003d ($0005 bytes) ["audio"]
-           $0039 = TurnOffAudio
+  SECTION: $0000-$001b ($001c bytes) ["OAM DMA routine"]
+           $0000 = CopyDMARoutine
+           $0007 = CopyDMARoutine.copy
+           $000e = DMARoutine
+           $0012 = DMARoutine.wait
+           $0016 = DMARoutineEnd
+           $0016 = OAMDMA
+  SECTION: $001c-$0031 ($0016 bytes) ["scroll"]
+           $001c = VBlankHScroll
+           $002f = VBlankHScroll.end
+  SECTION: $0032-$0039 ($0008 bytes) ["timer"]
+           $0032 = UpdateGlobalTimer
+  SECTION: $003a-$003e ($0005 bytes) ["audio"]
+           $003a = TurnOffAudio
   SECTION: $0040-$0040 ($0001 byte) ["vblank IRQ"]
            $0040 = VBLANK_VECT
   SECTION: $0041-$00c9 ($0089 bytes) ["collision"]
@@ -17,46 +26,43 @@ ROM0 bank #0:
            $009b = CollisionUpdate.endPointBalloon
            $00b2 = CollisionUpdate.endEnemy
            $00c9 = CollisionUpdate.endEnemyHitPlayer
-  SECTION: $00ca-$00e5 ($001c bytes) ["OAM DMA routine"]
-           $00ca = CopyDMARoutine
-           $00d1 = CopyDMARoutine.copy
-           $00d8 = DMARoutine
-           $00dc = DMARoutine.wait
-           $00e0 = DMARoutineEnd
-           $00e0 = OAMDMA
-  SECTION: $00e6-$00fb ($0016 bytes) ["scroll"]
-           $00e6 = VBlankHScroll
-           $00f9 = VBlankHScroll.end
+  SECTION: $00ca-$00dd ($0014 bytes) ["window map"]
+           $00ca = WindowMap
+           $00de = WindowMapEnd
+  SECTION: $00de-$00e5 ($0008 bytes) ["tools"]
+           $00de = IncrementPosition
+           $00e1 = DecrementPosition
   SECTION: $0100-$014f ($0050 bytes) ["header"]
-  SECTION: $0150-$038f ($0240 bytes) ["Background_Map"]
+  SECTION: $0150-$038f ($0240 bytes) ["background map"]
            $0150 = BackgroundMap
            $0390 = BackgroundMapEnd
-  SECTION: $0390-$04af ($0120 bytes) ["Cactus_Tiles"]
+  SECTION: $0390-$04af ($0120 bytes) ["cactus tiles"]
            $0390 = CactusTiles
            $04b0 = CactusTilesEnd
-  SECTION: $04b0-$0522 ($0073 bytes) ["joypad"]
-           $04b0 = ReadInput
-           $04e0 = JOY_RIGHT
-           $04e8 = JOY_LEFT
-           $04f0 = JOY_UP
-           $04f8 = JOY_DOWN
-           $0500 = JOY_A
-           $0508 = JOY_B
-           $0510 = JOY_SELECT
-           $0518 = JOY_START
-           $0520 = JOY_FALSE
-  SECTION: $0523-$0582 ($0060 bytes) ["Background_Tiles"]
-           $0523 = BackgroundTiles
-           $0583 = BackgroundTilesEnd
-  SECTION: $0583-$05c3 ($0041 bytes) ["rom"]
-           $0583 = START
-           $05a9 = GAMELOOP
-  SECTION: $05c4-$05cb ($0008 bytes) ["timer"]
-           $05c4 = UpdateGlobalTimer
-  SECTION: $05cc-$05d3 ($0008 bytes) ["tools"]
-           $05cc = IncrementPosition
-           $05cf = DecrementPosition
-    SLACK: $3a32 bytes
+  SECTION: $04b0-$05bf ($0110 bytes) ["window tiles"]
+           $04b0 = WindowTiles
+           $05c0 = WindowTilesEnd
+  SECTION: $05c0-$0632 ($0073 bytes) ["joypad"]
+           $05c0 = ReadInput
+           $05f0 = JOY_RIGHT
+           $05f8 = JOY_LEFT
+           $0600 = JOY_UP
+           $0608 = JOY_DOWN
+           $0610 = JOY_A
+           $0618 = JOY_B
+           $0620 = JOY_SELECT
+           $0628 = JOY_START
+           $0630 = JOY_FALSE
+  SECTION: $0633-$0692 ($0060 bytes) ["background tiles"]
+           $0633 = BackgroundTiles
+           $0693 = BackgroundTilesEnd
+  SECTION: $0693-$06e3 ($0051 bytes) ["graphics"]
+           $0693 = LoadGameData
+           $06d9 = SetupPalettes
+  SECTION: $06e4-$072b ($0048 bytes) ["rom"]
+           $06e4 = START
+           $0711 = GAMELOOP
+    SLACK: $38ef bytes
 
 ROMX bank #1:
   SECTION: $4000-$4373 ($0374 bytes) ["player"]
@@ -263,7 +269,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $05ce bytes in 1 bank
+    ROM0: $0711 bytes in 1 bank
     ROMX: $0746 bytes in 1 bank
     WRAM0: $0053 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
