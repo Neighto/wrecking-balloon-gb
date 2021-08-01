@@ -55,16 +55,17 @@ ROM0 bank #0:
            $0620 = JOY_SELECT
            $0628 = JOY_START
            $0630 = JOY_FALSE
-  SECTION: $0633-$0692 ($0060 bytes) ["background tiles"]
-           $0633 = BackgroundTiles
-           $0693 = BackgroundTilesEnd
-  SECTION: $0693-$06e3 ($0051 bytes) ["graphics"]
-           $0693 = LoadGameData
-           $06d9 = SetupPalettes
-  SECTION: $06e4-$0730 ($004d bytes) ["rom"]
-           $06e4 = START
-           $0716 = GAMELOOP
-    SLACK: $38e9 bytes
+  SECTION: $0633-$069b ($0069 bytes) ["graphics"]
+           $0633 = LoadGameData
+           $067c = SetupPalettes
+           $0687 = RefreshWindowLayer
+  SECTION: $069c-$06fb ($0060 bytes) ["background tiles"]
+           $069c = BackgroundTiles
+           $06fc = BackgroundTilesEnd
+  SECTION: $06fc-$0752 ($0057 bytes) ["rom"]
+           $06fc = START
+           $0738 = GAMELOOP
+    SLACK: $38c7 bytes
 
 ROMX bank #1:
   SECTION: $4000-$4373 ($0374 bytes) ["player"]
@@ -213,57 +214,59 @@ ROMX bank #1:
     SLACK: $38ba bytes
 
 WRAM0 bank #0:
-  SECTION: $c000-$c02a ($002b bytes) ["RAM vars"]
-           $c000 = scroll_timer
-           $c001 = movement_timer
-           $c002 = collision_timer
-           $c003 = joypad_down
-           $c004 = joypad_pressed
-           $c005 = player_x
-           $c006 = player_y
-           $c007 = player_cactus_x
-           $c008 = player_cactus_y
-           $c009 = player_alive
-           $c00a = player_popping
-           $c00b = player_popping_frame
-           $c00c = player_falling
-           $c00d = player_fall_speed
-           $c00e = player_falling_timer
-           $c00f = player_pop_timer
-           $c010 = player_delay_falling_timer
-           $c011 = player_respawn_timer
-           $c012 = player_bobbed_up
-           $c013 = player_speed
-           $c014 = player_bob_timer
-           $c015 = player_drift_timer_x
-           $c016 = player_drift_timer_y
-           $c017 = point_balloon_x
-           $c018 = point_balloon_y
-           $c019 = point_balloon_alive
-           $c01a = point_balloon_popping
-           $c01b = point_balloon_popping_frame
-           $c01c = point_balloon_pop_timer
-           $c01d = point_balloon_respawn_timer
-           $c01e = enemy_x
-           $c01f = enemy_y
-           $c020 = enemy_cactus_x
-           $c021 = enemy_cactus_y
-           $c022 = enemy_alive
-           $c023 = enemy_popping
-           $c024 = enemy_popping_frame
-           $c025 = enemy_falling
-           $c026 = enemy_fall_speed
-           $c027 = enemy_falling_timer
-           $c028 = enemy_pop_timer
-           $c029 = enemy_delay_falling_timer
-           $c02a = enemy_respawn_timer
+  SECTION: $c000-$c02c ($002d bytes) ["RAM vars"]
+           $c000 = score
+           $c001 = scroll_timer
+           $c002 = movement_timer
+           $c003 = collision_timer
+           $c004 = joypad_down
+           $c005 = joypad_pressed
+           $c006 = player_x
+           $c007 = player_y
+           $c008 = player_cactus_x
+           $c009 = player_cactus_y
+           $c00a = player_alive
+           $c00b = player_popping
+           $c00c = player_popping_frame
+           $c00d = player_falling
+           $c00e = player_fall_speed
+           $c00f = player_falling_timer
+           $c010 = player_pop_timer
+           $c011 = player_delay_falling_timer
+           $c012 = player_respawn_timer
+           $c013 = player_bobbed_up
+           $c014 = player_speed
+           $c015 = player_bob_timer
+           $c016 = player_drift_timer_x
+           $c017 = player_drift_timer_y
+           $c018 = player_lives
+           $c019 = point_balloon_x
+           $c01a = point_balloon_y
+           $c01b = point_balloon_alive
+           $c01c = point_balloon_popping
+           $c01d = point_balloon_popping_frame
+           $c01e = point_balloon_pop_timer
+           $c01f = point_balloon_respawn_timer
+           $c020 = enemy_x
+           $c021 = enemy_y
+           $c022 = enemy_cactus_x
+           $c023 = enemy_cactus_y
+           $c024 = enemy_alive
+           $c025 = enemy_popping
+           $c026 = enemy_popping_frame
+           $c027 = enemy_falling
+           $c028 = enemy_fall_speed
+           $c029 = enemy_falling_timer
+           $c02a = enemy_pop_timer
+           $c02b = enemy_delay_falling_timer
+           $c02c = enemy_respawn_timer
   SECTION: $c100-$c127 ($0028 bytes) ["OAM vars"]
            $c100 = player_cactus
            $c108 = player_balloon
            $c110 = point_balloon
            $c118 = enemy_cactus
            $c120 = enemy_balloon
-    SLACK: $0fad bytes
+    SLACK: $0fab bytes
 
 HRAM bank #0:
   SECTION: $ff80-$ff87 ($0008 bytes) ["OAM DMA"]
@@ -271,7 +274,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $0717 bytes in 1 bank
+    ROM0: $0739 bytes in 1 bank
     ROMX: $0746 bytes in 1 bank
-    WRAM0: $0053 bytes in 1 bank
+    WRAM0: $0055 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

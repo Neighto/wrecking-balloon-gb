@@ -33,6 +33,12 @@ START::
 	ld a, 7
 	ld [rWX], a
 
+	; MOVE ME
+	ld hl, score
+	ld [hl], 482
+	ld hl, player_lives
+	ld [hl], 1
+
 	call LoadGameData
 	call CopyDMARoutine
 
