@@ -22,6 +22,12 @@ START::
 	call ClearOAM
 	call ClearRAM
 
+	; MOVE ME
+	xor a ; ld a, 0
+	ld [rWY], a
+	ld a, 7
+	ld [rWX], a
+
 	call LoadGameData
 	call CopyDMARoutine
 
