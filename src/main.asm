@@ -31,6 +31,7 @@ START::
 	call InitializeGameVars
 
 	call LoadGameData
+	call RefreshLives
 	call CopyDMARoutine
 
 	call LCD_ON
