@@ -1,5 +1,9 @@
-SECTION "vblank IRQ",ROM0[$40]
+SECTION "vblank IRQ", ROM0[$40]
 VBLANK_VECT:
+	reti
+
+SECTION	"LCD IRQ", ROM0[$48]
+LCD_VECT:
 	reti
 
 SECTION "header", ROM0[$100]
