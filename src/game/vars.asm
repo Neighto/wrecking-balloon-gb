@@ -53,7 +53,7 @@ InitializeGameVars::
 	ld hl, score
 	ld [hl], 0
 	ld hl, player_lives
-	ld [hl], 1
+	ld [hl], 2
 	ret
 
 SECTION "OAM vars", WRAM0[$C100]

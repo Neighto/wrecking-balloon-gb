@@ -548,12 +548,16 @@ PlayerUpdate::
   ; call PlayerAnimate ; Broken.. For now
   ret
 .popped:
-  ; Can we respawn
+  ; Can we respawn  
   ld a, [player_respawn_timer]
   inc a
   ld [player_respawn_timer], a
   cp a, 255
   jr nz, .respawnSkip
+  ; And do we have enough lives to respawn
+  ld a, [player_lives]
+  or a, 0
+  jr z, .respawnSkip
   call SpawnPlayer
 .respawnSkip:
   ; Check if we need to play popping animation
@@ -575,8 +579,13 @@ DeathOfPlayer::
   xor a ; ld a, 0
   ld hl, player_alive
   ld [hl], a
-  ld [score], a
-  call RefreshScore
+  ; Reset score
+  ; ld [score], a
+  ; call RefreshScore
+  ; Remove life
+  ld hl, player_lives
+  dec [hl]
+  call RefreshLives
   ; Animation trigger
   ld a, 1
   ld hl, player_popping
