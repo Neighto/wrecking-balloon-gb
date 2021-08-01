@@ -3,6 +3,10 @@ SECTION "enemy", ROMX
 ENEMY_START_X EQU 0
 ENEMY_START_Y EQU 55
 ENEMY_BALLOON_START_Y EQU (ENEMY_START_Y-16)
+ENEMY_SPAWN_A EQU 32
+ENEMY_SPAWN_B EQU 64
+ENEMY_SPAWN_C EQU 96
+ENEMY_SPAWN_D EQU 128
 
 UpdateBalloonPosition:
     ld hl, enemy_balloon
@@ -76,38 +80,83 @@ InitializeEnemy::
     ld [hl], ENEMY_START_X
     ld hl, enemy_cactus_y
     ld [hl], ENEMY_START_Y
+
+    ; Randomize spawn
+.nextSpawnPoint:
+    ld hl, enemy_y
+    ld a, 4
+    call RANDOM
+    cp a, 0
+    jp z, .spawnA
+    cp a, 1
+    jp z, .spawnB
+    cp a, 2
+    jp z, .spawnC
+    cp a, 3
+    jp z, .spawnD
+.spawnA:
+    ld [hl], ENEMY_SPAWN_A
+    ld hl, enemy_cactus_y ; TODO: Could be cleaner and only specify this once
+    ld [hl], ENEMY_SPAWN_A+16
+    jr .endNextSpawnPoint
+.spawnB:
+    ld [hl], ENEMY_SPAWN_B
+    ld hl, enemy_cactus_y
+    ld [hl], ENEMY_SPAWN_B+16
+    jr .endNextSpawnPoint
+.spawnC:
+    ld [hl], ENEMY_SPAWN_C
+    ld hl, enemy_cactus_y
+    ld [hl], ENEMY_SPAWN_C+16
+    jr .endNextSpawnPoint
+.spawnD:
+    ld [hl], ENEMY_SPAWN_D
+    ld hl, enemy_cactus_y
+    ld [hl], ENEMY_SPAWN_D+16
+.endNextSpawnPoint:
+
     ; Balloon left
     ld hl, enemy_balloon
-    ld [hl], ENEMY_BALLOON_START_Y
+    ld a, [enemy_y]
+    ld [hl], a
     inc l
-    ld [hl], ENEMY_START_X
+    ld a, [enemy_x]
+    ld [hl], a
     inc l
     ld [hl], $86
     inc l
     ld [hl], %00000000
     ; Balloon right
     ld hl, enemy_balloon+4
-    ld [hl], ENEMY_BALLOON_START_Y
+    ld a, [enemy_y]
+    ld [hl], a
     inc l
-    ld [hl], ENEMY_START_X+8
+    ld a, [enemy_x]
+    add 8
+    ld [hl], a
     inc l
     ld [hl], $86
     inc l
     ld [hl], %00100000
     ; Cactus left
     ld hl, enemy_cactus
-    ld [hl], ENEMY_START_Y
+    ld a, [enemy_cactus_y]
+    ld [hl], a
     inc l
-    ld [hl], ENEMY_START_X
+    ld a, [enemy_cactus_x]
+    ld [hl], a
     inc l
     ld [hl], $84
     inc l
     ld [hl], %00000000
     ; Cactus right
     ld hl, enemy_cactus+4
-    ld [hl], ENEMY_START_Y
+    ld a, [enemy_cactus_y]
+    ld [hl], a
     inc l
-    ld [hl], ENEMY_START_X+8
+    ld a, [enemy_cactus_x]
+    add 8
+    ld [hl], a
     inc l
     ld [hl], $84
     inc l
@@ -144,24 +193,6 @@ MoveCactusDown:
     call IncrementPosition
     ret
 
-FallCactusDown:
-    ld hl, enemy_fall_speed
-    ld a, [enemy_delay_falling_timer]
-    inc a
-    ld [enemy_delay_falling_timer], a
-    cp a, 7
-    jr c, .skipAcceleration
-    xor a ; ld a, 0
-    ld [enemy_delay_falling_timer], a
-    ld a, [hl]
-    add a, a
-    ld [hl], a
-.skipAcceleration
-    ld a, [hl]
-    ld hl, enemy_cactus_y
-    call IncrementPosition
-    ret
-
 MoveRight:
     call MoveBalloonRight
     call MoveCactusRight
@@ -179,6 +210,24 @@ MoveEnemy:
     call MoveRight
     call UpdateEnemyPosition
 .end:
+    ret
+
+FallCactusDown:
+    ld hl, enemy_fall_speed
+    ld a, [enemy_delay_falling_timer]
+    inc a
+    ld [enemy_delay_falling_timer], a
+    cp a, 7
+    jr c, .skipAcceleration
+    xor a ; ld a, 0
+    ld [enemy_delay_falling_timer], a
+    ld a, [hl]
+    add a, a
+    ld [hl], a
+.skipAcceleration
+    ld a, [hl]
+    ld hl, enemy_cactus_y
+    call IncrementPosition
     ret
 
 PopBalloonAnimation:
