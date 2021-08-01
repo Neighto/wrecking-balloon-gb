@@ -1,4 +1,5 @@
 SECTION "RAM vars", WRAM0[$C000]
+	score:: DB
 	scroll_timer:: DB
 	movement_timer:: DB
 	collision_timer:: DB
@@ -23,6 +24,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	player_bob_timer:: DB
 	player_drift_timer_x:: DB
 	player_drift_timer_y:: DB
+	player_lives:: DB
 
 	point_balloon_x:: DB
 	point_balloon_y:: DB
