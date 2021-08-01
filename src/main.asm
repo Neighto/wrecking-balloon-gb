@@ -35,7 +35,7 @@ START::
 
 	; MOVE ME
 	ld hl, score
-	ld [hl], 482
+	ld [hl], 138
 	ld hl, player_lives
 	ld [hl], 1
 

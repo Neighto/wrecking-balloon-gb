@@ -78,15 +78,35 @@ SetupPalettes::
     ret
 
 RefreshWindowLayer:
-	ld hl, score
-	ld a, 5
 
-	; example: 482
-	; take first digit
-	; ld a, 1
-	; and a, [hl]
+	; First digit
+	ld a, [score]
+	ld b, 10
+	call MODULO
 	add $47
 	ld hl, $9C0B
+	ld [hl], a
+	; Second Digit
+	ld a, [score]
+	ld b, 100
+	call MODULO
+	ld b, 2
+	call DIVISION ; should be able to do a bit shift...
+	ld b, 5
+	call DIVISION
+	add $47
+	ld hl, $9C0A
+	ld [hl], a
+	; Third Digit
+	ld a, [score]
+	ld b, 1000
+	call MODULO
+	ld b, 20
+	call DIVISION ; should be able to do a bit shift...
+	ld b, 5
+	call DIVISION
+	add $47
+	ld hl, $9C09
 	ld [hl], a
 
 	ld a, [player_lives]
