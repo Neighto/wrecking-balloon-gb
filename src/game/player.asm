@@ -442,28 +442,6 @@ FallCactusDown:
   call IncrementPosition
   ret
 
-CactusFalling:
-  ld a, [player_falling_timer]
-  inc a
-  ld [player_falling_timer], a
-  and %00000101
-  jr nz, .end
-  ; Can we move cactus down
-  ld a, 160
-  ld hl, player_cactus_y
-  cp a, [hl]
-  jr c, .offScreen
-  call FallCactusDown
-  call UpdateCactusPosition
-  ret
-.offScreen:
-  ; Reset variables
-  ld hl, enemy_falling
-  ld [hl], 0
-  ; Here I "could" clear the sprite info, but no point
-.end
-  ret
-
 PopBalloonAnimation:
   ; Check what frame we are on
   ld a, [player_popping_frame]
@@ -536,6 +514,28 @@ PopBalloonAnimation:
   ld hl, player_popping_frame
   ld [hl], a
 .end:
+  ret
+
+CactusFalling:
+  ld a, [player_falling_timer]
+  inc a
+  ld [player_falling_timer], a
+  and %00000101
+  jr nz, .end
+  ; Can we move cactus down
+  ld a, 160
+  ld hl, player_cactus_y
+  cp a, [hl]
+  jr c, .offScreen
+  call FallCactusDown
+  call UpdateCactusPosition
+  ret
+.offScreen:
+  ; Reset variables
+  ld hl, enemy_falling
+  ld [hl], 0
+  ; Here I "could" clear the sprite info, but no point
+.end
   ret
 
 PlayerUpdate::

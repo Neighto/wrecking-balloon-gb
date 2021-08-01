@@ -45,6 +45,7 @@ InitializePointBalloon::
     ld [hl], a
     ld [point_balloon_respawn_timer], a
     
+    ; Randomize spawn
 .nextSpawnPoint:
     ld hl, point_balloon_x
     ld a, 4
@@ -72,7 +73,8 @@ InitializePointBalloon::
 
     ; Balloon left
     ld hl, point_balloon
-    ld [hl], POINT_BALLOON_START_Y
+    ld a, [point_balloon_y]
+    ld [hl], a
     inc l
     ld a, [point_balloon_x]
     ld [hl], a
@@ -82,7 +84,8 @@ InitializePointBalloon::
     ld [hl], %00000000
     ; Balloon right
     ld hl, point_balloon+4
-    ld [hl], POINT_BALLOON_START_Y
+    ld a, [point_balloon_y]
+    ld [hl], a
     inc l
     ld a, [point_balloon_x]
     add 8
