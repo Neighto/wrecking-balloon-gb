@@ -538,6 +538,13 @@ CactusFalling:
 .end
   ret
 
+NoMoreLives:
+  ; Reset score
+  xor a
+  ld [score], a
+  call RefreshScore
+  ret
+
 PlayerUpdate::
   ; Check if alive
   ld a, [player_alive]
@@ -557,7 +564,9 @@ PlayerUpdate::
   ; And do we have enough lives to respawn
   ld a, [player_lives]
   or a, 0
-  jr z, .respawnSkip
+  jr nz, .respawn
+  call NoMoreLives ; Probably not respawn after in the future!
+.respawn:
   call SpawnPlayer
 .respawnSkip:
   ; Check if we need to play popping animation
@@ -579,9 +588,6 @@ DeathOfPlayer::
   xor a ; ld a, 0
   ld hl, player_alive
   ld [hl], a
-  ; Reset score
-  ; ld [score], a
-  ; call RefreshScore
   ; Remove life
   ld hl, player_lives
   dec [hl]
