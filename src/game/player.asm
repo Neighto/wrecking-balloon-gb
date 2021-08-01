@@ -124,7 +124,7 @@ InitializePlayer::
 SpawnPlayer:
   ; Probably temporary
   xor a ; ld a, 0
-  ld [player_respawn_timer], a    
+  ld [player_respawn_timer], a
   call InitializePlayer
   ret
 
@@ -575,8 +575,10 @@ DeathOfPlayer::
   xor a ; ld a, 0
   ld hl, player_alive
   ld [hl], a
+  ld [score], a
+  call RefreshScore
   ; Animation trigger
-  inc a
+  ld a, 1
   ld hl, player_popping
   ld [hl], a
   ld hl, player_falling

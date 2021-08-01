@@ -48,6 +48,14 @@ SECTION "RAM vars", WRAM0[$C000]
 	enemy_delay_falling_timer:: DB
 	enemy_respawn_timer:: DB
 
+SECTION "general initialization", ROM0 
+InitializeGameVars::
+	ld hl, score
+	ld [hl], 0
+	ld hl, player_lives
+	ld [hl], 1
+	ret
+
 SECTION "OAM vars", WRAM0[$C100]
 	player_cactus:: DS 4*2
 	player_balloon:: DS 4*2

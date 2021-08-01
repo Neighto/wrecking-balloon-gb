@@ -7,7 +7,7 @@ POINT_BALLOON_SPAWN_A EQU 32
 POINT_BALLOON_SPAWN_B EQU 64
 POINT_BALLOON_SPAWN_C EQU 96
 POINT_BALLOON_SPAWN_D EQU 128
-
+POINT_BALLOON_POINTS EQU 5
 
 UpdateBalloonPosition:
     ld hl, point_balloon
@@ -217,6 +217,9 @@ DeathOfPointBalloon::
     xor a ; ld a, 0
     ld hl, point_balloon_alive
     ld [hl], a
+    ; Points
+    ld b, POINT_BALLOON_POINTS
+    call AddPoints
     ; Animation trigger
     ld hl, point_balloon_popping
     ld [hl], 1

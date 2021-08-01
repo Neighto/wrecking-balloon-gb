@@ -27,17 +27,8 @@ START::
 	call ClearOAM
 	call ClearRAM
 
-	; MOVE ME
-	ld a, 136
-	ld [rWY], a
-	ld a, 7
-	ld [rWX], a
-
-	; MOVE ME
-	ld hl, score
-	ld [hl], 138
-	ld hl, player_lives
-	ld [hl], 1
+	call SetupWindow
+	call InitializeGameVars
 
 	call LoadGameData
 	call CopyDMARoutine
