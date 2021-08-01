@@ -539,8 +539,13 @@ CactusFalling:
   ret
 
 NoMoreLives:
+  ; Reset lives
+  ld a, 2
+  ld hl, player_lives
+  ld [hl], a
+  call RefreshLives
   ; Reset score
-  xor a
+  xor a ; ld a, 0
   ld [score], a
   call RefreshScore
   ret
