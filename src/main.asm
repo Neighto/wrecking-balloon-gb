@@ -4,11 +4,16 @@ INCLUDE "header.inc"
 SECTION "rom", ROM0
 
 START::
-	ei
+	di
+
+	ld sp, $FFFE
 
 	; Enable Vblank Interrupt
-	ld sp, $FFFE
 	ld a, IEF_VBLANK
+	ld [rIE], a
+
+	; Enable LCD Interrupt
+	ld a, IEF_STAT
 	ld [rIE], a
 
 	call TurnOffAudio
@@ -23,7 +28,7 @@ START::
 	call ClearRAM
 
 	; MOVE ME
-	xor a ; ld a, 0
+	ld a, 136
 	ld [rWY], a
 	ld a, 7
 	ld [rWX], a

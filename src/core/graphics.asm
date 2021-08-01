@@ -57,9 +57,9 @@ LoadGameData::
 	ld hl, $9800
 	ld de, BackgroundMapEnd - BackgroundMap
 	call MEMCPY
-	; Copy the window
+	; ; Copy the window
 	ld bc, WindowMap
-	ld hl, $9800
+	ld hl, $9C00
 	ld de, WindowMapEnd - WindowMap
 	call MEMCPY
 	; Initialize

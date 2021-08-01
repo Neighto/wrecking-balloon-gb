@@ -15,23 +15,25 @@ ROM0 bank #0:
            $003a = TurnOffAudio
   SECTION: $0040-$0040 ($0001 byte) ["vblank IRQ"]
            $0040 = VBLANK_VECT
-  SECTION: $0041-$00c9 ($0089 bytes) ["collision"]
-           $0041 = CollisionCheck
-           $0057 = CollisionCheck.tryOtherY
-           $0064 = CollisionCheck.checkX
-           $0071 = CollisionCheck.tryOtherX
-           $007e = CollisionCheck.collision
-           $0081 = CollisionCheck.end
-           $0084 = CollisionUpdate
-           $009b = CollisionUpdate.endPointBalloon
-           $00b2 = CollisionUpdate.endEnemy
-           $00c9 = CollisionUpdate.endEnemyHitPlayer
-  SECTION: $00ca-$00dd ($0014 bytes) ["window map"]
-           $00ca = WindowMap
-           $00de = WindowMapEnd
-  SECTION: $00de-$00e5 ($0008 bytes) ["tools"]
-           $00de = IncrementPosition
-           $00e1 = DecrementPosition
+  SECTION: $0048-$0048 ($0001 byte) ["LCD IRQ"]
+           $0048 = LCD_VECT
+  SECTION: $0049-$00d1 ($0089 bytes) ["collision"]
+           $0049 = CollisionCheck
+           $005f = CollisionCheck.tryOtherY
+           $006c = CollisionCheck.checkX
+           $0079 = CollisionCheck.tryOtherX
+           $0086 = CollisionCheck.collision
+           $0089 = CollisionCheck.end
+           $008c = CollisionUpdate
+           $00a3 = CollisionUpdate.endPointBalloon
+           $00ba = CollisionUpdate.endEnemy
+           $00d1 = CollisionUpdate.endEnemyHitPlayer
+  SECTION: $00d2-$00e5 ($0014 bytes) ["window map"]
+           $00d2 = WindowMap
+           $00e6 = WindowMapEnd
+  SECTION: $00e6-$00ed ($0008 bytes) ["tools"]
+           $00e6 = IncrementPosition
+           $00e9 = DecrementPosition
   SECTION: $0100-$014f ($0050 bytes) ["header"]
   SECTION: $0150-$038f ($0240 bytes) ["background map"]
            $0150 = BackgroundMap
@@ -59,10 +61,10 @@ ROM0 bank #0:
   SECTION: $0693-$06e3 ($0051 bytes) ["graphics"]
            $0693 = LoadGameData
            $06d9 = SetupPalettes
-  SECTION: $06e4-$072b ($0048 bytes) ["rom"]
+  SECTION: $06e4-$0730 ($004d bytes) ["rom"]
            $06e4 = START
-           $0711 = GAMELOOP
-    SLACK: $38ef bytes
+           $0716 = GAMELOOP
+    SLACK: $38e9 bytes
 
 ROMX bank #1:
   SECTION: $4000-$4373 ($0374 bytes) ["player"]
@@ -269,7 +271,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $0711 bytes in 1 bank
+    ROM0: $0717 bytes in 1 bank
     ROMX: $0746 bytes in 1 bank
     WRAM0: $0053 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
