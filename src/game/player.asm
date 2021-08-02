@@ -541,8 +541,7 @@ CactusFalling:
 NoMoreLives:
   ; Reset lives
   ld a, 2
-  ld hl, player_lives
-  ld [hl], a
+  ld [player_lives], a
   call RefreshLives
   ; Reset score
   xor a ; ld a, 0
@@ -560,7 +559,7 @@ PlayerUpdate::
   ; call PlayerAnimate ; Broken.. For now
   ret
 .popped:
-  ; Can we respawn  
+  ; Can we respawn
   ld a, [player_respawn_timer]
   inc a
   ld [player_respawn_timer], a

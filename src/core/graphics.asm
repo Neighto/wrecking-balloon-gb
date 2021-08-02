@@ -78,31 +78,20 @@ SetupPalettes::
 
 RefreshScore::
 	; First digit
-	ld a, [score]
-	ld b, 10
-	call MODULO
+	ld a, 0
+	call GetScoreFromIndex
 	add $47
 	ld hl, $9C0B
 	ld [hl], a
 	; Second Digit
-	ld a, [score]
-	ld b, 100
-	call MODULO
-	ld b, 2
-	call DIVISION ; should be able to do a bit shift...
-	ld b, 5
-	call DIVISION
+	ld a, 1
+	call GetScoreFromIndex
 	add $47
 	ld hl, $9C0A
 	ld [hl], a
 	; Third Digit
-	ld a, [score]
-	ld b, 1000
-	call MODULO
-	ld b, 20
-	call DIVISION ; should be able to do a bit shift...
-	ld b, 5
-	call DIVISION
+	ld a, 2
+	call GetScoreFromIndex
 	add $47
 	ld hl, $9C09
 	ld [hl], a

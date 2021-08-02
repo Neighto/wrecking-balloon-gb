@@ -1,5 +1,5 @@
 SECTION "RAM vars", WRAM0[$C000]
-	score:: DB
+	score:: DS 2
 	scroll_timer:: DB
 	movement_timer:: DB
 	collision_timer:: DB
@@ -50,8 +50,6 @@ SECTION "RAM vars", WRAM0[$C000]
 
 SECTION "general initialization", ROM0 
 InitializeGameVars::
-	ld hl, score
-	ld [hl], 0
 	ld hl, player_lives
 	ld [hl], 2
 	ret
