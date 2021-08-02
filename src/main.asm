@@ -29,6 +29,7 @@ START::
 
 	call SetupWindow
 	call InitializeGameVars
+	call InitializeScore
 
 	call LoadGameData
 	call RefreshLives
