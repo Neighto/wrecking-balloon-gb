@@ -19,23 +19,14 @@ ROM0 bank #0:
            $0041 = TurnOffAudio
   SECTION: $0048-$0048 ($0001 byte) ["LCD IRQ"]
            $0048 = LCD_VECT
-  SECTION: $0049-$00d1 ($0089 bytes) ["collision"]
-           $0049 = CollisionCheck
-           $005f = CollisionCheck.tryOtherY
-           $006c = CollisionCheck.checkX
-           $0079 = CollisionCheck.tryOtherX
-           $0086 = CollisionCheck.collision
-           $0089 = CollisionCheck.end
-           $008c = CollisionUpdate
-           $00a3 = CollisionUpdate.endPointBalloon
-           $00ba = CollisionUpdate.endEnemy
-           $00d1 = CollisionUpdate.endEnemyHitPlayer
-  SECTION: $00d2-$00e5 ($0014 bytes) ["window map"]
-           $00d2 = WindowMap
-           $00e6 = WindowMapEnd
-  SECTION: $00e6-$00ed ($0008 bytes) ["tools"]
-           $00e6 = IncrementPosition
-           $00e9 = DecrementPosition
+  SECTION: $0049-$00e6 ($009e bytes) ["graphics"]
+           $0049 = LoadGameData
+           $008f = SetupPalettes
+           $009a = RefreshScore
+           $00dd = RefreshLives
+  SECTION: $00e7-$00fa ($0014 bytes) ["window map"]
+           $00e7 = WindowMap
+           $00fb = WindowMapEnd
   SECTION: $0100-$014f ($0050 bytes) ["header"]
   SECTION: $0150-$038f ($0240 bytes) ["background map"]
            $0150 = BackgroundMap
@@ -46,29 +37,38 @@ ROM0 bank #0:
   SECTION: $04b0-$05bf ($0110 bytes) ["window tiles"]
            $04b0 = WindowTiles
            $05c0 = WindowTilesEnd
-  SECTION: $05c0-$063c ($007d bytes) ["graphics"]
-           $05c0 = LoadGameData
-           $0606 = SetupPalettes
-           $0611 = RefreshScore
-           $0633 = RefreshLives
-  SECTION: $063d-$06af ($0073 bytes) ["joypad"]
-           $063d = ReadInput
-           $066d = JOY_RIGHT
-           $0675 = JOY_LEFT
-           $067d = JOY_UP
-           $0685 = JOY_DOWN
-           $068d = JOY_A
-           $0695 = JOY_B
-           $069d = JOY_SELECT
-           $06a5 = JOY_START
-           $06ad = JOY_FALSE
-  SECTION: $06b0-$070f ($0060 bytes) ["background tiles"]
-           $06b0 = BackgroundTiles
-           $0710 = BackgroundTilesEnd
-  SECTION: $0710-$0760 ($0051 bytes) ["rom"]
-           $0710 = START
-           $0746 = GAMELOOP
-    SLACK: $38b3 bytes
+  SECTION: $05c0-$0648 ($0089 bytes) ["collision"]
+           $05c0 = CollisionCheck
+           $05d6 = CollisionCheck.tryOtherY
+           $05e3 = CollisionCheck.checkX
+           $05f0 = CollisionCheck.tryOtherX
+           $05fd = CollisionCheck.collision
+           $0600 = CollisionCheck.end
+           $0603 = CollisionUpdate
+           $061a = CollisionUpdate.endPointBalloon
+           $0631 = CollisionUpdate.endEnemy
+           $0648 = CollisionUpdate.endEnemyHitPlayer
+  SECTION: $0649-$06bb ($0073 bytes) ["joypad"]
+           $0649 = ReadInput
+           $0679 = JOY_RIGHT
+           $0681 = JOY_LEFT
+           $0689 = JOY_UP
+           $0691 = JOY_DOWN
+           $0699 = JOY_A
+           $06a1 = JOY_B
+           $06a9 = JOY_SELECT
+           $06b1 = JOY_START
+           $06b9 = JOY_FALSE
+  SECTION: $06bc-$071b ($0060 bytes) ["background tiles"]
+           $06bc = BackgroundTiles
+           $071c = BackgroundTilesEnd
+  SECTION: $071c-$076c ($0051 bytes) ["rom"]
+           $071c = START
+           $0752 = GAMELOOP
+  SECTION: $076d-$0774 ($0008 bytes) ["tools"]
+           $076d = IncrementPosition
+           $0770 = DecrementPosition
+    SLACK: $3892 bytes
 
 ROMX bank #1:
   SECTION: $4000-$4395 ($0396 bytes) ["player"]
@@ -198,94 +198,101 @@ ROMX bank #1:
            $46fd = PointBalloonUpdate.respawnSkip
            $4707 = PointBalloonUpdate.end
            $4708 = DeathOfPointBalloon
-  SECTION: $4718-$477b ($0064 bytes) ["score"]
+  SECTION: $4718-$4797 ($0080 bytes) ["score"]
            $4718 = InitializeScore
-           $4720 = AddPoints
-           $4731 = AddPoints.noCarry
-           $4734 = AddPoints.end
-           $4735 = GetScore
-           $473e = GetScoreFromIndex
-           $474a = GetScoreFromIndex.firstDigit
-           $4754 = GetScoreFromIndex.secondDigit
-           $4768 = GetScoreFromIndex.thirdDigit
-  SECTION: $477c-$47af ($0034 bytes) ["lcd"]
-           $477c = LCD_OFF
-           $4781 = LCD_ON
-           $4786 = WaitVBlank
-           $478d = ClearMap
-           $4794 = ClearMap.clear_map_loop
-           $47a7 = SetupWindow
-  SECTION: $47b0-$47d7 ($0028 bytes) ["memory"]
-           $47b0 = MEMCPY.memcpy_loop
-           $47b0 = MEMCPY
-           $47b4 = MEMCPY.memcpy_check_limit
-           $47ba = ClearOAM
-           $47c0 = ClearOAM.clear_oam_loop
-           $47c9 = ClearRAM
-           $47cf = ClearRAM.clear_ram_loop
-  SECTION: $47d8-$47f1 ($001a bytes) ["math"]
-           $47d8 = MODULO
-           $47da = MODULO.loop
-           $47df = RANDOM
-           $47e6 = DIVISION
-           $47eb = DIVISION.loop
-           $47f0 = DIVISION.end
-    SLACK: $380e bytes
+           $4722 = ToBCD
+           $4728 = ToBCD.loop
+           $4731 = ToBCD.noCarry
+           $4733 = ToBCD.after
+           $4736 = ToBCD.end
+           $4737 = AddPoints
+           $4758 = AddPoints.noCarry
+           $475b = AddPoints.end
+           $475c = GetScoreFromIndex
+           $477a = GetScoreFromIndex.firstDigit
+           $477e = GetScoreFromIndex.secondDigit
+           $4784 = GetScoreFromIndex.thirdDigit
+           $4788 = GetScoreFromIndex.fourthDigit
+           $478e = GetScoreFromIndex.fifthDigit
+           $4792 = GetScoreFromIndex.sixthDigit
+  SECTION: $4798-$47cb ($0034 bytes) ["lcd"]
+           $4798 = LCD_OFF
+           $479d = LCD_ON
+           $47a2 = WaitVBlank
+           $47a9 = ClearMap
+           $47b0 = ClearMap.clear_map_loop
+           $47c3 = SetupWindow
+  SECTION: $47cc-$47f3 ($0028 bytes) ["memory"]
+           $47cc = MEMCPY.memcpy_loop
+           $47cc = MEMCPY
+           $47d0 = MEMCPY.memcpy_check_limit
+           $47d6 = ClearOAM
+           $47dc = ClearOAM.clear_oam_loop
+           $47e5 = ClearRAM
+           $47eb = ClearRAM.clear_ram_loop
+  SECTION: $47f4-$480d ($001a bytes) ["math"]
+           $47f4 = MODULO
+           $47f6 = MODULO.loop
+           $47fb = RANDOM
+           $4802 = DIVISION
+           $4807 = DIVISION.loop
+           $480c = DIVISION.end
+    SLACK: $37f2 bytes
 
 WRAM0 bank #0:
-  SECTION: $c000-$c02d ($002e bytes) ["RAM vars"]
+  SECTION: $c000-$c02e ($002f bytes) ["RAM vars"]
            $c000 = score
-           $c002 = scroll_timer
-           $c003 = movement_timer
-           $c004 = collision_timer
-           $c005 = joypad_down
-           $c006 = joypad_pressed
-           $c007 = player_x
-           $c008 = player_y
-           $c009 = player_cactus_x
-           $c00a = player_cactus_y
-           $c00b = player_alive
-           $c00c = player_popping
-           $c00d = player_popping_frame
-           $c00e = player_falling
-           $c00f = player_fall_speed
-           $c010 = player_falling_timer
-           $c011 = player_pop_timer
-           $c012 = player_delay_falling_timer
-           $c013 = player_respawn_timer
-           $c014 = player_bobbed_up
-           $c015 = player_speed
-           $c016 = player_bob_timer
-           $c017 = player_drift_timer_x
-           $c018 = player_drift_timer_y
-           $c019 = player_lives
-           $c01a = point_balloon_x
-           $c01b = point_balloon_y
-           $c01c = point_balloon_alive
-           $c01d = point_balloon_popping
-           $c01e = point_balloon_popping_frame
-           $c01f = point_balloon_pop_timer
-           $c020 = point_balloon_respawn_timer
-           $c021 = enemy_x
-           $c022 = enemy_y
-           $c023 = enemy_cactus_x
-           $c024 = enemy_cactus_y
-           $c025 = enemy_alive
-           $c026 = enemy_popping
-           $c027 = enemy_popping_frame
-           $c028 = enemy_falling
-           $c029 = enemy_fall_speed
-           $c02a = enemy_falling_timer
-           $c02b = enemy_pop_timer
-           $c02c = enemy_delay_falling_timer
-           $c02d = enemy_respawn_timer
+           $c003 = scroll_timer
+           $c004 = movement_timer
+           $c005 = collision_timer
+           $c006 = joypad_down
+           $c007 = joypad_pressed
+           $c008 = player_x
+           $c009 = player_y
+           $c00a = player_cactus_x
+           $c00b = player_cactus_y
+           $c00c = player_alive
+           $c00d = player_popping
+           $c00e = player_popping_frame
+           $c00f = player_falling
+           $c010 = player_fall_speed
+           $c011 = player_falling_timer
+           $c012 = player_pop_timer
+           $c013 = player_delay_falling_timer
+           $c014 = player_respawn_timer
+           $c015 = player_bobbed_up
+           $c016 = player_speed
+           $c017 = player_bob_timer
+           $c018 = player_drift_timer_x
+           $c019 = player_drift_timer_y
+           $c01a = player_lives
+           $c01b = point_balloon_x
+           $c01c = point_balloon_y
+           $c01d = point_balloon_alive
+           $c01e = point_balloon_popping
+           $c01f = point_balloon_popping_frame
+           $c020 = point_balloon_pop_timer
+           $c021 = point_balloon_respawn_timer
+           $c022 = enemy_x
+           $c023 = enemy_y
+           $c024 = enemy_cactus_x
+           $c025 = enemy_cactus_y
+           $c026 = enemy_alive
+           $c027 = enemy_popping
+           $c028 = enemy_popping_frame
+           $c029 = enemy_falling
+           $c02a = enemy_fall_speed
+           $c02b = enemy_falling_timer
+           $c02c = enemy_pop_timer
+           $c02d = enemy_delay_falling_timer
+           $c02e = enemy_respawn_timer
   SECTION: $c100-$c127 ($0028 bytes) ["OAM vars"]
            $c100 = player_cactus
            $c108 = player_balloon
            $c110 = point_balloon
            $c118 = enemy_cactus
            $c120 = enemy_balloon
-    SLACK: $0faa bytes
+    SLACK: $0fa9 bytes
 
 HRAM bank #0:
   SECTION: $ff80-$ff87 ($0008 bytes) ["OAM DMA"]
@@ -293,7 +300,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $074d bytes in 1 bank
-    ROMX: $07f2 bytes in 1 bank
-    WRAM0: $0056 bytes in 1 bank
+    ROM0: $076e bytes in 1 bank
+    ROMX: $080e bytes in 1 bank
+    WRAM0: $0057 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
