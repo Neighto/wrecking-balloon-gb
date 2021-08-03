@@ -198,46 +198,43 @@ ROMX bank #1:
            $46fd = PointBalloonUpdate.respawnSkip
            $4707 = PointBalloonUpdate.end
            $4708 = DeathOfPointBalloon
-  SECTION: $4718-$4797 ($0080 bytes) ["score"]
+  SECTION: $4718-$4798 ($0081 bytes) ["score"]
            $4718 = InitializeScore
            $4722 = ToBCD
-           $4728 = ToBCD.loop
-           $4731 = ToBCD.noCarry
-           $4733 = ToBCD.after
-           $4736 = ToBCD.end
-           $4737 = AddPoints
-           $4758 = AddPoints.noCarry
-           $475b = AddPoints.end
-           $475c = GetScoreFromIndex
-           $477a = GetScoreFromIndex.firstDigit
-           $477e = GetScoreFromIndex.secondDigit
-           $4784 = GetScoreFromIndex.thirdDigit
-           $4788 = GetScoreFromIndex.fourthDigit
-           $478e = GetScoreFromIndex.fifthDigit
-           $4792 = GetScoreFromIndex.sixthDigit
-  SECTION: $4798-$47cb ($0034 bytes) ["lcd"]
-           $4798 = LCD_OFF
-           $479d = LCD_ON
-           $47a2 = WaitVBlank
-           $47a9 = ClearMap
-           $47b0 = ClearMap.clear_map_loop
-           $47c3 = SetupWindow
-  SECTION: $47cc-$47f3 ($0028 bytes) ["memory"]
-           $47cc = MEMCPY.memcpy_loop
-           $47cc = MEMCPY
-           $47d0 = MEMCPY.memcpy_check_limit
-           $47d6 = ClearOAM
-           $47dc = ClearOAM.clear_oam_loop
-           $47e5 = ClearRAM
-           $47eb = ClearRAM.clear_ram_loop
-  SECTION: $47f4-$480d ($001a bytes) ["math"]
-           $47f4 = MODULO
-           $47f6 = MODULO.loop
-           $47fb = RANDOM
-           $4802 = DIVISION
-           $4807 = DIVISION.loop
-           $480c = DIVISION.end
-    SLACK: $37f2 bytes
+           $4737 = ToBCD.end
+           $4738 = AddPoints
+           $4759 = AddPoints.noCarry
+           $475c = AddPoints.end
+           $475d = GetScoreFromIndex
+           $477b = GetScoreFromIndex.firstDigit
+           $477f = GetScoreFromIndex.secondDigit
+           $4785 = GetScoreFromIndex.thirdDigit
+           $4789 = GetScoreFromIndex.fourthDigit
+           $478f = GetScoreFromIndex.fifthDigit
+           $4793 = GetScoreFromIndex.sixthDigit
+  SECTION: $4799-$47cc ($0034 bytes) ["lcd"]
+           $4799 = LCD_OFF
+           $479e = LCD_ON
+           $47a3 = WaitVBlank
+           $47aa = ClearMap
+           $47b1 = ClearMap.clear_map_loop
+           $47c4 = SetupWindow
+  SECTION: $47cd-$47f4 ($0028 bytes) ["memory"]
+           $47cd = MEMCPY.memcpy_loop
+           $47cd = MEMCPY
+           $47d1 = MEMCPY.memcpy_check_limit
+           $47d7 = ClearOAM
+           $47dd = ClearOAM.clear_oam_loop
+           $47e6 = ClearRAM
+           $47ec = ClearRAM.clear_ram_loop
+  SECTION: $47f5-$480e ($001a bytes) ["math"]
+           $47f5 = MODULO
+           $47f7 = MODULO.loop
+           $47fc = RANDOM
+           $4803 = DIVISION
+           $4808 = DIVISION.loop
+           $480d = DIVISION.end
+    SLACK: $37f1 bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c02e ($002f bytes) ["RAM vars"]
@@ -301,6 +298,6 @@ HRAM bank #0:
 
 USED:
     ROM0: $076e bytes in 1 bank
-    ROMX: $080e bytes in 1 bank
+    ROMX: $080f bytes in 1 bank
     WRAM0: $0057 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
