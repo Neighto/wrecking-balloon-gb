@@ -13,46 +13,17 @@ InitializeScore::
 ToBCD::
     ; a = argument non-BCD number
     ; a = return BCD number
-    ; double dabble
-    ld b, 0
-    ld c, 0 ;not use right now
-
-    ld d, 7 ;maybe 8
-.loop:
-    ; if BCD digit (and 00001111) is >= 5 (0101), then increment by 3 (0011) at that BCD digit
-    ; left shift one bit
-
-    ld e, a ; hold me
-
-    ld a, b ; grab the BCDs
-    and %00001111
-    cp a, 4
-    jr nc, .next
-    ; b >= 5
-    add %00000011 ;inc b by 3
-    ; TODO: now I have to re-add it to b
-    
-.next:
-
-    ; if b lower is >= 5
-    ;   increment it by 3
-    ;
-    
-
-    sla a ;if carry add it to b after shift!
-    jr c, .noCarry
-    sla b
-    inc b
-    jr .after
-.noCarry:
-    sla b
-.after:
-    dec d
-    jr nz, .loop
-    ; cp a, 9
-    ; jr c, .end 
-    ; add 6
-    ; TODO: NEED TO MAKE IT BCD-FRIENDLY IF BIG!!!
+    ld d, a ; save a
+    ld b, 10
+    call MODULO
+    ld e, a
+    ld a, d ; refresh a
+    ld b, 100
+    call MODULO
+    ld b, 10
+    call DIVISION ; dangerous, corrupts c
+    swap a
+    or e
 .end:
     ret
 
