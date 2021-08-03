@@ -95,6 +95,24 @@ RefreshScore::
 	add $47
 	ld hl, $9C09
 	ld [hl], a
+	; Fourth Digit
+	ld a, 3
+	call GetScoreFromIndex
+	add $47
+	ld hl, $9C08
+	ld [hl], a
+	; Fifth Digit
+	ld a, 4
+	call GetScoreFromIndex
+	add $47
+	ld hl, $9C07
+	ld [hl], a
+	; ; Sixth Digit
+	ld a, 5
+	call GetScoreFromIndex
+	add $47
+	ld hl, $9C06
+	ld [hl], a
 	ret
 
 RefreshLives::
