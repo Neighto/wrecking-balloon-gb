@@ -5,6 +5,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	collision_timer:: DB
 	joypad_down:: DB
 	joypad_pressed:: DB
+	paused_game:: DB
 
 	player_x:: DB
 	player_y:: DB
@@ -50,6 +51,8 @@ SECTION "RAM vars", WRAM0[$C000]
 
 SECTION "general initialization", ROM0 
 InitializeGameVars::
+	xor a
+	ld [hl], paused_game
 	ld hl, player_lives
 	ld [hl], 2
 	ret

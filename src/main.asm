@@ -39,6 +39,10 @@ START::
 
 GAMELOOP:
 	call WaitVBlank
+	call TryToUnpause
+	ld a, [paused_game]
+	cp a, 1
+	jr z, .END
 	call VBlankHScroll
 	call CollisionUpdate
 	call UpdateGlobalTimer
@@ -46,6 +50,7 @@ GAMELOOP:
 	call PointBalloonUpdate
 	call EnemyUpdate
 	call OAMDMA
+.END
 	jp GAMELOOP
 
 SECTION "audio", ROM0
@@ -61,4 +66,20 @@ UpdateGlobalTimer:
 	ld a, [movement_timer]
 	inc	a
 	ld [movement_timer], a
+	ret
+
+; Move, and clean
+TryToUnpause:
+	xor a ; ld a, 0
+	ld hl, paused_game
+	cp a, [hl]
+	jr z, .end
+	; Is paused
+	call ReadInput
+	ld a, [joypad_pressed]
+	call JOY_START
+	jr z, .end
+	xor a ; ld a, 0
+	ld [hl], a ; pause
+.end:
 	ret

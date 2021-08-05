@@ -1,22 +1,19 @@
 ROM0 bank #0:
-  SECTION: $0000-$001b ($001c bytes) ["OAM DMA routine"]
-           $0000 = CopyDMARoutine
-           $0007 = CopyDMARoutine.copy
-           $000e = DMARoutine
-           $0012 = DMARoutine.wait
-           $0016 = DMARoutineEnd
-           $0016 = OAMDMA
-  SECTION: $001c-$0031 ($0016 bytes) ["scroll"]
-           $001c = VBlankHScroll
-           $002f = VBlankHScroll.end
-  SECTION: $0032-$0039 ($0008 bytes) ["timer"]
-           $0032 = UpdateGlobalTimer
-  SECTION: $003a-$003f ($0006 bytes) ["general initialization"]
-           $003a = InitializeGameVars
+  SECTION: $0000-$001c ($001d bytes) ["timer"]
+           $0000 = UpdateGlobalTimer
+           $0008 = TryToUnpause
+           $001c = TryToUnpause.end
+  SECTION: $001d-$0038 ($001c bytes) ["OAM DMA routine"]
+           $001d = CopyDMARoutine
+           $0024 = CopyDMARoutine.copy
+           $002b = DMARoutine
+           $002f = DMARoutine.wait
+           $0033 = DMARoutineEnd
+           $0033 = OAMDMA
+  SECTION: $0039-$003d ($0005 bytes) ["audio"]
+           $0039 = TurnOffAudio
   SECTION: $0040-$0040 ($0001 byte) ["vblank IRQ"]
            $0040 = VBLANK_VECT
-  SECTION: $0041-$0045 ($0005 bytes) ["audio"]
-           $0041 = TurnOffAudio
   SECTION: $0048-$0048 ($0001 byte) ["LCD IRQ"]
            $0048 = LCD_VECT
   SECTION: $0049-$00e6 ($009e bytes) ["graphics"]
@@ -24,9 +21,9 @@ ROM0 bank #0:
            $008f = SetupPalettes
            $009a = RefreshScore
            $00dd = RefreshLives
-  SECTION: $00e7-$00fa ($0014 bytes) ["window map"]
-           $00e7 = WindowMap
-           $00fb = WindowMapEnd
+  SECTION: $00e7-$00fc ($0016 bytes) ["scroll"]
+           $00e7 = VBlankHScroll
+           $00fa = VBlankHScroll.end
   SECTION: $0100-$014f ($0050 bytes) ["header"]
   SECTION: $0150-$038f ($0240 bytes) ["background map"]
            $0150 = BackgroundMap
@@ -62,16 +59,22 @@ ROM0 bank #0:
   SECTION: $06bc-$071b ($0060 bytes) ["background tiles"]
            $06bc = BackgroundTiles
            $071c = BackgroundTilesEnd
-  SECTION: $071c-$076c ($0051 bytes) ["rom"]
+  SECTION: $071c-$0776 ($005b bytes) ["rom"]
            $071c = START
            $0752 = GAMELOOP
-  SECTION: $076d-$0774 ($0008 bytes) ["tools"]
-           $076d = IncrementPosition
-           $0770 = DecrementPosition
-    SLACK: $3892 bytes
+           $0774 = GAMELOOP.END
+  SECTION: $0777-$078a ($0014 bytes) ["window map"]
+           $0777 = WindowMap
+           $078b = WindowMapEnd
+  SECTION: $078b-$0793 ($0009 bytes) ["general initialization"]
+           $078b = InitializeGameVars
+  SECTION: $0794-$079b ($0008 bytes) ["tools"]
+           $0794 = IncrementPosition
+           $0797 = DecrementPosition
+    SLACK: $3870 bytes
 
 ROMX bank #1:
-  SECTION: $4000-$4395 ($0396 bytes) ["player"]
+  SECTION: $4000-$43a1 ($03a2 bytes) ["player"]
            $4000 = UpdateBalloonPosition
            $4019 = UpdateCactusPosition
            $4032 = UpdatePlayerPosition
@@ -109,187 +112,186 @@ ROMX bank #1:
            $41d7 = MoveUp
            $41de = SpeedUp
            $41e4 = ResetSpeedUp
-           $41ea = PlayerMovement
-           $41ff = PlayerMovement.endRight
-           $420a = PlayerMovement.endLeft
-           $4215 = PlayerMovement.endUp
-           $4220 = PlayerMovement.endDown
-           $4233 = PlayerMovement.endDriftToCenterX
-           $4246 = PlayerMovement.endDriftToCenterY
-           $424e = PlayerMovement.endA
-           $425b = PlayerMovement.endB
-           $425e = PlayerMovement.end
-           $4262 = PlayerAnimate
-           $4274 = PlayerAnimate.bobUp
-           $427d = PlayerAnimate.bobDown
-           $4285 = PlayerAnimate.end
-           $4286 = FallCactusDown
-           $429b = FallCactusDown.skipAcceleration
-           $42a3 = PopBalloonAnimation
-           $42c8 = PopBalloonAnimation.frame0
-           $42de = PopBalloonAnimation.frame1
-           $42f4 = PopBalloonAnimation.clear
-           $430c = PopBalloonAnimation.end
-           $430d = CactusFalling
-           $4327 = CactusFalling.offScreen
-           $432c = CactusFalling.end
-           $432d = NoMoreLives
-           $433d = PlayerUpdate
-           $4348 = PlayerUpdate.popped
-           $435d = PlayerUpdate.respawn
-           $4360 = PlayerUpdate.respawnSkip
-           $436a = PlayerUpdate.notPopping
-           $4374 = PlayerUpdate.end
-           $4375 = DeathOfPlayer
-  SECTION: $4396-$45d7 ($0242 bytes) ["enemy"]
-           $4396 = UpdateBalloonPosition
-           $43af = UpdateCactusPosition
-           $43c8 = UpdateEnemyPosition
-           $43cf = InitializeEnemy
-           $440a = InitializeEnemy.nextSpawnPoint
-           $4426 = InitializeEnemy.spawnA
-           $442f = InitializeEnemy.spawnB
-           $4438 = InitializeEnemy.spawnC
-           $4441 = InitializeEnemy.spawnD
-           $4448 = InitializeEnemy.endNextSpawnPoint
-           $4495 = SpawnEnemy
-           $449d = MoveBalloonRight
-           $44a6 = MoveCactusRight
-           $44af = MoveBalloonDown
-           $44b8 = MoveCactusDown
-           $44c1 = MoveRight
-           $44c8 = MoveDown
-           $44cf = MoveEnemy
-           $44dc = MoveEnemy.end
-           $44dd = FallCactusDown
-           $44f2 = FallCactusDown.skipAcceleration
-           $44fa = PopBalloonAnimation
-           $451f = PopBalloonAnimation.frame0
-           $4535 = PopBalloonAnimation.frame1
-           $454b = PopBalloonAnimation.clear
-           $4563 = PopBalloonAnimation.end
-           $4564 = CactusFalling
-           $457e = CactusFalling.offScreen
-           $4583 = CactusFalling.end
-           $4584 = EnemyUpdate
-           $4596 = EnemyUpdate.popped
-           $45a4 = EnemyUpdate.respawnSkip
-           $45ae = EnemyUpdate.notPopping
-           $45b8 = EnemyUpdate.end
-           $45b9 = DeathOfEnemy
-  SECTION: $45d8-$4717 ($0140 bytes) ["point balloon"]
-           $45d8 = UpdateBalloonPosition
-           $45f1 = InitializePointBalloon
-           $4610 = InitializePointBalloon.nextSpawnPoint
-           $462c = InitializePointBalloon.spawnA
-           $4630 = InitializePointBalloon.spawnB
-           $4634 = InitializePointBalloon.spawnC
-           $4638 = InitializePointBalloon.spawnD
-           $463a = InitializePointBalloon.endNextSpawnPoint
-           $4661 = SpawnPointBalloon
-           $4669 = FloatPointBalloonUp
-           $4673 = PopBalloonAnimation
-           $4698 = PopBalloonAnimation.frame0
-           $46ae = PopBalloonAnimation.frame1
-           $46c4 = PopBalloonAnimation.clear
-           $46dc = PopBalloonAnimation.end
-           $46dd = PointBalloonUpdate
-           $46ef = PointBalloonUpdate.popped
-           $46fd = PointBalloonUpdate.respawnSkip
-           $4707 = PointBalloonUpdate.end
-           $4708 = DeathOfPointBalloon
-  SECTION: $4718-$4798 ($0081 bytes) ["score"]
-           $4718 = InitializeScore
-           $4722 = ToBCD
-           $4737 = ToBCD.end
-           $4738 = AddPoints
-           $4759 = AddPoints.noCarry
-           $475c = AddPoints.end
-           $475d = GetScoreFromIndex
-           $477b = GetScoreFromIndex.firstDigit
-           $477f = GetScoreFromIndex.secondDigit
-           $4785 = GetScoreFromIndex.thirdDigit
-           $4789 = GetScoreFromIndex.fourthDigit
-           $478f = GetScoreFromIndex.fifthDigit
-           $4793 = GetScoreFromIndex.sixthDigit
-  SECTION: $4799-$47cc ($0034 bytes) ["lcd"]
-           $4799 = LCD_OFF
-           $479e = LCD_ON
-           $47a3 = WaitVBlank
-           $47aa = ClearMap
-           $47b1 = ClearMap.clear_map_loop
-           $47c4 = SetupWindow
-  SECTION: $47cd-$47f4 ($0028 bytes) ["memory"]
-           $47cd = MEMCPY.memcpy_loop
-           $47cd = MEMCPY
-           $47d1 = MEMCPY.memcpy_check_limit
-           $47d7 = ClearOAM
-           $47dd = ClearOAM.clear_oam_loop
-           $47e6 = ClearRAM
-           $47ec = ClearRAM.clear_ram_loop
-  SECTION: $47f5-$480e ($001a bytes) ["math"]
-           $47f5 = MODULO
-           $47f7 = MODULO.loop
-           $47fc = RANDOM
-           $4803 = DIVISION
-           $4808 = DIVISION.loop
-           $480d = DIVISION.end
-    SLACK: $37f1 bytes
+           $41ea = PlayerControls
+           $41ff = PlayerControls.endRight
+           $420a = PlayerControls.endLeft
+           $4215 = PlayerControls.endUp
+           $4220 = PlayerControls.endDown
+           $4233 = PlayerControls.endDriftToCenterX
+           $4246 = PlayerControls.endDriftToCenterY
+           $4253 = PlayerControls.endStart
+           $425b = PlayerControls.endA
+           $4268 = PlayerControls.endB
+           $426b = PlayerControls.end
+           $426f = PlayerAnimate
+           $4281 = PlayerAnimate.bobUp
+           $428a = PlayerAnimate.bobDown
+           $4292 = PlayerAnimate.end
+           $4293 = FallCactusDown
+           $42a8 = FallCactusDown.skipAcceleration
+           $42b0 = PopBalloonAnimation
+           $42d5 = PopBalloonAnimation.frame0
+           $42eb = PopBalloonAnimation.frame1
+           $4301 = PopBalloonAnimation.clear
+           $4319 = PopBalloonAnimation.end
+           $431a = CactusFalling
+           $4334 = CactusFalling.offScreen
+           $4339 = CactusFalling.end
+           $433a = NoMoreLives
+           $4349 = PlayerUpdate
+           $4354 = PlayerUpdate.popped
+           $4369 = PlayerUpdate.respawn
+           $436c = PlayerUpdate.respawnSkip
+           $4376 = PlayerUpdate.notPopping
+           $4380 = PlayerUpdate.end
+           $4381 = DeathOfPlayer
+  SECTION: $43a2-$45e3 ($0242 bytes) ["enemy"]
+           $43a2 = UpdateBalloonPosition
+           $43bb = UpdateCactusPosition
+           $43d4 = UpdateEnemyPosition
+           $43db = InitializeEnemy
+           $4416 = InitializeEnemy.nextSpawnPoint
+           $4432 = InitializeEnemy.spawnA
+           $443b = InitializeEnemy.spawnB
+           $4444 = InitializeEnemy.spawnC
+           $444d = InitializeEnemy.spawnD
+           $4454 = InitializeEnemy.endNextSpawnPoint
+           $44a1 = SpawnEnemy
+           $44a9 = MoveBalloonRight
+           $44b2 = MoveCactusRight
+           $44bb = MoveBalloonDown
+           $44c4 = MoveCactusDown
+           $44cd = MoveRight
+           $44d4 = MoveDown
+           $44db = MoveEnemy
+           $44e8 = MoveEnemy.end
+           $44e9 = FallCactusDown
+           $44fe = FallCactusDown.skipAcceleration
+           $4506 = PopBalloonAnimation
+           $452b = PopBalloonAnimation.frame0
+           $4541 = PopBalloonAnimation.frame1
+           $4557 = PopBalloonAnimation.clear
+           $456f = PopBalloonAnimation.end
+           $4570 = CactusFalling
+           $458a = CactusFalling.offScreen
+           $458f = CactusFalling.end
+           $4590 = EnemyUpdate
+           $45a2 = EnemyUpdate.popped
+           $45b0 = EnemyUpdate.respawnSkip
+           $45ba = EnemyUpdate.notPopping
+           $45c4 = EnemyUpdate.end
+           $45c5 = DeathOfEnemy
+  SECTION: $45e4-$4723 ($0140 bytes) ["point balloon"]
+           $45e4 = UpdateBalloonPosition
+           $45fd = InitializePointBalloon
+           $461c = InitializePointBalloon.nextSpawnPoint
+           $4638 = InitializePointBalloon.spawnA
+           $463c = InitializePointBalloon.spawnB
+           $4640 = InitializePointBalloon.spawnC
+           $4644 = InitializePointBalloon.spawnD
+           $4646 = InitializePointBalloon.endNextSpawnPoint
+           $466d = SpawnPointBalloon
+           $4675 = FloatPointBalloonUp
+           $467f = PopBalloonAnimation
+           $46a4 = PopBalloonAnimation.frame0
+           $46ba = PopBalloonAnimation.frame1
+           $46d0 = PopBalloonAnimation.clear
+           $46e8 = PopBalloonAnimation.end
+           $46e9 = PointBalloonUpdate
+           $46fb = PointBalloonUpdate.popped
+           $4709 = PointBalloonUpdate.respawnSkip
+           $4713 = PointBalloonUpdate.end
+           $4714 = DeathOfPointBalloon
+  SECTION: $4724-$478d ($006a bytes) ["score"]
+           $4724 = InitializeScore
+           $472c = ToBCD
+           $4741 = ToBCD.end
+           $4742 = AddPoints
+           $4763 = AddPoints.noCarry
+           $4766 = AddPoints.end
+           $4767 = GetScoreFromIndex
+           $4785 = GetScoreFromIndex.firstNibble
+           $4788 = GetScoreFromIndex.secondNibble
+           $478b = GetScoreFromIndex.end
+  SECTION: $478e-$47c1 ($0034 bytes) ["lcd"]
+           $478e = LCD_OFF
+           $4793 = LCD_ON
+           $4798 = WaitVBlank
+           $479f = ClearMap
+           $47a6 = ClearMap.clear_map_loop
+           $47b9 = SetupWindow
+  SECTION: $47c2-$47e9 ($0028 bytes) ["memory"]
+           $47c2 = MEMCPY.memcpy_loop
+           $47c2 = MEMCPY
+           $47c6 = MEMCPY.memcpy_check_limit
+           $47cc = ClearOAM
+           $47d2 = ClearOAM.clear_oam_loop
+           $47db = ClearRAM
+           $47e1 = ClearRAM.clear_ram_loop
+  SECTION: $47ea-$4803 ($001a bytes) ["math"]
+           $47ea = MODULO
+           $47ec = MODULO.loop
+           $47f1 = RANDOM
+           $47f8 = DIVISION
+           $47fd = DIVISION.loop
+           $4802 = DIVISION.end
+    SLACK: $37fc bytes
 
 WRAM0 bank #0:
-  SECTION: $c000-$c02e ($002f bytes) ["RAM vars"]
+  SECTION: $c000-$c02f ($0030 bytes) ["RAM vars"]
            $c000 = score
            $c003 = scroll_timer
            $c004 = movement_timer
            $c005 = collision_timer
            $c006 = joypad_down
            $c007 = joypad_pressed
-           $c008 = player_x
-           $c009 = player_y
-           $c00a = player_cactus_x
-           $c00b = player_cactus_y
-           $c00c = player_alive
-           $c00d = player_popping
-           $c00e = player_popping_frame
-           $c00f = player_falling
-           $c010 = player_fall_speed
-           $c011 = player_falling_timer
-           $c012 = player_pop_timer
-           $c013 = player_delay_falling_timer
-           $c014 = player_respawn_timer
-           $c015 = player_bobbed_up
-           $c016 = player_speed
-           $c017 = player_bob_timer
-           $c018 = player_drift_timer_x
-           $c019 = player_drift_timer_y
-           $c01a = player_lives
-           $c01b = point_balloon_x
-           $c01c = point_balloon_y
-           $c01d = point_balloon_alive
-           $c01e = point_balloon_popping
-           $c01f = point_balloon_popping_frame
-           $c020 = point_balloon_pop_timer
-           $c021 = point_balloon_respawn_timer
-           $c022 = enemy_x
-           $c023 = enemy_y
-           $c024 = enemy_cactus_x
-           $c025 = enemy_cactus_y
-           $c026 = enemy_alive
-           $c027 = enemy_popping
-           $c028 = enemy_popping_frame
-           $c029 = enemy_falling
-           $c02a = enemy_fall_speed
-           $c02b = enemy_falling_timer
-           $c02c = enemy_pop_timer
-           $c02d = enemy_delay_falling_timer
-           $c02e = enemy_respawn_timer
+           $c008 = paused_game
+           $c009 = player_x
+           $c00a = player_y
+           $c00b = player_cactus_x
+           $c00c = player_cactus_y
+           $c00d = player_alive
+           $c00e = player_popping
+           $c00f = player_popping_frame
+           $c010 = player_falling
+           $c011 = player_fall_speed
+           $c012 = player_falling_timer
+           $c013 = player_pop_timer
+           $c014 = player_delay_falling_timer
+           $c015 = player_respawn_timer
+           $c016 = player_bobbed_up
+           $c017 = player_speed
+           $c018 = player_bob_timer
+           $c019 = player_drift_timer_x
+           $c01a = player_drift_timer_y
+           $c01b = player_lives
+           $c01c = point_balloon_x
+           $c01d = point_balloon_y
+           $c01e = point_balloon_alive
+           $c01f = point_balloon_popping
+           $c020 = point_balloon_popping_frame
+           $c021 = point_balloon_pop_timer
+           $c022 = point_balloon_respawn_timer
+           $c023 = enemy_x
+           $c024 = enemy_y
+           $c025 = enemy_cactus_x
+           $c026 = enemy_cactus_y
+           $c027 = enemy_alive
+           $c028 = enemy_popping
+           $c029 = enemy_popping_frame
+           $c02a = enemy_falling
+           $c02b = enemy_fall_speed
+           $c02c = enemy_falling_timer
+           $c02d = enemy_pop_timer
+           $c02e = enemy_delay_falling_timer
+           $c02f = enemy_respawn_timer
   SECTION: $c100-$c127 ($0028 bytes) ["OAM vars"]
            $c100 = player_cactus
            $c108 = player_balloon
            $c110 = point_balloon
            $c118 = enemy_cactus
            $c120 = enemy_balloon
-    SLACK: $0fa9 bytes
+    SLACK: $0fa8 bytes
 
 HRAM bank #0:
   SECTION: $ff80-$ff87 ($0008 bytes) ["OAM DMA"]
@@ -297,7 +299,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $076e bytes in 1 bank
-    ROMX: $080f bytes in 1 bank
-    WRAM0: $0057 bytes in 1 bank
+    ROM0: $0790 bytes in 1 bank
+    ROMX: $0804 bytes in 1 bank
+    WRAM0: $0058 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

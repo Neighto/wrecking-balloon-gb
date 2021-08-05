@@ -3,10 +3,8 @@ SECTION "score", ROMX
 InitializeScore::
     xor a ; ld a, 0
     ld hl, score
-	ld [hl], a
-    inc l
-    ld [hl], a
-    inc l
+	ld [hli], a
+    ld [hli], a
     ld [hl], a
     ret
 
@@ -62,44 +60,26 @@ GetScoreFromIndex::
     ; a = return score
     ld hl, score
     cp a, 0
-    jr z, .firstDigit
+    jr z, .firstNibble
     cp a, 1
-    jr z, .secondDigit
+    jr z, .secondNibble
     inc l ; next byte
     cp a, 2
-    jr z, .thirdDigit
+    jr z, .firstNibble
     cp a, 3
-    jr z, .fourthDigit
+    jr z, .secondNibble
     inc l ; next byte
     cp a, 4
-    jr z, .fifthDigit
+    jr z, .firstNibble
     cp a, 5
-    jr z, .sixthDigit
+    jr z, .secondNibble
     ret
-.firstDigit:
+.firstNibble:
     ld a, [hl]
-    and %00001111
-    ret
-.secondDigit:
-    ld a, [hl]
-    swap a
-    and %00001111
-    ret
-.thirdDigit:
-    ld a, [hl]
-    and %00001111
-    ret
-.fourthDigit:
+    jr .end
+.secondNibble:
     ld a, [hl]
     swap a
-    and %00001111
-    ret
-.fifthDigit:
-    ld a, [hl]
-    and %00001111
-    ret
-.sixthDigit:
-    ld a, [hl]
-    swap a
+.end:
     and %00001111
     ret
