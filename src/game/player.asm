@@ -336,7 +336,7 @@ ResetSpeedUp:
   ld [hl], 1
   ret
 
-PlayerMovement:
+PlayerControls:
   ld a, [movement_timer]
 	and	%00000011
 	jr nz, .end
@@ -384,6 +384,13 @@ PlayerMovement:
   jr nz, .endDriftToCenterY
   call MoveCactusDriftCenterY
 .endDriftToCenterY:
+  ; START
+  ld a, [joypad_pressed]
+  call JOY_START
+  jr z, .endStart
+  ld a, 1
+  ld [paused_game], a ; pause
+.endStart:
   ; A
   ld a, [joypad_down]
 	call JOY_A
@@ -544,8 +551,7 @@ NoMoreLives:
   ld [player_lives], a
   call RefreshLives
   ; Reset score
-  xor a ; ld a, 0
-  ld [score], a
+  call InitializeScore
   call RefreshScore
   ret
 
@@ -555,7 +561,7 @@ PlayerUpdate::
   and 1
   jr z, .popped
   ; Get movement
-  call PlayerMovement
+  call PlayerControls
   ; call PlayerAnimate ; Broken.. For now
   ret
 .popped:
