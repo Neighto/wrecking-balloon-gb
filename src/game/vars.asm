@@ -35,8 +35,9 @@ SECTION "RAM vars", WRAM0[$C000]
 	point_balloon_pop_timer:: DB
 	point_balloon_respawn_timer:: DB
 
-	enemy_x:: DB
-	enemy_y:: DB
+	; Enemy 1
+	enemy_balloon_x:: DB
+	enemy_balloon_y:: DB
 	enemy_cactus_x:: DB 
 	enemy_cactus_y:: DB
 	enemy_alive:: DB
@@ -48,6 +49,21 @@ SECTION "RAM vars", WRAM0[$C000]
 	enemy_pop_timer:: DB
 	enemy_delay_falling_timer:: DB
 	enemy_respawn_timer:: DB
+
+	; Enemy 2
+	enemy2_balloon_x:: DB
+	enemy2_balloon_y:: DB
+	enemy2_cactus_x:: DB 
+	enemy2_cactus_y:: DB
+	enemy2_alive:: DB
+	enemy2_popping:: DB
+	enemy2_popping_frame:: DB
+	enemy2_falling:: DB
+	enemy2_fall_speed:: DB
+	enemy2_falling_timer:: DB
+	enemy2_pop_timer:: DB
+	enemy2_delay_falling_timer:: DB
+	enemy2_respawn_timer:: DB
 
 SECTION "general initialization", ROM0 
 InitializeGameVars::
@@ -63,3 +79,5 @@ SECTION "OAM vars", WRAM0[$C100]
 	point_balloon:: DS 4*2
 	enemy_cactus:: DS 4*2
 	enemy_balloon:: DS 4*2
+	enemy2_cactus:: DS 4*2
+	enemy2_balloon:: DS 4*2
