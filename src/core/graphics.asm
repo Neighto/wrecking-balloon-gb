@@ -66,6 +66,7 @@ LoadGameData::
 	call InitializePlayer
 	call InitializePointBalloon
 	call InitializeEnemy
+	call InitializeEnemy2
 	ret
 
 SetupPalettes::

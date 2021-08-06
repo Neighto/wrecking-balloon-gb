@@ -49,6 +49,7 @@ GAMELOOP:
 	call PlayerUpdate
 	call PointBalloonUpdate
 	call EnemyUpdate
+	call Enemy2Update
 	call OAMDMA
 .END
 	jp GAMELOOP
@@ -66,20 +67,4 @@ UpdateGlobalTimer:
 	ld a, [movement_timer]
 	inc	a
 	ld [movement_timer], a
-	ret
-
-; Move, and clean
-TryToUnpause:
-	xor a ; ld a, 0
-	ld hl, paused_game
-	cp a, [hl]
-	jr z, .end
-	; Is paused
-	call ReadInput
-	ld a, [joypad_pressed]
-	call JOY_START
-	jr z, .end
-	xor a ; ld a, 0
-	ld [hl], a ; pause
-.end:
 	ret

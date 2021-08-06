@@ -103,18 +103,43 @@ CollisionUpdate::
     ; Collided
     call DeathOfEnemy
 .endEnemy:
+    ; Enemy 2
+    ; Check if alive
+    ld a, [enemy2_alive]
+    and 1
+    jr z, .endEnemy2
+    ; Check collision
+    ld bc, enemy2_balloon
+    ld hl, player_cactus
+    call CollisionCheck
+    and 1
+    jr z, .endEnemy2
+    ; Collided
+    call DeathOfEnemy2
+.endEnemy2:
     ; Enemy colliding with player
     ; Check if alive
     ld a, [player_alive]
     and 1
     jr z, .endEnemyHitPlayer
-    ; ; Check collision
+    ; Check collision enemy 1
+.checkCollisionEnemy1:
     ld bc, player_balloon
     ld hl, enemy_cactus
     call CollisionCheck
     and 1
+    jr z, .checkCollisionEnemy2
+    ; Collided
+    jr .collisionWithPlayer
+    ; Check collision enemy 2
+.checkCollisionEnemy2:
+    ld bc, player_balloon
+    ld hl, enemy2_cactus
+    call CollisionCheck
+    and 1
     jr z, .endEnemyHitPlayer
     ; Collided
+.collisionWithPlayer:
     call DeathOfPlayer
-.endEnemyHitPlayer
+.endEnemyHitPlayer:
     ret
