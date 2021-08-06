@@ -1,3 +1,5 @@
+INCLUDE "points.inc"
+
 SECTION "enemy", ROMX
 
 ENEMY_START_X EQU 0
@@ -7,7 +9,6 @@ ENEMY_SPAWN_A EQU 32
 ENEMY_SPAWN_B EQU 64
 ENEMY_SPAWN_C EQU 96
 ENEMY_SPAWN_D EQU 128
-ENEMY_POINTS EQU 10
 
 UpdateBalloonPosition:
     ld hl, enemy_balloon
@@ -367,7 +368,7 @@ DeathOfEnemy::
     ld hl, enemy_alive
     ld [hl], a
     ; Points
-    ld b, ENEMY_POINTS
+    ld b, ENEMY_CACTUS_POINTS
     call AddPoints
     ; Animation trigger
     ld a, 1
@@ -380,4 +381,6 @@ DeathOfEnemy::
     ld [hl], $8E
     ld hl, enemy_cactus+6
     ld [hl], $8E
+    ; Sound
+    call PopSound
     ret
