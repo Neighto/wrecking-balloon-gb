@@ -16,7 +16,7 @@ START::
 	ld a, IEF_STAT
 	ld [rIE], a
 
-	call TurnOffAudio
+	; call AUDIO_OFF
 
 	call WaitVBlank
 	call LCD_OFF
@@ -53,13 +53,6 @@ GAMELOOP:
 	call OAMDMA
 .END
 	jp GAMELOOP
-
-SECTION "audio", ROM0
-
-TurnOffAudio:
-	ld a, 0
-	ld [rNR52], a
-	ret
 
 SECTION "timer", ROM0 
 

@@ -1,3 +1,5 @@
+INCLUDE "points.inc"
+
 SECTION "point balloon", ROMX
 
 ; Balloons will spawn and fly upward AND can be popped
@@ -7,7 +9,6 @@ POINT_BALLOON_SPAWN_A EQU 32
 POINT_BALLOON_SPAWN_B EQU 64
 POINT_BALLOON_SPAWN_C EQU 96
 POINT_BALLOON_SPAWN_D EQU 128
-POINT_BALLOON_POINTS EQU 50
 
 UpdateBalloonPosition:
     ld hl, point_balloon
@@ -223,4 +224,6 @@ DeathOfPointBalloon::
     ; Animation trigger
     ld hl, point_balloon_popping
     ld [hl], 1
+    ; Sound
+    call PopSound
     ret

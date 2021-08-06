@@ -613,4 +613,6 @@ DeathOfPlayer::
   ld [hl], $90
   ld hl, player_cactus+6
   ld [hl], $90
+  ; Sound
+  call PopSound
   ret
