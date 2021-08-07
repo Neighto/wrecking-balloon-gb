@@ -20,12 +20,14 @@ SECTION "RAM vars", WRAM0[$C000]
 	player_pop_timer:: DB
 	player_delay_falling_timer:: DB
 	player_respawn_timer:: DB
+	player_respawned_blink_timer:: DB
 	player_bobbed_up:: DB
 	player_speed:: DB
 	player_bob_timer:: DB
 	player_drift_timer_x:: DB
 	player_drift_timer_y:: DB
 	player_lives:: DB
+	player_invincible:: DB ; Operates like a timer, when set, invincible immediately
 
 	point_balloon_x:: DB
 	point_balloon_y:: DB
@@ -68,9 +70,14 @@ SECTION "RAM vars", WRAM0[$C000]
 SECTION "general initialization", ROM0 
 InitializeGameVars::
 	xor a
-	ld [hl], paused_game
+	ld hl, paused_game
+	ld [hl], a
 	ld hl, player_lives
 	ld [hl], 2
+
+	; Should be set in player, but need to separate inits from spawning!
+	ld hl, player_invincible
+  	ld [hl], 235
 	ret
 
 SECTION "OAM vars", WRAM0[$C100]

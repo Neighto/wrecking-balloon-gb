@@ -225,5 +225,5 @@ DeathOfPointBalloon::
     ld hl, point_balloon_popping
     ld [hl], 1
     ; Sound
-    call PopSound
+    call FallingSound
     ret

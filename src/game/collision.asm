@@ -140,6 +140,10 @@ CollisionUpdate::
     jr z, .endEnemyHitPlayer
     ; Collided
 .collisionWithPlayer:
+    ; Check if player is invincible
+    ld a, [player_invincible]
+    cp a, 0
+    jr nz, .endEnemyHitPlayer
     call DeathOfPlayer
 .endEnemyHitPlayer:
     ret
