@@ -20,7 +20,6 @@ SECTION "RAM vars", WRAM0[$C000]
 	player_pop_timer:: DB
 	player_delay_falling_timer:: DB
 	player_respawn_timer:: DB
-	player_respawned_blink_timer:: DB
 	player_bobbed_up:: DB
 	player_speed:: DB
 	player_bob_timer:: DB

@@ -1,4 +1,5 @@
 INCLUDE "points.inc"
+INCLUDE "constants.inc"
 
 SECTION "enemy", ROMX
 
@@ -241,13 +242,9 @@ PopBalloonAnimation:
     ld a, [enemy_pop_timer]
 	inc	a
 	ld [enemy_pop_timer], a
-    cp a, 30
+    and POPPING_BALLOON_ANIMATION_SPEED
     jp nz, .end
-
     ; Can do next frame
-    ; Reset timer
-    xor a ; ld a, 0
-    ld [enemy_pop_timer], a
     ; Check what frame we are on
     ld a, [enemy_popping_frame]
     cp a, 1

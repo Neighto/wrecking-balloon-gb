@@ -464,13 +464,9 @@ PopBalloonAnimation:
   ld a, [player_pop_timer]
   inc	a
   ld [player_pop_timer], a
-  cp a, 30
+  and POPPING_BALLOON_ANIMATION_SPEED
   jp nz, .end
-
   ; Can do next frame
-  ; Reset timer
-  xor a ; ld a, 0
-  ld [player_pop_timer], a
   ; Check what frame we are on
   ld a, [player_popping_frame]
   cp a, 1
