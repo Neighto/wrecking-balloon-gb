@@ -29,7 +29,7 @@ PopSound::
     ret
 
 FallingSound::
-  ;play boop on ch1
+  ; Borrowed sound / more like collected item
   ld  a,%10010110
   ld  [rNR10],a
   ld  a,%10000000
@@ -40,21 +40,23 @@ FallingSound::
   ld  [rNR13],a
   ld  a,%10001101
   ld  [rNR14],a
+  ret
 
-    ; ; Sound on/off
-    ; ld a, %10000000
-    ; ld [rNR30], a
-    ; ; Sound length
-    ; ld a, %00000011
-    ; ld [rNR31], a
-    ; ; Select output level
-    ; ld a, %00110000
-    ; ld [rNR32], a
-    ; ; Frequency's higher data
-    ; ld a, %10100000
-    ; ld [rNR34], a
-    ; ; Master volume
-    ; ld  a,%11111111
-    ; ld  [rNR50],a
-    ; ld  [rNR51],a
-    ret
+WrongAnswerSound::
+  ; Sound on/off
+  ld a, %10000000
+  ld [rNR30], a
+  ; Sound length
+  ld a, %11000001
+  ld [rNR31], a
+  ; Select output level
+  ld a, %00100000 ; 100% volume
+  ld [rNR32], a
+  ; Frequency's higher data
+  ld a, %11000010
+  ld [rNR34], a
+  ; Master volume
+  ld  a,%11111111
+  ld  [rNR50],a
+  ld  [rNR51],a
+  ret
