@@ -21,8 +21,6 @@ SECTION "RAM vars", WRAM0[$C000]
 	player_delay_falling_timer:: DB
 	player_respawn_timer:: DB
 	player_speed:: DB
-	player_drift_timer_x:: DB
-	player_drift_timer_y:: DB
 	player_lives:: DB
 	player_invincible:: DB ; Operates like a timer, when set, invincible immediately
 
