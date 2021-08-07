@@ -1,4 +1,5 @@
 INCLUDE "points.inc"
+INCLUDE "constants.inc"
 
 SECTION "point balloon", ROMX
 
@@ -117,16 +118,12 @@ PopBalloonAnimation:
     cp a, 0
     jr z, .frame0
 
-    ld a, [point_balloon_pop_timer]
+    ld a, [point_balloon_pop_timer] ; TODO what if we used global timer, but waited 1 or 2
 	inc	a
 	ld [point_balloon_pop_timer], a
-    cp a, 30
+    and POPPING_BALLOON_ANIMATION_SPEED
     jp nz, .end
-
     ; Can do next frame
-    ; Reset timer
-    xor a ; ld a, 0
-    ld [point_balloon_pop_timer], a
     ; Check what frame we are on
     ld a, [point_balloon_popping_frame]
     cp a, 1
