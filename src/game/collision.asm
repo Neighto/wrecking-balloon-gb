@@ -1,3 +1,5 @@
+INCLUDE "hardware.inc"
+
 SECTION "collision", ROM0
 
 CollisionCheck:
@@ -146,4 +148,26 @@ CollisionUpdate::
     jr nz, .endEnemyHitPlayer
     call DeathOfPlayer
 .endEnemyHitPlayer:
+    ret
+
+OffScreenRight::
+    ; b = x value to check
+    ; return a (1 = end of screen)
+    ld a, SCRN_X
+    cp a, b
+    jr nc, .end
+    ld a, 1
+    ret
+.end:
+    xor a ; ld a, 0
+    ret
+
+OffScreenLeft::
+    ; b = x value to check
+    ; return a (1 = end of screen)
+    xor a ; ld a, 0
+    cp a, b
+    jr c, .end
+    ld a, 1
+.end:
     ret
