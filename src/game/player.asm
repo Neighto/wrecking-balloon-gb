@@ -132,6 +132,7 @@ SpawnPlayer:
   
   ld a, INVINCIBLE_RESPAWN_TIME
   ld [player_invincible], a
+  call StopFallingSound
   ret
 
 MoveBalloonUp:
@@ -556,6 +557,7 @@ DeathOfPlayer::
   ld [hl], $90
   ; Sound
   call PopSound
+  call FallingSound
   ret
 
 InvincibleBlink::
