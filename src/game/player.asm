@@ -1,4 +1,5 @@
 INCLUDE "hardware.inc"
+INCLUDE "constants.inc"
 
 SECTION "player", ROMX
 
@@ -129,7 +130,7 @@ SpawnPlayer:
   ld [player_respawn_timer], a
   call InitializePlayer
   
-  ld a, 200 ; invincible time
+  ld a, INVINCIBLE_RESPAWN_TIME
   ld [player_invincible], a
   ret
 
@@ -635,7 +636,7 @@ InvincibleBlink::
   cp a, 3
   jr c, .defaultPalette
   ; Are we blinking normal or fast (faster at the end)
-  cp a, 70 ; Toggle for time when we switch to faster blinking
+  cp a, INVINCIBLE_BLINK_FASTER_TIME ; Toggle for time when we switch to faster blinking
   ld a, [player_respawned_blink_timer] ; TODO I wonder if stuff like this can just be like a global timer!
   inc a
   ld [player_respawned_blink_timer], a

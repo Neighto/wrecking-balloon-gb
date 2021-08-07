@@ -77,7 +77,7 @@ InitializeGameVars::
 
 	; Should be set in player, but need to separate inits from spawning!
 	ld hl, player_invincible
-  	ld [hl], 235
+  	ld [hl], a
 	ret
 
 SECTION "OAM vars", WRAM0[$C100]
