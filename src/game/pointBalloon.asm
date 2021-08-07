@@ -118,7 +118,7 @@ PopBalloonAnimation:
     cp a, 0
     jr z, .frame0
 
-    ld a, [point_balloon_pop_timer] ; TODO what if we used global timer, but waited 1 or 2
+    ld a, [point_balloon_pop_timer]
 	inc	a
 	ld [point_balloon_pop_timer], a
     and POPPING_BALLOON_ANIMATION_SPEED
