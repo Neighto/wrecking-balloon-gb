@@ -66,12 +66,12 @@ ROM0 bank #0:
   SECTION: $078f-$07a2 ($0014 bytes) ["window map"]
            $078f = WindowMap
            $07a3 = WindowMapEnd
-  SECTION: $07a3-$07b2 ($0010 bytes) ["general initialization"]
+  SECTION: $07a3-$07b1 ($000f bytes) ["general initialization"]
            $07a3 = InitializeGameVars
-  SECTION: $07b3-$07ba ($0008 bytes) ["tools"]
-           $07b3 = IncrementPosition
-           $07b6 = DecrementPosition
-    SLACK: $3853 bytes
+  SECTION: $07b2-$07b9 ($0008 bytes) ["tools"]
+           $07b2 = IncrementPosition
+           $07b5 = DecrementPosition
+    SLACK: $3854 bytes
 
 ROMX bank #1:
   SECTION: $4000-$43db ($03dc bytes) ["player"]
@@ -368,7 +368,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $07ad bytes in 1 bank
+    ROM0: $07ac bytes in 1 bank
     ROMX: $0ad0 bytes in 1 bank
     WRAM0: $0077 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

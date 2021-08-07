@@ -52,8 +52,8 @@
 00:078f WindowMap
 00:07a3 WindowMapEnd
 00:07a3 InitializeGameVars
-00:07b3 IncrementPosition
-00:07b6 DecrementPosition
+00:07b2 IncrementPosition
+00:07b5 DecrementPosition
 01:4000 UpdateBalloonPosition
 01:4019 UpdateCactusPosition
 01:4032 UpdatePlayerPosition
