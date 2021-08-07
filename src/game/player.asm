@@ -182,18 +182,6 @@ MoveCactusDown:
   call IncrementPosition
   ret
 
-BobCactusUp:
-  ld hl, player_cactus_y
-  ld a, 1
-  call DecrementPosition
-  ret
-
-BobCactusDown:
-  ld hl, player_cactus_y
-  ld a, 1
-  call IncrementPosition
-  ret
-
 MoveCactusDriftLeft:
   ; Move left until limit is reached
   ld a, [player_drift_timer_x]
@@ -268,26 +256,9 @@ MoveCactusDriftUp:
 .end:
   ret
 
-MoveCactusDriftDown:
-  ; Move down until limit is reached
-  ld a, [player_drift_timer_y]
-  inc	a
-  ld [player_drift_timer_y], a
-  and	%00000001
-  jr nz, .end
-  ld hl, player_y
-  ld a, PLAYER_MAX_DRIFT_Y+16
-  add [hl]
-  ld hl, player_cactus_y
-  cp a, [hl]
-  jr c, .end
-  inc [hl]
-.end:
-  ret
-
 MoveCactusDriftCenterY:
   ; Move back to center
-  ld a, [player_drift_timer_y]
+  ld a, [player_drift_timer_y] ; TODO can be global
   inc	a
   ld [player_drift_timer_y], a
   and	%00000001
@@ -305,7 +276,7 @@ MoveCactusDriftCenterY:
   ret
 .moveDown:
   inc [hl]
-.end
+.end:
   ret
 
 MoveRight:
@@ -329,7 +300,6 @@ MoveDown:
 MoveUp:
   call MoveBalloonUp
   call MoveCactusUp
-  ; call MoveCactusDriftDown
   ret
 
 SpeedUp:
@@ -413,28 +383,6 @@ PlayerControls:
   call ResetSpeedUp
 .end:
   call UpdatePlayerPosition
-  ret
-
-PlayerAnimate:
-  ; Lift up and down slowly
-  ld a, [player_bob_timer]
-  inc	a
-  ld [player_bob_timer], a
-  and	%01111111
-  jr nz, .end
-  ld a, [player_bobbed_up]
-  and 1
-  jr nz, .bobDown
-.bobUp:
-  ld a, 1
-  ld [player_bobbed_up], a
-  call BobCactusUp
-  ret
-.bobDown:
-  ld a, 0
-  ld [player_bobbed_up], a
-  call BobCactusDown
-.end
   ret
 
 FallCactusDown:
@@ -566,7 +514,6 @@ PlayerUpdate::
   call InvincibleBlink
   ; Get movement
   call PlayerControls
-  ; call PlayerAnimate ; Broken.. For now
   ret
 .popped:
   ; Can we respawn
