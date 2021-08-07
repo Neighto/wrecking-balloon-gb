@@ -57,7 +57,7 @@ GAMELOOP:
 SECTION "timer", ROM0 
 
 UpdateGlobalTimer:
-	ld a, [movement_timer]
+	ld a, [global_timer]
 	inc	a
-	ld [movement_timer], a
+	ld [global_timer], a
 	ret

@@ -206,7 +206,7 @@ MoveDown:
     ret
 
 MoveEnemy:
-    ld a, [movement_timer]
+    ld a, [global_timer]
 	and	%00000111
 	jr nz, .end
     call MoveRight
@@ -334,7 +334,7 @@ EnemyUpdate::
     and 1
     jr z, .popped
     ; Check if we can move
-    ld a, [movement_timer]
+    ld a, [global_timer]
     and	%00000011
     jr nz, .end
     call MoveEnemy

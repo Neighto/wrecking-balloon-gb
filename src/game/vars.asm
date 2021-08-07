@@ -1,7 +1,7 @@
 SECTION "RAM vars", WRAM0[$C000]
 	score:: DS 3
 	scroll_timer:: DB
-	movement_timer:: DB
+	global_timer:: DB
 	collision_timer:: DB
 	joypad_down:: DB
 	joypad_pressed:: DB

@@ -343,7 +343,7 @@ ResetSpeedUp:
   ret
 
 PlayerControls:
-  ld a, [movement_timer]
+  ld a, [global_timer]
 	and	%00000011
 	jr nz, .end
 	call ReadInput
@@ -636,10 +636,8 @@ InvincibleBlink::
   cp a, 3
   jr c, .defaultPalette
   ; Are we blinking normal or fast (faster at the end)
-  cp a, INVINCIBLE_BLINK_FASTER_TIME ; Toggle for time when we switch to faster blinking
-  ld a, [player_respawned_blink_timer] ; TODO I wonder if stuff like this can just be like a global timer!
-  inc a
-  ld [player_respawned_blink_timer], a
+  cp a, INVINCIBLE_BLINK_FASTER_TIME
+  ld a, [global_timer]
   jr c, .blinkFast
 .blinkNormal:
 	and %00010000
