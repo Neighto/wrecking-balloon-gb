@@ -184,9 +184,7 @@ MoveCactusDown:
 
 MoveCactusDriftLeft:
   ; Move left until limit is reached
-  ld a, [player_drift_timer_x]
-  inc	a
-  ld [player_drift_timer_x], a
+  ld a, [global_timer]
   and	%00000001
   jr nz, .end
   ld hl, player_x
@@ -203,9 +201,7 @@ MoveCactusDriftLeft:
 ; TODO: Add basic deceleration so if you stop it keeps swinging
 MoveCactusDriftRight:
   ; Move right until limit is reached
-  ld a, [player_drift_timer_x]
-  inc	a
-  ld [player_drift_timer_x], a
+  ld a, [global_timer]
   and	%00000001
   jr nz, .end
   ld hl, player_x
@@ -220,9 +216,7 @@ MoveCactusDriftRight:
 
 MoveCactusDriftCenterX:
   ; Move back to center
-  ld a, [player_drift_timer_x]
-  inc	a
-  ld [player_drift_timer_x], a
+  ld a, [global_timer]
   and	%00000001
   jr nz, .end
   ld a, [player_x]
@@ -240,9 +234,7 @@ MoveCactusDriftCenterX:
 
 MoveCactusDriftUp:
   ; Move up until limit is reached
-  ld a, [player_drift_timer_y]
-  inc	a
-  ld [player_drift_timer_y], a
+  ld a, [global_timer]
   and	%00000001
   jr nz, .end
   ld hl, player_y
@@ -258,9 +250,7 @@ MoveCactusDriftUp:
 
 MoveCactusDriftCenterY:
   ; Move back to center
-  ld a, [player_drift_timer_y] ; TODO can be global
-  inc	a
-  ld [player_drift_timer_y], a
+  ld a, [global_timer]
   and	%00000001
   jr nz, .end
   ; In what direction is cactus_y off from player_y
