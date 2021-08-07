@@ -13,16 +13,13 @@ AUDIO_ON::
 	ret
 
 PopSound::
-    ; Sound length
-    ld a, %00011110
-    ld [rNR41], a
     ; Volume envelope
     ld a, %10000001
     ld [rNR42], a
     ; Polynomial counter
     ld a, %01111011
     ld [rNR43], a
-    ; Counter/consecutive Initial
+    ; Counter/consecutive initial
     ld a, %10000000
     ld [rNR44], a
     ; Master volume
@@ -32,4 +29,32 @@ PopSound::
     ret
 
 FallingSound::
+  ;play boop on ch1
+  ld  a,%10010110
+  ld  [rNR10],a
+  ld  a,%10000000
+  ld  [rNR11],a
+  ld  a,%01001001
+  ld  [rNR12],a
+  ld  a,%11111111
+  ld  [rNR13],a
+  ld  a,%10001101
+  ld  [rNR14],a
+
+    ; ; Sound on/off
+    ; ld a, %10000000
+    ; ld [rNR30], a
+    ; ; Sound length
+    ; ld a, %00000011
+    ; ld [rNR31], a
+    ; ; Select output level
+    ; ld a, %00110000
+    ; ld [rNR32], a
+    ; ; Frequency's higher data
+    ; ld a, %10100000
+    ; ld [rNR34], a
+    ; ; Master volume
+    ; ld  a,%11111111
+    ; ld  [rNR50],a
+    ; ld  [rNR51],a
     ret

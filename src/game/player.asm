@@ -68,6 +68,8 @@ InitializePlayer::
   ld [hl], a
   ld hl, player_respawn_timer
   ld [hl], a
+  ; ld hl, player_invincible
+  ; ld [hl], a
   ld hl, player_alive
   ld [hl], 1
   ld hl, player_fall_speed
@@ -91,7 +93,7 @@ InitializePlayer::
   inc l
   ld [hl], $82
   inc l
-  ld [hl], %00000000
+  ld [hl], %00010000
   ; Balloon right
   ld hl, player_balloon+4
   ld [hl], PLAYER_BALLOON_START_Y
@@ -100,7 +102,7 @@ InitializePlayer::
   inc l
   ld [hl], $82
   inc l
-  ld [hl], %00100000
+  ld [hl], %00110000
   ; Cactus left
   ld hl, player_cactus
   ld [hl], PLAYER_START_Y
@@ -109,7 +111,7 @@ InitializePlayer::
   inc l
   ld [hl], $80 ;$8C
   inc l
-  ld [hl], %00000000
+  ld [hl], %00010000
   ; Cactus right
   ld hl, player_cactus+4
   ld [hl], PLAYER_START_Y
@@ -118,7 +120,7 @@ InitializePlayer::
   inc l
   ld [hl], $80 ;$8C
   inc l
-  ld [hl], %00100000
+  ld [hl], %00110000
   ret
 
 SpawnPlayer:
@@ -126,6 +128,9 @@ SpawnPlayer:
   xor a ; ld a, 0
   ld [player_respawn_timer], a
   call InitializePlayer
+  
+  ld a, 200 ; invincible time
+  ld [player_invincible], a
   ret
 
 MoveBalloonUp:
@@ -560,6 +565,8 @@ PlayerUpdate::
   ld a, [player_alive]
   and 1
   jr z, .popped
+  ; Check if invincible (like when respawning)
+  call InvincibleBlink
   ; Get movement
   call PlayerControls
   ; call PlayerAnimate ; Broken.. For now
@@ -615,4 +622,38 @@ DeathOfPlayer::
   ld [hl], $90
   ; Sound
   call PopSound
+  ret
+
+InvincibleBlink::
+  ; Check if invincible (like when respawning)
+  ld a, [player_invincible] ; This acts more as a countdown timer
+  cp a, 0
+  jr z, .end
+  dec a
+  ld [player_invincible], a
+  ; At the end make sure we stop on default palette
+  cp a, 3
+  jr c, .defaultPalette
+  ; Are we blinking normal or fast (faster at the end)
+  cp a, 70 ; Toggle for time when we switch to faster blinking
+  ld a, [player_respawned_blink_timer] ; TODO I wonder if stuff like this can just be like a global timer!
+  inc a
+  ld [player_respawned_blink_timer], a
+  jr c, .blinkFast
+.blinkNormal:
+	and %00010000
+  jr z, .defaultPalette
+  jr .blinkEnd
+  ret
+.blinkFast:
+	and %00001000
+  jr z, .defaultPalette
+.blinkEnd:
+  ld a, %11011000
+	ldh [rOBP1], a
+  ret
+.defaultPalette:
+  ld a, %11100100
+	ldh [rOBP1], a
+.end:
   ret
