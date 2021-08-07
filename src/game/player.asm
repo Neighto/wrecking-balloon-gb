@@ -338,12 +338,26 @@ PlayerControls:
   ld a, [joypad_down]
 	call JOY_UP
 	jr z, .endUp
+  ; Up - are we offscreen?
+  ld a, [player_y]
+  sub 16 ; unusual I have to do this??
+  ld b, a
+  call OffScreenTop
+  and 1
+  jr nz, .endUp
 	call MoveUp
 .endUp:
   ; Down
   ld a, [joypad_down]
 	call JOY_DOWN
 	jr z, .endDown
+  ; Down - are we offscreen?
+  ld a, [player_y]
+  add 16
+  ld b, a
+  call OffScreenBottom
+  and 1
+  jr nz, .endDown
 	call MoveDown
 .endDown:
   ; Drift to center if Left / Right not held
