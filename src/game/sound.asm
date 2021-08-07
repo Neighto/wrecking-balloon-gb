@@ -29,6 +29,29 @@ PopSound::
     ret
 
 FallingSound::
+  ; Sweep register
+  ld a, %01111111
+  ld [rNR10], a
+  ; Sound length / wave pattern duty
+  ld a, %11000000
+  ld [rNR11], a
+  ; Volume envelope
+  ld a, %00111000
+  ld [rNR12], a
+  ; Frequency lo
+  ld a,%11111111
+  ld [rNR13], a
+  ; Frequency hi
+  ld a,%10001101
+  ld [rNR14], a
+  ret
+
+StopFallingSound::
+  ld a, %00000000
+  ld [rNR12], a
+  ret
+
+CollectSound::
   ; Borrowed sound / more like collected item
   ld  a,%10010110
   ld  [rNR10],a
