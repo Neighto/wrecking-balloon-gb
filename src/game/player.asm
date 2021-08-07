@@ -306,18 +306,32 @@ ResetSpeedUp:
 PlayerControls:
   ld a, [global_timer]
 	and	%00000011
-	jr nz, .end
+	jp nz, .end
 	call ReadInput
   ; Right
 	ld a, [joypad_down]
 	call JOY_RIGHT
 	jr z, .endRight
+  ; Right - are we offscreen?
+  ld a, [player_x]
+  add 8
+  ld b, a
+  call OffScreenRight
+  and 1
+  jr nz, .endRight
 	call MoveRight
 .endRight:
   ; Left
   ld a, [joypad_down]
 	call JOY_LEFT
 	jr z, .endLeft
+  ; Left - are we offscreen?
+  ld a, [player_x]
+  sub 8
+  ld b, a
+  call OffScreenLeft
+  and 1
+  jr nz, .endLeft
 	call MoveLeft
 .endLeft:
   ; Up
