@@ -5,16 +5,10 @@ SECTION "rom", ROM0
 
 START::
 	di
-
 	ld sp, $FFFE
 
-	; Enable Vblank Interrupt
-	ld a, IEF_VBLANK
-	ld [rIE], a
-
-	; Enable LCD Interrupt
-	ld a, IEF_STAT
-	ld [rIE], a
+	; ld a, IEF_VBLANK | IEF_STAT ; Enable Vblank and LCD Interrupt
+	; ld [rIE], a
 
 	; call AUDIO_OFF
 

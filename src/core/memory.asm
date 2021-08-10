@@ -18,27 +18,27 @@ MEMCPY::
     ret
 
 ClearOAM::
-    ld  hl,_OAMRAM
-    ld  bc,$A0
+    ld hl, _OAMRAM
+    ld bc, $A0
 .clear_oam_loop
-    ld  a, $0
-    ld  [hli], a
+    xor a ; ld a, 0
+    ld [hli], a
     dec bc
-    ld  a, b
-    or  c
-    jr  nz,.clear_oam_loop
+    ld a, b
+    or c
+    jr nz, .clear_oam_loop
     ret
 
 ClearRAM::
-    ld  hl,$C100
-    ld  bc,$A0
+    ld hl, $C100
+    ld bc, $A0
 .clear_ram_loop
-    ld  a,$0
-    ld  [hli],a
+    xor a ; ld a, 0
+    ld [hli], a
     dec bc
-    ld  a,b
-    or  c
-    jr  nz,.clear_ram_loop
+    ld a, b
+    or c
+    jr nz, .clear_ram_loop
     ret
 
 ; [deprecated, for now]
