@@ -365,7 +365,7 @@ DeathOfEnemy2::
     ld hl, enemy2_alive
     ld [hl], a
     ; Points
-    ld b, ENEMY_CACTUS_POINTS
+    ld d, ENEMY_CACTUS_POINTS
     call AddPoints
     ; Animation trigger
     ld a, 1

@@ -1,15 +1,15 @@
 SECTION "tools", ROM0
 
 IncrementPosition::
-    ; hl = address
-    ; a = amount
+    ; takes 'hl' argument as address
+    ; takes 'a' argument as amount
     add [hl]
     ld [hl], a
     ret
   
 DecrementPosition::
-    ; hl = address
-    ; a = amount
+    ; takes 'hl' argument as address
+    ; takes 'a' argument as amount
     cpl 
     inc a
     add [hl]

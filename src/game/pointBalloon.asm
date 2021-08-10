@@ -216,7 +216,7 @@ DeathOfPointBalloon::
     ld hl, point_balloon_alive
     ld [hl], a
     ; Points
-    ld b, POINT_BALLOON_POINTS
+    ld d, POINT_BALLOON_POINTS
     call AddPoints
     ; Animation trigger
     ld hl, point_balloon_popping
