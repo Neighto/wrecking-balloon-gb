@@ -51,8 +51,8 @@ AddPoints::
     daa
     ld [hl], a
 .noCarry:
-    call RefreshScore
 .end:
+    call RefreshScore
     ret
 
 GetScoreFromIndex::

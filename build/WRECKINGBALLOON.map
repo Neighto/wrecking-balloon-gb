@@ -6,11 +6,11 @@ ROM0 bank #0:
            $0012 = DMARoutine.wait
            $0016 = DMARoutineEnd
            $0016 = OAMDMA
-  SECTION: $001c-$0031 ($0016 bytes) ["scroll"]
+  SECTION: $001c-$002f ($0014 bytes) ["scroll"]
            $001c = VBlankHScroll
-           $002f = VBlankHScroll.end
-  SECTION: $0032-$0039 ($0008 bytes) ["timer"]
-           $0032 = UpdateGlobalTimer
+           $002e = VBlankHScroll.end
+  SECTION: $0030-$003e ($000f bytes) ["general initialization"]
+           $0030 = InitializeGameVars
   SECTION: $0040-$0040 ($0001 byte) ["vblank IRQ"]
            $0040 = VBLANK_VECT
   SECTION: $0048-$0048 ($0001 byte) ["LCD IRQ"]
@@ -70,16 +70,16 @@ ROM0 bank #0:
   SECTION: $0714-$0773 ($0060 bytes) ["background tiles"]
            $0714 = BackgroundTiles
            $0774 = BackgroundTilesEnd
-  SECTION: $0774-$07ce ($005b bytes) ["rom"]
+  SECTION: $0774-$07c6 ($0053 bytes) ["rom"]
            $0774 = START
-           $07a7 = GAMELOOP
-           $07cc = GAMELOOP.END
-  SECTION: $07cf-$07dd ($000f bytes) ["general initialization"]
-           $07cf = InitializeGameVars
-  SECTION: $07de-$07e5 ($0008 bytes) ["tools"]
-           $07de = IncrementPosition
-           $07e1 = DecrementPosition
-    SLACK: $3829 bytes
+           $079f = GAMELOOP
+           $07c4 = GAMELOOP.END
+  SECTION: $07c7-$07ce ($0008 bytes) ["timer"]
+           $07c7 = UpdateGlobalTimer
+  SECTION: $07cf-$07d6 ($0008 bytes) ["tools"]
+           $07cf = IncrementPosition
+           $07d2 = DecrementPosition
+    SLACK: $3833 bytes
 
 ROMX bank #1:
   SECTION: $4000-$43ab ($03ac bytes) ["player"]
@@ -249,8 +249,8 @@ ROMX bank #1:
            $4975 = ToBCD
            $498a = ToBCD.end
            $498b = AddPoints
+           $49ac = AddPoints.end
            $49ac = AddPoints.noCarry
-           $49af = AddPoints.end
            $49b0 = GetScoreFromIndex
            $49ce = GetScoreFromIndex.firstNibble
            $49d1 = GetScoreFromIndex.secondNibble
@@ -263,34 +263,34 @@ ROMX bank #1:
            $4a08 = StopFallingSound
            $4a0d = CollectSound
            $4a22 = WrongAnswerSound
-  SECTION: $4a39-$4a6c ($0034 bytes) ["lcd"]
+  SECTION: $4a39-$4a6b ($0033 bytes) ["lcd"]
            $4a39 = LCD_OFF
            $4a3e = LCD_ON
            $4a43 = WaitVBlank
            $4a4a = ClearMap
            $4a51 = ClearMap.clear_map_loop
-           $4a64 = SetupWindow
-  SECTION: $4a6d-$4a94 ($0028 bytes) ["memory"]
-           $4a6d = MEMCPY.memcpy_loop
-           $4a6d = MEMCPY
-           $4a71 = MEMCPY.memcpy_check_limit
-           $4a77 = ClearOAM
-           $4a7d = ClearOAM.clear_oam_loop
-           $4a86 = ClearRAM
-           $4a8c = ClearRAM.clear_ram_loop
-  SECTION: $4a95-$4aae ($001a bytes) ["math"]
-           $4a95 = MODULO
-           $4a97 = MODULO.loop
-           $4a9c = RANDOM
-           $4aa3 = DIVISION
-           $4aa8 = DIVISION.loop
-           $4aad = DIVISION.end
-  SECTION: $4aaf-$4ac3 ($0015 bytes) ["game"]
-           $4aaf = TryToUnpause
-           $4ac3 = TryToUnpause.end
-  SECTION: $4ac4-$4ac4 ($0001 byte) ["enemy cactus manager"]
-           $4ac4 = SpawnEnemyf
-    SLACK: $353b bytes
+           $4a63 = SetupWindow
+  SECTION: $4a6c-$4a91 ($0026 bytes) ["memory"]
+           $4a6c = MEMCPY.memcpy_loop
+           $4a6c = MEMCPY
+           $4a70 = MEMCPY.memcpy_check_limit
+           $4a76 = ClearOAM
+           $4a7c = ClearOAM.clear_oam_loop
+           $4a84 = ClearRAM
+           $4a8a = ClearRAM.clear_ram_loop
+  SECTION: $4a92-$4aab ($001a bytes) ["math"]
+           $4a92 = MODULO
+           $4a94 = MODULO.loop
+           $4a99 = RANDOM
+           $4aa0 = DIVISION
+           $4aa5 = DIVISION.loop
+           $4aaa = DIVISION.end
+  SECTION: $4aac-$4ac0 ($0015 bytes) ["game"]
+           $4aac = TryToUnpause
+           $4ac0 = TryToUnpause.end
+  SECTION: $4ac1-$4ac1 ($0001 byte) ["enemy cactus manager"]
+           $4ac1 = SpawnEnemyf
+    SLACK: $353e bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c039 ($003a bytes) ["RAM vars"]
@@ -366,7 +366,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $07d7 bytes in 1 bank
-    ROMX: $0ac5 bytes in 1 bank
+    ROM0: $07cd bytes in 1 bank
+    ROMX: $0ac2 bytes in 1 bank
     WRAM0: $0072 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
