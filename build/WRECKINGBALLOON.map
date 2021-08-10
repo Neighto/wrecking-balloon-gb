@@ -15,14 +15,13 @@ ROM0 bank #0:
            $0040 = VBLANK_VECT
   SECTION: $0048-$0048 ($0001 byte) ["LCD IRQ"]
            $0048 = LCD_VECT
-  SECTION: $0049-$00e9 ($00a1 bytes) ["graphics"]
+  SECTION: $0049-$00f7 ($00af bytes) ["graphics"]
            $0049 = LoadGameData
            $0092 = SetupPalettes
            $009d = RefreshScore
-           $00e0 = RefreshLives
-  SECTION: $00ea-$00fd ($0014 bytes) ["window map"]
-           $00ea = WindowMap
-           $00fe = WindowMapEnd
+           $00ea = RefreshLives
+  SECTION: $00f8-$00ff ($0008 bytes) ["timer"]
+           $00f8 = UpdateGlobalTimer
   SECTION: $0100-$014f ($0050 bytes) ["header"]
   SECTION: $0150-$038f ($0240 bytes) ["background map"]
            $0150 = BackgroundMap
@@ -74,12 +73,13 @@ ROM0 bank #0:
            $0774 = START
            $079f = GAMELOOP
            $07c4 = GAMELOOP.END
-  SECTION: $07c7-$07ce ($0008 bytes) ["timer"]
-           $07c7 = UpdateGlobalTimer
-  SECTION: $07cf-$07d6 ($0008 bytes) ["tools"]
-           $07cf = IncrementPosition
-           $07d2 = DecrementPosition
-    SLACK: $3833 bytes
+  SECTION: $07c7-$07da ($0014 bytes) ["window map"]
+           $07c7 = WindowMap
+           $07db = WindowMapEnd
+  SECTION: $07db-$07e2 ($0008 bytes) ["tools"]
+           $07db = IncrementPosition
+           $07de = DecrementPosition
+    SLACK: $3825 bytes
 
 ROMX bank #1:
   SECTION: $4000-$43ab ($03ac bytes) ["player"]
@@ -252,46 +252,42 @@ ROMX bank #1:
            $499e = StopFallingSound
            $49a3 = CollectSound
            $49b8 = WrongAnswerSound
-  SECTION: $49cf-$4a20 ($0052 bytes) ["score"]
-           $49cf = InitializeScore
-           $49d7 = AddPoints
-           $49e7 = AddPoints.carry
-           $49f1 = AddPoints.noCarry
-           $49f4 = AddPoints.end
-           $49f7 = GetScoreFromIndex
-           $4a17 = GetScoreFromIndex.firstNibble
-           $4a1a = GetScoreFromIndex.secondNibble
-           $4a1d = GetScoreFromIndex.end
-  SECTION: $4a21-$4a56 ($0036 bytes) ["math"]
-           $4a21 = MODULO
-           $4a23 = MODULO.loop
-           $4a28 = RANDOM
-           $4a31 = DIVISION
-           $4a37 = DIVISION.loop
-           $4a3c = DIVISION.end
-           $4a3f = ToBCD
-           $4a55 = ToBCD.end
-  SECTION: $4a57-$4a89 ($0033 bytes) ["lcd"]
-           $4a57 = LCD_OFF
-           $4a5c = LCD_ON
-           $4a61 = WaitVBlank
-           $4a68 = ClearMap
-           $4a6f = ClearMap.clear_map_loop
-           $4a81 = SetupWindow
-  SECTION: $4a8a-$4aaf ($0026 bytes) ["memory"]
-           $4a8a = MEMCPY.memcpy_loop
-           $4a8a = MEMCPY
-           $4a8e = MEMCPY.memcpy_check_limit
-           $4a94 = ClearOAM
-           $4a9a = ClearOAM.clear_oam_loop
-           $4aa2 = ClearRAM
-           $4aa8 = ClearRAM.clear_ram_loop
-  SECTION: $4ab0-$4ac4 ($0015 bytes) ["game"]
-           $4ab0 = TryToUnpause
-           $4ac4 = TryToUnpause.end
-  SECTION: $4ac5-$4ac5 ($0001 byte) ["enemy cactus manager"]
-           $4ac5 = SpawnEnemyf
-    SLACK: $353a bytes
+  SECTION: $49cf-$4a04 ($0036 bytes) ["math"]
+           $49cf = MODULO
+           $49d1 = MODULO.loop
+           $49d6 = RANDOM
+           $49df = DIVISION
+           $49e5 = DIVISION.loop
+           $49ea = DIVISION.end
+           $49ed = ToBCD
+           $4a03 = ToBCD.end
+  SECTION: $4a05-$4a37 ($0033 bytes) ["lcd"]
+           $4a05 = LCD_OFF
+           $4a0a = LCD_ON
+           $4a0f = WaitVBlank
+           $4a16 = ClearMap
+           $4a1d = ClearMap.clear_map_loop
+           $4a2f = SetupWindow
+  SECTION: $4a38-$4a5f ($0028 bytes) ["score"]
+           $4a38 = InitializeScore
+           $4a40 = AddPoints
+           $4a50 = AddPoints.carry
+           $4a5a = AddPoints.noCarry
+           $4a5d = AddPoints.end
+  SECTION: $4a60-$4a85 ($0026 bytes) ["memory"]
+           $4a60 = MEMCPY.memcpy_loop
+           $4a60 = MEMCPY
+           $4a64 = MEMCPY.memcpy_check_limit
+           $4a6a = ClearOAM
+           $4a70 = ClearOAM.clear_oam_loop
+           $4a78 = ClearRAM
+           $4a7e = ClearRAM.clear_ram_loop
+  SECTION: $4a86-$4a9a ($0015 bytes) ["game"]
+           $4a86 = TryToUnpause
+           $4a9a = TryToUnpause.end
+  SECTION: $4a9b-$4a9b ($0001 byte) ["enemy cactus manager"]
+           $4a9b = SpawnEnemyf
+    SLACK: $3564 bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c039 ($003a bytes) ["RAM vars"]
@@ -367,7 +363,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $07cd bytes in 1 bank
-    ROMX: $0ac6 bytes in 1 bank
+    ROM0: $07db bytes in 1 bank
+    ROMX: $0a9c bytes in 1 bank
     WRAM0: $0072 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
