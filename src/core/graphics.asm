@@ -3,26 +3,27 @@ INCLUDE "hardware.inc"
 SECTION "OAM DMA routine", ROM0
 
 NUMBERS_TILE_OFFSET EQU $47
+SCORE_INDEX_ONE_ADDRESS EQU $9C0B
+LIVES_ADDRESS EQU $9C10
 
 ; Move DMA routine to HRAM
 CopyDMARoutine::
-	ld  hl, DMARoutine
-	ld  b, DMARoutineEnd - DMARoutine ; Number of bytes to copy
-	ld  c, LOW(hOAMDMA) ; Low byte of the destination address
+	ld hl, DMARoutine
+	ld b, DMARoutineEnd - DMARoutine ; Number of bytes to copy
+	ld c, LOW(hOAMDMA) ; Low byte of the destination address
 .copy
-	ld  a, [hli]
+	ld a, [hli]
 	ldh [c], a
 	inc c
 	dec b
-	jr  nz, .copy
+	jr nz, .copy
 	ret
 DMARoutine:
 	ldh [rDMA], a
-	
-	ld  a, 40
+	ld a, 40
 .wait
 	dec a
-	jr  nz, .wait
+	jr nz, .wait
 	ret
 DMARoutineEnd:
 
@@ -82,44 +83,39 @@ SetupPalettes::
 RefreshScore::
 	push af
 	push hl
+	ld hl, SCORE_INDEX_ONE_ADDRESS
 	; First digit
 	ld a, [score]
 	and %00001111
-	add $47
-	ld hl, $9C0B
-	ld [hl], a
-	; Second Digit
+	add NUMBERS_TILE_OFFSET
+	ld [hld], a
+	; Second digit
     ld a, [score]
     swap a
 	and %00001111
 	add NUMBERS_TILE_OFFSET
-	ld hl, $9C0A
-	ld [hl], a
-	; Third Digit
+	ld [hld], a
+	; Third digit
 	ld a, [score+1]
     and %00001111
 	add NUMBERS_TILE_OFFSET
-	ld hl, $9C09
-	ld [hl], a
-	; Fourth Digit
+	ld [hld], a
+	; Fourth digit
 	ld a, [score+1]
 	swap a
     and %00001111
 	add NUMBERS_TILE_OFFSET
-	ld hl, $9C08
-	ld [hl], a
-	; Fifth Digit
+	ld [hld], a
+	; Fifth digit
 	ld a, [score+2]
 	and %00001111
 	add NUMBERS_TILE_OFFSET
-	ld hl, $9C07
-	ld [hl], a
-	; Sixth Digit
+	ld [hld], a
+	; Sixth digit
 	ld a, [score+2]
 	swap a
     and %00001111
 	add NUMBERS_TILE_OFFSET
-	ld hl, $9C06
 	ld [hl], a
 	pop af
 	pop hl
@@ -127,11 +123,8 @@ RefreshScore::
 
 RefreshLives::
 	push af
-	push hl
 	ld a, [player_lives]
 	add NUMBERS_TILE_OFFSET
-	ld hl, $9C10
-	ld [hl], a
+	ld [LIVES_ADDRESS], a
 	pop af
-	pop hl
 	ret

@@ -44,6 +44,7 @@ GAMELOOP:
 	call PointBalloonUpdate
 	call EnemyUpdate
 	call Enemy2Update
+	call RefreshScore ; Might want to move somewhere to call less frequently
 	call OAMDMA
 .END
 	jp GAMELOOP

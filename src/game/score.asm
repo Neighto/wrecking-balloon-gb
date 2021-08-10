@@ -1,4 +1,4 @@
-SECTION "score", ROMX
+SECTION "score", ROM0
 
 InitializeScore::
     xor a ; ld a, 0
@@ -25,12 +25,10 @@ AddPoints::
     add a, [hl]
     daa
     ld [hl], a
-    jr nc, .noCarry
+    jr nc, .end
     inc l ; next byte of score
     ld a, 1 ; The carry value
     jr .carry
-.noCarry:
-    call RefreshScore
 .end:
     pop af
     pop hl

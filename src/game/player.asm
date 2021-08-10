@@ -521,7 +521,6 @@ NoMoreLives:
   call RefreshLives
   ; Reset score
   call InitializeScore
-  call RefreshScore
   ret
 
 PlayerUpdate::
