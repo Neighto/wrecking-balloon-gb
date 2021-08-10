@@ -2,6 +2,8 @@ INCLUDE "hardware.inc"
 
 SECTION "OAM DMA routine", ROM0
 
+NUMBERS_TILE_OFFSET EQU $47
+
 ; Move DMA routine to HRAM
 CopyDMARoutine::
 	ld  hl, DMARoutine
@@ -78,47 +80,58 @@ SetupPalettes::
     ret
 
 RefreshScore::
+	push af
+	push hl
 	; First digit
-	ld a, 0
-	call GetScoreFromIndex
+	ld a, [score]
+	and %00001111
 	add $47
 	ld hl, $9C0B
 	ld [hl], a
 	; Second Digit
-	ld a, 1
-	call GetScoreFromIndex
-	add $47
+    ld a, [score]
+    swap a
+	and %00001111
+	add NUMBERS_TILE_OFFSET
 	ld hl, $9C0A
 	ld [hl], a
 	; Third Digit
-	ld a, 2
-	call GetScoreFromIndex
-	add $47
+	ld a, [score+1]
+    and %00001111
+	add NUMBERS_TILE_OFFSET
 	ld hl, $9C09
 	ld [hl], a
 	; Fourth Digit
-	ld a, 3
-	call GetScoreFromIndex
-	add $47
+	ld a, [score+1]
+	swap a
+    and %00001111
+	add NUMBERS_TILE_OFFSET
 	ld hl, $9C08
 	ld [hl], a
 	; Fifth Digit
-	ld a, 4
-	call GetScoreFromIndex
-	add $47
+	ld a, [score+2]
+	and %00001111
+	add NUMBERS_TILE_OFFSET
 	ld hl, $9C07
 	ld [hl], a
-	; ; Sixth Digit
-	ld a, 5
-	call GetScoreFromIndex
-	add $47
+	; Sixth Digit
+	ld a, [score+2]
+	swap a
+    and %00001111
+	add NUMBERS_TILE_OFFSET
 	ld hl, $9C06
 	ld [hl], a
+	pop af
+	pop hl
 	ret
 
 RefreshLives::
+	push af
+	push hl
 	ld a, [player_lives]
-	add $47 ; Tile number for 0
+	add NUMBERS_TILE_OFFSET
 	ld hl, $9C10
 	ld [hl], a
+	pop af
+	pop hl
 	ret
