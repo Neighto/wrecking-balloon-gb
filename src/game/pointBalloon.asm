@@ -189,7 +189,7 @@ PointBalloonUpdate::
     jr z, .popped
     ; Check if we can move
     ld a, [global_timer]
-    and	%00000011
+    and	PB_SPRITE_MOVE_WAIT_TIME
     jr nz, .end
     call FloatPointBalloonUp
     ret

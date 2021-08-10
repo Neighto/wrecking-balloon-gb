@@ -26,7 +26,6 @@ $(BUILD_DIR)/obj/%.o : src/%.asm | $(OBJ_DIRS)
 $(OBJ_DIRS): 
 	mkdir -p $@
 
-clean:
-	rm -rf $(BUILD_DIR)
-
-print-%  : ; @echo $* = $($*)
+clean: 
+	rm -r $(BUILD_DIR)/obj/*
+#  rm -r build/obj/*; mkdir build/obj/core; mkdir build/obj/game

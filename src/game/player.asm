@@ -304,9 +304,6 @@ ResetSpeedUp:
   ret
 
 PlayerControls:
-  ld a, [global_timer]
-	and	%00000011
-	jp nz, .end
 	call ReadInput
   ; Right
 	ld a, [joypad_down]
@@ -409,7 +406,7 @@ FallCactusDown:
   ld a, [player_delay_falling_timer]
   inc a
   ld [player_delay_falling_timer], a
-  cp a, 7
+  cp a, CACTUS_DELAY_FALLING_TIME
   jr c, .skipAcceleration
   xor a ; ld a, 0
   ld [player_delay_falling_timer], a
@@ -496,7 +493,7 @@ CactusFalling:
   ld a, [player_falling_timer]
   inc a
   ld [player_falling_timer], a
-  and %00000101
+  and CACTUS_FALLING_TIME
   jr nz, .end
   ; Can we move cactus down
   ld a, 160
@@ -531,6 +528,9 @@ PlayerUpdate::
   ; Check if invincible (like when respawning)
   call InvincibleBlink
   ; Get movement
+  ld a, [global_timer]
+	and	PLAYER_SPRITE_MOVE_WAIT_TIME
+	jp nz, .end
   call PlayerControls
   ret
 .popped:
@@ -538,7 +538,7 @@ PlayerUpdate::
   ld a, [player_respawn_timer]
   inc a
   ld [player_respawn_timer], a
-  cp a, 255
+  cp a, PLAYER_RESPAWN_TIME
   jr nz, .respawnSkip
   ; And do we have enough lives to respawn
   ld a, [player_lives]
@@ -602,12 +602,12 @@ InvincibleBlink::
   ld a, [global_timer]
   jr c, .blinkFast
 .blinkNormal:
-	and %00010000
+	and INVINCIBLE_BLINK_NORMAL_SPEED
   jr z, .defaultPalette
   jr .blinkEnd
   ret
 .blinkFast:
-	and %00001000
+	and INVINCIBLE_BLINK_FAST_SPEED
   jr z, .defaultPalette
 .blinkEnd:
   ld a, %11011000

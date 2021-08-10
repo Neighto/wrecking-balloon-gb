@@ -16,7 +16,7 @@ LCD_ON::
 WaitVBlank::
     ld a, [rLY]
     cp a, 144
-    jr c, WaitVBlank
+    jr nz, WaitVBlank
     ret
 
 ClearMap::
@@ -44,6 +44,18 @@ SetupWindow::
 	ld [rWY], a
 	ld a, 7
 	ld [rWX], a
+    ret
+
+
+TESTING_HUD_ON_TOP::
+    ld hl, rLCDC
+    ld a, [rLY]
+    cp a, 40
+	jr c, .end
+	set 5, [hl]
+	ret
+.end:
+	res 5, [hl]
     ret
 
 SECTION "scroll", ROM0
