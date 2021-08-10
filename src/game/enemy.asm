@@ -207,12 +207,8 @@ MoveDown:
     ret
 
 MoveEnemy:
-    ld a, [global_timer]
-	and	%00000111
-	jr nz, .end
     call MoveRight
     call UpdateEnemyPosition
-.end:
     ret
 
 FallCactusDown:
@@ -220,7 +216,7 @@ FallCactusDown:
     ld a, [enemy_delay_falling_timer]
     inc a
     ld [enemy_delay_falling_timer], a
-    cp a, 7
+    cp a, CACTUS_DELAY_FALLING_TIME
     jr c, .skipAcceleration
     xor a ; ld a, 0
     ld [enemy_delay_falling_timer], a
@@ -307,7 +303,7 @@ CactusFalling:
     ld a, [enemy_falling_timer]
     inc a
     ld [enemy_falling_timer], a
-    and %00000101
+    and CACTUS_FALLING_TIME
     jr nz, .end
     ; Can we move cactus down
     ld a, 160
@@ -332,7 +328,7 @@ EnemyUpdate::
     jr z, .popped
     ; Check if we can move
     ld a, [global_timer]
-    and	%00000011
+    and	ENEMY_SPRITE_MOVE_WAIT_TIME
     jr nz, .end
     call MoveEnemy
     ret

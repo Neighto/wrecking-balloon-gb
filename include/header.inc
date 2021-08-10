@@ -23,11 +23,11 @@ SECTION "header", ROM0[$100]
 	; 0146 - SGB Flag
 	DB $00 ; No SGB functions
 	; 0147 - Cartridge Type
-	DB $00 ; ROM Only
+	DB $1A ; MBC5+RAM
 	; 0148 - ROM Size
-	DB $00 ; 32Kbyte
+	DB $07 ; 4MByte
 	; 0149 - RAM Size
-	DB $00 ; No RAM
+	DB $03 ; 32KByte
 	; 014A - Destination Code
 	DB $01 ; Non-Japanese
 	; 014B - License Code
