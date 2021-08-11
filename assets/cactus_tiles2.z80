@@ -10,7 +10,7 @@
 ;   Compression          : None.
 ;   Counter              : None.
 ;   Tile size            : 8 x 16
-;   Tiles                : 0 to 11
+;   Tiles                : 0 to 13
 ;
 ;   Palette colors       : None.
 ;   SGB Palette          : None.
@@ -70,7 +70,15 @@ DB $7E,$E3,$FF,$E3,$3E,$22,$3E,$22
 DB $1F,$11,$0F,$09,$07,$05,$03,$03
 DB $00,$00,$00,$00,$FF,$FF,$FF,$01
 DB $FF,$03,$FE,$06,$FC,$0C,$38,$F8
-DB $FC,$F4,$3C,$2C,$10,$10,$00,$00
+DB $FC,$F4,$3C,$2C,$14,$14,$10,$10
+DB $00,$00,$00,$00,$00,$00,$00,$00
+DB $00,$00,$00,$00,$FF,$FF,$FF,$00
+DB $FF,$E0,$FF,$80,$FF,$07,$DF,$20
+DB $7F,$E0,$FF,$F0,$0F,$0F,$00,$00
+DB $00,$00,$00,$00,$00,$00,$00,$00
+DB $00,$00,$00,$00,$FF,$FF,$FF,$01
+DB $FF,$03,$FE,$06,$FC,$EC,$F8,$38
+DB $FE,$36,$DC,$DC,$00,$00,$00,$00
 DB $00,$00,$00,$00,$00,$00,$00,$00
 
 ; End of CACTUS_TILES2.Z80

@@ -62,6 +62,12 @@ SECTION "RAM vars", WRAM0[$C000]
 	enemy2_delay_falling_timer:: DB
 	enemy2_respawn_timer:: DB
 
+	; Bird
+	bird_x:: DB
+	bird_y:: DB
+	bird_flapping_frame:: DB
+	bird_respawn_timer:: DB
+
 SECTION "general initialization", ROM0 
 InitializeGameVars::
 	xor a
@@ -83,3 +89,4 @@ SECTION "OAM vars", WRAM0[$C100]
 	enemy_balloon:: DS 4*2
 	enemy2_cactus:: DS 4*2
 	enemy2_balloon:: DS 4*2
+	bird:: DS 4*3
