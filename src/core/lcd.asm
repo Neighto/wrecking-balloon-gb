@@ -1,4 +1,5 @@
 INCLUDE "hardware.inc"
+INCLUDE "constants.inc"
 
 SECTION "lcd", ROMX
 
@@ -15,17 +16,16 @@ LCD_ON::
 ; Wait for the display to finish updating
 WaitVBlank::
     ld hl, rLCDC
-    set 1, [hl]
 .loop:
     ld a, [rLY]
     cp a, 136
-    jr c, .end
+    jr c, .skipSpriteReset
     res 1, [hl]
-.end:
+.skipSpriteReset:
     cp a, 144
-    jr c, .skip
+    jr c, .skipSpriteSet
     set 1, [hl]
-.skip:
+.skipSpriteSet:
     jr nz, .loop
     ret
 
@@ -56,25 +56,13 @@ SetupWindow::
 	ld [rWX], a
     ret
 
-
-TESTING_HUD_ON_TOP::
-    ld hl, rLCDC
-    ld a, [rLY]
-    cp a, 40
-	jr c, .end
-	set 5, [hl]
-	ret
-.end:
-	res 5, [hl]
-    ret
-
 SECTION "scroll", ROM0
 VBlankHScroll::
     push af
     ld a, [scroll_timer]
     inc	a
     ld [scroll_timer], a
-    and	%00001111
+    and	BACKGROUND_HSCROLL_SPEED
     jr nz, .end
     ldh a, [rSCX]
     add 1
