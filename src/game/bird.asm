@@ -92,11 +92,40 @@ MoveBird:
     call UpdateBirdPosition
     ret
 
+BirdAnimate:
+    ld a, [global_timer]
+    and 15
+    jr nz, .frame1 ;should be .end
+
+    ; Can do next frame
+    ; Check what frame we are on
+    ; ld a, [enemy_popping_frame]
+    ; cp a, 1
+    ; jp z, .frame1
+    ; cp a, 2
+    ; jp z, .clear
+    ; ret
+
+.frame0:
+    ld hl, bird+6
+    ld [hl], $98
+    ld hl, bird+10
+    ld [hl], $9A
+    ret
+.frame1:
+    ld hl, bird+6
+    ld [hl], $94
+    ld hl, bird+10
+    ld [hl], $96
+.end:
+    ret
+
 BirdUpdate::
     ; Check if we can move
     ld a, [global_timer]
     and	ENEMY_SPRITE_MOVE_WAIT_TIME
     jr nz, .end
     call MoveBird
+    call BirdAnimate
 .end
     ret
