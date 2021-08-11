@@ -14,9 +14,19 @@ LCD_ON::
 
 ; Wait for the display to finish updating
 WaitVBlank::
+    ld hl, rLCDC
+    set 1, [hl]
+.loop:
     ld a, [rLY]
+    cp a, 136
+    jr c, .end
+    res 1, [hl]
+.end:
     cp a, 144
-    jr nz, WaitVBlank
+    jr c, .skip
+    set 1, [hl]
+.skip:
+    jr nz, .loop
     ret
 
 ClearMap::
