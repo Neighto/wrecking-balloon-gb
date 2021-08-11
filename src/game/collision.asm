@@ -180,6 +180,7 @@ OffScreenBottom::
     ; b = x value to check
     ; return a (1 = end of screen)
     ld a, SCRN_Y
+    sub 8 ; Space for the window layer
     cp a, b
     jr nc, .end
     ld a, 1
