@@ -255,38 +255,41 @@ ROMX bank #1:
            $498d = StopFallingSound
            $4992 = CollectSound
            $49a7 = WrongAnswerSound
-  SECTION: $49be-$49ff ($0042 bytes) ["lcd"]
+  SECTION: $49be-$4a0e ($0051 bytes) ["lcd"]
            $49be = LCD_OFF
            $49c3 = LCD_ON
            $49c8 = WaitVBlank
-           $49cf = ClearMap
-           $49d6 = ClearMap.clear_map_loop
-           $49e8 = SetupWindow
-           $49f1 = TESTING_HUD_ON_TOP
-           $49fd = TESTING_HUD_ON_TOP.end
-  SECTION: $4a00-$4a35 ($0036 bytes) ["math"]
-           $4a00 = MODULO
-           $4a02 = MODULO.loop
-           $4a07 = RANDOM
-           $4a10 = DIVISION
-           $4a16 = DIVISION.loop
-           $4a1b = DIVISION.end
-           $4a1e = ToBCD
-           $4a34 = ToBCD.end
-  SECTION: $4a36-$4a5b ($0026 bytes) ["memory"]
-           $4a36 = MEMCPY.memcpy_loop
-           $4a36 = MEMCPY
-           $4a3a = MEMCPY.memcpy_check_limit
-           $4a40 = ClearOAM
-           $4a46 = ClearOAM.clear_oam_loop
-           $4a4e = ClearRAM
-           $4a54 = ClearRAM.clear_ram_loop
-  SECTION: $4a5c-$4a70 ($0015 bytes) ["game"]
-           $4a5c = TryToUnpause
-           $4a70 = TryToUnpause.end
-  SECTION: $4a71-$4a71 ($0001 byte) ["enemy cactus manager"]
-           $4a71 = SpawnEnemyf
-    SLACK: $358e bytes
+           $49cd = WaitVBlank.loop
+           $49d5 = WaitVBlank.end
+           $49db = WaitVBlank.skip
+           $49de = ClearMap
+           $49e5 = ClearMap.clear_map_loop
+           $49f7 = SetupWindow
+           $4a00 = TESTING_HUD_ON_TOP
+           $4a0c = TESTING_HUD_ON_TOP.end
+  SECTION: $4a0f-$4a44 ($0036 bytes) ["math"]
+           $4a0f = MODULO
+           $4a11 = MODULO.loop
+           $4a16 = RANDOM
+           $4a1f = DIVISION
+           $4a25 = DIVISION.loop
+           $4a2a = DIVISION.end
+           $4a2d = ToBCD
+           $4a43 = ToBCD.end
+  SECTION: $4a45-$4a6a ($0026 bytes) ["memory"]
+           $4a45 = MEMCPY.memcpy_loop
+           $4a45 = MEMCPY
+           $4a49 = MEMCPY.memcpy_check_limit
+           $4a4f = ClearOAM
+           $4a55 = ClearOAM.clear_oam_loop
+           $4a5d = ClearRAM
+           $4a63 = ClearRAM.clear_ram_loop
+  SECTION: $4a6b-$4a7f ($0015 bytes) ["game"]
+           $4a6b = TryToUnpause
+           $4a7f = TryToUnpause.end
+  SECTION: $4a80-$4a80 ($0001 byte) ["enemy cactus manager"]
+           $4a80 = SpawnEnemyf
+    SLACK: $357f bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c039 ($003a bytes) ["RAM vars"]
@@ -363,6 +366,6 @@ HRAM bank #0:
 
 USED:
     ROM0: $07f1 bytes in 1 bank
-    ROMX: $0a72 bytes in 1 bank
+    ROMX: $0a81 bytes in 1 bank
     WRAM0: $0072 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
