@@ -247,7 +247,7 @@ ROMX bank #1:
            $493e = PointBalloonUpdate.respawnSkip
            $4948 = PointBalloonUpdate.end
            $4949 = DeathOfPointBalloon
-  SECTION: $495c-$4a08 ($00ad bytes) ["bird"]
+  SECTION: $495c-$4a22 ($00c7 bytes) ["bird"]
            $495c = UpdateBirdPosition
            $4982 = InitializeBird
            $49c6 = SpawnBird
@@ -255,51 +255,51 @@ ROMX bank #1:
            $49d7 = MoveBird
            $49de = BirdAnimate
            $49e5 = BirdAnimate.frame0
-           $49f0 = BirdAnimate.frame1
-           $49fa = BirdAnimate.end
-           $49fb = BirdUpdate
-           $4a08 = BirdUpdate.end
-  SECTION: $4a09-$4a6a ($0062 bytes) ["sound"]
-           $4a09 = AUDIO_OFF
-           $4a0d = AUDIO_ON
-           $4a12 = PopSound
-           $4a25 = FallingSound
-           $4a3a = StopFallingSound
-           $4a3f = CollectSound
-           $4a54 = WrongAnswerSound
-  SECTION: $4a6b-$4aaa ($0040 bytes) ["lcd"]
-           $4a6b = LCD_OFF
-           $4a70 = LCD_ON
-           $4a75 = WaitVBlank
-           $4a78 = WaitVBlank.loop
-           $4a80 = WaitVBlank.skipSpriteReset
-           $4a86 = WaitVBlank.skipSpriteSet
-           $4a89 = ClearMap
-           $4a90 = ClearMap.clear_map_loop
-           $4aa2 = SetupWindow
-  SECTION: $4aab-$4ae0 ($0036 bytes) ["math"]
-           $4aab = MODULO
-           $4aad = MODULO.loop
-           $4ab2 = RANDOM
-           $4abb = DIVISION
-           $4ac1 = DIVISION.loop
-           $4ac6 = DIVISION.end
-           $4ac9 = ToBCD
-           $4adf = ToBCD.end
-  SECTION: $4ae1-$4b06 ($0026 bytes) ["memory"]
-           $4ae1 = MEMCPY.memcpy_loop
-           $4ae1 = MEMCPY
-           $4ae5 = MEMCPY.memcpy_check_limit
-           $4aeb = ClearOAM
-           $4af1 = ClearOAM.clear_oam_loop
-           $4af9 = ClearRAM
-           $4aff = ClearRAM.clear_ram_loop
-  SECTION: $4b07-$4b1b ($0015 bytes) ["game"]
-           $4b07 = TryToUnpause
-           $4b1b = TryToUnpause.end
-  SECTION: $4b1c-$4b1c ($0001 byte) ["enemy cactus manager"]
-           $4b1c = SpawnEnemyf
-    SLACK: $34e3 bytes
+           $49fd = BirdAnimate.frame1
+           $4a14 = BirdAnimate.end
+           $4a15 = BirdUpdate
+           $4a22 = BirdUpdate.end
+  SECTION: $4a23-$4a84 ($0062 bytes) ["sound"]
+           $4a23 = AUDIO_OFF
+           $4a27 = AUDIO_ON
+           $4a2c = PopSound
+           $4a3f = FallingSound
+           $4a54 = StopFallingSound
+           $4a59 = CollectSound
+           $4a6e = WrongAnswerSound
+  SECTION: $4a85-$4ac4 ($0040 bytes) ["lcd"]
+           $4a85 = LCD_OFF
+           $4a8a = LCD_ON
+           $4a8f = WaitVBlank
+           $4a92 = WaitVBlank.loop
+           $4a9a = WaitVBlank.skipSpriteReset
+           $4aa0 = WaitVBlank.skipSpriteSet
+           $4aa3 = ClearMap
+           $4aaa = ClearMap.clear_map_loop
+           $4abc = SetupWindow
+  SECTION: $4ac5-$4afa ($0036 bytes) ["math"]
+           $4ac5 = MODULO
+           $4ac7 = MODULO.loop
+           $4acc = RANDOM
+           $4ad5 = DIVISION
+           $4adb = DIVISION.loop
+           $4ae0 = DIVISION.end
+           $4ae3 = ToBCD
+           $4af9 = ToBCD.end
+  SECTION: $4afb-$4b20 ($0026 bytes) ["memory"]
+           $4afb = MEMCPY.memcpy_loop
+           $4afb = MEMCPY
+           $4aff = MEMCPY.memcpy_check_limit
+           $4b05 = ClearOAM
+           $4b0b = ClearOAM.clear_oam_loop
+           $4b13 = ClearRAM
+           $4b19 = ClearRAM.clear_ram_loop
+  SECTION: $4b21-$4b35 ($0015 bytes) ["game"]
+           $4b21 = TryToUnpause
+           $4b35 = TryToUnpause.end
+  SECTION: $4b36-$4b36 ($0001 byte) ["enemy cactus manager"]
+           $4b36 = SpawnEnemyf
+    SLACK: $34c9 bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c03d ($003e bytes) ["RAM vars"]
@@ -381,6 +381,6 @@ HRAM bank #0:
 
 USED:
     ROM0: $0899 bytes in 1 bank
-    ROMX: $0b1d bytes in 1 bank
+    ROMX: $0b37 bytes in 1 bank
     WRAM0: $0082 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

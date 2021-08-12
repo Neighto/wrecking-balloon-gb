@@ -60,7 +60,7 @@ InitializeBird::
     ld a, [bird_x]
     add 8
     ld [hli], a
-    ld [hl], $94
+    ld [hl], $98
     inc l
     ld [hl], %00000000
     ; Bird top
@@ -70,7 +70,7 @@ InitializeBird::
     ld a, [bird_x]
     add 16
     ld [hli], a
-    ld [hl], $96
+    ld [hl], $9A
     inc l
     ld [hl], %00000000
     ret
@@ -93,30 +93,30 @@ MoveBird:
     ret
 
 BirdAnimate:
-    ld a, [global_timer]
-    and 15
-    jr nz, .frame1 ;should be .end
-
-    ; Can do next frame
-    ; Check what frame we are on
-    ; ld a, [enemy_popping_frame]
-    ; cp a, 1
-    ; jp z, .frame1
-    ; cp a, 2
-    ; jp z, .clear
-    ; ret
-
+    ld a, [bird_flapping_frame]
+    cp a, 0
+    jr nz, .frame1
 .frame0:
+    ld a, [global_timer]
+    and 7 ; bird_flapping_speed
+    jp nz, .end
     ld hl, bird+6
     ld [hl], $98
     ld hl, bird+10
     ld [hl], $9A
+    ld hl, bird_flapping_frame
+    ld [hl], 1
     ret
 .frame1:
+    ld a, [global_timer]
+    and %00111111 ; bird_flapping_speed
+    jp nz, .end
     ld hl, bird+6
     ld [hl], $94
     ld hl, bird+10
     ld [hl], $96
+    ld hl, bird_flapping_frame
+    ld [hl], 0
 .end:
     ret
 
