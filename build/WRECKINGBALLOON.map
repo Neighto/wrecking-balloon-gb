@@ -29,62 +29,65 @@ ROM0 bank #0:
   SECTION: $0550-$065f ($0110 bytes) ["window tiles"]
            $0550 = WindowTiles
            $0660 = WindowTilesEnd
-  SECTION: $0660-$0742 ($00e3 bytes) ["collision"]
+  SECTION: $0660-$076c ($010d bytes) ["collision"]
            $0660 = CollisionCheck
-           $0676 = CollisionCheck.tryOtherY
-           $0683 = CollisionCheck.checkX
-           $0690 = CollisionCheck.tryOtherX
-           $069d = CollisionCheck.collision
-           $06a0 = CollisionCheck.end
-           $06a3 = CollisionUpdate
-           $06ba = CollisionUpdate.endPointBalloon
-           $06d1 = CollisionUpdate.endEnemy
-           $06e8 = CollisionUpdate.endEnemy2
-           $06ef = CollisionUpdate.checkCollisionEnemy1
-           $06fe = CollisionUpdate.checkCollisionEnemy2
-           $070b = CollisionUpdate.collisionWithPlayer
-           $0715 = CollisionUpdate.endEnemyHitPlayer
-           $0716 = OffScreenRight
-           $071e = OffScreenRight.end
-           $0720 = OffScreenLeft
-           $0727 = OffScreenLeft.end
-           $072a = OffScreenBottom
-           $0734 = OffScreenBottom.end
-           $0736 = OffScreenTop
-           $0740 = OffScreenTop.end
-  SECTION: $0743-$07b5 ($0073 bytes) ["joypad"]
-           $0743 = ReadInput
-           $0773 = JOY_RIGHT
-           $077b = JOY_LEFT
-           $0783 = JOY_UP
-           $078b = JOY_DOWN
-           $0793 = JOY_A
-           $079b = JOY_B
-           $07a3 = JOY_SELECT
-           $07ab = JOY_START
-           $07b3 = JOY_FALSE
-  SECTION: $07b6-$0815 ($0060 bytes) ["background tiles"]
-           $07b6 = BackgroundTiles
-           $0816 = BackgroundTilesEnd
-  SECTION: $0816-$086e ($0059 bytes) ["rom"]
-           $0816 = START
-           $0841 = GAMELOOP
-           $086c = GAMELOOP.END
-  SECTION: $086f-$088a ($001c bytes) ["OAM DMA routine"]
-           $086f = CopyDMARoutine
-           $0876 = CopyDMARoutine.copy
-           $087d = DMARoutine
-           $0881 = DMARoutine.wait
-           $0885 = DMARoutineEnd
-           $0885 = OAMDMA
-  SECTION: $088b-$0899 ($000f bytes) ["general initialization"]
-           $088b = InitializeGameVars
-  SECTION: $089a-$08a1 ($0008 bytes) ["timer"]
-           $089a = UpdateGlobalTimer
-  SECTION: $08a2-$08a9 ($0008 bytes) ["tools"]
-           $08a2 = IncrementPosition
-           $08a5 = DecrementPosition
-    SLACK: $3767 bytes
+           $0679 = CollisionCheck.over
+           $0680 = CollisionCheck.tryOtherY
+           $0690 = CollisionCheck.over2
+           $0695 = CollisionCheck.checkX
+           $06a2 = CollisionCheck.tryOtherX
+           $06af = CollisionCheck.collision
+           $06b3 = CollisionCheck.end
+           $06b7 = CollisionUpdate
+           $06cf = CollisionUpdate.endPointBalloon
+           $06e7 = CollisionUpdate.endEnemy
+           $06ff = CollisionUpdate.endEnemy2
+           $0706 = CollisionUpdate.checkCollisionEnemy1
+           $0716 = CollisionUpdate.checkCollisionEnemy2
+           $0726 = CollisionUpdate.checkCollisionBird
+           $0735 = CollisionUpdate.collisionWithPlayer
+           $073f = CollisionUpdate.endEnemyHitPlayer
+           $0740 = OffScreenRight
+           $0748 = OffScreenRight.end
+           $074a = OffScreenLeft
+           $0751 = OffScreenLeft.end
+           $0754 = OffScreenBottom
+           $075e = OffScreenBottom.end
+           $0760 = OffScreenTop
+           $076a = OffScreenTop.end
+  SECTION: $076d-$07df ($0073 bytes) ["joypad"]
+           $076d = ReadInput
+           $079d = JOY_RIGHT
+           $07a5 = JOY_LEFT
+           $07ad = JOY_UP
+           $07b5 = JOY_DOWN
+           $07bd = JOY_A
+           $07c5 = JOY_B
+           $07cd = JOY_SELECT
+           $07d5 = JOY_START
+           $07dd = JOY_FALSE
+  SECTION: $07e0-$083f ($0060 bytes) ["background tiles"]
+           $07e0 = BackgroundTiles
+           $0840 = BackgroundTilesEnd
+  SECTION: $0840-$0898 ($0059 bytes) ["rom"]
+           $0840 = START
+           $086b = GAMELOOP
+           $0896 = GAMELOOP.END
+  SECTION: $0899-$08b4 ($001c bytes) ["OAM DMA routine"]
+           $0899 = CopyDMARoutine
+           $08a0 = CopyDMARoutine.copy
+           $08a7 = DMARoutine
+           $08ab = DMARoutine.wait
+           $08af = DMARoutineEnd
+           $08af = OAMDMA
+  SECTION: $08b5-$08c3 ($000f bytes) ["general initialization"]
+           $08b5 = InitializeGameVars
+  SECTION: $08c4-$08cb ($0008 bytes) ["timer"]
+           $08c4 = UpdateGlobalTimer
+  SECTION: $08cc-$08d3 ($0008 bytes) ["tools"]
+           $08cc = IncrementPosition
+           $08cf = DecrementPosition
+    SLACK: $373d bytes
 
 ROMX bank #1:
   SECTION: $4000-$43a8 ($03a9 bytes) ["player"]
@@ -247,59 +250,60 @@ ROMX bank #1:
            $493e = PointBalloonUpdate.respawnSkip
            $4948 = PointBalloonUpdate.end
            $4949 = DeathOfPointBalloon
-  SECTION: $495c-$4a22 ($00c7 bytes) ["bird"]
+  SECTION: $495c-$4a3d ($00e2 bytes) ["bird"]
            $495c = UpdateBirdPosition
            $4982 = InitializeBird
            $49c6 = SpawnBird
            $49ce = MoveBirdLeft
-           $49d7 = MoveBird
-           $49de = BirdAnimate
-           $49e5 = BirdAnimate.frame0
-           $49fd = BirdAnimate.frame1
-           $4a14 = BirdAnimate.end
-           $4a15 = BirdUpdate
-           $4a22 = BirdUpdate.end
-  SECTION: $4a23-$4a84 ($0062 bytes) ["sound"]
-           $4a23 = AUDIO_OFF
-           $4a27 = AUDIO_ON
-           $4a2c = PopSound
-           $4a3f = FallingSound
-           $4a54 = StopFallingSound
-           $4a59 = CollectSound
-           $4a6e = WrongAnswerSound
-  SECTION: $4a85-$4ac4 ($0040 bytes) ["lcd"]
-           $4a85 = LCD_OFF
-           $4a8a = LCD_ON
-           $4a8f = WaitVBlank
-           $4a92 = WaitVBlank.loop
-           $4a9a = WaitVBlank.skipSpriteReset
-           $4aa0 = WaitVBlank.skipSpriteSet
-           $4aa3 = ClearMap
-           $4aaa = ClearMap.clear_map_loop
-           $4abc = SetupWindow
-  SECTION: $4ac5-$4afa ($0036 bytes) ["math"]
-           $4ac5 = MODULO
-           $4ac7 = MODULO.loop
-           $4acc = RANDOM
-           $4ad5 = DIVISION
-           $4adb = DIVISION.loop
-           $4ae0 = DIVISION.end
-           $4ae3 = ToBCD
-           $4af9 = ToBCD.end
-  SECTION: $4afb-$4b20 ($0026 bytes) ["memory"]
-           $4afb = MEMCPY.memcpy_loop
-           $4afb = MEMCPY
-           $4aff = MEMCPY.memcpy_check_limit
-           $4b05 = ClearOAM
-           $4b0b = ClearOAM.clear_oam_loop
-           $4b13 = ClearRAM
-           $4b19 = ClearRAM.clear_ram_loop
-  SECTION: $4b21-$4b35 ($0015 bytes) ["game"]
-           $4b21 = TryToUnpause
-           $4b35 = TryToUnpause.end
-  SECTION: $4b36-$4b36 ($0001 byte) ["enemy cactus manager"]
-           $4b36 = SpawnEnemyf
-    SLACK: $34c9 bytes
+           $49d7 = MoveBirdDown
+           $49e0 = MoveBirdUp
+           $49e9 = BirdAnimate
+           $49f0 = BirdAnimate.frame0
+           $4a08 = BirdAnimate.frame1
+           $4a22 = BirdAnimate.end
+           $4a23 = BirdUpdate
+           $4a3a = BirdUpdate.end
+  SECTION: $4a3e-$4a9f ($0062 bytes) ["sound"]
+           $4a3e = AUDIO_OFF
+           $4a42 = AUDIO_ON
+           $4a47 = PopSound
+           $4a5a = FallingSound
+           $4a6f = StopFallingSound
+           $4a74 = CollectSound
+           $4a89 = WrongAnswerSound
+  SECTION: $4aa0-$4adf ($0040 bytes) ["lcd"]
+           $4aa0 = LCD_OFF
+           $4aa5 = LCD_ON
+           $4aaa = WaitVBlank
+           $4aad = WaitVBlank.loop
+           $4ab5 = WaitVBlank.skipSpriteReset
+           $4abb = WaitVBlank.skipSpriteSet
+           $4abe = ClearMap
+           $4ac5 = ClearMap.clear_map_loop
+           $4ad7 = SetupWindow
+  SECTION: $4ae0-$4b15 ($0036 bytes) ["math"]
+           $4ae0 = MODULO
+           $4ae2 = MODULO.loop
+           $4ae7 = RANDOM
+           $4af0 = DIVISION
+           $4af6 = DIVISION.loop
+           $4afb = DIVISION.end
+           $4afe = ToBCD
+           $4b14 = ToBCD.end
+  SECTION: $4b16-$4b3b ($0026 bytes) ["memory"]
+           $4b16 = MEMCPY.memcpy_loop
+           $4b16 = MEMCPY
+           $4b1a = MEMCPY.memcpy_check_limit
+           $4b20 = ClearOAM
+           $4b26 = ClearOAM.clear_oam_loop
+           $4b2e = ClearRAM
+           $4b34 = ClearRAM.clear_ram_loop
+  SECTION: $4b3c-$4b50 ($0015 bytes) ["game"]
+           $4b3c = TryToUnpause
+           $4b50 = TryToUnpause.end
+  SECTION: $4b51-$4b51 ($0001 byte) ["enemy cactus manager"]
+           $4b51 = SpawnEnemyf
+    SLACK: $34ae bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c03d ($003e bytes) ["RAM vars"]
@@ -380,7 +384,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $0899 bytes in 1 bank
-    ROMX: $0b37 bytes in 1 bank
+    ROM0: $08c3 bytes in 1 bank
+    ROMX: $0b52 bytes in 1 bank
     WRAM0: $0082 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

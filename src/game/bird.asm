@@ -4,7 +4,7 @@ INCLUDE "constants.inc"
 SECTION "bird", ROMX
 
 BIRD_START_X EQU 135
-BIRD_START_Y EQU 120
+BIRD_START_Y EQU 80
 
 UpdateBirdPosition:
     ld hl, bird
@@ -83,13 +83,20 @@ SpawnBird:
 
 MoveBirdLeft:
     ld hl, bird_x
-    ld a, 1
+    ld a, 2
     call DecrementPosition
     ret 
 
-MoveBird:
-    call MoveBirdLeft
-    call UpdateBirdPosition
+MoveBirdDown:
+    ld hl, bird_y
+    ld a, 1
+    call IncrementPosition
+    ret
+
+MoveBirdUp:
+    ld hl, bird_y
+    ld a, 5
+    call DecrementPosition
     ret
 
 BirdAnimate:
@@ -117,15 +124,21 @@ BirdAnimate:
     ld [hl], $96
     ld hl, bird_flapping_frame
     ld [hl], 0
+    call MoveBirdUp
 .end:
     ret
 
 BirdUpdate::
     ; Check if we can move
     ld a, [global_timer]
-    and	ENEMY_SPRITE_MOVE_WAIT_TIME
+    and	BIRD_SPRITE_MOVE_WAIT_TIME
     jr nz, .end
-    call MoveBird
+    call MoveBirdLeft
     call BirdAnimate
+    ld a, [global_timer]
+    and BIRD_SPRITE_FALLING_TIME
+    jr nz, .end
+    call MoveBirdDown
 .end
+    call UpdateBirdPosition
     ret
