@@ -5,7 +5,7 @@ SECTION "collision", ROM0
 CollisionCheck:
     ; bc = argument for target colliding with player cactus
     ; hl = argument for collider
-    ; a = argument for 8x16 tile check (a = 0) or 8x8 tile check (a = 1) on bc
+    ; a = argument for 8x16 tile check (a = 0) or 8x8 tile check (a = 1) on hl
     ; a = return result
     push de
     ld e, a
@@ -21,13 +21,6 @@ CollisionCheck:
     cp a, [hl]
     jr nc, .tryOtherY
     ; cactus_y[hl] > balloon_y[a]
-
-    ld a, e ; Are we 8x16 or 8x8
-    cp a, 0
-    ld a, [bc]
-    jr z, .skip8x8Adjustment
-    sub 8
-.skip8x8Adjustment:
     add 16
     cp a, [hl]
     jr c, .tryOtherY
@@ -36,7 +29,12 @@ CollisionCheck:
 
 .tryOtherY
     ; Also check OR cactus_y'
+    ld a, e ; Are we 8x16 or 8x8
+    cp a, 0
     ld a, [hl]
+    jr z, .skip8x8Adjustment
+    sub 8
+.skip8x8Adjustment:
     add 16
     ld d, a
 
@@ -44,13 +42,6 @@ CollisionCheck:
     cp a, d
     jr nc, .end
     ; cactus_y'[c'] > balloon_y[a]
-
-    ld a, e ; Are we 8x16 or 8x8
-    cp a, 0
-    ld a, [bc]
-    jr z, .skip8x8AdjustmentOtherY
-    sub 8
-.skip8x8AdjustmentOtherY:
     add 16
     cp a, d
     jr c, .end
@@ -168,8 +159,8 @@ CollisionUpdate::
     jr .collisionWithPlayer
     ; Check collision bird
 .checkCollisionBird:
-    ld bc, bird
-    ld hl, player_balloon
+    ld bc, player_balloon
+    ld hl, bird
     ld a, 1
     call CollisionCheck
     and 1
