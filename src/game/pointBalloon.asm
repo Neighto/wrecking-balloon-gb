@@ -34,7 +34,7 @@ InitializePointBalloon::
     ; Initialize variables
     xor a ; ld a, 0
     ld hl, point_balloon_alive
-    ld [hl], 1
+    ld [hl], a
     ld hl, point_balloon_popping
     ld [hl], a
     ld hl, point_balloon_y
@@ -72,7 +72,14 @@ InitializePointBalloon::
 .spawnD:
     ld [hl], POINT_BALLOON_SPAWN_D
 .endNextSpawnPoint:
+    ret
 
+SpawnPointBalloon:
+    xor a ; ld a, 0
+    ld [point_balloon_respawn_timer], a
+    call InitializePointBalloon
+    ld a, 1
+    ld [point_balloon_alive], a
     ; Balloon left
     ld hl, point_balloon
     ld a, [point_balloon_y]
@@ -96,12 +103,6 @@ InitializePointBalloon::
     ld [hl], $86
     inc l
     ld [hl], %00100000
-    ret
-
-SpawnPointBalloon:
-    xor a ; ld a, 0
-    ld [point_balloon_respawn_timer], a    
-    call InitializePointBalloon
     ret
 
 FloatPointBalloonUp:
