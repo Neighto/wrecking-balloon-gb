@@ -124,7 +124,7 @@ BirdAnimate:
     ld [hl], $96
     ld hl, bird_flapping_frame
     ld [hl], 0
-    call MoveBirdUp
+    ; call MoveBirdUp
 .end:
     ret
 
@@ -138,7 +138,7 @@ BirdUpdate::
     ld a, [global_timer]
     and BIRD_SPRITE_FALLING_TIME
     jr nz, .end
-    call MoveBirdDown
+    ; call MoveBirdDown
 .end
     call UpdateBirdPosition
     ret
