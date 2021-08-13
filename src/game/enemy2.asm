@@ -124,7 +124,7 @@ SpawnEnemy:
     ld [enemy2_respawn_timer], a
     call InitializeEnemy2
     ld a, 1
-    ld [enemy_alive], a
+    ld [enemy2_alive], a
     ; Balloon left
     ld hl, enemy2_balloon
     ld a, [enemy2_balloon_y]

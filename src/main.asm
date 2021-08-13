@@ -41,7 +41,6 @@ GAMELOOP:
 	call CollisionUpdate
 	call UpdateGlobalTimer
 	call PlayerUpdate
-	call EnemiesUpdate
 	call GameManager
 	call RefreshScore ; Might want to move somewhere to call less frequently
 	call OAMDMA

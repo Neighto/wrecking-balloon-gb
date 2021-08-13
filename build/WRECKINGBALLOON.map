@@ -68,25 +68,25 @@ ROM0 bank #0:
   SECTION: $07d7-$0836 ($0060 bytes) ["background tiles"]
            $07d7 = BackgroundTiles
            $0837 = BackgroundTilesEnd
-  SECTION: $0837-$0889 ($0053 bytes) ["rom"]
+  SECTION: $0837-$0886 ($0050 bytes) ["rom"]
            $0837 = START
            $0862 = GAMELOOP
-           $0887 = GAMELOOP.END
-  SECTION: $088a-$08a5 ($001c bytes) ["OAM DMA routine"]
-           $088a = CopyDMARoutine
-           $0891 = CopyDMARoutine.copy
-           $0898 = DMARoutine
-           $089c = DMARoutine.wait
-           $08a0 = DMARoutineEnd
-           $08a0 = OAMDMA
-  SECTION: $08a6-$08b4 ($000f bytes) ["general initialization"]
-           $08a6 = InitializeGameVars
-  SECTION: $08b5-$08bc ($0008 bytes) ["timer"]
-           $08b5 = UpdateGlobalTimer
-  SECTION: $08bd-$08c4 ($0008 bytes) ["tools"]
-           $08bd = IncrementPosition
-           $08c0 = DecrementPosition
-    SLACK: $374c bytes
+           $0884 = GAMELOOP.END
+  SECTION: $0887-$08a2 ($001c bytes) ["OAM DMA routine"]
+           $0887 = CopyDMARoutine
+           $088e = CopyDMARoutine.copy
+           $0895 = DMARoutine
+           $0899 = DMARoutine.wait
+           $089d = DMARoutineEnd
+           $089d = OAMDMA
+  SECTION: $08a3-$08b1 ($000f bytes) ["general initialization"]
+           $08a3 = InitializeGameVars
+  SECTION: $08b2-$08b9 ($0008 bytes) ["timer"]
+           $08b2 = UpdateGlobalTimer
+  SECTION: $08ba-$08c1 ($0008 bytes) ["tools"]
+           $08ba = IncrementPosition
+           $08bd = DecrementPosition
+    SLACK: $374f bytes
 
 ROMX bank #1:
   SECTION: $4000-$43a8 ($03a9 bytes) ["player"]
@@ -249,67 +249,69 @@ ROMX bank #1:
            $494a = PointBalloonUpdate.respawnSkip
            $4954 = PointBalloonUpdate.end
            $4955 = DeathOfPointBalloon
-  SECTION: $4968-$4a49 ($00e2 bytes) ["bird"]
+  SECTION: $4968-$4a60 ($00f9 bytes) ["bird"]
            $4968 = UpdateBirdPosition
            $498e = InitializeBird
-           $499e = SpawnBird
-           $49da = MoveBirdLeft
-           $49e3 = MoveBirdDown
-           $49ec = MoveBirdUp
-           $49f5 = BirdAnimate
-           $49fc = BirdAnimate.frame0
-           $4a14 = BirdAnimate.frame1
-           $4a2e = BirdAnimate.end
-           $4a2f = BirdUpdate
-           $4a46 = BirdUpdate.end
-  SECTION: $4a4a-$4aab ($0062 bytes) ["sound"]
-           $4a4a = AUDIO_OFF
-           $4a4e = AUDIO_ON
-           $4a53 = PopSound
-           $4a66 = FallingSound
-           $4a7b = StopFallingSound
-           $4a80 = CollectSound
-           $4a95 = WrongAnswerSound
-  SECTION: $4aac-$4aeb ($0040 bytes) ["lcd"]
-           $4aac = LCD_OFF
-           $4ab1 = LCD_ON
-           $4ab6 = WaitVBlank
-           $4ab9 = WaitVBlank.loop
-           $4ac1 = WaitVBlank.skipSpriteReset
-           $4ac7 = WaitVBlank.skipSpriteSet
-           $4aca = ClearMap
-           $4ad1 = ClearMap.clear_map_loop
-           $4ae3 = SetupWindow
-  SECTION: $4aec-$4b21 ($0036 bytes) ["math"]
-           $4aec = MODULO
-           $4aee = MODULO.loop
-           $4af3 = RANDOM
-           $4afc = DIVISION
-           $4b02 = DIVISION.loop
-           $4b07 = DIVISION.end
-           $4b0a = ToBCD
-           $4b20 = ToBCD.end
-  SECTION: $4b22-$4b47 ($0026 bytes) ["memory"]
-           $4b22 = MEMCPY.memcpy_loop
-           $4b22 = MEMCPY
-           $4b26 = MEMCPY.memcpy_check_limit
-           $4b2c = ClearOAM
-           $4b32 = ClearOAM.clear_oam_loop
-           $4b3a = ClearRAM
-           $4b40 = ClearRAM.clear_ram_loop
-  SECTION: $4b48-$4b5c ($0015 bytes) ["game"]
-           $4b48 = TryToUnpause
-           $4b5c = TryToUnpause.end
-  SECTION: $4b5d-$4b70 ($0014 bytes) ["enemy manager"]
-           $4b5d = SpawnEnemyf
-           $4b5e = EnemiesUpdate
-           $4b5f = GameManager
-           $4b6d = GameManager.scoreLow
-           $4b70 = GameManager.scoreHigh
-    SLACK: $348f bytes
+           $49a2 = SpawnBird
+           $49e3 = MoveBirdLeft
+           $49ec = MoveBirdDown
+           $49f5 = MoveBirdUp
+           $49fe = BirdAnimate
+           $4a05 = BirdAnimate.frame0
+           $4a1d = BirdAnimate.frame1
+           $4a37 = BirdAnimate.end
+           $4a38 = BirdUpdate
+           $4a5d = BirdUpdate.isDead
+           $4a60 = BirdUpdate.end
+  SECTION: $4a61-$4ac2 ($0062 bytes) ["sound"]
+           $4a61 = AUDIO_OFF
+           $4a65 = AUDIO_ON
+           $4a6a = PopSound
+           $4a7d = FallingSound
+           $4a92 = StopFallingSound
+           $4a97 = CollectSound
+           $4aac = WrongAnswerSound
+  SECTION: $4ac3-$4b02 ($0040 bytes) ["lcd"]
+           $4ac3 = LCD_OFF
+           $4ac8 = LCD_ON
+           $4acd = WaitVBlank
+           $4ad0 = WaitVBlank.loop
+           $4ad8 = WaitVBlank.skipSpriteReset
+           $4ade = WaitVBlank.skipSpriteSet
+           $4ae1 = ClearMap
+           $4ae8 = ClearMap.clear_map_loop
+           $4afa = SetupWindow
+  SECTION: $4b03-$4b38 ($0036 bytes) ["math"]
+           $4b03 = MODULO
+           $4b05 = MODULO.loop
+           $4b0a = RANDOM
+           $4b13 = DIVISION
+           $4b19 = DIVISION.loop
+           $4b1e = DIVISION.end
+           $4b21 = ToBCD
+           $4b37 = ToBCD.end
+  SECTION: $4b39-$4b64 ($002c bytes) ["enemy manager"]
+           $4b39 = SpawnEnemyf
+           $4b3a = GameManager
+           $4b49 = GameManager.scoreLow
+           $4b55 = GameManager.scoreMid
+           $4b61 = GameManager.scoreHigh
+           $4b64 = GameManager.end
+  SECTION: $4b65-$4b8a ($0026 bytes) ["memory"]
+           $4b65 = MEMCPY.memcpy_loop
+           $4b65 = MEMCPY
+           $4b69 = MEMCPY.memcpy_check_limit
+           $4b6f = ClearOAM
+           $4b75 = ClearOAM.clear_oam_loop
+           $4b7d = ClearRAM
+           $4b83 = ClearRAM.clear_ram_loop
+  SECTION: $4b8b-$4b9f ($0015 bytes) ["game"]
+           $4b8b = TryToUnpause
+           $4b9f = TryToUnpause.end
+    SLACK: $3460 bytes
 
 WRAM0 bank #0:
-  SECTION: $c000-$c03d ($003e bytes) ["RAM vars"]
+  SECTION: $c000-$c03e ($003f bytes) ["RAM vars"]
            $c000 = score
            $c003 = scroll_timer
            $c004 = global_timer
@@ -370,6 +372,7 @@ WRAM0 bank #0:
            $c03b = bird_y
            $c03c = bird_flapping_frame
            $c03d = bird_respawn_timer
+           $c03e = bird_alive
   SECTION: $c100-$c143 ($0044 bytes) ["OAM vars"]
            $c100 = player_cactus
            $c108 = player_balloon
@@ -379,7 +382,7 @@ WRAM0 bank #0:
            $c128 = enemy2_cactus
            $c130 = enemy2_balloon
            $c138 = bird
-    SLACK: $0f7e bytes
+    SLACK: $0f7d bytes
 
 HRAM bank #0:
   SECTION: $ff80-$ff87 ($0008 bytes) ["OAM DMA"]
@@ -387,7 +390,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $08b4 bytes in 1 bank
-    ROMX: $0b71 bytes in 1 bank
-    WRAM0: $0082 bytes in 1 bank
+    ROM0: $08b1 bytes in 1 bank
+    ROMX: $0ba0 bytes in 1 bank
+    WRAM0: $0083 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
