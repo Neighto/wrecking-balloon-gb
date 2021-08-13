@@ -72,7 +72,7 @@ InitializeEnemy::
     ld hl, enemy_respawn_timer
     ld [hl], a
     ld hl, enemy_alive
-    ld [hl], 1
+    ld [hl], a
     ld hl, enemy_fall_speed
     ld [hl], 1
     ld hl, enemy_balloon_x
@@ -117,7 +117,14 @@ InitializeEnemy::
     ld hl, enemy_cactus_y
     ld [hl], ENEMY_SPAWN_D+16
 .endNextSpawnPoint:
+    ret
 
+SpawnEnemy:
+    xor a ; ld a, 0
+    ld [enemy_respawn_timer], a    
+    call InitializeEnemy
+    ld a, 1
+    ld [enemy_alive], a
     ; Balloon left
     ld hl, enemy_balloon
     ld a, [enemy_balloon_y]
@@ -164,12 +171,6 @@ InitializeEnemy::
     ld [hl], $84
     inc l
     ld [hl], %00100000
-    ret
-
-SpawnEnemy:
-    xor a ; ld a, 0
-    ld [enemy_respawn_timer], a    
-    call InitializeEnemy
     ret
 
 MoveBalloonRight:

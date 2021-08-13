@@ -43,7 +43,12 @@ InitializeBird::
     ld [hl], BIRD_START_X
     ld hl, bird_y
     ld [hl], BIRD_START_Y
+    ret
 
+SpawnBird:
+    xor a ; ld a, 0
+    ld [bird_respawn_timer], a    
+    call InitializeBird
     ; Bird left
     ld hl, bird
     ld a, [bird_y]
@@ -73,12 +78,6 @@ InitializeBird::
     ld [hl], $9A
     inc l
     ld [hl], %00000000
-    ret
-
-SpawnBird:
-    xor a ; ld a, 0
-    ld [bird_respawn_timer], a    
-    call InitializeBird
     ret
 
 MoveBirdLeft:
