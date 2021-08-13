@@ -5,8 +5,10 @@ SECTION "collision", ROM0
 CollisionCheck:
     ; bc = argument for target colliding with player cactus
     ; hl = argument for collider
-    ; d = used for temporary value
+    ; a = argument for 8x16 tile check (a = 0) or 8x8 tile check (a = 1) on bc
     ; a = return result
+    push de
+    ld e, a
 
     ld a, [collision_timer]
 	inc	a
@@ -19,6 +21,13 @@ CollisionCheck:
     cp a, [hl]
     jr nc, .tryOtherY
     ; cactus_y[hl] > balloon_y[a]
+
+    ld a, e ; Are we 8x16 or 8x8
+    cp a, 0
+    ld a, [bc]
+    jr z, .skip8x8Adjustment
+    sub 8
+.skip8x8Adjustment:
     add 16
     cp a, [hl]
     jr c, .tryOtherY
@@ -35,6 +44,13 @@ CollisionCheck:
     cp a, d
     jr nc, .end
     ; cactus_y'[c'] > balloon_y[a]
+
+    ld a, e ; Are we 8x16 or 8x8
+    cp a, 0
+    ld a, [bc]
+    jr z, .skip8x8AdjustmentOtherY
+    sub 8
+.skip8x8AdjustmentOtherY:
     add 16
     cp a, d
     jr c, .end
@@ -71,11 +87,14 @@ CollisionCheck:
 
 .collision:
     ld a, 1 ; Success
+    pop de
     ret
 .end:
     ld a, 0 ; Fail
+    pop de
     ret
 
+; TODO: Separate collision checks, or check if spawned before checking
 CollisionUpdate::
     ; Point balloon
     ; Check if alive
@@ -85,6 +104,7 @@ CollisionUpdate::
     ; Check collision
     ld bc, point_balloon
     ld hl, player_cactus
+    xor a ; ld a, 0
     call CollisionCheck
     and 1
     jr z, .endPointBalloon
@@ -99,6 +119,7 @@ CollisionUpdate::
     ; Check collision
     ld bc, enemy_balloon
     ld hl, player_cactus
+    xor a ; ld a, 0
     call CollisionCheck
     and 1
     jr z, .endEnemy
@@ -113,6 +134,7 @@ CollisionUpdate::
     ; Check collision
     ld bc, enemy2_balloon
     ld hl, player_cactus
+    xor a ; ld a, 0
     call CollisionCheck
     and 1
     jr z, .endEnemy2
@@ -128,6 +150,7 @@ CollisionUpdate::
 .checkCollisionEnemy1:
     ld bc, player_balloon
     ld hl, enemy_cactus
+    xor a ; ld a, 0
     call CollisionCheck
     and 1
     jr z, .checkCollisionEnemy2
@@ -137,6 +160,17 @@ CollisionUpdate::
 .checkCollisionEnemy2:
     ld bc, player_balloon
     ld hl, enemy2_cactus
+    xor a ; ld a, 0
+    call CollisionCheck
+    and 1
+    jr z, .checkCollisionBird
+    ; Collided
+    jr .collisionWithPlayer
+    ; Check collision bird
+.checkCollisionBird:
+    ld bc, bird
+    ld hl, player_balloon
+    ld a, 1
     call CollisionCheck
     and 1
     jr z, .endEnemyHitPlayer
