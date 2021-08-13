@@ -67,6 +67,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	bird_y:: DB
 	bird_flapping_frame:: DB
 	bird_respawn_timer:: DB
+	bird_alive:: DB
 
 SECTION "general initialization", ROM0 
 InitializeGameVars::

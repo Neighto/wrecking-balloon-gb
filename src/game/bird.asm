@@ -3,7 +3,7 @@ INCLUDE "constants.inc"
 
 SECTION "bird", ROMX
 
-BIRD_START_X EQU 135
+BIRD_START_X EQU 160
 BIRD_START_Y EQU 80
 
 UpdateBirdPosition:
@@ -39,6 +39,8 @@ InitializeBird::
     xor a ; ld a, 0
     ld hl, bird_flapping_frame
     ld [hl], a
+    ld hl, bird_alive
+    ld [hl], a
     ld hl, bird_x
     ld [hl], BIRD_START_X
     ld hl, bird_y
@@ -49,6 +51,8 @@ SpawnBird:
     xor a ; ld a, 0
     ld [bird_respawn_timer], a    
     call InitializeBird
+    ld a, 1
+    ld [bird_alive], a
     ; Bird left
     ld hl, bird
     ld a, [bird_y]
@@ -128,16 +132,25 @@ BirdAnimate:
     ret
 
 BirdUpdate::
+    ; Check if alive
+    ld a, [bird_alive]
+    and 1
+    jr z, .isDead
     ; Check if we can move
     ld a, [global_timer]
     and	BIRD_SPRITE_MOVE_WAIT_TIME
     jr nz, .end
     call MoveBirdLeft
     call BirdAnimate
+    call UpdateBirdPosition
     ld a, [global_timer]
     and BIRD_SPRITE_FALLING_TIME
     jr nz, .end
     call MoveBirdDown
-.end
-    call UpdateBirdPosition
+    call UpdateBirdPosition ; Calling twice
+    ret
+.isDead:
+    ; TODO add respawn timer
+    call SpawnBird
+.end:
     ret
