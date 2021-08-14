@@ -4,6 +4,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	joypad_down:: DB
 	joypad_pressed:: DB
 	paused_game:: DB
+	difficulty_level:: DB
 
 	player_x:: DB
 	player_y:: DB
@@ -70,14 +71,13 @@ SECTION "RAM vars", WRAM0[$C000]
 SECTION "general initialization", ROM0 
 InitializeGameVars::
 	xor a
-	ld hl, paused_game
-	ld [hl], a
-	ld hl, player_lives
-	ld [hl], 2
-
+	ld [paused_game], a
+	ld [difficulty_level], a
 	; Should be set in player, but need to separate inits from spawning!
-	ld hl, player_invincible
-  	ld [hl], a
+  	ld [player_invincible], a
+
+	ld a, 2
+	ld [player_lives], a
 	ret
 
 SECTION "OAM vars", WRAM0[$C100]

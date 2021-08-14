@@ -9,28 +9,19 @@ SpawnEnemyf::
 GameManager::
     call PointBalloonUpdate
 
-    ld a, [score+1]
-    and %00001111
-    cp a, 1 ; TODO current bug is once the value in 3rd digit is 0 again that enemy STOPS
-    jr c, .end
-    ; SCORE >= 100
-.scoreLow:
-	call EnemyUpdate
-
-    ld a, [score+1]
-    and %00001111
-    cp a, 4
-    jr c, .end
-    ; SCORE >= X
-.scoreMid:
-    call BirdUpdate
-
-    ld a, [score+1]
-    and %00001111
-    cp a, 8
-    jr c, .end
-    ; SCORE >= X
-.scoreHigh:
+    ld a, [difficulty_level]
+    cp a, 3
+    jr nc, .levelThree
+    cp a, 2
+    jr nc, .levelTwo
+    cp a, 1
+    jr nc, .levelOne
+    ret
+.levelThree:
     call Enemy2Update
+.levelTwo:
+    call BirdUpdate
+.levelOne:
+	call EnemyUpdate
 .end:
     ret
