@@ -32,62 +32,63 @@ ROM0 bank #0:
   SECTION: $0390-$054f ($01c0 bytes) ["cactus tiles"]
            $0390 = CactusTiles
            $0550 = CactusTilesEnd
-  SECTION: $0550-$065f ($0110 bytes) ["window tiles"]
-           $0550 = WindowTiles
-           $0660 = WindowTilesEnd
-  SECTION: $0660-$0760 ($0101 bytes) ["collision"]
-           $0660 = CollisionCheck
-           $066d = CollisionCheck.tryOtherY
-           $0675 = CollisionCheck.skip8x8Adjustment
-           $0681 = CollisionCheck.checkX
-           $068e = CollisionCheck.tryOtherX
-           $069b = CollisionCheck.collision
-           $069f = CollisionCheck.end
-           $06a3 = CollisionUpdate
-           $06c3 = CollisionUpdate.endPointBalloon
-           $06db = CollisionUpdate.endEnemy
-           $06f3 = CollisionUpdate.endEnemy2
-           $06fa = CollisionUpdate.checkCollisionEnemy1
-           $070a = CollisionUpdate.checkCollisionEnemy2
-           $071a = CollisionUpdate.checkCollisionBird
-           $0729 = CollisionUpdate.collisionWithPlayer
-           $0733 = CollisionUpdate.end
-           $0733 = CollisionUpdate.endEnemyHitPlayer
-           $0734 = OffScreenRight
-           $073c = OffScreenRight.end
-           $073e = OffScreenLeft
-           $0745 = OffScreenLeft.end
-           $0748 = OffScreenBottom
-           $0752 = OffScreenBottom.end
-           $0754 = OffScreenTop
-           $075e = OffScreenTop.end
-  SECTION: $0761-$07d3 ($0073 bytes) ["joypad"]
-           $0761 = ReadInput
-           $0791 = JOY_RIGHT
-           $0799 = JOY_LEFT
-           $07a1 = JOY_UP
-           $07a9 = JOY_DOWN
-           $07b1 = JOY_A
-           $07b9 = JOY_B
-           $07c1 = JOY_SELECT
-           $07c9 = JOY_START
-           $07d1 = JOY_FALSE
-  SECTION: $07d4-$0833 ($0060 bytes) ["background tiles"]
-           $07d4 = BackgroundTiles
-           $0834 = BackgroundTilesEnd
-  SECTION: $0834-$0892 ($005f bytes) ["rom"]
-           $0834 = START
-           $086e = GAMELOOP
-           $0890 = GAMELOOP.END
-  SECTION: $0893-$08a2 ($0010 bytes) ["scroll"]
-           $0893 = VBlankHScroll
-           $08a1 = VBlankHScroll.end
-  SECTION: $08a3-$08b1 ($000f bytes) ["general initialization"]
-           $08a3 = InitializeGameVars
-  SECTION: $08b2-$08b9 ($0008 bytes) ["tools"]
-           $08b2 = IncrementPosition
-           $08b5 = DecrementPosition
-    SLACK: $3756 bytes
+  SECTION: $0550-$065f ($0110 bytes) ["collision"]
+           $0550 = CollisionCheck
+           $055d = CollisionCheck.tryOtherY
+           $0565 = CollisionCheck.skip8x8Adjustment
+           $0571 = CollisionCheck.checkX
+           $057e = CollisionCheck.tryOtherX
+           $058b = CollisionCheck.collision
+           $058f = CollisionCheck.end
+           $0593 = CollisionUpdate
+           $05bb = CollisionUpdate.endPointBalloon
+           $05d5 = CollisionUpdate.checkEnemyHitPlayer
+           $05e5 = CollisionUpdate.endEnemy
+           $05ff = CollisionUpdate.checkEnemy2HitPlayer
+           $060f = CollisionUpdate.endEnemy2
+           $0616 = CollisionUpdate.checkBirdHitPlayer
+           $0627 = CollisionUpdate.endBird
+           $0628 = CollisionUpdate.collisionWithPlayer
+           $0632 = CollisionUpdate.end
+           $0632 = CollisionUpdate.endEnemyHitPlayer
+           $0633 = OffScreenRight
+           $063b = OffScreenRight.end
+           $063d = OffScreenLeft
+           $0644 = OffScreenLeft.end
+           $0647 = OffScreenBottom
+           $0651 = OffScreenBottom.end
+           $0653 = OffScreenTop
+           $065d = OffScreenTop.end
+  SECTION: $0660-$076f ($0110 bytes) ["window tiles"]
+           $0660 = WindowTiles
+           $0770 = WindowTilesEnd
+  SECTION: $0770-$07e2 ($0073 bytes) ["joypad"]
+           $0770 = ReadInput
+           $07a0 = JOY_RIGHT
+           $07a8 = JOY_LEFT
+           $07b0 = JOY_UP
+           $07b8 = JOY_DOWN
+           $07c0 = JOY_A
+           $07c8 = JOY_B
+           $07d0 = JOY_SELECT
+           $07d8 = JOY_START
+           $07e0 = JOY_FALSE
+  SECTION: $07e3-$0842 ($0060 bytes) ["background tiles"]
+           $07e3 = BackgroundTiles
+           $0843 = BackgroundTilesEnd
+  SECTION: $0843-$08a1 ($005f bytes) ["rom"]
+           $0843 = START
+           $087d = GAMELOOP
+           $089f = GAMELOOP.END
+  SECTION: $08a2-$08b1 ($0010 bytes) ["scroll"]
+           $08a2 = VBlankHScroll
+           $08b0 = VBlankHScroll.end
+  SECTION: $08b2-$08c0 ($000f bytes) ["general initialization"]
+           $08b2 = InitializeGameVars
+  SECTION: $08c1-$08c8 ($0008 bytes) ["tools"]
+           $08c1 = IncrementPosition
+           $08c4 = DecrementPosition
+    SLACK: $3747 bytes
 
 ROMX bank #1:
   SECTION: $4000-$43a8 ($03a9 bytes) ["player"]
@@ -389,7 +390,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $08aa bytes in 1 bank
+    ROM0: $08b9 bytes in 1 bank
     ROMX: $0b9d bytes in 1 bank
     WRAM0: $0081 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
