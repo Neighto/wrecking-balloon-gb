@@ -14,3 +14,9 @@ TryToUnpause::
 	ld [hl], a ; pause
 .end:
 	ret
+
+UpdateGlobalTimer::
+	ld a, [global_timer]
+	inc	a
+	ld [global_timer], a
+	ret
