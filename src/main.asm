@@ -26,6 +26,11 @@ START::
 	call InitializeScore
 
 	call LoadGameData
+	call InitializePlayer
+	call InitializePointBalloon
+	call InitializeEnemy
+	call InitializeEnemy2
+	call InitializeBird
 	call RefreshLives
 	call CopyDMARoutine
 
@@ -44,7 +49,7 @@ GAMELOOP:
 	call GameManager
 	call RefreshScore ; Might want to move somewhere to call less frequently
 	call OAMDMA
-.END
+.END:
 	jp GAMELOOP
 
 SECTION "timer", ROM0 

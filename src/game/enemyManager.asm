@@ -11,7 +11,7 @@ GameManager::
 
     ld a, [score+1]
     and %00001111
-    cp a, 1
+    cp a, 1 ; TODO current bug is once the value in 3rd digit is 0 again that enemy STOPS
     jr c, .end
     ; SCORE >= 100
 .scoreLow:

@@ -10,12 +10,6 @@ CollisionCheck:
     push de
     ld e, a
 
-    ld a, [collision_timer]
-	inc	a
-	ld [collision_timer], a
-	and	%00001100
-    jr nz, .end
-
     ; CHECK Y
     ld a, [bc]
     cp a, [hl]
@@ -87,6 +81,10 @@ CollisionCheck:
 
 ; TODO: Separate collision checks, or check if spawned before checking
 CollisionUpdate::
+    ld a, [global_timer]
+	and	%00000011
+    jp nz, .end
+
     ; Point balloon
     ; Check if alive
     ld a, [point_balloon_alive]
@@ -173,6 +171,7 @@ CollisionUpdate::
     jr nz, .endEnemyHitPlayer
     call DeathOfPlayer
 .endEnemyHitPlayer:
+.end:
     ret
 
 OffScreenRight::
