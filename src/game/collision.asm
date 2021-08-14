@@ -85,6 +85,11 @@ CollisionUpdate::
 	and	%00000011
     jp nz, .end
 
+    ; Check if alive
+    ld a, [player_alive]
+    and 1
+    jp z, .end
+
     ; Point balloon
     ; Check if alive
     ld a, [point_balloon_alive]
@@ -111,9 +116,17 @@ CollisionUpdate::
     xor a ; ld a, 0
     call CollisionCheck
     and 1
-    jr z, .endEnemy
-    ; Collided
+    jr z, .checkEnemyHitPlayer
     call DeathOfEnemy
+    jr .endEnemy
+.checkEnemyHitPlayer:
+    ld bc, player_balloon
+    ld hl, enemy_cactus
+    xor a ; ld a, 0
+    call CollisionCheck
+    and 1
+    jr z, .endEnemy
+    jr .collisionWithPlayer
 .endEnemy:
     ; Enemy 2
     ; Check if alive
@@ -126,44 +139,35 @@ CollisionUpdate::
     xor a ; ld a, 0
     call CollisionCheck
     and 1
-    jr z, .endEnemy2
+    jr z, .checkEnemy2HitPlayer
     ; Collided
     call DeathOfEnemy2
-.endEnemy2:
-    ; Enemy colliding with player
-    ; Check if alive
-    ld a, [player_alive]
-    and 1
-    jr z, .endEnemyHitPlayer
-    ; Check collision enemy 1
-.checkCollisionEnemy1:
-    ld bc, player_balloon
-    ld hl, enemy_cactus
-    xor a ; ld a, 0
-    call CollisionCheck
-    and 1
-    jr z, .checkCollisionEnemy2
-    ; Collided
-    jr .collisionWithPlayer
-    ; Check collision enemy 2
-.checkCollisionEnemy2:
+    jr .endEnemy2
+.checkEnemy2HitPlayer:
     ld bc, player_balloon
     ld hl, enemy2_cactus
     xor a ; ld a, 0
     call CollisionCheck
     and 1
-    jr z, .checkCollisionBird
-    ; Collided
+    jr z, .endEnemy2
     jr .collisionWithPlayer
+.endEnemy2:
+    ; Bird
+    ; Check if alive
+    ld a, [bird_alive]
+    and 1
+    jr z, .endBird
     ; Check collision bird
-.checkCollisionBird:
+.checkBirdHitPlayer:
     ld bc, player_balloon
     ld hl, bird
     ld a, 1
     call CollisionCheck
     and 1
     jr z, .endEnemyHitPlayer
-    ; Collided
+    jr .collisionWithPlayer
+.endBird:
+    ret
 .collisionWithPlayer:
     ; Check if player is invincible
     ld a, [player_invincible]
