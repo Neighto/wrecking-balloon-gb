@@ -59,9 +59,7 @@ SetupWindow::
 SECTION "scroll", ROM0
 VBlankHScroll::
     push af
-    ld a, [scroll_timer]
-    inc	a
-    ld [scroll_timer], a
+    ld a, [global_timer]
     and	BACKGROUND_HSCROLL_SPEED
     jr nz, .end
     ldh a, [rSCX]

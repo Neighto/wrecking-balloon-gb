@@ -65,12 +65,6 @@ LoadGameData::
 	ld hl, $9C00
 	ld de, WindowMapEnd - WindowMap
 	call MEMCPY
-	; Initialize
-	call InitializePlayer
-	call InitializePointBalloon
-	call InitializeEnemy
-	call InitializeEnemy2
-	call InitializeBird
 	ret
 
 SetupPalettes::
