@@ -78,19 +78,19 @@ ROM0 bank #0:
            $07d0 = JOY_SELECT
            $07d8 = JOY_START
            $07e0 = JOY_FALSE
-  SECTION: $07e3-$0842 ($0060 bytes) ["background tiles"]
-           $07e3 = BackgroundTiles
-           $0843 = BackgroundTilesEnd
-  SECTION: $0843-$08a1 ($005f bytes) ["rom"]
-           $0843 = START
-           $087d = GAMELOOP
-           $089f = GAMELOOP.END
-  SECTION: $08a2-$08b5 ($0014 bytes) ["window map"]
-           $08a2 = WindowMap
-           $08b6 = WindowMapEnd
-  SECTION: $08b6-$08c5 ($0010 bytes) ["general initialization"]
-           $08b6 = InitializeGameVars
-    SLACK: $3743 bytes
+  SECTION: $07e3-$0844 ($0062 bytes) ["rom"]
+           $07e3 = START
+           $081d = GAMELOOP
+           $0842 = GAMELOOP.END
+  SECTION: $0845-$08a4 ($0060 bytes) ["background tiles"]
+           $0845 = BackgroundTiles
+           $08a5 = BackgroundTilesEnd
+  SECTION: $08a5-$08b8 ($0014 bytes) ["window map"]
+           $08a5 = WindowMap
+           $08b9 = WindowMapEnd
+  SECTION: $08b9-$08c8 ($0010 bytes) ["general initialization"]
+           $08b9 = InitializeGameVars
+    SLACK: $3740 bytes
 
 ROMX bank #1:
   SECTION: $4000-$43a8 ($03a9 bytes) ["player"]
@@ -267,7 +267,7 @@ ROMX bank #1:
            $4a38 = BirdUpdate
            $4a5d = BirdUpdate.isDead
            $4a60 = BirdUpdate.end
-  SECTION: $4a61-$4ac2 ($0062 bytes) ["sound"]
+  SECTION: $4a61-$4acd ($006d bytes) ["sound"]
            $4a61 = AUDIO_OFF
            $4a65 = AUDIO_ON
            $4a6a = PopSound
@@ -275,45 +275,47 @@ ROMX bank #1:
            $4a92 = StopFallingSound
            $4a97 = CollectSound
            $4aac = WrongAnswerSound
-  SECTION: $4ac3-$4b02 ($0040 bytes) ["lcd"]
-           $4ac3 = LCD_OFF
-           $4ac8 = LCD_ON
-           $4acd = WaitVBlank
-           $4ad0 = WaitVBlank.loop
-           $4ad8 = WaitVBlank.skipSpriteReset
-           $4ade = WaitVBlank.skipSpriteSet
-           $4ae1 = ClearMap
-           $4ae8 = ClearMap.clear_map_loop
-           $4afa = SetupWindow
-  SECTION: $4b03-$4b38 ($0036 bytes) ["math"]
-           $4b03 = MODULO
-           $4b05 = MODULO.loop
-           $4b0a = RANDOM
-           $4b13 = DIVISION
-           $4b19 = DIVISION.loop
-           $4b1e = DIVISION.end
-           $4b21 = ToBCD
-           $4b37 = ToBCD.end
-  SECTION: $4b39-$4b5e ($0026 bytes) ["memory"]
-           $4b39 = MEMCPY.memcpy_loop
-           $4b39 = MEMCPY
-           $4b3d = MEMCPY.memcpy_check_limit
-           $4b43 = ClearOAM
-           $4b49 = ClearOAM.clear_oam_loop
-           $4b51 = ClearRAM
-           $4b57 = ClearRAM.clear_ram_loop
-  SECTION: $4b5f-$4b7c ($001e bytes) ["enemy manager"]
-           $4b5f = SpawnEnemyf
-           $4b60 = GameManager
-           $4b73 = GameManager.levelThree
-           $4b76 = GameManager.levelTwo
-           $4b79 = GameManager.levelOne
-           $4b7c = GameManager.end
-  SECTION: $4b7d-$4b99 ($001d bytes) ["game"]
-           $4b7d = TryToUnpause
-           $4b91 = TryToUnpause.end
-           $4b92 = UpdateGlobalTimer
-    SLACK: $3466 bytes
+           $4ac3 = PlayMusic
+           $4acd = PlayMusic.end
+  SECTION: $4ace-$4b0d ($0040 bytes) ["lcd"]
+           $4ace = LCD_OFF
+           $4ad3 = LCD_ON
+           $4ad8 = WaitVBlank
+           $4adb = WaitVBlank.loop
+           $4ae3 = WaitVBlank.skipSpriteReset
+           $4ae9 = WaitVBlank.skipSpriteSet
+           $4aec = ClearMap
+           $4af3 = ClearMap.clear_map_loop
+           $4b05 = SetupWindow
+  SECTION: $4b0e-$4b43 ($0036 bytes) ["math"]
+           $4b0e = MODULO
+           $4b10 = MODULO.loop
+           $4b15 = RANDOM
+           $4b1e = DIVISION
+           $4b24 = DIVISION.loop
+           $4b29 = DIVISION.end
+           $4b2c = ToBCD
+           $4b42 = ToBCD.end
+  SECTION: $4b44-$4b69 ($0026 bytes) ["memory"]
+           $4b44 = MEMCPY.memcpy_loop
+           $4b44 = MEMCPY
+           $4b48 = MEMCPY.memcpy_check_limit
+           $4b4e = ClearOAM
+           $4b54 = ClearOAM.clear_oam_loop
+           $4b5c = ClearRAM
+           $4b62 = ClearRAM.clear_ram_loop
+  SECTION: $4b6a-$4b87 ($001e bytes) ["enemy manager"]
+           $4b6a = SpawnEnemyf
+           $4b6b = GameManager
+           $4b7e = GameManager.levelThree
+           $4b81 = GameManager.levelTwo
+           $4b84 = GameManager.levelOne
+           $4b87 = GameManager.end
+  SECTION: $4b88-$4ba4 ($001d bytes) ["game"]
+           $4b88 = TryToUnpause
+           $4b9c = TryToUnpause.end
+           $4b9d = UpdateGlobalTimer
+    SLACK: $345b bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c03d ($003e bytes) ["RAM vars"]
@@ -394,7 +396,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $08bd bytes in 1 bank
-    ROMX: $0b9a bytes in 1 bank
+    ROM0: $08c0 bytes in 1 bank
+    ROMX: $0ba5 bytes in 1 bank
     WRAM0: $0082 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
