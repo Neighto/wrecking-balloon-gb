@@ -42,6 +42,7 @@ GAMELOOP:
 	ld a, [paused_game]
 	cp a, 1
 	jr z, .END
+	call PlayMusic
 	call VBlankHScroll
 	call CollisionUpdate
 	call UpdateGlobalTimer

@@ -1,4 +1,5 @@
 INCLUDE "hardware.inc"
+INCLUDE "constants.inc"
 
 SECTION "sound", ROMX
 
@@ -82,4 +83,12 @@ WrongAnswerSound::
   ld  a,%11111111
   ld  [rNR50],a
   ld  [rNR51],a
+  ret
+
+PlayMusic::
+  ld a, [global_timer]
+  and TEMPO
+  jr nz, .end
+  call CollectSound
+.end:
   ret
