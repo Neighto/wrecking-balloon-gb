@@ -80,17 +80,17 @@ ROM0 bank #0:
            $07e0 = JOY_FALSE
   SECTION: $07e3-$0844 ($0062 bytes) ["rom"]
            $07e3 = START
-           $081d = GAMELOOP
+           $0820 = GAMELOOP
            $0842 = GAMELOOP.END
   SECTION: $0845-$08a4 ($0060 bytes) ["background tiles"]
            $0845 = BackgroundTiles
            $08a5 = BackgroundTilesEnd
-  SECTION: $08a5-$08b8 ($0014 bytes) ["window map"]
-           $08a5 = WindowMap
-           $08b9 = WindowMapEnd
-  SECTION: $08b9-$08c8 ($0010 bytes) ["general initialization"]
-           $08b9 = InitializeGameVars
-    SLACK: $3740 bytes
+  SECTION: $08a5-$08ba ($0016 bytes) ["general initialization"]
+           $08a5 = InitializeGameVars
+  SECTION: $08bb-$08ce ($0014 bytes) ["window map"]
+           $08bb = WindowMap
+           $08cf = WindowMapEnd
+    SLACK: $373a bytes
 
 ROMX bank #1:
   SECTION: $4000-$43a8 ($03a9 bytes) ["player"]
@@ -267,7 +267,7 @@ ROMX bank #1:
            $4a38 = BirdUpdate
            $4a5d = BirdUpdate.isDead
            $4a60 = BirdUpdate.end
-  SECTION: $4a61-$4acd ($006d bytes) ["sound"]
+  SECTION: $4a61-$4aee ($008e bytes) ["sound"]
            $4a61 = AUDIO_OFF
            $4a65 = AUDIO_ON
            $4a6a = PopSound
@@ -275,110 +275,116 @@ ROMX bank #1:
            $4a92 = StopFallingSound
            $4a97 = CollectSound
            $4aac = WrongAnswerSound
-           $4ac3 = PlayMusic
-           $4acd = PlayMusic.end
-  SECTION: $4ace-$4b0d ($0040 bytes) ["lcd"]
-           $4ace = LCD_OFF
-           $4ad3 = LCD_ON
-           $4ad8 = WaitVBlank
-           $4adb = WaitVBlank.loop
-           $4ae3 = WaitVBlank.skipSpriteReset
-           $4ae9 = WaitVBlank.skipSpriteSet
-           $4aec = ClearMap
-           $4af3 = ClearMap.clear_map_loop
-           $4b05 = SetupWindow
-  SECTION: $4b0e-$4b43 ($0036 bytes) ["math"]
-           $4b0e = MODULO
-           $4b10 = MODULO.loop
-           $4b15 = RANDOM
-           $4b1e = DIVISION
-           $4b24 = DIVISION.loop
-           $4b29 = DIVISION.end
-           $4b2c = ToBCD
-           $4b42 = ToBCD.end
-  SECTION: $4b44-$4b69 ($0026 bytes) ["memory"]
-           $4b44 = MEMCPY.memcpy_loop
-           $4b44 = MEMCPY
-           $4b48 = MEMCPY.memcpy_check_limit
-           $4b4e = ClearOAM
-           $4b54 = ClearOAM.clear_oam_loop
-           $4b5c = ClearRAM
-           $4b62 = ClearRAM.clear_ram_loop
-  SECTION: $4b6a-$4b87 ($001e bytes) ["enemy manager"]
-           $4b6a = SpawnEnemyf
-           $4b6b = GameManager
-           $4b7e = GameManager.levelThree
-           $4b81 = GameManager.levelTwo
-           $4b84 = GameManager.levelOne
-           $4b87 = GameManager.end
-  SECTION: $4b88-$4ba4 ($001d bytes) ["game"]
-           $4b88 = TryToUnpause
-           $4b9c = TryToUnpause.end
-           $4b9d = UpdateGlobalTimer
-    SLACK: $345b bytes
+           $4ac3 = Percussion
+           $4ad0 = Percussion2
+           $4add = Bass
+           $4aee = PlayMusic
+           $4aee = Song1
+           $4aee = PlayMusic.end
+  SECTION: $4aef-$4b2e ($0040 bytes) ["lcd"]
+           $4aef = LCD_OFF
+           $4af4 = LCD_ON
+           $4af9 = WaitVBlank
+           $4afc = WaitVBlank.loop
+           $4b04 = WaitVBlank.skipSpriteReset
+           $4b0a = WaitVBlank.skipSpriteSet
+           $4b0d = ClearMap
+           $4b14 = ClearMap.clear_map_loop
+           $4b26 = SetupWindow
+  SECTION: $4b2f-$4b64 ($0036 bytes) ["math"]
+           $4b2f = MODULO
+           $4b31 = MODULO.loop
+           $4b36 = RANDOM
+           $4b3f = DIVISION
+           $4b45 = DIVISION.loop
+           $4b4a = DIVISION.end
+           $4b4d = ToBCD
+           $4b63 = ToBCD.end
+  SECTION: $4b65-$4b8a ($0026 bytes) ["memory"]
+           $4b65 = MEMCPY.memcpy_loop
+           $4b65 = MEMCPY
+           $4b69 = MEMCPY.memcpy_check_limit
+           $4b6f = ClearOAM
+           $4b75 = ClearOAM.clear_oam_loop
+           $4b7d = ClearRAM
+           $4b83 = ClearRAM.clear_ram_loop
+  SECTION: $4b8b-$4ba8 ($001e bytes) ["enemy manager"]
+           $4b8b = SpawnEnemyf
+           $4b8c = GameManager
+           $4b9f = GameManager.levelThree
+           $4ba2 = GameManager.levelTwo
+           $4ba5 = GameManager.levelOne
+           $4ba8 = GameManager.end
+  SECTION: $4ba9-$4bc5 ($001d bytes) ["game"]
+           $4ba9 = TryToUnpause
+           $4bbd = TryToUnpause.end
+           $4bbe = UpdateGlobalTimer
+    SLACK: $343a bytes
 
 WRAM0 bank #0:
-  SECTION: $c000-$c03d ($003e bytes) ["RAM vars"]
+  SECTION: $c000-$c03f ($0040 bytes) ["RAM vars"]
            $c000 = score
            $c003 = global_timer
            $c004 = joypad_down
            $c005 = joypad_pressed
            $c006 = paused_game
            $c007 = difficulty_level
-           $c008 = player_x
-           $c009 = player_y
-           $c00a = player_cactus_x
-           $c00b = player_cactus_y
-           $c00c = player_alive
-           $c00d = player_popping
-           $c00e = player_popping_frame
-           $c00f = player_falling
-           $c010 = player_fall_speed
-           $c011 = player_falling_timer
-           $c012 = player_pop_timer
-           $c013 = player_delay_falling_timer
-           $c014 = player_respawn_timer
-           $c015 = player_speed
-           $c016 = player_lives
-           $c017 = player_invincible
-           $c018 = point_balloon_x
-           $c019 = point_balloon_y
-           $c01a = point_balloon_alive
-           $c01b = point_balloon_popping
-           $c01c = point_balloon_popping_frame
-           $c01d = point_balloon_pop_timer
-           $c01e = point_balloon_respawn_timer
-           $c01f = enemy_balloon_x
-           $c020 = enemy_balloon_y
-           $c021 = enemy_cactus_x
-           $c022 = enemy_cactus_y
-           $c023 = enemy_alive
-           $c024 = enemy_popping
-           $c025 = enemy_popping_frame
-           $c026 = enemy_falling
-           $c027 = enemy_fall_speed
-           $c028 = enemy_falling_timer
-           $c029 = enemy_pop_timer
-           $c02a = enemy_delay_falling_timer
-           $c02b = enemy_respawn_timer
-           $c02c = enemy2_balloon_x
-           $c02d = enemy2_balloon_y
-           $c02e = enemy2_cactus_x
-           $c02f = enemy2_cactus_y
-           $c030 = enemy2_alive
-           $c031 = enemy2_popping
-           $c032 = enemy2_popping_frame
-           $c033 = enemy2_falling
-           $c034 = enemy2_fall_speed
-           $c035 = enemy2_falling_timer
-           $c036 = enemy2_pop_timer
-           $c037 = enemy2_delay_falling_timer
-           $c038 = enemy2_respawn_timer
-           $c039 = bird_x
-           $c03a = bird_y
-           $c03b = bird_flapping_frame
-           $c03c = bird_respawn_timer
-           $c03d = bird_alive
+           $c008 = song_timer
+           $c009 = song_index
+           $c00a = player_x
+           $c00b = player_y
+           $c00c = player_cactus_x
+           $c00d = player_cactus_y
+           $c00e = player_alive
+           $c00f = player_popping
+           $c010 = player_popping_frame
+           $c011 = player_falling
+           $c012 = player_fall_speed
+           $c013 = player_falling_timer
+           $c014 = player_pop_timer
+           $c015 = player_delay_falling_timer
+           $c016 = player_respawn_timer
+           $c017 = player_speed
+           $c018 = player_lives
+           $c019 = player_invincible
+           $c01a = point_balloon_x
+           $c01b = point_balloon_y
+           $c01c = point_balloon_alive
+           $c01d = point_balloon_popping
+           $c01e = point_balloon_popping_frame
+           $c01f = point_balloon_pop_timer
+           $c020 = point_balloon_respawn_timer
+           $c021 = enemy_balloon_x
+           $c022 = enemy_balloon_y
+           $c023 = enemy_cactus_x
+           $c024 = enemy_cactus_y
+           $c025 = enemy_alive
+           $c026 = enemy_popping
+           $c027 = enemy_popping_frame
+           $c028 = enemy_falling
+           $c029 = enemy_fall_speed
+           $c02a = enemy_falling_timer
+           $c02b = enemy_pop_timer
+           $c02c = enemy_delay_falling_timer
+           $c02d = enemy_respawn_timer
+           $c02e = enemy2_balloon_x
+           $c02f = enemy2_balloon_y
+           $c030 = enemy2_cactus_x
+           $c031 = enemy2_cactus_y
+           $c032 = enemy2_alive
+           $c033 = enemy2_popping
+           $c034 = enemy2_popping_frame
+           $c035 = enemy2_falling
+           $c036 = enemy2_fall_speed
+           $c037 = enemy2_falling_timer
+           $c038 = enemy2_pop_timer
+           $c039 = enemy2_delay_falling_timer
+           $c03a = enemy2_respawn_timer
+           $c03b = bird_x
+           $c03c = bird_y
+           $c03d = bird_flapping_frame
+           $c03e = bird_respawn_timer
+           $c03f = bird_alive
   SECTION: $c100-$c143 ($0044 bytes) ["OAM vars"]
            $c100 = player_cactus
            $c108 = player_balloon
@@ -388,7 +394,7 @@ WRAM0 bank #0:
            $c128 = enemy2_cactus
            $c130 = enemy2_balloon
            $c138 = bird
-    SLACK: $0f7e bytes
+    SLACK: $0f7c bytes
 
 HRAM bank #0:
   SECTION: $ff80-$ff87 ($0008 bytes) ["OAM DMA"]
@@ -396,7 +402,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $08c0 bytes in 1 bank
-    ROMX: $0ba5 bytes in 1 bank
-    WRAM0: $0082 bytes in 1 bank
+    ROM0: $08c6 bytes in 1 bank
+    ROMX: $0bc6 bytes in 1 bank
+    WRAM0: $0084 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

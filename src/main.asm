@@ -33,6 +33,7 @@ START::
 	call InitializeBird
 	call RefreshLives
 	call CopyDMARoutine
+	call PlayMusic
 
 	call LCD_ON
 
@@ -42,7 +43,7 @@ GAMELOOP:
 	ld a, [paused_game]
 	cp a, 1
 	jr z, .END
-	call PlayMusic
+	; call PlayMusic
 	call VBlankHScroll
 	call CollisionUpdate
 	call UpdateGlobalTimer
