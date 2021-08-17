@@ -6,6 +6,9 @@ SECTION "RAM vars", WRAM0[$C000]
 	paused_game:: DB
 	difficulty_level:: DB
 
+	song_timer:: DB
+	song_index:: DB
+
 	player_x:: DB
 	player_y:: DB
 	player_cactus_x:: DB 
@@ -75,6 +78,8 @@ InitializeGameVars::
 	ld [difficulty_level], a
 	; Should be set in player, but need to separate inits from spawning!
   	ld [player_invincible], a
+	ld [song_timer], a
+	ld [song_index], a
 
 	ld a, 2
 	ld [player_lives], a
