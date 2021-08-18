@@ -15,82 +15,94 @@ ROM0 bank #0:
            $0040 = VBLANK_VECT
   SECTION: $0048-$0048 ($0001 byte) ["LCD IRQ"]
            $0048 = LCD_VECT
-  SECTION: $0049-$00d9 ($0091 bytes) ["graphics"]
-           $0049 = LoadGameData
-           $0086 = SetupPalettes
-           $0091 = RefreshScore
-           $00cf = RefreshLives
-  SECTION: $00da-$00f5 ($001c bytes) ["OAM DMA routine"]
-           $00da = CopyDMARoutine
-           $00e1 = CopyDMARoutine.copy
-           $00e8 = DMARoutine
-           $00ec = DMARoutine.wait
-           $00f0 = DMARoutineEnd
-           $00f0 = OAMDMA
-  SECTION: $00f6-$00fd ($0008 bytes) ["tools"]
-           $00f6 = IncrementPosition
-           $00f9 = DecrementPosition
+  SECTION: $0049-$00f0 ($00a8 bytes) ["rom"]
+           $0049 = START
+           $0086 = MENULOOP
+           $008c = MENULOOP.END
+           $008f = STARTGAME
+           $00cc = GAMELOOP
+           $00ee = GAMELOOP.END
+  SECTION: $00f1-$00f8 ($0008 bytes) ["tools"]
+           $00f1 = IncrementPosition
+           $00f4 = DecrementPosition
   SECTION: $0100-$014f ($0050 bytes) ["header"]
-  SECTION: $0150-$038f ($0240 bytes) ["background map"]
-           $0150 = BackgroundMap
-           $0390 = BackgroundMapEnd
-  SECTION: $0390-$054f ($01c0 bytes) ["cactus tiles"]
-           $0390 = CactusTiles
-           $0550 = CactusTilesEnd
-  SECTION: $0550-$065f ($0110 bytes) ["collision"]
-           $0550 = CollisionCheck
-           $055d = CollisionCheck.tryOtherY
-           $0565 = CollisionCheck.skip8x8Adjustment
-           $0571 = CollisionCheck.checkX
-           $057e = CollisionCheck.tryOtherX
-           $058b = CollisionCheck.collision
-           $058f = CollisionCheck.end
-           $0593 = CollisionUpdate
-           $05bb = CollisionUpdate.endPointBalloon
-           $05d5 = CollisionUpdate.checkEnemyHitPlayer
-           $05e5 = CollisionUpdate.endEnemy
-           $05ff = CollisionUpdate.checkEnemy2HitPlayer
-           $060f = CollisionUpdate.endEnemy2
-           $0616 = CollisionUpdate.checkBirdHitPlayer
-           $0627 = CollisionUpdate.endBird
-           $0628 = CollisionUpdate.collisionWithPlayer
-           $0632 = CollisionUpdate.end
-           $0632 = CollisionUpdate.endEnemyHitPlayer
-           $0633 = OffScreenRight
-           $063b = OffScreenRight.end
-           $063d = OffScreenLeft
-           $0644 = OffScreenLeft.end
-           $0647 = OffScreenBottom
-           $0651 = OffScreenBottom.end
-           $0653 = OffScreenTop
-           $065d = OffScreenTop.end
-  SECTION: $0660-$076f ($0110 bytes) ["window tiles"]
-           $0660 = WindowTiles
-           $0770 = WindowTilesEnd
-  SECTION: $0770-$07e2 ($0073 bytes) ["joypad"]
-           $0770 = ReadInput
-           $07a0 = JOY_RIGHT
-           $07a8 = JOY_LEFT
-           $07b0 = JOY_UP
-           $07b8 = JOY_DOWN
-           $07c0 = JOY_A
-           $07c8 = JOY_B
-           $07d0 = JOY_SELECT
-           $07d8 = JOY_START
-           $07e0 = JOY_FALSE
-  SECTION: $07e3-$0844 ($0062 bytes) ["rom"]
-           $07e3 = START
-           $0820 = GAMELOOP
-           $0842 = GAMELOOP.END
-  SECTION: $0845-$08a4 ($0060 bytes) ["background tiles"]
-           $0845 = BackgroundTiles
-           $08a5 = BackgroundTilesEnd
-  SECTION: $08a5-$08ba ($0016 bytes) ["general initialization"]
-           $08a5 = InitializeGameVars
-  SECTION: $08bb-$08ce ($0014 bytes) ["window map"]
-           $08bb = WindowMap
-           $08cf = WindowMapEnd
-    SLACK: $373a bytes
+  SECTION: $0150-$0a8f ($0940 bytes) ["menu tiles"]
+           $0150 = MenuTiles
+           $0a90 = MenuTilesEnd
+  SECTION: $0a90-$0e8f ($0400 bytes) ["menu map"]
+           $0a90 = MenuMap
+           $0e90 = MenuMapEnd
+  SECTION: $0e90-$10cf ($0240 bytes) ["background map"]
+           $0e90 = BackgroundMap
+           $10d0 = BackgroundMapEnd
+  SECTION: $10d0-$128f ($01c0 bytes) ["cactus tiles"]
+           $10d0 = CactusTiles
+           $1290 = CactusTilesEnd
+  SECTION: $1290-$139f ($0110 bytes) ["collision"]
+           $1290 = CollisionCheck
+           $129d = CollisionCheck.tryOtherY
+           $12a5 = CollisionCheck.skip8x8Adjustment
+           $12b1 = CollisionCheck.checkX
+           $12be = CollisionCheck.tryOtherX
+           $12cb = CollisionCheck.collision
+           $12cf = CollisionCheck.end
+           $12d3 = CollisionUpdate
+           $12fb = CollisionUpdate.endPointBalloon
+           $1315 = CollisionUpdate.checkEnemyHitPlayer
+           $1325 = CollisionUpdate.endEnemy
+           $133f = CollisionUpdate.checkEnemy2HitPlayer
+           $134f = CollisionUpdate.endEnemy2
+           $1356 = CollisionUpdate.checkBirdHitPlayer
+           $1367 = CollisionUpdate.endBird
+           $1368 = CollisionUpdate.collisionWithPlayer
+           $1372 = CollisionUpdate.end
+           $1372 = CollisionUpdate.endEnemyHitPlayer
+           $1373 = OffScreenRight
+           $137b = OffScreenRight.end
+           $137d = OffScreenLeft
+           $1384 = OffScreenLeft.end
+           $1387 = OffScreenBottom
+           $1391 = OffScreenBottom.end
+           $1393 = OffScreenTop
+           $139d = OffScreenTop.end
+  SECTION: $13a0-$14af ($0110 bytes) ["window tiles"]
+           $13a0 = WindowTiles
+           $14b0 = WindowTilesEnd
+  SECTION: $14b0-$156f ($00c0 bytes) ["menu tiles letters"]
+           $14b0 = MenuTilesLetters
+           $1570 = MenuTilesLettersEnd
+  SECTION: $1570-$1600 ($0091 bytes) ["graphics"]
+           $1570 = LoadGameData
+           $15ad = SetupPalettes
+           $15b8 = RefreshScore
+           $15f6 = RefreshLives
+  SECTION: $1601-$1673 ($0073 bytes) ["joypad"]
+           $1601 = ReadInput
+           $1631 = JOY_RIGHT
+           $1639 = JOY_LEFT
+           $1641 = JOY_UP
+           $1649 = JOY_DOWN
+           $1651 = JOY_A
+           $1659 = JOY_B
+           $1661 = JOY_SELECT
+           $1669 = JOY_START
+           $1671 = JOY_FALSE
+  SECTION: $1674-$16d3 ($0060 bytes) ["background tiles"]
+           $1674 = BackgroundTiles
+           $16d4 = BackgroundTilesEnd
+  SECTION: $16d4-$16ef ($001c bytes) ["OAM DMA routine"]
+           $16d4 = CopyDMARoutine
+           $16db = CopyDMARoutine.copy
+           $16e2 = DMARoutine
+           $16e6 = DMARoutine.wait
+           $16ea = DMARoutineEnd
+           $16ea = OAMDMA
+  SECTION: $16f0-$1705 ($0016 bytes) ["general initialization"]
+           $16f0 = InitializeGameVars
+  SECTION: $1706-$1719 ($0014 bytes) ["window map"]
+           $1706 = WindowMap
+           $171a = WindowMapEnd
+    SLACK: $28f4 bytes
 
 ROMX bank #1:
   SECTION: $4000-$43a8 ($03a9 bytes) ["player"]
@@ -281,45 +293,46 @@ ROMX bank #1:
            $4aee = PlayMusic
            $4aee = Song1
            $4aee = PlayMusic.end
-  SECTION: $4aef-$4b2e ($0040 bytes) ["lcd"]
+  SECTION: $4aef-$4b33 ($0045 bytes) ["lcd"]
            $4aef = LCD_OFF
            $4af4 = LCD_ON
-           $4af9 = WaitVBlank
-           $4afc = WaitVBlank.loop
-           $4b04 = WaitVBlank.skipSpriteReset
-           $4b0a = WaitVBlank.skipSpriteSet
-           $4b0d = ClearMap
-           $4b14 = ClearMap.clear_map_loop
-           $4b26 = SetupWindow
-  SECTION: $4b2f-$4b64 ($0036 bytes) ["math"]
-           $4b2f = MODULO
-           $4b31 = MODULO.loop
-           $4b36 = RANDOM
-           $4b3f = DIVISION
-           $4b45 = DIVISION.loop
-           $4b4a = DIVISION.end
-           $4b4d = ToBCD
-           $4b63 = ToBCD.end
-  SECTION: $4b65-$4b8a ($0026 bytes) ["memory"]
-           $4b65 = MEMCPY.memcpy_loop
-           $4b65 = MEMCPY
-           $4b69 = MEMCPY.memcpy_check_limit
-           $4b6f = ClearOAM
-           $4b75 = ClearOAM.clear_oam_loop
-           $4b7d = ClearRAM
-           $4b83 = ClearRAM.clear_ram_loop
-  SECTION: $4b8b-$4ba8 ($001e bytes) ["enemy manager"]
-           $4b8b = SpawnEnemyf
-           $4b8c = GameManager
-           $4b9f = GameManager.levelThree
-           $4ba2 = GameManager.levelTwo
-           $4ba5 = GameManager.levelOne
-           $4ba8 = GameManager.end
-  SECTION: $4ba9-$4bc5 ($001d bytes) ["game"]
-           $4ba9 = TryToUnpause
-           $4bbd = TryToUnpause.end
-           $4bbe = UpdateGlobalTimer
-    SLACK: $343a bytes
+           $4af9 = LCD_ON_BG_ONLY
+           $4afe = WaitVBlank
+           $4b01 = WaitVBlank.loop
+           $4b09 = WaitVBlank.skipSpriteReset
+           $4b0f = WaitVBlank.skipSpriteSet
+           $4b12 = ClearMap
+           $4b19 = ClearMap.clear_map_loop
+           $4b2b = SetupWindow
+  SECTION: $4b34-$4b69 ($0036 bytes) ["math"]
+           $4b34 = MODULO
+           $4b36 = MODULO.loop
+           $4b3b = RANDOM
+           $4b44 = DIVISION
+           $4b4a = DIVISION.loop
+           $4b4f = DIVISION.end
+           $4b52 = ToBCD
+           $4b68 = ToBCD.end
+  SECTION: $4b6a-$4b8f ($0026 bytes) ["memory"]
+           $4b6a = MEMCPY.memcpy_loop
+           $4b6a = MEMCPY
+           $4b6e = MEMCPY.memcpy_check_limit
+           $4b74 = ClearOAM
+           $4b7a = ClearOAM.clear_oam_loop
+           $4b82 = ClearRAM
+           $4b88 = ClearRAM.clear_ram_loop
+  SECTION: $4b90-$4bad ($001e bytes) ["enemy manager"]
+           $4b90 = SpawnEnemyf
+           $4b91 = GameManager
+           $4ba4 = GameManager.levelThree
+           $4ba7 = GameManager.levelTwo
+           $4baa = GameManager.levelOne
+           $4bad = GameManager.end
+  SECTION: $4bae-$4bca ($001d bytes) ["game"]
+           $4bae = TryToUnpause
+           $4bc2 = TryToUnpause.end
+           $4bc3 = UpdateGlobalTimer
+    SLACK: $3435 bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c03f ($0040 bytes) ["RAM vars"]
@@ -402,7 +415,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $08c6 bytes in 1 bank
-    ROMX: $0bc6 bytes in 1 bank
+    ROM0: $170c bytes in 1 bank
+    ROMX: $0bcb bytes in 1 bank
     WRAM0: $0084 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

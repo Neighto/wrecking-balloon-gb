@@ -13,6 +13,11 @@ LCD_ON::
     ld [rLCDC], a
     ret
 
+LCD_ON_BG_ONLY::
+    ld a, LCDCF_ON | LCDCF_BGON
+    ld [rLCDC], a
+    ret
+
 ; Wait for the display to finish updating
 WaitVBlank::
     ld hl, rLCDC
