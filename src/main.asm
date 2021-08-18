@@ -7,6 +7,45 @@ START::
 	di
 	ld sp, $FFFE
 
+	call WaitVBlank
+	call LCD_OFF
+
+	call SetupPalettes
+
+	call ClearMap
+	call ClearOAM
+	call ClearRAM
+
+	; Copy the menu tiles
+	ld bc, MenuTiles
+	ld hl, $9000
+	ld de, MenuTilesEnd - MenuTiles
+	call MEMCPY
+	ld bc, MenuTilesLetters
+	ld hl, $8800
+	ld de, MenuTilesLettersEnd - MenuTilesLetters
+	call MEMCPY
+
+	; Copy the menu tilemap
+	ld bc, MenuMap
+	ld hl, $9800
+	ld de, MenuMapEnd - MenuMap
+	call MEMCPY
+
+	call LCD_ON_BG_ONLY
+
+MENULOOP:
+	call WaitVBlank
+	call UpdateGlobalTimer
+	; call OAMDMA
+.END:
+	jp MENULOOP
+
+
+STARTGAME::
+	di
+	ld sp, $FFFE
+
 	; ld a, IEF_VBLANK | IEF_STAT ; Enable Vblank and LCD Interrupt
 	; ld [rIE], a
 
