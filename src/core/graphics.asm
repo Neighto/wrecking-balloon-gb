@@ -57,12 +57,12 @@ LoadGameData::
 	call MEMCPY
 	; Copy the tilemap
 	ld bc, BackgroundMap
-	ld hl, $9800
+	ld hl, _SCRN0
 	ld de, BackgroundMapEnd - BackgroundMap
 	call MEMCPY
 	; ; Copy the window
 	ld bc, WindowMap
-	ld hl, $9C00
+	ld hl, _SCRN1
 	ld de, WindowMapEnd - WindowMap
 	call MEMCPY
 	ret

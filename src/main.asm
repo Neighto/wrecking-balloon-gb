@@ -32,15 +32,27 @@ START::
 	ld de, MenuMapEnd - MenuMap
 	call MEMCPY
 
+	call CopyDMARoutine
+
 	call LCD_ON_BG_ONLY
 
 MENULOOP:
 	call WaitVBlank
 	call UpdateGlobalTimer
-	; call OAMDMA
+	call OAMDMA
+	; Menu Controls :: MOVE!
+	call ReadInput	
+.moveSelected:
+	ld a, [joypad_down]
+	call JOY_SELECT
+	jr z, .selectMode
+	;move
+.selectMode:
+	ld a, [joypad_down]
+	call JOY_START
+	jp nz, STARTGAME
 .END:
 	jp MENULOOP
-
 
 STARTGAME::
 	di
@@ -59,6 +71,7 @@ STARTGAME::
 	call ClearMap
 	call ClearOAM
 	call ClearRAM
+	call ClearAllTiles
 
 	call SetupWindow
 	call InitializeGameVars
@@ -71,7 +84,7 @@ STARTGAME::
 	call InitializeEnemy2
 	call InitializeBird
 	call RefreshLives
-	call CopyDMARoutine
+	; call CopyDMARoutine
 	call PlayMusic
 
 	call LCD_ON

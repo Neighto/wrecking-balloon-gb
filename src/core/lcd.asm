@@ -34,6 +34,30 @@ WaitVBlank::
     jr nz, .loop
     ret
 
+    ; MOVE ME
+ResetInRange::
+    ; argument hl is starting address
+    ; argument bc is distance
+    xor a ; ld a, 0
+    ld [hli], a
+    dec bc
+    ld a, b
+    or c
+    jr nz, ResetInRange
+    ret
+
+ClearAllTiles::
+    ld hl, _VRAM8000
+    ld bc, _VRAM8800 - _VRAM8000
+    call ResetInRange
+    ld hl, _VRAM8800
+    ld bc, _VRAM9000 - _VRAM8800
+    call ResetInRange
+    ld hl, _VRAM9000
+    ld bc, _SCRN0 - _VRAM9000
+    call ResetInRange
+    ret
+
 ClearMap::
     ld hl, _SCRN0
     ld bc, $400
