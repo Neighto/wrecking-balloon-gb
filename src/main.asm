@@ -32,6 +32,7 @@ START::
 	ld de, MenuMapEnd - MenuMap
 	call MEMCPY
 
+	call SpawnMenuCursor
 	call CopyDMARoutine
 
 	call LCD_ON_BG_ONLY

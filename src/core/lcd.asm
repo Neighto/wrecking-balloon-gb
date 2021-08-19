@@ -34,18 +34,6 @@ WaitVBlank::
     jr nz, .loop
     ret
 
-    ; MOVE ME
-ResetInRange::
-    ; argument hl is starting address
-    ; argument bc is distance
-    xor a ; ld a, 0
-    ld [hli], a
-    dec bc
-    ld a, b
-    or c
-    jr nz, ResetInRange
-    ret
-
 ClearAllTiles::
     ld hl, _VRAM8000
     ld bc, _VRAM8800 - _VRAM8000
