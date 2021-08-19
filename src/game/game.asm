@@ -1,5 +1,26 @@
 SECTION "game", ROMX
 
+MoveMenu::
+	ld a, [global_timer] ; if we even need a delay
+	and $00000011
+	jr nz, .end
+	; Is paused
+	call ReadInput	
+.moveSelected:
+	ld a, [joypad_down]
+	call JOY_SELECT
+	jr z, .selectMode
+	
+	;move
+.selectMode:
+	ld a, [joypad_down]
+	call JOY_START
+	jr z, .end
+	call STARTGAME
+	;select game
+.end:
+	ret
+
 TryToUnpause::
 	xor a ; ld a, 0
 	ld hl, paused_game
