@@ -70,42 +70,42 @@ ROM0 bank #0:
   SECTION: $13a0-$14af ($0110 bytes) ["window tiles"]
            $13a0 = WindowTiles
            $14b0 = WindowTilesEnd
-  SECTION: $14b0-$1574 ($00c5 bytes) ["rom"]
+  SECTION: $14b0-$157e ($00cf bytes) ["rom"]
            $14b0 = START
-           $14f3 = MENULOOP
-           $14ff = MENULOOP.moveSelected
-           $1507 = MENULOOP.selectMode
-           $1510 = MENULOOP.END
-           $1513 = STARTGAME
-           $1550 = GAMELOOP
-           $1572 = GAMELOOP.END
-  SECTION: $1575-$1634 ($00c0 bytes) ["menu tiles letters"]
-           $1575 = MenuTilesLetters
-           $1635 = MenuTilesLettersEnd
-  SECTION: $1635-$16a7 ($0073 bytes) ["joypad"]
-           $1635 = ReadInput
-           $1665 = JOY_RIGHT
-           $166d = JOY_LEFT
-           $1675 = JOY_UP
-           $167d = JOY_DOWN
-           $1685 = JOY_A
-           $168d = JOY_B
-           $1695 = JOY_SELECT
-           $169d = JOY_START
-           $16a5 = JOY_FALSE
-  SECTION: $16a8-$1707 ($0060 bytes) ["background tiles"]
-           $16a8 = BackgroundTiles
-           $1708 = BackgroundTilesEnd
-  SECTION: $1708-$171d ($0016 bytes) ["general initialization"]
-           $1708 = InitializeGameVars
-  SECTION: $171e-$1731 ($0014 bytes) ["window map"]
-           $171e = WindowMap
-           $1732 = WindowMapEnd
-  SECTION: $1732-$1741 ($0010 bytes) ["tools"]
-           $1732 = IncrementPosition
-           $1735 = DecrementPosition
-           $173a = ResetInRange
-    SLACK: $28cf bytes
+           $14f6 = MENULOOP
+           $1509 = MENULOOP.moveSelected
+           $1514 = MENULOOP.selectMode
+           $151d = MENULOOP.END
+           $1520 = STARTGAME
+           $155a = GAMELOOP
+           $157c = GAMELOOP.END
+  SECTION: $157f-$163e ($00c0 bytes) ["menu tiles letters"]
+           $157f = MenuTilesLetters
+           $163f = MenuTilesLettersEnd
+  SECTION: $163f-$16b1 ($0073 bytes) ["joypad"]
+           $163f = ReadInput
+           $166f = JOY_RIGHT
+           $1677 = JOY_LEFT
+           $167f = JOY_UP
+           $1687 = JOY_DOWN
+           $168f = JOY_A
+           $1697 = JOY_B
+           $169f = JOY_SELECT
+           $16a7 = JOY_START
+           $16af = JOY_FALSE
+  SECTION: $16b2-$1711 ($0060 bytes) ["background tiles"]
+           $16b2 = BackgroundTiles
+           $1712 = BackgroundTilesEnd
+  SECTION: $1712-$172a ($0019 bytes) ["general initialization"]
+           $1712 = InitializeGameVars
+  SECTION: $172b-$173e ($0014 bytes) ["window map"]
+           $172b = WindowMap
+           $173f = WindowMapEnd
+  SECTION: $173f-$174e ($0010 bytes) ["tools"]
+           $173f = IncrementPosition
+           $1742 = DecrementPosition
+           $1747 = ResetInRange
+    SLACK: $28c2 bytes
 
 ROMX bank #1:
   SECTION: $4000-$43a8 ($03a9 bytes) ["player"]
@@ -308,99 +308,106 @@ ROMX bank #1:
            $4b2e = ClearMap
            $4b35 = ClearMap.clear_map_loop
            $4b47 = SetupWindow
-  SECTION: $4b50-$4b85 ($0036 bytes) ["math"]
-           $4b50 = MODULO
-           $4b52 = MODULO.loop
-           $4b57 = RANDOM
-           $4b60 = DIVISION
-           $4b66 = DIVISION.loop
-           $4b6b = DIVISION.end
-           $4b6e = ToBCD
-           $4b84 = ToBCD.end
-  SECTION: $4b86-$4bb1 ($002c bytes) ["game"]
-           $4b86 = SpawnMenuCursor
-           $4b95 = TryToUnpause
-           $4ba9 = TryToUnpause.end
-           $4baa = UpdateGlobalTimer
-  SECTION: $4bb2-$4bcf ($001e bytes) ["memory"]
-           $4bb2 = MEMCPY.memcpy_loop
-           $4bb2 = MEMCPY
-           $4bb6 = MEMCPY.memcpy_check_limit
-           $4bbc = ClearOAM
-           $4bc6 = ClearRAM
-  SECTION: $4bd0-$4bed ($001e bytes) ["enemy manager"]
-           $4bd0 = SpawnEnemyf
-           $4bd1 = GameManager
-           $4be4 = GameManager.levelThree
-           $4be7 = GameManager.levelTwo
-           $4bea = GameManager.levelOne
-           $4bed = GameManager.end
-    SLACK: $3412 bytes
+  SECTION: $4b50-$4ba3 ($0054 bytes) ["game"]
+           $4b50 = SpawnMenuCursor
+           $4b5f = MoveCursor
+           $4b6f = MoveCursor.classicMode
+           $4b75 = MoveCursor.storyMode
+           $4b7b = SelectMode
+           $4b82 = SelectMode.classicMode
+           $4b86 = SelectMode.storyMode
+           $4b87 = TryToUnpause
+           $4b9b = TryToUnpause.end
+           $4b9c = UpdateGlobalTimer
+  SECTION: $4ba4-$4bd9 ($0036 bytes) ["math"]
+           $4ba4 = MODULO
+           $4ba6 = MODULO.loop
+           $4bab = RANDOM
+           $4bb4 = DIVISION
+           $4bba = DIVISION.loop
+           $4bbf = DIVISION.end
+           $4bc2 = ToBCD
+           $4bd8 = ToBCD.end
+  SECTION: $4bda-$4bf7 ($001e bytes) ["memory"]
+           $4bda = MEMCPY.memcpy_loop
+           $4bda = MEMCPY
+           $4bde = MEMCPY.memcpy_check_limit
+           $4be4 = ClearOAM
+           $4bee = ClearRAM
+  SECTION: $4bf8-$4c15 ($001e bytes) ["enemy manager"]
+           $4bf8 = SpawnEnemyf
+           $4bf9 = GameManager
+           $4c0c = GameManager.levelThree
+           $4c0f = GameManager.levelTwo
+           $4c12 = GameManager.levelOne
+           $4c15 = GameManager.end
+    SLACK: $33ea bytes
 
 WRAM0 bank #0:
-  SECTION: $c000-$c03f ($0040 bytes) ["RAM vars"]
+  SECTION: $c000-$c040 ($0041 bytes) ["RAM vars"]
            $c000 = score
            $c003 = global_timer
            $c004 = joypad_down
            $c005 = joypad_pressed
            $c006 = paused_game
            $c007 = difficulty_level
-           $c008 = song_timer
-           $c009 = song_index
-           $c00a = player_x
-           $c00b = player_y
-           $c00c = player_cactus_x
-           $c00d = player_cactus_y
-           $c00e = player_alive
-           $c00f = player_popping
-           $c010 = player_popping_frame
-           $c011 = player_falling
-           $c012 = player_fall_speed
-           $c013 = player_falling_timer
-           $c014 = player_pop_timer
-           $c015 = player_delay_falling_timer
-           $c016 = player_respawn_timer
-           $c017 = player_speed
-           $c018 = player_lives
-           $c019 = player_invincible
-           $c01a = point_balloon_x
-           $c01b = point_balloon_y
-           $c01c = point_balloon_alive
-           $c01d = point_balloon_popping
-           $c01e = point_balloon_popping_frame
-           $c01f = point_balloon_pop_timer
-           $c020 = point_balloon_respawn_timer
-           $c021 = enemy_balloon_x
-           $c022 = enemy_balloon_y
-           $c023 = enemy_cactus_x
-           $c024 = enemy_cactus_y
-           $c025 = enemy_alive
-           $c026 = enemy_popping
-           $c027 = enemy_popping_frame
-           $c028 = enemy_falling
-           $c029 = enemy_fall_speed
-           $c02a = enemy_falling_timer
-           $c02b = enemy_pop_timer
-           $c02c = enemy_delay_falling_timer
-           $c02d = enemy_respawn_timer
-           $c02e = enemy2_balloon_x
-           $c02f = enemy2_balloon_y
-           $c030 = enemy2_cactus_x
-           $c031 = enemy2_cactus_y
-           $c032 = enemy2_alive
-           $c033 = enemy2_popping
-           $c034 = enemy2_popping_frame
-           $c035 = enemy2_falling
-           $c036 = enemy2_fall_speed
-           $c037 = enemy2_falling_timer
-           $c038 = enemy2_pop_timer
-           $c039 = enemy2_delay_falling_timer
-           $c03a = enemy2_respawn_timer
-           $c03b = bird_x
-           $c03c = bird_y
-           $c03d = bird_flapping_frame
-           $c03e = bird_respawn_timer
-           $c03f = bird_alive
+           $c008 = selected_mode
+           $c009 = song_timer
+           $c00a = song_index
+           $c00b = player_x
+           $c00c = player_y
+           $c00d = player_cactus_x
+           $c00e = player_cactus_y
+           $c00f = player_alive
+           $c010 = player_popping
+           $c011 = player_popping_frame
+           $c012 = player_falling
+           $c013 = player_fall_speed
+           $c014 = player_falling_timer
+           $c015 = player_pop_timer
+           $c016 = player_delay_falling_timer
+           $c017 = player_respawn_timer
+           $c018 = player_speed
+           $c019 = player_lives
+           $c01a = player_invincible
+           $c01b = point_balloon_x
+           $c01c = point_balloon_y
+           $c01d = point_balloon_alive
+           $c01e = point_balloon_popping
+           $c01f = point_balloon_popping_frame
+           $c020 = point_balloon_pop_timer
+           $c021 = point_balloon_respawn_timer
+           $c022 = enemy_balloon_x
+           $c023 = enemy_balloon_y
+           $c024 = enemy_cactus_x
+           $c025 = enemy_cactus_y
+           $c026 = enemy_alive
+           $c027 = enemy_popping
+           $c028 = enemy_popping_frame
+           $c029 = enemy_falling
+           $c02a = enemy_fall_speed
+           $c02b = enemy_falling_timer
+           $c02c = enemy_pop_timer
+           $c02d = enemy_delay_falling_timer
+           $c02e = enemy_respawn_timer
+           $c02f = enemy2_balloon_x
+           $c030 = enemy2_balloon_y
+           $c031 = enemy2_cactus_x
+           $c032 = enemy2_cactus_y
+           $c033 = enemy2_alive
+           $c034 = enemy2_popping
+           $c035 = enemy2_popping_frame
+           $c036 = enemy2_falling
+           $c037 = enemy2_fall_speed
+           $c038 = enemy2_falling_timer
+           $c039 = enemy2_pop_timer
+           $c03a = enemy2_delay_falling_timer
+           $c03b = enemy2_respawn_timer
+           $c03c = bird_x
+           $c03d = bird_y
+           $c03e = bird_flapping_frame
+           $c03f = bird_respawn_timer
+           $c040 = bird_alive
   SECTION: $c100-$c143 ($0044 bytes) ["OAM vars"]
            $c100 = player_cactus
            $c108 = player_balloon
@@ -410,7 +417,7 @@ WRAM0 bank #0:
            $c128 = enemy2_cactus
            $c130 = enemy2_balloon
            $c138 = bird
-    SLACK: $0f7c bytes
+    SLACK: $0f7b bytes
 
 HRAM bank #0:
   SECTION: $ff80-$ff87 ($0008 bytes) ["OAM DMA"]
@@ -418,7 +425,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $1731 bytes in 1 bank
-    ROMX: $0bee bytes in 1 bank
-    WRAM0: $0084 bytes in 1 bank
+    ROM0: $173e bytes in 1 bank
+    ROMX: $0c16 bytes in 1 bank
+    WRAM0: $0085 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
