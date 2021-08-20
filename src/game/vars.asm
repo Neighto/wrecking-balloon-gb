@@ -5,6 +5,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	joypad_pressed:: DB
 	paused_game:: DB
 	difficulty_level:: DB
+	selected_mode:: DB
 
 	song_timer:: DB
 	song_index:: DB
@@ -80,6 +81,7 @@ InitializeGameVars::
   	ld [player_invincible], a
 	ld [song_timer], a
 	ld [song_index], a
+	ld [selected_mode], a
 
 	ld a, 2
 	ld [player_lives], a

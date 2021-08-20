@@ -32,6 +32,7 @@ START::
 	ld de, MenuMapEnd - MenuMap
 	call MEMCPY
 
+	call InitializeGameVars
 	call SpawnMenuCursor
 	call CopyDMARoutine
 
@@ -41,17 +42,20 @@ MENULOOP:
 	call WaitVBlank
 	call UpdateGlobalTimer
 	call OAMDMA
-	; Menu Controls :: MOVE!
+	; Menu Controls TODO move logic elsewhere 
+	ld a, [global_timer]
+	and %00000011
+	jr nz, .END
 	call ReadInput	
 .moveSelected:
-	ld a, [joypad_down]
+	ld a, [joypad_pressed]
 	call JOY_SELECT
 	jr z, .selectMode
-	;move
+	call MoveCursor
 .selectMode:
 	ld a, [joypad_down]
 	call JOY_START
-	jp nz, STARTGAME
+	call nz, SelectMode
 .END:
 	jp MENULOOP
 
@@ -75,7 +79,7 @@ STARTGAME::
 	call ClearAllTiles
 
 	call SetupWindow
-	call InitializeGameVars
+	; call InitializeGameVars
 	call InitializeScore
 
 	call LoadGameData

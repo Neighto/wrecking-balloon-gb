@@ -1,3 +1,5 @@
+INCLUDE "constants.inc"
+
 SECTION "game", ROMX
 
 SpawnMenuCursor::
@@ -9,6 +11,34 @@ SpawnMenuCursor::
 	ld [hl], $8B
 	inc l
 	ld [hl], %00000000
+	ret
+
+MoveCursor::
+	ld a, [selected_mode]
+	inc a
+	ld d, MENU_MODES
+	call MODULO
+	ld [selected_mode], a
+	cp a, 0
+	jr nz, .storyMode
+.classicMode:
+	ld a, 104
+	ld [player_cactus], a
+	ret
+.storyMode:
+	ld a, 112
+	ld [player_cactus], a
+	ret
+
+SelectMode::
+	ld a, [selected_mode]
+	cp a, 0
+	jr nz, .storyMode
+.classicMode:
+	call STARTGAME
+	ret
+.storyMode:
+	; Empty for now
 	ret
 
 TryToUnpause::
