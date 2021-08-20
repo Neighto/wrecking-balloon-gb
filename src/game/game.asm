@@ -13,7 +13,8 @@ SpawnMenuCursor::
 	ld [hl], %00000000
 	ret
 
-MoveCursor::
+MoveCursor:
+	call CollectSound
 	ld a, [selected_mode]
 	inc a
 	ld d, MENU_MODES
@@ -30,15 +31,31 @@ MoveCursor::
 	ld [player_cactus], a
 	ret
 
-SelectMode::
+SelectMode:
 	ld a, [selected_mode]
 	cp a, 0
 	jr nz, .storyMode
 .classicMode:
-	call STARTGAME
+	call STARTCLASSIC
 	ret
 .storyMode:
-	; Empty for now
+	; call STARTSTORY
+	ret
+
+MenuInput::
+	ld a, [global_timer]
+	and %00000011
+	jr nz, .end
+	call ReadInput	
+.moveSelected:
+	ld a, [joypad_pressed]
+	call JOY_SELECT
+	call nz, MoveCursor
+.selectMode:
+	ld a, [joypad_down]
+	call JOY_START
+	call nz, SelectMode
+.end:
 	ret
 
 TryToUnpause::

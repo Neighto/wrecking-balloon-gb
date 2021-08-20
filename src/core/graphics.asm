@@ -42,12 +42,12 @@ SECTION "graphics", ROM0
 LoadGameData::
 	; Copy the sprite tiles
 	ld bc, CactusTiles
-	ld hl, $8800
+	ld hl, _VRAM8800
 	ld de, CactusTilesEnd - CactusTiles
 	call MEMCPY
  	; Copy the background tiles
 	ld bc, BackgroundTiles
-	ld hl, $9000
+	ld hl, _VRAM9000
 	ld de, BackgroundTilesEnd - BackgroundTiles
 	call MEMCPY
 	; Copy the window tiles
@@ -64,6 +64,21 @@ LoadGameData::
 	ld bc, WindowMap
 	ld hl, _SCRN1
 	ld de, WindowMapEnd - WindowMap
+	call MEMCPY
+	ret
+
+LoadMenuData::
+	ld bc, MenuTiles
+	ld hl, _VRAM9000
+	ld de, MenuTilesEnd - MenuTiles
+	call MEMCPY
+	ld bc, MenuTilesLetters
+	ld hl, _VRAM8800
+	ld de, MenuTilesLettersEnd - MenuTilesLetters
+	call MEMCPY
+	ld bc, MenuMap
+	ld hl, _SCRN0
+	ld de, MenuMapEnd - MenuMap
 	call MEMCPY
 	ret
 
