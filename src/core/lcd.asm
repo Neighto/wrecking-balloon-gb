@@ -85,3 +85,9 @@ VBlankHScroll::
 .end:
     pop af
     ret
+
+ResetScroll::
+    xor a ; ld a, 0
+    ldh [rSCX], a
+    ldh [rSCY], a
+    ret
