@@ -512,12 +512,8 @@ CactusFalling:
   ret
 
 NoMoreLives:
-  ; Reset lives
-  ld a, 2
-  ld [player_lives], a
-  call RefreshLives
-  ; Reset score
-  call InitializeScore
+  ; Back to menu
+  call START
   ret
 
 PlayerUpdate::
@@ -544,7 +540,7 @@ PlayerUpdate::
   ld a, [player_lives]
   or a, 0
   jr nz, .respawn
-  call NoMoreLives ; Probably not respawn after in the future!
+  call NoMoreLives
 .respawn:
   call SpawnPlayer
 .respawnSkip:
