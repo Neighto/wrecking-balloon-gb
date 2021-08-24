@@ -512,6 +512,7 @@ CactusFalling:
   ret
 
 NoMoreLives:
+  call StopFallingSound
   ; Back to menu
   call START
   ret
