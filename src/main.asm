@@ -21,7 +21,7 @@ START::
 	call SpawnMenuCursor
 	call LCD_ON_BG_ONLY
 MENULOOP:
-	call WaitVBlank
+	call WaitVBlankNoWindow
 	call UpdateGlobalTimer
 	call MenuBalloonUpdate
 	call MenuInput

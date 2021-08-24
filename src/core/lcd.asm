@@ -14,7 +14,7 @@ LCD_ON::
     ret
 
 LCD_ON_BG_ONLY::
-    ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJ16
+    ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJON | LCDCF_OBJ16
     ld [rLCDC], a
     ret
 
