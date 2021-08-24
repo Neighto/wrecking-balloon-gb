@@ -68,13 +68,20 @@ LoadGameData::
 	ret
 
 LoadMenuData::
-	ld bc, MenuTiles
-	ld hl, _VRAM9000
-	ld de, MenuTilesEnd - MenuTiles
+	; For the menu we ONLY need point balloon, so this could be made way more efficient
+	; Also it would get bumped to the wrong address
+	ld bc, CactusTiles
+	ld hl, _VRAM8800+100
+	ld de, CactusTilesEnd - CactusTiles
 	call MEMCPY
-	ld bc, MenuTilesLetters
+
+	ld bc, MenuTitleTiles
+	ld hl, _VRAM9000
+	ld de, MenuTitleTilesEnd - MenuTitleTiles
+	call MEMCPY
+	ld bc, MenuTiles
 	ld hl, _VRAM8800
-	ld de, MenuTilesLettersEnd - MenuTilesLetters
+	ld de, MenuTilesEnd - MenuTiles
 	call MEMCPY
 	ld bc, MenuMap
 	ld hl, _SCRN0

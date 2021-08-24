@@ -8,7 +8,7 @@ SpawnMenuCursor::
 	ld [hli], a
 	ld a, 56 ; x
 	ld [hli], a
-	ld [hl], $8B
+	ld [hl], $8C
 	inc l
 	ld [hl], %00000000
 	ret

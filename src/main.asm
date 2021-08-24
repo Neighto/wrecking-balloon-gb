@@ -6,21 +6,24 @@ SECTION "rom", ROM0
 START::
 	di
 	ld sp, $FFFE
-	call WaitVBlank
+	call WaitVBlankNoWindow
 	call LCD_OFF
 	call ClearMap
 	call ClearOAM
 	call ClearRAM
+	call ClearAllTiles
 	call ResetScroll
 	call LoadMenuData
 	call SetupPalettes
 	call CopyDMARoutine
 	call InitializeGameVars
+	call InitializePointBalloon
 	call SpawnMenuCursor
 	call LCD_ON_BG_ONLY
 MENULOOP:
 	call WaitVBlank
 	call UpdateGlobalTimer
+	call MenuBalloonUpdate
 	call MenuInput
 	call OAMDMA
 .END:

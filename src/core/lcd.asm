@@ -14,7 +14,7 @@ LCD_ON::
     ret
 
 LCD_ON_BG_ONLY::
-    ld a, LCDCF_ON | LCDCF_BGON
+    ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJ16
     ld [rLCDC], a
     ret
 
@@ -32,6 +32,12 @@ WaitVBlank::
     set 1, [hl]
 .skipSpriteSet:
     jr nz, .loop
+    ret
+
+WaitVBlankNoWindow::
+    ld a, [rLY]
+    cp a, 144
+    jr nz, WaitVBlankNoWindow
     ret
 
 ClearAllTiles::

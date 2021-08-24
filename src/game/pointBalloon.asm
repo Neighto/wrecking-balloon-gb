@@ -75,11 +75,15 @@ InitializePointBalloon::
     ret
 
 SpawnPointBalloon:
+    ; argument b = render priority
+    ; argument c = point balloon tile
+    push af
     xor a ; ld a, 0
     ld [point_balloon_respawn_timer], a
     call InitializePointBalloon
     ld a, 1
     ld [point_balloon_alive], a
+.balloonLeft:
     ; Balloon left
     ld hl, point_balloon
     ld a, [point_balloon_y]
@@ -88,9 +92,15 @@ SpawnPointBalloon:
     ld a, [point_balloon_x]
     ld [hl], a
     inc l
-    ld [hl], $86
+    ld a, c
+    ld [hl], a
     inc l
     ld [hl], %00000000
+    ld a, b
+    cp a, 0
+    jr z, .balloonRight
+    set 7, [hl]
+.balloonRight:
     ; Balloon right
     ld hl, point_balloon+4
     ld a, [point_balloon_y]
@@ -100,9 +110,16 @@ SpawnPointBalloon:
     add 8
     ld [hl], a
     inc l
-    ld [hl], $86
+    ld a, c
+    ld [hl], a
     inc l
     ld [hl], %00100000
+    ld a, b
+    cp a, 0
+    jr z, .end
+    set 7, [hl]
+.end:
+    pop af
     ret
 
 FloatPointBalloonUp:
@@ -201,6 +218,8 @@ PointBalloonUpdate::
     ld [point_balloon_respawn_timer], a
     cp a, 150
     jr nz, .respawnSkip
+    ld b, 0
+    ld c, $86
     call SpawnPointBalloon
 .respawnSkip:
     ; Check if we need to play popping animation
@@ -208,7 +227,33 @@ PointBalloonUpdate::
     and 1
     jr z, .end
     call PopBalloonAnimation
-.end
+.end:
+    ret
+
+MenuBalloonUpdate::
+    ; Check if we can respawn
+    ld a, [point_balloon_alive]
+    and 1
+    jr z, .respawn
+    ; Check if we can move
+    ld a, [global_timer]
+    and	PB_SPRITE_MOVE_WAIT_TIME
+    jr nz, .end
+    call FloatPointBalloonUp
+    ; Check if we have flown too high
+    ld a, [point_balloon_y]
+    ld b, a
+    call OffScreenRight ; TODO: Should be OffScreenTop
+    and 1
+    jr z, .end
+    xor a ; ld a, 0
+    ld [point_balloon_alive], a
+    ret
+.respawn:
+	ld b, 1
+	ld c, $8E
+	call SpawnPointBalloon
+.end:
     ret
 
 DeathOfPointBalloon::
