@@ -55,26 +55,17 @@ UpdatePlayerPosition:
 InitializePlayer::
   ; Set variables
   xor a ; ld a, 0
-  ld hl, player_popping
-  ld [hl], a
-  ld hl, player_popping_frame
-  ld [hl], a
-  ld hl, player_pop_timer
-  ld [hl], a
-  ld hl, player_falling
-  ld [hl], a
-  ld hl, player_delay_falling_timer
-  ld [hl], a
-  ld hl, player_falling_timer
-  ld [hl], a
-  ld hl, player_respawn_timer
-  ld [hl], a
-  ; ld hl, player_invincible
-  ; ld [hl], a
-  ld hl, player_alive
-  ld [hl], 1
-  ld hl, player_fall_speed
-  ld [hl], 1
+  ld [player_popping], a
+  ld [player_popping_frame], a
+  ld [player_pop_timer], a
+  ld [player_falling], a
+  ld [player_delay_falling_timer], a
+  ld [player_falling_timer], a
+  ld [player_respawn_timer], a
+  ld [player_invincible], a
+  ld a, 1
+  ld [player_alive], a
+  ld [player_fall_speed], a
 
   ld hl, player_x
   ld [hl], PLAYER_START_X

@@ -251,7 +251,7 @@ MenuBalloonUpdate::
     ret
 .respawn:
 	ld b, 1
-	ld c, $8E
+	ld c, $82
 	call SpawnPointBalloon
 .end:
     ret

@@ -77,8 +77,6 @@ InitializeGameVars::
 	xor a
 	ld [paused_game], a
 	ld [difficulty_level], a
-	; Should be set in player, but need to separate inits from spawning!
-  	ld [player_invincible], a
 	ld [song_timer], a
 	ld [song_index], a
 	ld [selected_mode], a
