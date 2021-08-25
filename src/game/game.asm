@@ -8,7 +8,7 @@ SpawnMenuCursor::
 	ld [hli], a
 	ld a, 56 ; x
 	ld [hli], a
-	ld [hl], $8C
+	ld [hl], $80
 	inc l
 	ld [hl], %00000000
 	ret
@@ -27,7 +27,7 @@ MoveCursor:
 	ld [player_cactus], a
 	ret
 .storyMode:
-	ld a, 112
+	ld a, 120
 	ld [player_cactus], a
 	ret
 
