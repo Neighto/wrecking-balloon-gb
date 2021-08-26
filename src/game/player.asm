@@ -304,7 +304,7 @@ PlayerControls:
   ld a, [player_x]
   add 8
   ld b, a
-  call OffScreenRight
+  call OffScreenX
   and 1
   jr nz, .endRight
 	call MoveRight
@@ -317,7 +317,7 @@ PlayerControls:
   ld a, [player_x]
   sub 8
   ld b, a
-  call OffScreenLeft
+  call OffScreenX
   and 1
   jr nz, .endLeft
 	call MoveLeft
@@ -330,7 +330,7 @@ PlayerControls:
   ld a, [player_y]
   sub 16 ; unusual I have to do this??
   ld b, a
-  call OffScreenTop
+  call OffScreenY
   and 1
   jr nz, .endUp
 	call MoveUp
@@ -343,7 +343,7 @@ PlayerControls:
   ld a, [player_y]
   add 16
   ld b, a
-  call OffScreenBottom
+  call OffScreenY
   and 1
   jr nz, .endDown
 	call MoveDown

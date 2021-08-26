@@ -243,7 +243,7 @@ MenuBalloonUpdate::
     ; Check if we have flown too high
     ld a, [point_balloon_y]
     ld b, a
-    call OffScreenRight ; TODO: Should be OffScreenTop
+    call OffScreenYEnemies
     and 1
     jr z, .end
     xor a ; ld a, 0

@@ -43,7 +43,7 @@ ROM0 bank #0:
   SECTION: $0fd0-$118f ($01c0 bytes) ["cactus tiles"]
            $0fd0 = CactusTiles
            $1190 = CactusTilesEnd
-  SECTION: $1190-$12b2 ($0123 bytes) ["collision"]
+  SECTION: $1190-$12ae ($011f bytes) ["collision"]
            $1190 = CollisionCheck
            $119d = CollisionCheck.tryOtherY
            $11a5 = CollisionCheck.skip8x8Adjustment
@@ -64,50 +64,48 @@ ROM0 bank #0:
            $1272 = CollisionUpdate.endEnemyHitPlayer
            $1273 = OffScreenXEnemies
            $1284 = OffScreenXEnemies.end
-           $1286 = OffScreenRight
-           $128e = OffScreenRight.end
-           $1290 = OffScreenLeft
-           $1297 = OffScreenLeft.end
-           $129a = OffScreenBottom
-           $12a4 = OffScreenBottom.end
-           $12a6 = OffScreenTop
-           $12b0 = OffScreenTop.end
-  SECTION: $12b3-$13c2 ($0110 bytes) ["window tiles"]
-           $12b3 = WindowTiles
-           $13c3 = WindowTilesEnd
-  SECTION: $13c3-$1484 ($00c2 bytes) ["graphics"]
-           $13c3 = LoadGameData
-           $1400 = LoadMenuData
-           $1431 = SetupPalettes
-           $143c = RefreshScore
-           $147a = RefreshLives
-  SECTION: $1485-$14f7 ($0073 bytes) ["joypad"]
-           $1485 = ReadInput
-           $14b5 = JOY_RIGHT
-           $14bd = JOY_LEFT
-           $14c5 = JOY_UP
-           $14cd = JOY_DOWN
-           $14d5 = JOY_A
-           $14dd = JOY_B
-           $14e5 = JOY_SELECT
-           $14ed = JOY_START
-           $14f5 = JOY_FALSE
-  SECTION: $14f8-$1557 ($0060 bytes) ["background tiles"]
-           $14f8 = BackgroundTiles
-           $1558 = BackgroundTilesEnd
-  SECTION: $1558-$15a7 ($0050 bytes) ["menu tiles"]
-           $1558 = MenuTiles
-           $15a8 = MenuTilesEnd
-  SECTION: $15a8-$15bd ($0016 bytes) ["scroll"]
-           $15a8 = VBlankHScroll
-           $15b6 = VBlankHScroll.end
-           $15b8 = ResetScroll
-  SECTION: $15be-$15d3 ($0016 bytes) ["general initialization"]
-           $15be = InitializeGameVars
-  SECTION: $15d4-$15e7 ($0014 bytes) ["window map"]
-           $15d4 = WindowMap
-           $15e8 = WindowMapEnd
-    SLACK: $2a1f bytes
+           $1286 = OffScreenYEnemies
+           $1297 = OffScreenYEnemies.end
+           $1299 = OffScreenX
+           $12a1 = OffScreenX.end
+           $12a3 = OffScreenY
+           $12ad = OffScreenY.end
+  SECTION: $12af-$13be ($0110 bytes) ["window tiles"]
+           $12af = WindowTiles
+           $13bf = WindowTilesEnd
+  SECTION: $13bf-$1480 ($00c2 bytes) ["graphics"]
+           $13bf = LoadGameData
+           $13fc = LoadMenuData
+           $142d = SetupPalettes
+           $1438 = RefreshScore
+           $1476 = RefreshLives
+  SECTION: $1481-$14f3 ($0073 bytes) ["joypad"]
+           $1481 = ReadInput
+           $14b1 = JOY_RIGHT
+           $14b9 = JOY_LEFT
+           $14c1 = JOY_UP
+           $14c9 = JOY_DOWN
+           $14d1 = JOY_A
+           $14d9 = JOY_B
+           $14e1 = JOY_SELECT
+           $14e9 = JOY_START
+           $14f1 = JOY_FALSE
+  SECTION: $14f4-$1553 ($0060 bytes) ["background tiles"]
+           $14f4 = BackgroundTiles
+           $1554 = BackgroundTilesEnd
+  SECTION: $1554-$15a3 ($0050 bytes) ["menu tiles"]
+           $1554 = MenuTiles
+           $15a4 = MenuTilesEnd
+  SECTION: $15a4-$15b9 ($0016 bytes) ["scroll"]
+           $15a4 = VBlankHScroll
+           $15b2 = VBlankHScroll.end
+           $15b4 = ResetScroll
+  SECTION: $15ba-$15cf ($0016 bytes) ["general initialization"]
+           $15ba = InitializeGameVars
+  SECTION: $15d0-$15e3 ($0014 bytes) ["window map"]
+           $15d0 = WindowMap
+           $15e4 = WindowMapEnd
+    SLACK: $2a23 bytes
 
 ROMX bank #1:
   SECTION: $4000-$439d ($039e bytes) ["player"]
@@ -368,8 +366,8 @@ ROMX bank #1:
   SECTION: $4d12-$4d2f ($001e bytes) ["enemy manager"]
            $4d12 = SpawnEnemyf
            $4d13 = ClassicGameManager
-           $4d29 = ClassicGameManager.levelThree
-           $4d2c = ClassicGameManager.levelTwo
+           $4d26 = ClassicGameManager.levelThree
+           $4d29 = ClassicGameManager.levelTwo
            $4d2c = ClassicGameManager.levelOne
            $4d2f = ClassicGameManager.end
     SLACK: $32d0 bytes
@@ -457,7 +455,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $15e1 bytes in 1 bank
+    ROM0: $15dd bytes in 1 bank
     ROMX: $0d30 bytes in 1 bank
     WRAM0: $0086 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

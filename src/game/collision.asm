@@ -1,4 +1,5 @@
 INCLUDE "hardware.inc"
+INCLUDE "constants.inc"
 
 SECTION "collision", ROM0
 
@@ -197,7 +198,24 @@ OffScreenXEnemies::
     xor a ; ld a, 0
     ret
 
-OffScreenRight::
+OffScreenYEnemies::
+    ; b = x value to check
+    ; return a (1 = end of screen)
+    ld a, SCRN_Y
+    add OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr nc, .end
+    ld a, SCRN_VY
+    sub OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr c, .end
+    ld a, 1
+    ret
+.end:
+    xor a ; ld a, 0
+    ret
+
+OffScreenX::
     ; b = x value to check
     ; return a (1 = end of screen)
     ld a, SCRN_X
@@ -209,43 +227,15 @@ OffScreenRight::
     xor a ; ld a, 0
     ret
 
-OffScreenLeft::
-    ; b = x value to check
-    ; return a (1 = end of screen)
-    ld a, SCRN_X
-    cp a, b
-    jr c, .end
-    xor a ; ld a, 0
-    ; cp a, b
-    ; jr z, .end
-    ret
-.end:
-    ld a, 1
-    ret
-
-OffScreenBottom::
+OffScreenY::
     ; b = x value to check
     ; return a (1 = end of screen)
     ld a, SCRN_Y
-    sub 8 ; Space for the window layer
+    sub WINDOW_LAYER_HEIGHT
     cp a, b
     jr nc, .end
     ld a, 1
     ret
 .end:
     xor a ; ld a, 0
-    ret
-
-OffScreenTop::
-    ; b = x value to check
-    ; return a (1 = end of screen)
-    ld a, SCRN_Y
-    cp a, b
-    jr c, .end
-    xor a ; ld a, 0
-    cp a, b
-    jr z, .end
-    ret
-.end:
-    ld a, 1
     ret
