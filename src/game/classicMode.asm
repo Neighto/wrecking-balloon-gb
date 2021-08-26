@@ -6,7 +6,13 @@ SpawnEnemyf::
     ; if can spawn enemy1 // if can spawn enemy2
     ret
 
-GameManager::
+;; TODO: Make more difficult
+;; enemy cacti should move differently
+;; enemy cacti should shoot needles
+;; bird should come from different angles
+;; bigger point value balloons should come very fast
+
+ClassicGameManager::
     call PointBalloonUpdate
 
     ld a, [difficulty_level]
