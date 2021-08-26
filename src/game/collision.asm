@@ -2,6 +2,8 @@ INCLUDE "hardware.inc"
 
 SECTION "collision", ROM0
 
+OFF_SCREEN_ENEMY_BUFFER EQU 16
+
 CollisionCheck:
     ; bc = argument for target colliding with player cactus
     ; hl = argument for collider
@@ -176,6 +178,23 @@ CollisionUpdate::
     call DeathOfPlayer
 .endEnemyHitPlayer:
 .end:
+    ret
+
+OffScreenXEnemies::
+    ; b = x value to check
+    ; return a (1 = end of screen)
+    ld a, SCRN_X
+    add OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr nc, .end
+    ld a, SCRN_VX
+    sub OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr c, .end
+    ld a, 1
+    ret
+.end:
+    xor a ; ld a, 0
     ret
 
 OffScreenRight::

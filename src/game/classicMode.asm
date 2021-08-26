@@ -14,6 +14,7 @@ SpawnEnemyf::
 
 ClassicGameManager::
     call PointBalloonUpdate
+    call BirdUpdate
 
     ld a, [difficulty_level]
     cp a, 3
@@ -26,7 +27,7 @@ ClassicGameManager::
 .levelThree:
     call Enemy2Update
 .levelTwo:
-    call BirdUpdate
+    ; call BirdUpdate
 .levelOne:
 	call EnemyUpdate
 .end:

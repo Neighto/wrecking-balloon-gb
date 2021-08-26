@@ -248,42 +248,28 @@ BirdUpdate::
     jr z, .moveRight
 .moveLeft:
     call MoveBirdLeft
-    jr .moveEnd
+    jr .moveDown
 .moveRight:
     call MoveBirdRight
+.moveDown:
+    ld a, [global_timer]
+    and BIRD_SPRITE_FALLING_TIME
+    jr nz, .moveEnd
+    call MoveBirdDown
 .moveEnd:
     call BirdAnimate
     call UpdateBirdPosition
-    ld a, [global_timer]
-    and BIRD_SPRITE_FALLING_TIME
-    jr nz, .end
-    call MoveBirdDown
-    call UpdateBirdPosition ; Calling twice
-
-    ; Check if we have gone offscreen
-    ld a, [bird_spawn_right]
-    cp a, 0
-    jr z, .checkOffScreenRight
-    ; Spawned right, going offscreen left
+.checkOffscreen:
     ld a, [bird_x]
-    add 8
+    ; TODO: Might want to adjust x for if facing left / right
     ld b, a
-    call OffScreenLeft
+    call OffScreenXEnemies
     and 1
     jr z, .end
+.died:
     xor a ; ld a, 0
     ld [bird_alive], a
-    ret
-.checkOffScreenRight:
-    ; Spawned left, going offscreen right
-    ld a, [bird_x]
-    ld b, a
-    call OffScreenRight
-    and 1
-    jr z, .end
-    xor a ; ld a, 0
-    ld [bird_alive], a
-    ret
+    ret ; Maybe remove
 .isDead:
     ; TODO add respawn timer
     call SpawnBird
