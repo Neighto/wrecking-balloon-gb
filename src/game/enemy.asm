@@ -359,17 +359,14 @@ EnemyUpdate::
 DeathOfEnemy::
     ; Death
     xor a ; ld a, 0
-    ld hl, enemy_alive
-    ld [hl], a
+    ld [enemy_alive], a
     ; Points
     ld d, ENEMY_CACTUS_POINTS
     call AddPoints
     ; Animation trigger
     ld a, 1
-    ld hl, enemy_popping
-    ld [hl], a
-    ld hl, enemy_falling
-    ld [hl], a
+    ld [enemy_popping], a
+    ld [enemy_falling], a
     ; Screaming cactus
     ld hl, enemy_cactus+2
     ld [hl], $8E

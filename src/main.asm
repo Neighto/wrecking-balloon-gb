@@ -49,7 +49,6 @@ STARTCLASSIC::
 	call InitializeEnemy2
 	call InitializeBird
 	call RefreshLives
-	call PlayMusic ; Remove
 	call LCD_ON
 GAMELOOP:
 	call WaitVBlank
@@ -61,7 +60,7 @@ GAMELOOP:
 	call CollisionUpdate
 	call UpdateGlobalTimer
 	call PlayerUpdate
-	call GameManager
+	call ClassicGameManager
 	call RefreshScore ; Might want to move somewhere to call less frequently
 	call OAMDMA
 .END:
