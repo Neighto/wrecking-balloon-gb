@@ -26,7 +26,6 @@ MENULOOP:
 	call MenuBalloonUpdate
 	call MenuInput
 	call OAMDMA
-.END:
 	jp MENULOOP
 
 STARTCLASSIC::
@@ -40,6 +39,8 @@ STARTCLASSIC::
 	call ClearRAM
 	call ClearAllTiles
 	call ResetScroll
+	call SetClassicMapStartPoint
+	call SpawnHandWave
 	call SetupWindow
 	call InitializeScore
 	call LoadGameData
@@ -50,13 +51,21 @@ STARTCLASSIC::
 	call InitializeBird
 	call RefreshLives
 	call LCD_ON
-GAMELOOP:
+CUTSCENELOOP:
+	call WaitVBlank
+	call CheckCutsceneOver
+	; call VerticalScroll
+	call UpdateGlobalTimer
+	call OAMDMA
+	jp CUTSCENELOOP
+
+GAMELOOP::
 	call WaitVBlank
 	call TryToUnpause
 	ld a, [paused_game]
 	cp a, 1
 	jr z, .END
-	call VBlankHScroll
+	call HorizontalScroll
 	call CollisionUpdate
 	call UpdateGlobalTimer
 	call PlayerUpdate

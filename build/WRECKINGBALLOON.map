@@ -16,20 +16,13 @@ ROM0 bank #0:
            $0040 = VBLANK_VECT
   SECTION: $0048-$0048 ($0001 byte) ["LCD IRQ"]
            $0048 = LCD_VECT
-  SECTION: $0049-$00e3 ($009b bytes) ["rom"]
+  SECTION: $0049-$00f8 ($00b0 bytes) ["rom"]
            $0049 = START
            $0077 = MENULOOP
-           $0086 = MENULOOP.END
            $0089 = STARTCLASSIC
-           $00bf = GAMELOOP
-           $00e1 = GAMELOOP.END
-  SECTION: $00e4-$00ff ($001c bytes) ["OAM DMA routine"]
-           $00e4 = CopyDMARoutine
-           $00eb = CopyDMARoutine.copy
-           $00f2 = DMARoutine
-           $00f6 = DMARoutine.wait
-           $00fa = DMARoutineEnd
-           $00fa = OAMDMA
+           $00c5 = CUTSCENELOOP
+           $00d4 = GAMELOOP
+           $00f6 = GAMELOOP.END
   SECTION: $0100-$014f ($0050 bytes) ["header"]
   SECTION: $0150-$098f ($0840 bytes) ["menu title tiles"]
            $0150 = MenuTitleTiles
@@ -76,36 +69,49 @@ ROM0 bank #0:
   SECTION: $15af-$16be ($0110 bytes) ["window tiles"]
            $15af = WindowTiles
            $16bf = WindowTilesEnd
-  SECTION: $16bf-$1780 ($00c2 bytes) ["graphics"]
+  SECTION: $16bf-$178c ($00ce bytes) ["graphics"]
            $16bf = LoadGameData
-           $16fc = LoadMenuData
-           $172d = SetupPalettes
-           $1738 = RefreshScore
-           $1776 = RefreshLives
-  SECTION: $1781-$17f3 ($0073 bytes) ["joypad"]
-           $1781 = ReadInput
-           $17b1 = JOY_RIGHT
-           $17b9 = JOY_LEFT
-           $17c1 = JOY_UP
-           $17c9 = JOY_DOWN
-           $17d1 = JOY_A
-           $17d9 = JOY_B
-           $17e1 = JOY_SELECT
-           $17e9 = JOY_START
-           $17f1 = JOY_FALSE
-  SECTION: $17f4-$1843 ($0050 bytes) ["menu tiles"]
-           $17f4 = MenuTiles
-           $1844 = MenuTilesEnd
-  SECTION: $1844-$1859 ($0016 bytes) ["scroll"]
-           $1844 = VBlankHScroll
-           $1852 = VBlankHScroll.end
-           $1854 = ResetScroll
-  SECTION: $185a-$186f ($0016 bytes) ["general initialization"]
-           $185a = InitializeGameVars
-  SECTION: $1870-$1883 ($0014 bytes) ["window map"]
-           $1870 = WindowMap
-           $1884 = WindowMapEnd
-    SLACK: $2783 bytes
+           $1708 = LoadMenuData
+           $1739 = SetupPalettes
+           $1744 = RefreshScore
+           $1782 = RefreshLives
+  SECTION: $178d-$17ff ($0073 bytes) ["joypad"]
+           $178d = ReadInput
+           $17bd = JOY_RIGHT
+           $17c5 = JOY_LEFT
+           $17cd = JOY_UP
+           $17d5 = JOY_DOWN
+           $17dd = JOY_A
+           $17e5 = JOY_B
+           $17ed = JOY_SELECT
+           $17f5 = JOY_START
+           $17fd = JOY_FALSE
+  SECTION: $1800-$184f ($0050 bytes) ["menu tiles"]
+           $1800 = MenuTiles
+           $1850 = MenuTilesEnd
+  SECTION: $1850-$187a ($002b bytes) ["scroll"]
+           $1850 = HorizontalScroll
+           $185e = HorizontalScroll.end
+           $1860 = VerticalScroll
+           $186e = VerticalScroll.end
+           $1870 = SetClassicMapStartPoint
+           $1875 = ResetScroll
+  SECTION: $187b-$189a ($0020 bytes) ["classic cutscene tiles"]
+           $187b = ClassicCutsceneTiles
+           $189b = ClassicCutsceneTilesEnd
+  SECTION: $189b-$18b6 ($001c bytes) ["OAM DMA routine"]
+           $189b = CopyDMARoutine
+           $18a2 = CopyDMARoutine.copy
+           $18a9 = DMARoutine
+           $18ad = DMARoutine.wait
+           $18b1 = DMARoutineEnd
+           $18b1 = OAMDMA
+  SECTION: $18b7-$18cc ($0016 bytes) ["general initialization"]
+           $18b7 = InitializeGameVars
+  SECTION: $18cd-$18e0 ($0014 bytes) ["window map"]
+           $18cd = WindowMap
+           $18e1 = WindowMapEnd
+    SLACK: $272d bytes
 
 ROMX bank #1:
   SECTION: $4000-$439d ($039e bytes) ["player"]
@@ -320,7 +326,7 @@ ROMX bank #1:
            $4be1 = PlayMusic
            $4be1 = Song1
            $4be1 = PlayMusic.end
-  SECTION: $4be2-$4c55 ($0074 bytes) ["game"]
+  SECTION: $4be2-$4c6c ($008b bytes) ["game"]
            $4be2 = SpawnMenuCursor
            $4bf1 = MoveCursor
            $4c04 = MoveCursor.classicMode
@@ -332,45 +338,47 @@ ROMX bank #1:
            $4c26 = MenuInput.moveSelected
            $4c2f = MenuInput.selectMode
            $4c38 = MenuInput.end
-           $4c39 = TryToUnpause
-           $4c4d = TryToUnpause.end
-           $4c4e = UpdateGlobalTimer
-  SECTION: $4c56-$4cbd ($0068 bytes) ["lcd"]
-           $4c56 = LCD_OFF
-           $4c5b = LCD_ON
-           $4c60 = LCD_ON_BG_ONLY
-           $4c65 = WaitVBlank
-           $4c68 = WaitVBlank.loop
-           $4c70 = WaitVBlank.skipSpriteReset
-           $4c76 = WaitVBlank.skipSpriteSet
-           $4c79 = WaitVBlankNoWindow
-           $4c80 = ClearAllTiles
-           $4c9c = ClearMap
-           $4ca3 = ClearMap.clear_map_loop
-           $4cb5 = SetupWindow
-  SECTION: $4cbe-$4cf3 ($0036 bytes) ["math"]
-           $4cbe = MODULO
-           $4cc0 = MODULO.loop
-           $4cc5 = RANDOM
-           $4cce = DIVISION
-           $4cd4 = DIVISION.loop
-           $4cd9 = DIVISION.end
-           $4cdc = ToBCD
-           $4cf2 = ToBCD.end
-  SECTION: $4cf4-$4d11 ($001e bytes) ["memory"]
-           $4cf4 = MEMCPY.memcpy_loop
-           $4cf4 = MEMCPY
-           $4cf8 = MEMCPY.memcpy_check_limit
-           $4cfe = ClearOAM
-           $4d08 = ClearRAM
-  SECTION: $4d12-$4d2f ($001e bytes) ["enemy manager"]
-           $4d12 = SpawnEnemyf
-           $4d13 = ClassicGameManager
-           $4d26 = ClassicGameManager.levelThree
-           $4d29 = ClassicGameManager.levelTwo
-           $4d2c = ClassicGameManager.levelOne
-           $4d2f = ClassicGameManager.end
-    SLACK: $32d0 bytes
+           $4c39 = CheckCutsceneOver
+           $4c41 = TryToUnpause
+           $4c55 = TryToUnpause.end
+           $4c56 = SpawnHandWave
+           $4c65 = UpdateGlobalTimer
+  SECTION: $4c6d-$4cd4 ($0068 bytes) ["lcd"]
+           $4c6d = LCD_OFF
+           $4c72 = LCD_ON
+           $4c77 = LCD_ON_BG_ONLY
+           $4c7c = WaitVBlank
+           $4c7f = WaitVBlank.loop
+           $4c87 = WaitVBlank.skipSpriteReset
+           $4c8d = WaitVBlank.skipSpriteSet
+           $4c90 = WaitVBlankNoWindow
+           $4c97 = ClearAllTiles
+           $4cb3 = ClearMap
+           $4cba = ClearMap.clear_map_loop
+           $4ccc = SetupWindow
+  SECTION: $4cd5-$4d0a ($0036 bytes) ["math"]
+           $4cd5 = MODULO
+           $4cd7 = MODULO.loop
+           $4cdc = RANDOM
+           $4ce5 = DIVISION
+           $4ceb = DIVISION.loop
+           $4cf0 = DIVISION.end
+           $4cf3 = ToBCD
+           $4d09 = ToBCD.end
+  SECTION: $4d0b-$4d28 ($001e bytes) ["memory"]
+           $4d0b = MEMCPY.memcpy_loop
+           $4d0b = MEMCPY
+           $4d0f = MEMCPY.memcpy_check_limit
+           $4d15 = ClearOAM
+           $4d1f = ClearRAM
+  SECTION: $4d29-$4d46 ($001e bytes) ["enemy manager"]
+           $4d29 = SpawnEnemyf
+           $4d2a = ClassicGameManager
+           $4d3d = ClassicGameManager.levelThree
+           $4d40 = ClassicGameManager.levelTwo
+           $4d43 = ClassicGameManager.levelOne
+           $4d46 = ClassicGameManager.end
+    SLACK: $32b9 bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c041 ($0042 bytes) ["RAM vars"]
@@ -455,7 +463,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $187d bytes in 1 bank
-    ROMX: $0d30 bytes in 1 bank
+    ROM0: $18d3 bytes in 1 bank
+    ROMX: $0d47 bytes in 1 bank
     WRAM0: $0086 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
