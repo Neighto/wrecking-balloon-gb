@@ -34,78 +34,78 @@ ROM0 bank #0:
   SECTION: $0150-$098f ($0840 bytes) ["menu title tiles"]
            $0150 = MenuTitleTiles
            $0990 = MenuTitleTilesEnd
-  SECTION: $0990-$0d8f ($0400 bytes) ["menu map"]
-           $0990 = MenuMap
-           $0d90 = MenuMapEnd
-  SECTION: $0d90-$0fcf ($0240 bytes) ["background map"]
-           $0d90 = BackgroundMap
-           $0fd0 = BackgroundMapEnd
-  SECTION: $0fd0-$118f ($01c0 bytes) ["cactus tiles"]
-           $0fd0 = CactusTiles
-           $1190 = CactusTilesEnd
-  SECTION: $1190-$12ae ($011f bytes) ["collision"]
-           $1190 = CollisionCheck
-           $119d = CollisionCheck.tryOtherY
-           $11a5 = CollisionCheck.skip8x8Adjustment
-           $11b1 = CollisionCheck.checkX
-           $11be = CollisionCheck.tryOtherX
-           $11cb = CollisionCheck.collision
-           $11cf = CollisionCheck.end
-           $11d3 = CollisionUpdate
-           $11fb = CollisionUpdate.endPointBalloon
-           $1215 = CollisionUpdate.checkEnemyHitPlayer
-           $1225 = CollisionUpdate.endEnemy
-           $123f = CollisionUpdate.checkEnemy2HitPlayer
-           $124f = CollisionUpdate.endEnemy2
-           $1256 = CollisionUpdate.checkBirdHitPlayer
-           $1267 = CollisionUpdate.endBird
-           $1268 = CollisionUpdate.collisionWithPlayer
-           $1272 = CollisionUpdate.end
-           $1272 = CollisionUpdate.endEnemyHitPlayer
-           $1273 = OffScreenXEnemies
-           $1284 = OffScreenXEnemies.end
-           $1286 = OffScreenYEnemies
-           $1297 = OffScreenYEnemies.end
-           $1299 = OffScreenX
-           $12a1 = OffScreenX.end
-           $12a3 = OffScreenY
-           $12ad = OffScreenY.end
-  SECTION: $12af-$13be ($0110 bytes) ["window tiles"]
-           $12af = WindowTiles
-           $13bf = WindowTilesEnd
-  SECTION: $13bf-$1480 ($00c2 bytes) ["graphics"]
-           $13bf = LoadGameData
-           $13fc = LoadMenuData
-           $142d = SetupPalettes
-           $1438 = RefreshScore
-           $1476 = RefreshLives
-  SECTION: $1481-$14f3 ($0073 bytes) ["joypad"]
-           $1481 = ReadInput
-           $14b1 = JOY_RIGHT
-           $14b9 = JOY_LEFT
-           $14c1 = JOY_UP
-           $14c9 = JOY_DOWN
-           $14d1 = JOY_A
-           $14d9 = JOY_B
-           $14e1 = JOY_SELECT
-           $14e9 = JOY_START
-           $14f1 = JOY_FALSE
-  SECTION: $14f4-$1553 ($0060 bytes) ["background tiles"]
-           $14f4 = BackgroundTiles
-           $1554 = BackgroundTilesEnd
-  SECTION: $1554-$15a3 ($0050 bytes) ["menu tiles"]
-           $1554 = MenuTiles
-           $15a4 = MenuTilesEnd
-  SECTION: $15a4-$15b9 ($0016 bytes) ["scroll"]
-           $15a4 = VBlankHScroll
-           $15b2 = VBlankHScroll.end
-           $15b4 = ResetScroll
-  SECTION: $15ba-$15cf ($0016 bytes) ["general initialization"]
-           $15ba = InitializeGameVars
-  SECTION: $15d0-$15e3 ($0014 bytes) ["window map"]
-           $15d0 = WindowMap
-           $15e4 = WindowMapEnd
-    SLACK: $2a23 bytes
+  SECTION: $0990-$0d8f ($0400 bytes) ["background map"]
+           $0990 = BackgroundMap
+           $0d90 = BackgroundMapEnd
+  SECTION: $0d90-$118f ($0400 bytes) ["menu map"]
+           $0d90 = MenuMap
+           $1190 = MenuMapEnd
+  SECTION: $1190-$134f ($01c0 bytes) ["cactus tiles"]
+           $1190 = CactusTiles
+           $1350 = CactusTilesEnd
+  SECTION: $1350-$148f ($0140 bytes) ["background tiles"]
+           $1350 = BackgroundTiles
+           $1490 = BackgroundTilesEnd
+  SECTION: $1490-$15ae ($011f bytes) ["collision"]
+           $1490 = CollisionCheck
+           $149d = CollisionCheck.tryOtherY
+           $14a5 = CollisionCheck.skip8x8Adjustment
+           $14b1 = CollisionCheck.checkX
+           $14be = CollisionCheck.tryOtherX
+           $14cb = CollisionCheck.collision
+           $14cf = CollisionCheck.end
+           $14d3 = CollisionUpdate
+           $14fb = CollisionUpdate.endPointBalloon
+           $1515 = CollisionUpdate.checkEnemyHitPlayer
+           $1525 = CollisionUpdate.endEnemy
+           $153f = CollisionUpdate.checkEnemy2HitPlayer
+           $154f = CollisionUpdate.endEnemy2
+           $1556 = CollisionUpdate.checkBirdHitPlayer
+           $1567 = CollisionUpdate.endBird
+           $1568 = CollisionUpdate.collisionWithPlayer
+           $1572 = CollisionUpdate.end
+           $1572 = CollisionUpdate.endEnemyHitPlayer
+           $1573 = OffScreenXEnemies
+           $1584 = OffScreenXEnemies.end
+           $1586 = OffScreenYEnemies
+           $1597 = OffScreenYEnemies.end
+           $1599 = OffScreenX
+           $15a1 = OffScreenX.end
+           $15a3 = OffScreenY
+           $15ad = OffScreenY.end
+  SECTION: $15af-$16be ($0110 bytes) ["window tiles"]
+           $15af = WindowTiles
+           $16bf = WindowTilesEnd
+  SECTION: $16bf-$1780 ($00c2 bytes) ["graphics"]
+           $16bf = LoadGameData
+           $16fc = LoadMenuData
+           $172d = SetupPalettes
+           $1738 = RefreshScore
+           $1776 = RefreshLives
+  SECTION: $1781-$17f3 ($0073 bytes) ["joypad"]
+           $1781 = ReadInput
+           $17b1 = JOY_RIGHT
+           $17b9 = JOY_LEFT
+           $17c1 = JOY_UP
+           $17c9 = JOY_DOWN
+           $17d1 = JOY_A
+           $17d9 = JOY_B
+           $17e1 = JOY_SELECT
+           $17e9 = JOY_START
+           $17f1 = JOY_FALSE
+  SECTION: $17f4-$1843 ($0050 bytes) ["menu tiles"]
+           $17f4 = MenuTiles
+           $1844 = MenuTilesEnd
+  SECTION: $1844-$1859 ($0016 bytes) ["scroll"]
+           $1844 = VBlankHScroll
+           $1852 = VBlankHScroll.end
+           $1854 = ResetScroll
+  SECTION: $185a-$186f ($0016 bytes) ["general initialization"]
+           $185a = InitializeGameVars
+  SECTION: $1870-$1883 ($0014 bytes) ["window map"]
+           $1870 = WindowMap
+           $1884 = WindowMapEnd
+    SLACK: $2783 bytes
 
 ROMX bank #1:
   SECTION: $4000-$439d ($039e bytes) ["player"]
@@ -455,7 +455,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $15dd bytes in 1 bank
+    ROM0: $187d bytes in 1 bank
     ROMX: $0d30 bytes in 1 bank
     WRAM0: $0086 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
