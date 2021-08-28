@@ -50,17 +50,20 @@ STARTCLASSIC::
 	call InitializeEnemy2
 	call InitializeBird
 	call RefreshLives
+	; call ClearBottom ; TESTING
 	call LCD_ON
 CUTSCENELOOP:
 	call WaitVBlank
 	call CheckCutsceneOver
-	call VerticalScroll
+	; call VerticalScrollGradual
 	call HandWaveAnimation
 	call UpdateGlobalTimer
 	call OAMDMA
 	jp CUTSCENELOOP
 
-GAMELOOP::
+PREGAMELOOP::
+	call ResetScroll
+GAMELOOP:
 	call WaitVBlank
 	call TryToUnpause
 	ld a, [paused_game]

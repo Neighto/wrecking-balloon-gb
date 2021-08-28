@@ -72,14 +72,28 @@ LoadGameData::
 	call MEMCPY
 	ret
 
-LoadMenuData::
-	; For the menu we ONLY need point balloon, so this could be made way more efficient
-	; Also it would get bumped to the wrong address
-	ld bc, CactusTiles
-	ld hl, _VRAM8800+100
-	ld de, CactusTilesEnd - CactusTiles
-	call MEMCPY
+	;; TODO !!! MASSIVELY CLEAN
+ClearBottom::
+    ld hl, $9A40
+    ld bc, $1BF
+    push hl
+.clear_map_loop
+    ;wait for hblank
+    ld  hl, rSTAT
+    bit 1, [hl]
+    jr nz, .clear_map_loop
+    pop hl
+    xor a ; ld a, 0
+    ld [hli], a
+    push hl
+    dec bc
+    ld a, b
+    or c
+    jr nz, .clear_map_loop
+    pop hl
+    ret
 
+LoadMenuData::
 	ld bc, MenuTitleTiles
 	ld hl, _VRAM9000
 	ld de, MenuTitleTilesEnd - MenuTitleTiles
