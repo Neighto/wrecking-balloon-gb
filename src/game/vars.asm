@@ -7,7 +7,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	difficulty_level:: DB
 	selected_mode:: DB
 	hand_waving_frame:: DB
-
+	cutscene_timer:: DB
 
 	song_timer:: DB
 	song_index:: DB
@@ -84,6 +84,7 @@ InitializeGameVars::
 	ld [song_index], a
 	ld [selected_mode], a
 	ld [hand_waving_frame], a
+	ld [cutscene_timer], a
 
 	ld a, 2
 	ld [player_lives], a

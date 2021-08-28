@@ -1,8 +1,8 @@
 INCLUDE "constants.inc"
 INCLUDE "hardware.inc"
 
-HAND_WAVE_START_X EQU 112
-HAND_WAVE_START_Y EQU 120
+HAND_WAVE_START_X EQU 128
+HAND_WAVE_START_Y EQU 112
 
 SECTION "game", ROMX
 
@@ -65,8 +65,11 @@ MenuInput::
 CheckCutsceneOver::
 	; TODO could cause issues when < 0
 	ld a, [rSCY]
-	cp a, 1
-	call c, GAMELOOP
+	inc a
+	ld b, a
+	call OffScreenY
+	cp a, 0
+	call nz, PREGAMELOOP
 	ret
 
 TryToUnpause::
@@ -98,17 +101,15 @@ SpawnHandWave::
 
 ; NOTE if ram becomes a problem I could probably use modulo off global timer for frames
 HandWaveAnimation::
-	; weird place for this, also calling too much?
+	; Here we move the sprite as the screen moves
 	ldh a, [rSCY]
 	ld b, a
 	ld a, BACKGROUND_VSCROLL_START
 	sub a, b
 	add a, HAND_WAVE_START_Y
 	ld [enemy2_balloon], a
-	; now we have curY and rSCY
-	; curY is like 120 and rSCY is like 120 also
-	; so as rSCY goes down... curY goes up by BACKGROUND_VSCROLL_START-rSCY
 
+	; Here we animate
     ld a, [hand_waving_frame]
     cp a, 0
     jr nz, .frame1

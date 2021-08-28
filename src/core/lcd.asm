@@ -105,6 +105,39 @@ VerticalScroll::
     pop af
     ret
 
+VerticalScrollGradual::
+    push af
+    ld a, [global_timer]
+    and	2
+    jr nz, .end
+    ld a, [cutscene_timer]
+.slowScroll2:
+    cp a, 120
+    jr c, .fastScroll
+    ldh a, [rSCY]
+    sub 1
+    ldh [rSCY], a
+    jr .end
+.fastScroll:
+    cp a, 50
+    jr c, .slowScroll
+    ldh a, [rSCY]
+    sub 2
+    ldh [rSCY], a
+    jr .end
+.slowScroll:
+    cp a, 30
+    jr c, .end
+    ldh a, [rSCY]
+    sub 1
+    ldh [rSCY], a
+.end:
+    ld a, [cutscene_timer]
+    inc a
+    ld [cutscene_timer], a
+    pop af
+    ret
+
 SetClassicMapStartPoint::
     ld a, BACKGROUND_VSCROLL_START
     ldh [rSCY], a
