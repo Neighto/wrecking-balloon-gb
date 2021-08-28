@@ -50,6 +50,11 @@ LoadGameData::
 	ld hl, _VRAM9000
 	ld de, BackgroundTilesEnd - BackgroundTiles
 	call MEMCPY
+	; Copy the classic cutscene tiles
+	ld bc, ClassicCutsceneTiles
+	ld hl, _VRAM8800+$0200
+	ld de, ClassicCutsceneTilesEnd - ClassicCutsceneTiles
+	call MEMCPY
 	; Copy the window tiles
 	ld bc, WindowTiles
 	ld hl, $9400

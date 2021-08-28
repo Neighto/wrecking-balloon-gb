@@ -1,4 +1,5 @@
 INCLUDE "constants.inc"
+INCLUDE "hardware.inc"
 
 SECTION "game", ROMX
 
@@ -58,6 +59,13 @@ MenuInput::
 .end:
 	ret
 
+CheckCutsceneOver::
+	; TODO could cause issues when < 0
+	ld a, [rSCY]
+	cp a, 1
+	call c, GAMELOOP
+	ret
+
 TryToUnpause::
 	xor a ; ld a, 0
 	ld hl, paused_game
@@ -71,6 +79,18 @@ TryToUnpause::
 	xor a ; ld a, 0
 	ld [hl], a ; pause
 .end:
+	ret
+
+SpawnHandWave::
+	; Totally dumb for now... But we just take another enemy sprite slot
+    ld hl, enemy2_balloon
+    ld a, 120
+    ld [hli], a
+    ld a, 96
+    ld [hli], a
+    ld [hl], $A0
+    inc l
+    ld [hl], %00000000
 	ret
 
 UpdateGlobalTimer::

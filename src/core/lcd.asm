@@ -80,7 +80,8 @@ SetupWindow::
     ret
 
 SECTION "scroll", ROM0
-VBlankHScroll::
+
+HorizontalScroll::
     push af
     ld a, [global_timer]
     and	BACKGROUND_HSCROLL_SPEED
@@ -90,6 +91,23 @@ VBlankHScroll::
     ldh  [rSCX], a
 .end:
     pop af
+    ret
+
+VerticalScroll::
+    push af
+    ld a, [global_timer]
+    and	BACKGROUND_VSCROLL_SPEED
+    jr nz, .end
+    ldh a, [rSCY]
+    sub 1
+    ldh [rSCY], a
+.end:
+    pop af
+    ret
+
+SetClassicMapStartPoint::
+    ld a, 120 ; 256 - 144 + 8
+    ldh [rSCY], a
     ret
 
 ResetScroll::
