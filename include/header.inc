@@ -1,9 +1,11 @@
 SECTION "vblank IRQ", ROM0[$40]
 VBLANK_VECT:
+	call VBlank_Interrupt
 	reti
 
 SECTION	"LCD IRQ", ROM0[$48]
 LCD_VECT:
+	call LCD_Interrupt
 	reti
 
 SECTION "header", ROM0[$100]

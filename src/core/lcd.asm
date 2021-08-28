@@ -32,7 +32,7 @@ WaitVBlank::
     set 1, [hl]
 .skipSpriteSet:
     jr nz, .loop
-    ret
+    reti
 
 WaitVBlankNoWindow::
     ld a, [rLY]
@@ -87,7 +87,7 @@ HorizontalScroll::
     and	BACKGROUND_HSCROLL_SPEED
     jr nz, .end
     ldh a, [rSCX]
-    add 1
+    inc a
     ldh  [rSCX], a
 .end:
     pop af
