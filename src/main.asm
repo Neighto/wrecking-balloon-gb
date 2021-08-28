@@ -29,8 +29,13 @@ MENULOOP:
 	jp MENULOOP
 
 STARTCLASSIC::
-	; ld a, IEF_VBLANK | IEF_STAT ; Enable Vblank and LCD Interrupt
-	; ld [rIE], a
+	ld a, IEF_STAT ; Enable Vblank and LCD Interrupt ; | IEF_VBLANK
+	ldh [rIE], a
+	ld a, 72
+	ldh [rLYC], a
+	ld a, STATF_LYC
+	ldh [rSTAT], a
+
 	call WaitVBlank
 	call LCD_OFF
 	call SetupPalettes
@@ -53,9 +58,13 @@ STARTCLASSIC::
 	; call ClearBottom ; TESTING
 	call LCD_ON_BG_ONLY
 CUTSCENELOOP:
+	di
 	call WaitVBlank
 	call CheckCutsceneOver
-	call VerticalScrollGradual
+	ld a, [rSCX]
+	dec a
+	ldh [rSCX], a
+	; call VerticalScrollGradual
 	call HandWaveAnimation
 	call UpdateGlobalTimer
 	call OAMDMA
