@@ -1,6 +1,9 @@
 INCLUDE "constants.inc"
 INCLUDE "hardware.inc"
 
+HAND_WAVE_START_X EQU 112
+HAND_WAVE_START_Y EQU 120
+
 SECTION "game", ROMX
 
 SpawnMenuCursor::
@@ -84,9 +87,9 @@ TryToUnpause::
 SpawnHandWave::
 	; Totally dumb for now... But we just take another enemy sprite slot
     ld hl, enemy2_balloon
-    ld a, 120
+    ld a, HAND_WAVE_START_Y
     ld [hli], a
-    ld a, 112
+    ld a, HAND_WAVE_START_X
     ld [hli], a
     ld [hl], $A0
     inc l
@@ -95,6 +98,17 @@ SpawnHandWave::
 
 ; NOTE if ram becomes a problem I could probably use modulo off global timer for frames
 HandWaveAnimation::
+	; weird place for this, also calling too much?
+	ldh a, [rSCY]
+	ld b, a
+	ld a, BACKGROUND_VSCROLL_START
+	sub a, b
+	add a, HAND_WAVE_START_Y
+	ld [enemy2_balloon], a
+	; now we have curY and rSCY
+	; curY is like 120 and rSCY is like 120 also
+	; so as rSCY goes down... curY goes up by BACKGROUND_VSCROLL_START-rSCY
+
     ld a, [hand_waving_frame]
     cp a, 0
     jr nz, .frame1

@@ -54,7 +54,7 @@ STARTCLASSIC::
 CUTSCENELOOP:
 	call WaitVBlank
 	call CheckCutsceneOver
-	; call VerticalScroll
+	call VerticalScroll
 	call HandWaveAnimation
 	call UpdateGlobalTimer
 	call OAMDMA
