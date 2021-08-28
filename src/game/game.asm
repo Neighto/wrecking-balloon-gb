@@ -86,11 +86,36 @@ SpawnHandWave::
     ld hl, enemy2_balloon
     ld a, 120
     ld [hli], a
-    ld a, 96
+    ld a, 112
     ld [hli], a
     ld [hl], $A0
     inc l
     ld [hl], %00000000
+	ret
+
+; NOTE if ram becomes a problem I could probably use modulo off global timer for frames
+HandWaveAnimation::
+    ld a, [hand_waving_frame]
+    cp a, 0
+    jr nz, .frame1
+.frame0:
+    ld a, [global_timer]
+    and 15
+    jp nz, .end
+    ld hl, enemy2_balloon+2
+    ld [hl], $A2
+    ld hl, hand_waving_frame
+    ld [hl], 1
+    ret
+.frame1:
+    ld a, [global_timer]
+    and 15
+    jp nz, .end
+    ld hl, enemy2_balloon+2
+    ld [hl], $A0
+    ld hl, hand_waving_frame
+    ld [hl], 0
+.end:
 	ret
 
 UpdateGlobalTimer::
