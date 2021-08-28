@@ -18,15 +18,10 @@ BackgroundTiles::
     DB $02,$02,$01,$07,$01,$27,$02,$ee,$e4,$fc,$18,$18,$00,$00,$00,$00
     DB $07,$07,$0f,$0f,$0c,$0c,$08,$08,$0d,$0d,$08,$08,$10,$10,$10,$10
     DB $f8,$f8,$fc,$fc,$1e,$1e,$1e,$1e,$1e,$1e,$19,$19,$01,$01,$72,$72
-    DB $00,$00,$00,$00,$70,$70,$88,$88,$88,$88,$08,$08,$88,$88,$f0,$f0
     DB $10,$1f,$0f,$0f,$04,$04,$07,$07,$0f,$0f,$1f,$1f,$3f,$3f,$7f,$7f
     DB $e2,$e2,$c5,$c5,$0b,$0b,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$fe,$fe
-    DB $f0,$f0,$f0,$f0,$f0,$f0,$e0,$e0,$c0,$c0,$80,$80,$00,$00,$00,$00
     DB $ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$f4,$f7,$64,$67,$24,$27,$3b,$3f
     DB $fe,$fe,$fe,$fe,$fe,$fe,$fe,$fe,$06,$fe,$04,$fc,$04,$fc,$e2,$fe
     DB $22,$3e,$22,$3e,$44,$7c,$44,$7c,$4c,$7c,$7c,$7c,$f8,$f8,$f8,$f8
     DB $22,$3e,$22,$3e,$11,$1f,$11,$1f,$19,$1f,$1f,$1f,$3e,$3e,$3e,$3e
-    DB $ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff
-    DB $ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff
-    DB $ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff,$ff
 BackgroundTilesEnd::

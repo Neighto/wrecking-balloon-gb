@@ -55,6 +55,7 @@ CUTSCENELOOP:
 	call WaitVBlank
 	call CheckCutsceneOver
 	; call VerticalScroll
+	call HandWaveAnimation
 	call UpdateGlobalTimer
 	call OAMDMA
 	jp CUTSCENELOOP
