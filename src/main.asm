@@ -51,11 +51,11 @@ STARTCLASSIC::
 	call InitializeBird
 	call RefreshLives
 	; call ClearBottom ; TESTING
-	call LCD_ON
+	call LCD_ON_BG_ONLY
 CUTSCENELOOP:
 	call WaitVBlank
 	call CheckCutsceneOver
-	; call VerticalScrollGradual
+	call VerticalScrollGradual
 	call HandWaveAnimation
 	call UpdateGlobalTimer
 	call OAMDMA
@@ -63,6 +63,7 @@ CUTSCENELOOP:
 
 PREGAMELOOP::
 	call ResetScroll
+	call LCD_ON
 GAMELOOP:
 	call WaitVBlank
 	call TryToUnpause

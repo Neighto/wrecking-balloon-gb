@@ -6,14 +6,29 @@ ROM0 bank #0:
            $0040 = VBLANK_VECT
   SECTION: $0048-$0048 ($0001 byte) ["LCD IRQ"]
            $0048 = LCD_VECT
-  SECTION: $0049-$00fe ($00b6 bytes) ["rom"]
-           $0049 = START
-           $0077 = MENULOOP
-           $0089 = STARTCLASSIC
-           $00c5 = CUTSCENELOOP
-           $00d7 = PREGAMELOOP
-           $00da = GAMELOOP
-           $00fc = GAMELOOP.END
+  SECTION: $0049-$00bb ($0073 bytes) ["joypad"]
+           $0049 = ReadInput
+           $0079 = JOY_RIGHT
+           $0081 = JOY_LEFT
+           $0089 = JOY_UP
+           $0091 = JOY_DOWN
+           $0099 = JOY_A
+           $00a1 = JOY_B
+           $00a9 = JOY_SELECT
+           $00b1 = JOY_START
+           $00b9 = JOY_FALSE
+  SECTION: $00bc-$00eb ($0030 bytes) ["score"]
+           $00bc = InitializeScore
+           $00c4 = IncreaseDifficulty
+           $00cb = IncreaseDifficulty.scoreMid
+           $00cb = IncreaseDifficulty.scoreLow
+           $00cb = IncreaseDifficulty.scoreHigh
+           $00cc = AddPoints
+           $00df = AddPoints.carry
+           $00e9 = AddPoints.end
+  SECTION: $00ec-$00ff ($0014 bytes) ["window map"]
+           $00ec = WindowMap
+           $0100 = WindowMapEnd
   SECTION: $0100-$014f ($0050 bytes) ["header"]
   SECTION: $0150-$098f ($0840 bytes) ["menu title tiles"]
            $0150 = MenuTitleTiles
@@ -54,69 +69,54 @@ ROM0 bank #0:
   SECTION: $106f-$117e ($0110 bytes) ["window tiles"]
            $106f = WindowTiles
            $117f = WindowTilesEnd
-  SECTION: $117f-$127e ($0100 bytes) ["background tiles"]
+  SECTION: $117f-$128e ($0110 bytes) ["background tiles"]
            $117f = BackgroundTiles
-           $127f = BackgroundTilesEnd
-  SECTION: $127f-$1359 ($00db bytes) ["graphics"]
-           $127f = LoadGameData
-           $12c8 = ClearBottom
-           $12cf = ClearBottom.clear_map_loop
-           $12e1 = LoadMenuData
-           $1306 = SetupPalettes
-           $1311 = RefreshScore
-           $134f = RefreshLives
-  SECTION: $135a-$13cc ($0073 bytes) ["joypad"]
-           $135a = ReadInput
-           $138a = JOY_RIGHT
-           $1392 = JOY_LEFT
-           $139a = JOY_UP
-           $13a2 = JOY_DOWN
-           $13aa = JOY_A
-           $13b2 = JOY_B
-           $13ba = JOY_SELECT
-           $13c2 = JOY_START
-           $13ca = JOY_FALSE
-  SECTION: $13cd-$142d ($0061 bytes) ["scroll"]
-           $13cd = HorizontalScroll
-           $13db = HorizontalScroll.end
-           $13dd = VerticalScroll
-           $13eb = VerticalScroll.end
-           $13ed = VerticalScrollGradual
-           $13f8 = VerticalScrollGradual.slowScroll2
-           $1404 = VerticalScrollGradual.fastScroll
-           $1410 = VerticalScrollGradual.slowScroll
-           $141a = VerticalScrollGradual.end
-           $1423 = SetClassicMapStartPoint
-           $1428 = ResetScroll
-  SECTION: $142e-$147d ($0050 bytes) ["menu tiles"]
-           $142e = MenuTiles
-           $147e = MenuTilesEnd
-  SECTION: $147e-$14ad ($0030 bytes) ["score"]
-           $147e = InitializeScore
-           $1486 = IncreaseDifficulty
-           $148d = IncreaseDifficulty.scoreMid
-           $148d = IncreaseDifficulty.scoreLow
-           $148d = IncreaseDifficulty.scoreHigh
-           $148e = AddPoints
-           $14a1 = AddPoints.carry
-           $14ab = AddPoints.end
-  SECTION: $14ae-$14c9 ($001c bytes) ["OAM DMA routine"]
-           $14ae = CopyDMARoutine
-           $14b5 = CopyDMARoutine.copy
-           $14bc = DMARoutine
-           $14c0 = DMARoutine.wait
-           $14c4 = DMARoutineEnd
-           $14c4 = OAMDMA
-  SECTION: $14ca-$14e5 ($001c bytes) ["general initialization"]
-           $14ca = InitializeGameVars
-  SECTION: $14e6-$14f9 ($0014 bytes) ["window map"]
-           $14e6 = WindowMap
-           $14fa = WindowMapEnd
-  SECTION: $14fa-$1509 ($0010 bytes) ["tools"]
-           $14fa = IncrementPosition
-           $14fd = DecrementPosition
-           $1502 = ResetInRange
-    SLACK: $2afe bytes
+           $128f = BackgroundTilesEnd
+  SECTION: $128f-$1369 ($00db bytes) ["graphics"]
+           $128f = LoadGameData
+           $12d8 = ClearBottom
+           $12df = ClearBottom.clear_map_loop
+           $12f1 = LoadMenuData
+           $1316 = SetupPalettes
+           $1321 = RefreshScore
+           $135f = RefreshLives
+  SECTION: $136a-$1425 ($00bc bytes) ["rom"]
+           $136a = START
+           $1398 = MENULOOP
+           $13aa = STARTCLASSIC
+           $13e6 = CUTSCENELOOP
+           $13fb = PREGAMELOOP
+           $1401 = GAMELOOP
+           $1423 = GAMELOOP.END
+  SECTION: $1426-$1486 ($0061 bytes) ["scroll"]
+           $1426 = HorizontalScroll
+           $1434 = HorizontalScroll.end
+           $1436 = VerticalScroll
+           $1444 = VerticalScroll.end
+           $1446 = VerticalScrollGradual
+           $1451 = VerticalScrollGradual.slowScroll2
+           $145d = VerticalScrollGradual.fastScroll
+           $1469 = VerticalScrollGradual.slowScroll
+           $1473 = VerticalScrollGradual.end
+           $147c = SetClassicMapStartPoint
+           $1481 = ResetScroll
+  SECTION: $1487-$14d6 ($0050 bytes) ["menu tiles"]
+           $1487 = MenuTiles
+           $14d7 = MenuTilesEnd
+  SECTION: $14d7-$14f2 ($001c bytes) ["OAM DMA routine"]
+           $14d7 = CopyDMARoutine
+           $14de = CopyDMARoutine.copy
+           $14e5 = DMARoutine
+           $14e9 = DMARoutine.wait
+           $14ed = DMARoutineEnd
+           $14ed = OAMDMA
+  SECTION: $14f3-$150e ($001c bytes) ["general initialization"]
+           $14f3 = InitializeGameVars
+  SECTION: $150f-$151e ($0010 bytes) ["tools"]
+           $150f = IncrementPosition
+           $1512 = DecrementPosition
+           $1517 = ResetInRange
+    SLACK: $2ae8 bytes
 
 ROMX bank #1:
   SECTION: $4000-$43ff ($0400 bytes) ["background map"]
@@ -477,7 +477,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $1502 bytes in 1 bank
+    ROM0: $1518 bytes in 1 bank
     ROMX: $1184 bytes in 1 bank
     WRAM0: $0088 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
