@@ -6,13 +6,13 @@ ROM0 bank #0:
            $0040 = VBLANK_VECT
   SECTION: $0048-$0048 ($0001 byte) ["LCD IRQ"]
            $0048 = LCD_VECT
-  SECTION: $0049-$00fb ($00b3 bytes) ["rom"]
+  SECTION: $0049-$00fe ($00b6 bytes) ["rom"]
            $0049 = START
            $0077 = MENULOOP
            $0089 = STARTCLASSIC
            $00c5 = CUTSCENELOOP
-           $00d7 = GAMELOOP
-           $00f9 = GAMELOOP.END
+           $00da = GAMELOOP
+           $00fc = GAMELOOP.END
   SECTION: $0100-$014f ($0050 bytes) ["header"]
   SECTION: $0150-$098f ($0840 bytes) ["menu title tiles"]
            $0150 = MenuTitleTiles
@@ -111,7 +111,7 @@ ROM0 bank #0:
            $18a4 = IncrementPosition
            $18a7 = DecrementPosition
            $18ac = ResetInRange
-    SLACK: $2757 bytes
+    SLACK: $2754 bytes
 
 ROMX bank #1:
   SECTION: $4000-$439d ($039e bytes) ["player"]
@@ -312,7 +312,7 @@ ROMX bank #1:
            $4b39 = MenuBalloonUpdate.respawn
            $4b40 = MenuBalloonUpdate.end
            $4b41 = DeathOfPointBalloon
-  SECTION: $4b54-$4c0b ($00b8 bytes) ["game"]
+  SECTION: $4b54-$4c16 ($00c3 bytes) ["game"]
            $4b54 = SpawnMenuCursor
            $4b63 = MoveCursor
            $4b76 = MoveCursor.classicMode
@@ -329,60 +329,60 @@ ROMX bank #1:
            $4bc7 = TryToUnpause.end
            $4bc8 = SpawnHandWave
            $4bd7 = HandWaveAnimation
-           $4bde = HandWaveAnimation.frame0
-           $4bf1 = HandWaveAnimation.frame1
-           $4c03 = HandWaveAnimation.end
-           $4c04 = UpdateGlobalTimer
-  SECTION: $4c0c-$4c99 ($008e bytes) ["sound"]
-           $4c0c = AUDIO_OFF
-           $4c10 = AUDIO_ON
-           $4c15 = PopSound
-           $4c28 = FallingSound
-           $4c3d = StopFallingSound
-           $4c42 = CollectSound
-           $4c57 = WrongAnswerSound
-           $4c6e = Percussion
-           $4c7b = Percussion2
-           $4c88 = Bass
-           $4c99 = PlayMusic
-           $4c99 = Song1
-           $4c99 = PlayMusic.end
-  SECTION: $4c9a-$4d01 ($0068 bytes) ["lcd"]
-           $4c9a = LCD_OFF
-           $4c9f = LCD_ON
-           $4ca4 = LCD_ON_BG_ONLY
-           $4ca9 = WaitVBlank
-           $4cac = WaitVBlank.loop
-           $4cb4 = WaitVBlank.skipSpriteReset
-           $4cba = WaitVBlank.skipSpriteSet
-           $4cbd = WaitVBlankNoWindow
-           $4cc4 = ClearAllTiles
-           $4ce0 = ClearMap
-           $4ce7 = ClearMap.clear_map_loop
-           $4cf9 = SetupWindow
-  SECTION: $4d02-$4d37 ($0036 bytes) ["math"]
-           $4d02 = MODULO
-           $4d04 = MODULO.loop
-           $4d09 = RANDOM
-           $4d12 = DIVISION
-           $4d18 = DIVISION.loop
-           $4d1d = DIVISION.end
-           $4d20 = ToBCD
-           $4d36 = ToBCD.end
-  SECTION: $4d38-$4d55 ($001e bytes) ["memory"]
-           $4d38 = MEMCPY.memcpy_loop
-           $4d38 = MEMCPY
-           $4d3c = MEMCPY.memcpy_check_limit
-           $4d42 = ClearOAM
-           $4d4c = ClearRAM
-  SECTION: $4d56-$4d73 ($001e bytes) ["enemy manager"]
-           $4d56 = SpawnEnemyf
-           $4d57 = ClassicGameManager
-           $4d6a = ClassicGameManager.levelThree
-           $4d6d = ClassicGameManager.levelTwo
-           $4d70 = ClassicGameManager.levelOne
-           $4d73 = ClassicGameManager.end
-    SLACK: $328c bytes
+           $4be9 = HandWaveAnimation.frame0
+           $4bfc = HandWaveAnimation.frame1
+           $4c0e = HandWaveAnimation.end
+           $4c0f = UpdateGlobalTimer
+  SECTION: $4c17-$4ca4 ($008e bytes) ["sound"]
+           $4c17 = AUDIO_OFF
+           $4c1b = AUDIO_ON
+           $4c20 = PopSound
+           $4c33 = FallingSound
+           $4c48 = StopFallingSound
+           $4c4d = CollectSound
+           $4c62 = WrongAnswerSound
+           $4c79 = Percussion
+           $4c86 = Percussion2
+           $4c93 = Bass
+           $4ca4 = PlayMusic
+           $4ca4 = Song1
+           $4ca4 = PlayMusic.end
+  SECTION: $4ca5-$4d0c ($0068 bytes) ["lcd"]
+           $4ca5 = LCD_OFF
+           $4caa = LCD_ON
+           $4caf = LCD_ON_BG_ONLY
+           $4cb4 = WaitVBlank
+           $4cb7 = WaitVBlank.loop
+           $4cbf = WaitVBlank.skipSpriteReset
+           $4cc5 = WaitVBlank.skipSpriteSet
+           $4cc8 = WaitVBlankNoWindow
+           $4ccf = ClearAllTiles
+           $4ceb = ClearMap
+           $4cf2 = ClearMap.clear_map_loop
+           $4d04 = SetupWindow
+  SECTION: $4d0d-$4d42 ($0036 bytes) ["math"]
+           $4d0d = MODULO
+           $4d0f = MODULO.loop
+           $4d14 = RANDOM
+           $4d1d = DIVISION
+           $4d23 = DIVISION.loop
+           $4d28 = DIVISION.end
+           $4d2b = ToBCD
+           $4d41 = ToBCD.end
+  SECTION: $4d43-$4d60 ($001e bytes) ["memory"]
+           $4d43 = MEMCPY.memcpy_loop
+           $4d43 = MEMCPY
+           $4d47 = MEMCPY.memcpy_check_limit
+           $4d4d = ClearOAM
+           $4d57 = ClearRAM
+  SECTION: $4d61-$4d7e ($001e bytes) ["enemy manager"]
+           $4d61 = SpawnEnemyf
+           $4d62 = ClassicGameManager
+           $4d75 = ClassicGameManager.levelThree
+           $4d78 = ClassicGameManager.levelTwo
+           $4d7b = ClassicGameManager.levelOne
+           $4d7e = ClassicGameManager.end
+    SLACK: $3281 bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c042 ($0043 bytes) ["RAM vars"]
@@ -468,7 +468,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $18a9 bytes in 1 bank
-    ROMX: $0d74 bytes in 1 bank
+    ROM0: $18ac bytes in 1 bank
+    ROMX: $0d7f bytes in 1 bank
     WRAM0: $0087 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

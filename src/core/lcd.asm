@@ -106,7 +106,7 @@ VerticalScroll::
     ret
 
 SetClassicMapStartPoint::
-    ld a, 120 ; 256 - 144 + 8
+    ld a, BACKGROUND_VSCROLL_START
     ldh [rSCY], a
     ret
 
