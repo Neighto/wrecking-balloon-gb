@@ -64,9 +64,8 @@ CUTSCENELOOP:
 	call WaitVBlankNoWindow
 	di
 	call UpScrollOffset
-	call CheckCutsceneOver
+	call HandleCutsceneLoop
 	call PlayerUpdate
-	; call VerticalScrollGradual
 	call HandWaveAnimation
 	call UpdateGlobalTimer
 	call OAMDMA
