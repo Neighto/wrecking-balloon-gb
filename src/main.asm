@@ -60,20 +60,16 @@ STARTCLASSIC::
 	; call ClearBottom ; TESTING
 	call LCD_ON_BG_ONLY
 CUTSCENELOOP:
-	; ei
+	ei
 	call WaitVBlankNoWindow
-	; call LCD_OFF
-	; di
+	di
 	call UpScrollOffset
-	; call CheckCutsceneOver
+	call CheckCutsceneOver
 	call PlayerUpdate
 	; call VerticalScrollGradual
 	call HandWaveAnimation
 	call UpdateGlobalTimer
-	; di
 	call OAMDMA
-	; call LCD_ON_BG_ONLY
-	; ei
 	jp CUTSCENELOOP
 
 PREGAMELOOP::

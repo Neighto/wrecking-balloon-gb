@@ -81,48 +81,48 @@ ROM0 bank #0:
            $1596 = SetupPalettes
            $15a1 = RefreshScore
            $15df = RefreshLives
-  SECTION: $15ea-$16b3 ($00ca bytes) ["rom"]
+  SECTION: $15ea-$16b8 ($00cf bytes) ["rom"]
            $15ea = START
            $1618 = MENULOOP
            $162a = STARTCLASSIC
            $1674 = CUTSCENELOOP
-           $1689 = PREGAMELOOP
-           $168f = GAMELOOP
-           $16b1 = GAMELOOP.END
-  SECTION: $16b4-$1713 ($0060 bytes) ["scroll"]
-           $16b4 = HorizontalScroll
-           $16c1 = HorizontalScroll.end
-           $16c3 = VerticalScroll
-           $16d1 = VerticalScroll.end
-           $16d3 = VerticalScrollGradual
-           $16de = VerticalScrollGradual.slowScroll2
-           $16ea = VerticalScrollGradual.fastScroll
-           $16f6 = VerticalScrollGradual.slowScroll
-           $1700 = VerticalScrollGradual.end
-           $1709 = SetClassicMapStartPoint
-           $170e = ResetScroll
-  SECTION: $1714-$1763 ($0050 bytes) ["menu tiles"]
-           $1714 = MenuTiles
-           $1764 = MenuTilesEnd
-  SECTION: $1764-$1782 ($001f bytes) ["general initialization"]
-           $1764 = InitializeGameVars
-  SECTION: $1783-$179e ($001c bytes) ["OAM DMA routine"]
-           $1783 = CopyDMARoutine
-           $178a = CopyDMARoutine.copy
-           $1791 = DMARoutine
-           $1795 = DMARoutine.wait
-           $1799 = DMARoutineEnd
-           $1799 = OAMDMA
-  SECTION: $179f-$17b8 ($001a bytes) ["interrupts"]
-           $179f = VBlank_Interrupt
-           $17a0 = LCD_Interrupt
-           $17a6 = LCD_Interrupt.clouds
-           $17b3 = LCD_Interrupt.ground
-           $17b8 = LCD_Interrupt.end
-  SECTION: $17b9-$17cc ($0014 bytes) ["window map"]
-           $17b9 = WindowMap
-           $17cd = WindowMapEnd
-    SLACK: $2838 bytes
+           $168e = PREGAMELOOP
+           $1694 = GAMELOOP
+           $16b6 = GAMELOOP.END
+  SECTION: $16b9-$1718 ($0060 bytes) ["scroll"]
+           $16b9 = HorizontalScroll
+           $16c6 = HorizontalScroll.end
+           $16c8 = VerticalScroll
+           $16d6 = VerticalScroll.end
+           $16d8 = VerticalScrollGradual
+           $16e3 = VerticalScrollGradual.slowScroll2
+           $16ef = VerticalScrollGradual.fastScroll
+           $16fb = VerticalScrollGradual.slowScroll
+           $1705 = VerticalScrollGradual.end
+           $170e = SetClassicMapStartPoint
+           $1713 = ResetScroll
+  SECTION: $1719-$1768 ($0050 bytes) ["menu tiles"]
+           $1719 = MenuTiles
+           $1769 = MenuTilesEnd
+  SECTION: $1769-$1787 ($001f bytes) ["general initialization"]
+           $1769 = InitializeGameVars
+  SECTION: $1788-$17a3 ($001c bytes) ["OAM DMA routine"]
+           $1788 = CopyDMARoutine
+           $178f = CopyDMARoutine.copy
+           $1796 = DMARoutine
+           $179a = DMARoutine.wait
+           $179e = DMARoutineEnd
+           $179e = OAMDMA
+  SECTION: $17a4-$17bd ($001a bytes) ["interrupts"]
+           $17a4 = VBlank_Interrupt
+           $17a5 = LCD_Interrupt
+           $17ab = LCD_Interrupt.clouds
+           $17b8 = LCD_Interrupt.ground
+           $17bd = LCD_Interrupt.end
+  SECTION: $17be-$17d1 ($0014 bytes) ["window map"]
+           $17be = WindowMap
+           $17d2 = WindowMapEnd
+    SLACK: $2833 bytes
 
 ROMX bank #1:
   SECTION: $4000-$43ff ($0400 bytes) ["background map"]
@@ -486,7 +486,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $17c8 bytes in 1 bank
+    ROM0: $17cd bytes in 1 bank
     ROMX: $1193 bytes in 1 bank
     WRAM0: $0089 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
