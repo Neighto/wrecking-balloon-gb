@@ -8,6 +8,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	selected_mode:: DB
 	hand_waving_frame:: DB
 	cutscene_timer:: DB
+	scroll_speed:: DB
 
 	song_timer:: DB
 	song_index:: DB
