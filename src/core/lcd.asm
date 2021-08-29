@@ -32,7 +32,7 @@ WaitVBlank::
     set 1, [hl]
 .skipSpriteSet:
     jr nz, .loop
-    reti
+    ret
 
 WaitVBlankNoWindow::
     ld a, [rLY]

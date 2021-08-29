@@ -141,10 +141,11 @@ UpdateGlobalTimer::
 
 UpScrollOffset::
 	ld a, [global_timer]
-	and 15
+	and %00001111
 	jr nz, .end
+	
 	ld a, [scroll_offset]
-	add 1
+	inc a
 	ld [scroll_offset], a
 .end:
 	ret
