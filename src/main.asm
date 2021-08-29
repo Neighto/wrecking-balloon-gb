@@ -30,7 +30,7 @@ MENULOOP:
 
 STARTCLASSIC::
 	di
-	ld a, IEF_STAT ; Enable Vblank and LCD Interrupt ; | IEF_VBLANK
+	ld a, IEF_STAT ; Enable LCD Interrupt
 	ldh [rIE], a
 	ld a, 0
 	ldh [rLYC], a
@@ -60,14 +60,20 @@ STARTCLASSIC::
 	; call ClearBottom ; TESTING
 	call LCD_ON_BG_ONLY
 CUTSCENELOOP:
-	ei
-	call WaitVBlank
+	; ei
+	call WaitVBlankNoWindow
+	; call LCD_OFF
+	; di
 	call UpScrollOffset
-	call CheckCutsceneOver
+	; call CheckCutsceneOver
+	call PlayerUpdate
 	; call VerticalScrollGradual
 	call HandWaveAnimation
 	call UpdateGlobalTimer
+	; di
 	call OAMDMA
+	; call LCD_ON_BG_ONLY
+	; ei
 	jp CUTSCENELOOP
 
 PREGAMELOOP::
