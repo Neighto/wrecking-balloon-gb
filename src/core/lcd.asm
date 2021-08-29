@@ -112,7 +112,7 @@ VerticalScrollGradual::
     jr nz, .end
     ld a, [cutscene_timer]
 .slowScroll2:
-    cp a, 120
+    cp a, 140
     jr c, .fastScroll
     ldh a, [rSCY]
     sub 1

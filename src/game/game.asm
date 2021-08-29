@@ -62,14 +62,27 @@ MenuInput::
 .end:
 	ret
 
-CheckCutsceneOver::
-	; TODO could cause issues when < 0
+HandleCutsceneLoop::
+	; Can we end loop
 	ld a, [rSCY]
 	inc a
 	ld b, a
 	call OffScreenY
 	cp a, 0
 	call nz, PREGAMELOOP
+	; Can we scroll into the sky
+	ld a, [start_scroll]
+	cp a, 0
+	call nz, VerticalScrollGradual
+	; Can we start scrolling into the sky
+	call ReadInput
+	ld a, [joypad_down]
+	call JOY_UP
+	jr z, .end
+	ld a, 1
+	ld [start_scroll], a
+.end:
+
 	ret
 
 TryToUnpause::
@@ -141,7 +154,7 @@ UpdateGlobalTimer::
 
 UpScrollOffset::
 	ld a, [global_timer]
-	and %00001111
+	and %00011111
 	jr nz, .end
 	
 	ld a, [scroll_offset]
