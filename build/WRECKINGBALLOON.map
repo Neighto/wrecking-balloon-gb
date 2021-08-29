@@ -81,47 +81,47 @@ ROM0 bank #0:
            $1516 = SetupPalettes
            $1521 = RefreshScore
            $155f = RefreshLives
-  SECTION: $156a-$1639 ($00d0 bytes) ["rom"]
+  SECTION: $156a-$1634 ($00cb bytes) ["rom"]
            $156a = START
            $1598 = MENULOOP
            $15aa = STARTCLASSIC
            $15f4 = CUTSCENELOOP
-           $160f = PREGAMELOOP
-           $1615 = GAMELOOP
-           $1637 = GAMELOOP.END
-  SECTION: $163a-$1699 ($0060 bytes) ["scroll"]
-           $163a = HorizontalScroll
-           $1647 = HorizontalScroll.end
-           $1649 = VerticalScroll
-           $1657 = VerticalScroll.end
-           $1659 = VerticalScrollGradual
-           $1664 = VerticalScrollGradual.slowScroll2
-           $1670 = VerticalScrollGradual.fastScroll
-           $167c = VerticalScrollGradual.slowScroll
-           $1686 = VerticalScrollGradual.end
-           $168f = SetClassicMapStartPoint
-           $1694 = ResetScroll
-  SECTION: $169a-$16e9 ($0050 bytes) ["menu tiles"]
-           $169a = MenuTiles
-           $16ea = MenuTilesEnd
-  SECTION: $16ea-$170a ($0021 bytes) ["interrupts"]
-           $16ea = VBlank_Interrupt
-           $16eb = LCD_Interrupt
-           $16f6 = LCD_Interrupt.clouds
-           $1703 = LCD_Interrupt.ground
-  SECTION: $170b-$1726 ($001c bytes) ["OAM DMA routine"]
-           $170b = CopyDMARoutine
-           $1712 = CopyDMARoutine.copy
-           $1719 = DMARoutine
-           $171d = DMARoutine.wait
-           $1721 = DMARoutineEnd
-           $1721 = OAMDMA
-  SECTION: $1727-$1742 ($001c bytes) ["general initialization"]
-           $1727 = InitializeGameVars
-  SECTION: $1743-$1756 ($0014 bytes) ["window map"]
-           $1743 = WindowMap
-           $1757 = WindowMapEnd
-    SLACK: $28ae bytes
+           $160a = PREGAMELOOP
+           $1610 = GAMELOOP
+           $1632 = GAMELOOP.END
+  SECTION: $1635-$1694 ($0060 bytes) ["scroll"]
+           $1635 = HorizontalScroll
+           $1642 = HorizontalScroll.end
+           $1644 = VerticalScroll
+           $1652 = VerticalScroll.end
+           $1654 = VerticalScrollGradual
+           $165f = VerticalScrollGradual.slowScroll2
+           $166b = VerticalScrollGradual.fastScroll
+           $1677 = VerticalScrollGradual.slowScroll
+           $1681 = VerticalScrollGradual.end
+           $168a = SetClassicMapStartPoint
+           $168f = ResetScroll
+  SECTION: $1695-$16e4 ($0050 bytes) ["menu tiles"]
+           $1695 = MenuTiles
+           $16e5 = MenuTilesEnd
+  SECTION: $16e5-$1703 ($001f bytes) ["interrupts"]
+           $16e5 = VBlank_Interrupt
+           $16e6 = LCD_Interrupt
+           $16f1 = LCD_Interrupt.clouds
+           $16fe = LCD_Interrupt.ground
+  SECTION: $1704-$1722 ($001f bytes) ["general initialization"]
+           $1704 = InitializeGameVars
+  SECTION: $1723-$173e ($001c bytes) ["OAM DMA routine"]
+           $1723 = CopyDMARoutine
+           $172a = CopyDMARoutine.copy
+           $1731 = DMARoutine
+           $1735 = DMARoutine.wait
+           $1739 = DMARoutineEnd
+           $1739 = OAMDMA
+  SECTION: $173f-$1752 ($0014 bytes) ["window map"]
+           $173f = WindowMap
+           $1753 = WindowMapEnd
+    SLACK: $28b2 bytes
 
 ROMX bank #1:
   SECTION: $4000-$43ff ($0400 bytes) ["background map"]
@@ -325,7 +325,7 @@ ROMX bank #1:
            $4f39 = MenuBalloonUpdate.respawn
            $4f40 = MenuBalloonUpdate.end
            $4f41 = DeathOfPointBalloon
-  SECTION: $4f54-$501b ($00c8 bytes) ["game"]
+  SECTION: $4f54-$502b ($00d8 bytes) ["game"]
            $4f54 = SpawnMenuCursor
            $4f63 = MoveCursor
            $4f76 = MoveCursor.classicMode
@@ -346,56 +346,58 @@ ROMX bank #1:
            $5001 = HandWaveAnimation.frame1
            $5013 = HandWaveAnimation.end
            $5014 = UpdateGlobalTimer
-  SECTION: $501c-$50a9 ($008e bytes) ["sound"]
-           $501c = AUDIO_OFF
-           $5020 = AUDIO_ON
-           $5025 = PopSound
-           $5038 = FallingSound
-           $504d = StopFallingSound
-           $5052 = CollectSound
-           $5067 = WrongAnswerSound
-           $507e = Percussion
-           $508b = Percussion2
-           $5098 = Bass
-           $50a9 = PlayMusic
-           $50a9 = Song1
-           $50a9 = PlayMusic.end
-  SECTION: $50aa-$5111 ($0068 bytes) ["lcd"]
-           $50aa = LCD_OFF
-           $50af = LCD_ON
-           $50b4 = LCD_ON_BG_ONLY
-           $50b9 = WaitVBlank
-           $50bc = WaitVBlank.loop
-           $50c4 = WaitVBlank.skipSpriteReset
-           $50ca = WaitVBlank.skipSpriteSet
-           $50cd = WaitVBlankNoWindow
-           $50d4 = ClearAllTiles
-           $50f0 = ClearMap
-           $50f7 = ClearMap.clear_map_loop
-           $5109 = SetupWindow
-  SECTION: $5112-$5147 ($0036 bytes) ["math"]
-           $5112 = MODULO
-           $5114 = MODULO.loop
-           $5119 = RANDOM
-           $5122 = DIVISION
-           $5128 = DIVISION.loop
-           $512d = DIVISION.end
-           $5130 = ToBCD
-           $5146 = ToBCD.end
-  SECTION: $5148-$5165 ($001e bytes) ["memory"]
-           $5148 = MEMCPY.memcpy_loop
-           $5148 = MEMCPY
-           $514c = MEMCPY.memcpy_check_limit
-           $5152 = ClearOAM
-           $515c = ClearRAM
-  SECTION: $5166-$5183 ($001e bytes) ["enemy manager"]
-           $5166 = SpawnEnemyf
-           $5167 = ClassicGameManager
-           $517a = ClassicGameManager.levelThree
-           $517d = ClassicGameManager.levelTwo
-           $5180 = ClassicGameManager.levelOne
-           $5183 = ClassicGameManager.end
-    SLACK: $2e7c bytes
+           $501c = UpScrollOffset
+           $502b = UpScrollOffset.end
+  SECTION: $502c-$50b9 ($008e bytes) ["sound"]
+           $502c = AUDIO_OFF
+           $5030 = AUDIO_ON
+           $5035 = PopSound
+           $5048 = FallingSound
+           $505d = StopFallingSound
+           $5062 = CollectSound
+           $5077 = WrongAnswerSound
+           $508e = Percussion
+           $509b = Percussion2
+           $50a8 = Bass
+           $50b9 = PlayMusic
+           $50b9 = Song1
+           $50b9 = PlayMusic.end
+  SECTION: $50ba-$5121 ($0068 bytes) ["lcd"]
+           $50ba = LCD_OFF
+           $50bf = LCD_ON
+           $50c4 = LCD_ON_BG_ONLY
+           $50c9 = WaitVBlank
+           $50cc = WaitVBlank.loop
+           $50d4 = WaitVBlank.skipSpriteReset
+           $50da = WaitVBlank.skipSpriteSet
+           $50dd = WaitVBlankNoWindow
+           $50e4 = ClearAllTiles
+           $5100 = ClearMap
+           $5107 = ClearMap.clear_map_loop
+           $5119 = SetupWindow
+  SECTION: $5122-$5157 ($0036 bytes) ["math"]
+           $5122 = MODULO
+           $5124 = MODULO.loop
+           $5129 = RANDOM
+           $5132 = DIVISION
+           $5138 = DIVISION.loop
+           $513d = DIVISION.end
+           $5140 = ToBCD
+           $5156 = ToBCD.end
+  SECTION: $5158-$5175 ($001e bytes) ["memory"]
+           $5158 = MEMCPY.memcpy_loop
+           $5158 = MEMCPY
+           $515c = MEMCPY.memcpy_check_limit
+           $5162 = ClearOAM
+           $516c = ClearRAM
+  SECTION: $5176-$5193 ($001e bytes) ["enemy manager"]
+           $5176 = SpawnEnemyf
+           $5177 = ClassicGameManager
+           $518a = ClassicGameManager.levelThree
+           $518d = ClassicGameManager.levelTwo
+           $5190 = ClassicGameManager.levelOne
+           $5193 = ClassicGameManager.end
+    SLACK: $2e6c bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c044 ($0045 bytes) ["RAM vars"]
@@ -408,7 +410,7 @@ WRAM0 bank #0:
            $c008 = selected_mode
            $c009 = hand_waving_frame
            $c00a = cutscene_timer
-           $c00b = scroll_speed
+           $c00b = scroll_offset
            $c00c = song_timer
            $c00d = song_index
            $c00e = player_x
@@ -483,7 +485,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $1752 bytes in 1 bank
-    ROMX: $1184 bytes in 1 bank
+    ROM0: $174e bytes in 1 bank
+    ROMX: $1194 bytes in 1 bank
     WRAM0: $0089 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

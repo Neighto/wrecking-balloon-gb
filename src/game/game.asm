@@ -138,3 +138,13 @@ UpdateGlobalTimer::
 	inc	a
 	ld [global_timer], a
 	ret
+
+UpScrollOffset::
+	ld a, [global_timer]
+	and 15
+	jr nz, .end
+	ld a, [scroll_offset]
+	add 1
+	ld [scroll_offset], a
+.end:
+	ret
