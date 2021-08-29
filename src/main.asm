@@ -34,7 +34,7 @@ STARTCLASSIC::
 	ldh [rIE], a
 	ld a, 0
 	ldh [rLYC], a
-	ld a, $45
+	ld a, STATF_LYC
 	ldh [rSTAT], a
 	ei
 
@@ -61,13 +61,8 @@ STARTCLASSIC::
 	call LCD_ON_BG_ONLY
 CUTSCENELOOP:
 	ei
-	ld a, [scroll_speed]
-	add 4
-	ld [scroll_speed], a
 	call WaitVBlank
-	; ld a, [rSCX]
-	; inc a
-	; ldh [rSCX], a
+	call UpScrollOffset
 	call CheckCutsceneOver
 	; call VerticalScrollGradual
 	call HandWaveAnimation

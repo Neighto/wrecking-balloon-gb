@@ -8,7 +8,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	selected_mode:: DB
 	hand_waving_frame:: DB
 	cutscene_timer:: DB
-	scroll_speed:: DB
+	scroll_offset:: DB
 
 	song_timer:: DB
 	song_index:: DB
@@ -86,6 +86,7 @@ InitializeGameVars::
 	ld [selected_mode], a
 	ld [hand_waving_frame], a
 	ld [cutscene_timer], a
+	ld [scroll_offset], a
 
 	ld a, 2
 	ld [player_lives], a

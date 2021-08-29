@@ -9,20 +9,21 @@ LCD_Interrupt::
 	ld a, [rLYC]
 	cp a, 0
     jr z, .clouds
-    cp a, 72
+    cp a, 56
     jr z, .ground
     ret
 .clouds:
-    ld a, 72
+    ld a, 56
 	ld [rLYC], a
+    ; Scroll Screen
     ld a, [rSCX]
-    ld hl, scroll_speed
+    ld hl, scroll_offset
     add a, [hl]
 	ldh [rSCX], a
     ret
 .ground:
-    ld a, 0
+    xor a ; ld a, 0
 	ld [rLYC], a
-    xor a
+    ; Reset Scroll Screen
 	ldh [rSCX], a
     ret
