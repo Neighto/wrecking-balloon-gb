@@ -4,63 +4,7 @@ INCLUDE "hardware.inc"
 HAND_WAVE_START_X EQU 120
 HAND_WAVE_START_Y EQU 112
 
-SECTION "game", ROMX
-
-SpawnMenuCursor::
-	ld hl, player_cactus ; Borrow
-	ld a, 104 ; y
-	ld [hli], a
-	ld a, 56 ; x
-	ld [hli], a
-	ld [hl], $80
-	inc l
-	ld [hl], %00000000
-	ret
-
-MoveCursor:
-	call CollectSound
-	ld a, [selected_mode]
-	inc a
-	ld d, MENU_MODES
-	call MODULO
-	ld [selected_mode], a
-	cp a, 0
-	jr nz, .storyMode
-.classicMode:
-	ld a, 104
-	ld [player_cactus], a
-	ret
-.storyMode:
-	ld a, 120
-	ld [player_cactus], a
-	ret
-
-SelectMode:
-	ld a, [selected_mode]
-	cp a, 0
-	jr nz, .storyMode
-.classicMode:
-	call STARTCLASSIC
-	ret
-.storyMode:
-	; call STARTSTORY
-	ret
-
-MenuInput::
-	ld a, [global_timer]
-	and %00000011
-	jr nz, .end
-	call ReadInput	
-.moveSelected:
-	ld a, [joypad_pressed]
-	call JOY_SELECT
-	call nz, MoveCursor
-.selectMode:
-	ld a, [joypad_down]
-	call JOY_START
-	call nz, SelectMode
-.end:
-	ret
+SECTION "classic", ROMX
 
 HandleCutsceneLoop::
 	; Can we end loop
@@ -73,7 +17,7 @@ HandleCutsceneLoop::
 	; Can we scroll into the sky
 	ld a, [start_scroll]
 	cp a, 0
-	call nz, VerticalScrollGradual
+	call nz, ScrollIntoSky
 	; Can we start scrolling into the sky
 	call ReadInput
 	ld a, [joypad_down]
@@ -82,7 +26,6 @@ HandleCutsceneLoop::
 	ld a, 1
 	ld [start_scroll], a
 .end:
-
 	ret
 
 TryToUnpause::
@@ -146,13 +89,7 @@ HandWaveAnimation::
 .end:
 	ret
 
-UpdateGlobalTimer::
-	ld a, [global_timer]
-	inc	a
-	ld [global_timer], a
-	ret
-
-UpScrollOffset::
+IncrementScrollOffset::
 	ld a, [global_timer]
 	and %00011111
 	jr nz, .end
@@ -162,3 +99,61 @@ UpScrollOffset::
 	ld [scroll_offset], a
 .end:
 	ret
+
+ScrollIntoSky:
+    push af
+    ld a, [global_timer]
+    and	2
+    jr nz, .end
+    ld a, [cutscene_timer]
+.slowScroll2:
+    cp a, 140
+    jr c, .fastScroll
+    ldh a, [rSCY]
+    sub 1
+    ldh [rSCY], a
+    jr .end
+.fastScroll:
+    cp a, 50
+    jr c, .slowScroll
+    ldh a, [rSCY]
+    sub 2
+    ldh [rSCY], a
+    jr .end
+.slowScroll:
+    cp a, 30
+    jr c, .end
+    ldh a, [rSCY]
+    sub 1
+    ldh [rSCY], a
+.end:
+    ld a, [cutscene_timer]
+    inc a
+    ld [cutscene_timer], a
+    pop af
+    ret
+
+SetClassicMapStartPoint::
+    ld a, BACKGROUND_VSCROLL_START
+    ldh [rSCY], a
+    ret
+
+ClassicGameManager::
+    call PointBalloonUpdate
+
+    ld a, [difficulty_level]
+    cp a, 3
+    jr nc, .levelThree
+    cp a, 2
+    jr nc, .levelTwo
+    cp a, 1
+    jr nc, .levelOne
+    ret
+.levelThree:
+    call Enemy2Update
+.levelTwo:
+    call BirdUpdate
+.levelOne:
+	call EnemyUpdate
+.end:
+    ret

@@ -72,26 +72,38 @@ LoadGameData::
 	call MEMCPY
 	ret
 
+	; Function where we REPLACE tilemap for a new one
+ReplaceTilemapHorizontal::
+	; takes b as index of tilemap we want to replace (0= first 8 cols, 1= second 8 cols, etc [0-3])
+	; Replace 8 previous tile columns once we are past them
+	ld hl, $9800
+	ld bc, $07
+	; once we hit $07, then we add $20 to hl
+.loop:
+
+	ret
+
+
 	;; TODO !!! MASSIVELY CLEAN
-ClearBottom::
-    ld hl, $9A40
-    ld bc, $1BF
-    push hl
-.clear_map_loop
-    ;wait for hblank
-    ld  hl, rSTAT
-    bit 1, [hl]
-    jr nz, .clear_map_loop
-    pop hl
-    xor a ; ld a, 0
-    ld [hli], a
-    push hl
-    dec bc
-    ld a, b
-    or c
-    jr nz, .clear_map_loop
-    pop hl
-    ret
+; ClearBottom::
+;     ld hl, $9A40
+;     ld bc, $1BF
+;     push hl
+; .clear_map_loop
+;     ;wait for hblank
+;     ld  hl, rSTAT
+;     bit 1, [hl]
+;     jr nz, .clear_map_loop
+;     pop hl
+;     xor a ; ld a, 0
+;     ld [hli], a
+;     push hl
+;     dec bc
+;     ld a, b
+;     or c
+;     jr nz, .clear_map_loop
+;     pop hl
+;     ret
 
 LoadMenuData::
 	ld bc, MenuTitleTiles
