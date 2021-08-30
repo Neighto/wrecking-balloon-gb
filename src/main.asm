@@ -57,13 +57,12 @@ STARTCLASSIC::
 	call InitializeEnemy2
 	call InitializeBird
 	call RefreshLives
-	; call ClearBottom ; TESTING
 	call LCD_ON_BG_ONLY
 CUTSCENELOOP:
 	ei
 	call WaitVBlankNoWindow
 	di
-	call UpScrollOffset
+	call IncrementScrollOffset
 	call HandleCutsceneLoop
 	call PlayerUpdate
 	call HandWaveAnimation
