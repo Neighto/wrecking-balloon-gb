@@ -9,6 +9,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	hand_waving_frame:: DB
 	cutscene_timer:: DB
 	scroll_offset:: DB
+	scroll_offset2:: DB
 	start_scroll:: DB ; TODO: Lots of vars... Can maybe make more generic for reuse
 
 	song_timer:: DB
@@ -88,6 +89,7 @@ InitializeGameVars::
 	ld [hand_waving_frame], a
 	ld [cutscene_timer], a
 	ld [scroll_offset], a
+	ld [scroll_offset2], a
 	ld [start_scroll], a
 
 	ld a, 2

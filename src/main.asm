@@ -14,6 +14,8 @@ START::
 	call ClearAllTiles
 	call ResetScroll
 	call LoadMenuData
+	; ld hl, song_descriptor
+	; call hUGE_init
 	call SetupPalettes
 	call CopyDMARoutine
 	call InitializeGameVars
@@ -22,6 +24,7 @@ START::
 	call LCD_ON_BG_ONLY
 MENULOOP:
 	call WaitVBlankNoWindow
+	; call _hUGE_dosound
 	call UpdateGlobalTimer
 	call MenuBalloonUpdate
 	call MenuInput
