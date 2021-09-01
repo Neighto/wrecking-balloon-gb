@@ -8,13 +8,25 @@ VBlank_Interrupt::
 LCD_Interrupt::
 	ld a, [rLYC]
 	or a, 0
-    jr nz, .ground
+    jr z, .clouds
+    cp a, 56
+    jr z, .farClouds
+    jr .ground
 .clouds:
-    ld a, 56
+    ; ld a, 56
+	; ldh [rLYC], a
+    ; ; Scroll Screen
+    ; ld a, [rSCX]
+    ; ld hl, scroll_offset
+    ; add a, [hl]
+	; ldh [rSCX], a
+    ; ret
+.farClouds:
+    ld a, 80
 	ldh [rLYC], a
     ; Scroll Screen
     ld a, [rSCX]
-    ld hl, scroll_offset
+    ld hl, scroll_offset2
     add a, [hl]
 	ldh [rSCX], a
     ret
@@ -23,5 +35,4 @@ LCD_Interrupt::
 	ldh [rLYC], a
     ; ; Reset Scroll Screen
 	ldh [rSCX], a
-.end:
     ret

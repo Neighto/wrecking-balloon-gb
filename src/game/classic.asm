@@ -95,8 +95,13 @@ IncrementScrollOffset::
 	jr nz, .end
 	
 	ld a, [scroll_offset]
-	inc a
+	add a, 2
 	ld [scroll_offset], a
+
+    ld a, [scroll_offset2]
+    inc a
+    ld [scroll_offset2], a
+
 .end:
 	ret
 
