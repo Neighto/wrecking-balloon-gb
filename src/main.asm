@@ -43,7 +43,7 @@ STARTCLASSIC::
 
 	call WaitVBlank
 	call LCD_OFF
-	call SetupPalettes
+	call SetupClassicCutscenePalettes
 	call ClearMap
 	call ClearOAM
 	call ClearRAM
@@ -75,6 +75,7 @@ CUTSCENELOOP:
 
 PREGAMELOOP::
 	call ResetScroll
+	call SetupPalettes
 	call LCD_ON
 GAMELOOP:
 	call WaitVBlank

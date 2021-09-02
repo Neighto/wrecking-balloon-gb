@@ -31,216 +31,217 @@ ROM0 bank #0:
            $00f2 = DecrementPosition
            $00f7 = ResetInRange
   SECTION: $0100-$014f ($0050 bytes) ["header"]
-  SECTION: $0150-$098f ($0840 bytes) ["menu title tiles"]
-           $0150 = MenuTitleTiles
-           $0990 = MenuTitleTilesEnd
-  SECTION: $0990-$1130 ($07a1 bytes) ["Sound Driver"]
-           $0990 = _hUGE_init_banked
-           $0994 = _hUGE_init
-           $0996 = continue_init
-           $099f = _hUGE_mute_channel_banked
-           $09a3 = _hUGE_mute_channel
-           $09a5 = continue_mute
-           $09b0 = hUGE_mute_channel
-           $09b6 = hUGE_mute_channel.enable_loop
-           $09bd = hUGE_mute_channel.enable_cut
-           $09ca = _hUGE_set_position_banked
-           $09ce = _hUGE_set_position
-           $09d0 = continue_set_position
-           $09d7 = hUGE_init
-           $09de = hUGE_init.fill_loop
-           $0a02 = hUGE_init.copy_song_descriptor_loop
-           $0a0c = _refresh_patterns
-           $0a26 = _refresh_patterns.load_pattern
-           $0a36 = _load_note_data
-           $0a48 = _lookup_note
-           $0a52 = _convert_note
-           $0a60 = _convert_ch4_note
-           $0a77 = _update_channel
-           $0a81 = _update_channel1
-           $0a8f = _update_channel2
-           $0a9d = _update_channel3
-           $0aab = _update_channel4
-           $0abb = _playnote1
-           $0ad6 = _playnote2
-           $0af1 = _playnote3
-           $0b12 = _playnote4
-           $0b26 = _doeffect
-           $0b3b = _doeffect.jump
-           $0b6b = setup_channel_pointer
-           $0b79 = fx_set_master_volume
-           $0b7e = fx_call_routine
-           $0ba0 = fx_call_routine.call_hl
-           $0ba1 = fx_set_pan
-           $0ba6 = fx_set_duty
-           $0bab = fx_set_duty.chan2
-           $0bb5 = fx_set_duty.chan1
-           $0bbf = fx_vol_slide
-           $0bc6 = fx_vol_slide.loop
-           $0bcb = fx_vol_slide.cont
-           $0bfd = fx_vol_slide.cont1
-           $0c04 = fx_vol_slide.cont2
-           $0c18 = _envelope_registers
-           $0c20 = fx_note_delay
-           $0c39 = fx_note_delay.play_note
-           $0c57 = _play_note_routines
-           $0c63 = fx_set_speed
-           $0c69 = hUGE_set_position
-           $0c69 = fx_pos_jump
-           $0c73 = fx_pattern_break
-           $0c78 = fx_note_cut
-           $0c80 = fx_note_cut.loop
-           $0c85 = fx_note_cut.cont
-           $0c8a = note_cut
-           $0ca1 = fx_set_volume
-           $0ca2 = set_channel_volume
-           $0cad = set_chn_3_vol
-           $0cbf = set_chn_3_vol.three
-           $0cc3 = set_chn_3_vol.two
-           $0cc7 = set_chn_3_vol.one
-           $0ccb = set_chn_3_vol.zero
-           $0ccc = set_chn_3_vol.done
-           $0ccf = set_chn_2_vol
-           $0cdf = set_chn_1_vol
-           $0cef = set_chn_4_vol
-           $0cfb = fx_vibrato
-           $0d0e = fx_vibrato.restore
-           $0d13 = fx_vibrato.go_up
-           $0d1e = fx_vibrato.finish_vibrato
-           $0d24 = fx_arpeggio
-           $0d30 = fx_arpeggio.greater_than_two
-           $0d32 = fx_arpeggio.test_greater_than_two
-           $0d41 = fx_arpeggio.arp_options
-           $0d47 = fx_arpeggio.reset_arp
-           $0d4a = fx_arpeggio.set_arp2
-           $0d4f = fx_arpeggio.set_arp1
-           $0d50 = fx_arpeggio.finish_arp
-           $0d53 = fx_arpeggio.finish_skip_add
-           $0d5c = fx_porta_up
-           $0d6b = fx_porta_up.finish
-           $0d72 = fx_porta_down
-           $0d84 = fx_toneporta
-           $0d96 = fx_toneporta.return_skip
-           $0da0 = fx_toneporta.do_toneporta
-           $0db5 = fx_toneporta.high_byte_same
-           $0dbb = fx_toneporta.add
-           $0dcd = fx_toneporta.subtract
-           $0de3 = fx_toneporta.set_exact
-           $0de5 = fx_toneporta.done
-           $0df8 = _setup_instrument_pointer_ch4
-           $0e03 = _setup_instrument_pointer
-           $0e0a = _setup_instrument_pointer.finish
-           $0e13 = _hUGE_dosound_banked
-           $0e13 = _hUGE_dosound
-           $0e52 = _hUGE_dosound.write_mask1
-           $0e55 = _hUGE_dosound.do_setvol1
-           $0e68 = _hUGE_dosound.after_note1
-           $0e9d = _hUGE_dosound.write_mask2
-           $0ea0 = _hUGE_dosound.do_setvol2
-           $0eb3 = _hUGE_dosound.after_note2
-           $0f3a = _hUGE_dosound.no_wave_copy
-           $0f3b = _hUGE_dosound.write_mask3
-           $0f3e = _hUGE_dosound.do_setvol3
-           $0f49 = _hUGE_dosound.after_note3
-           $0f9a = _hUGE_dosound.write_mask4
-           $0f9d = _hUGE_dosound.do_setvol4
-           $0fa8 = _hUGE_dosound.after_note4
-           $0fab = _hUGE_dosound.process_effects
-           $0fc7 = _hUGE_dosound.after_effect1
-           $0fe3 = _hUGE_dosound.after_effect2
-           $0fff = _hUGE_dosound.after_effect3
-           $104a = _hUGE_dosound.done_macro
-           $1053 = process_tick
-           $1053 = _hUGE_dosound.after_effect4
-           $1065 = _newrow
-           $107d = _newrow.no_break
-           $1088 = _neworder
-           $1095 = _update_current_order
-           $109c = _noreset
-           $10a1 = note_table
-  SECTION: $1131-$1530 ($0400 bytes) ["menu map"]
-           $1131 = MenuMap
-           $1531 = MenuMapEnd
-  SECTION: $1531-$1890 ($0360 bytes) ["background tiles"]
-           $1531 = BackgroundTiles
-           $1891 = BackgroundTilesEnd
-  SECTION: $1891-$1a50 ($01c0 bytes) ["cactus tiles"]
-           $1891 = CactusTiles
-           $1a51 = CactusTilesEnd
-  SECTION: $1a51-$1b6f ($011f bytes) ["collision"]
-           $1a51 = CollisionCheck
-           $1a5e = CollisionCheck.tryOtherY
-           $1a66 = CollisionCheck.skip8x8Adjustment
-           $1a72 = CollisionCheck.checkX
-           $1a7f = CollisionCheck.tryOtherX
-           $1a8c = CollisionCheck.collision
-           $1a90 = CollisionCheck.end
-           $1a94 = CollisionUpdate
-           $1abc = CollisionUpdate.endPointBalloon
-           $1ad6 = CollisionUpdate.checkEnemyHitPlayer
-           $1ae6 = CollisionUpdate.endEnemy
-           $1b00 = CollisionUpdate.checkEnemy2HitPlayer
-           $1b10 = CollisionUpdate.endEnemy2
-           $1b17 = CollisionUpdate.checkBirdHitPlayer
-           $1b28 = CollisionUpdate.endBird
-           $1b29 = CollisionUpdate.collisionWithPlayer
-           $1b33 = CollisionUpdate.end
-           $1b33 = CollisionUpdate.endEnemyHitPlayer
-           $1b34 = OffScreenXEnemies
-           $1b45 = OffScreenXEnemies.end
-           $1b47 = OffScreenYEnemies
-           $1b58 = OffScreenYEnemies.end
-           $1b5a = OffScreenX
-           $1b62 = OffScreenX.end
-           $1b64 = OffScreenY
-           $1b6e = OffScreenY.end
-  SECTION: $1b70-$1c7f ($0110 bytes) ["window tiles"]
-           $1b70 = WindowTiles
-           $1c80 = WindowTilesEnd
-  SECTION: $1c80-$1d4e ($00cf bytes) ["rom"]
-           $1c80 = START
-           $1cae = MENULOOP
-           $1cc0 = STARTCLASSIC
-           $1d0a = CUTSCENELOOP
-           $1d24 = PREGAMELOOP
-           $1d2a = GAMELOOP
-           $1d4c = GAMELOOP.END
-  SECTION: $1d4f-$1e17 ($00c9 bytes) ["graphics"]
-           $1d4f = LoadGameData
-           $1d98 = ReplaceTilemapHorizontal
-           $1d9e = ReplaceTilemapHorizontal.loop
-           $1d9f = LoadMenuData
-           $1dc4 = SetupPalettes
-           $1dcf = RefreshScore
-           $1e0d = RefreshLives
-  SECTION: $1e18-$1e67 ($0050 bytes) ["menu tiles"]
-           $1e18 = MenuTiles
-           $1e68 = MenuTilesEnd
-  SECTION: $1e68-$1e8c ($0025 bytes) ["scroll"]
-           $1e68 = HorizontalScroll
-           $1e75 = HorizontalScroll.end
-           $1e77 = VerticalScroll
-           $1e85 = VerticalScroll.end
-           $1e87 = ResetScroll
-  SECTION: $1e8d-$1eb1 ($0025 bytes) ["general initialization"]
-           $1e8d = InitializeGameVars
-  SECTION: $1eb2-$1ed1 ($0020 bytes) ["interrupts"]
-           $1eb2 = VBlank_Interrupt
-           $1eb3 = LCD_Interrupt
-           $1ebf = LCD_Interrupt.clouds
-           $1ebf = LCD_Interrupt.farClouds
-           $1ecc = LCD_Interrupt.ground
-  SECTION: $1ed2-$1eed ($001c bytes) ["OAM DMA routine"]
-           $1ed2 = CopyDMARoutine
-           $1ed9 = CopyDMARoutine.copy
-           $1ee0 = DMARoutine
-           $1ee4 = DMARoutine.wait
-           $1ee8 = DMARoutineEnd
-           $1ee8 = OAMDMA
-  SECTION: $1eee-$1f01 ($0014 bytes) ["window map"]
-           $1eee = WindowMap
-           $1f02 = WindowMapEnd
-    SLACK: $2103 bytes
+  SECTION: $0150-$08f0 ($07a1 bytes) ["Sound Driver"]
+           $0150 = _hUGE_init_banked
+           $0154 = _hUGE_init
+           $0156 = continue_init
+           $015f = _hUGE_mute_channel_banked
+           $0163 = _hUGE_mute_channel
+           $0165 = continue_mute
+           $0170 = hUGE_mute_channel
+           $0176 = hUGE_mute_channel.enable_loop
+           $017d = hUGE_mute_channel.enable_cut
+           $018a = _hUGE_set_position_banked
+           $018e = _hUGE_set_position
+           $0190 = continue_set_position
+           $0197 = hUGE_init
+           $019e = hUGE_init.fill_loop
+           $01c2 = hUGE_init.copy_song_descriptor_loop
+           $01cc = _refresh_patterns
+           $01e6 = _refresh_patterns.load_pattern
+           $01f6 = _load_note_data
+           $0208 = _lookup_note
+           $0212 = _convert_note
+           $0220 = _convert_ch4_note
+           $0237 = _update_channel
+           $0241 = _update_channel1
+           $024f = _update_channel2
+           $025d = _update_channel3
+           $026b = _update_channel4
+           $027b = _playnote1
+           $0296 = _playnote2
+           $02b1 = _playnote3
+           $02d2 = _playnote4
+           $02e6 = _doeffect
+           $02fb = _doeffect.jump
+           $032b = setup_channel_pointer
+           $0339 = fx_set_master_volume
+           $033e = fx_call_routine
+           $0360 = fx_call_routine.call_hl
+           $0361 = fx_set_pan
+           $0366 = fx_set_duty
+           $036b = fx_set_duty.chan2
+           $0375 = fx_set_duty.chan1
+           $037f = fx_vol_slide
+           $0386 = fx_vol_slide.loop
+           $038b = fx_vol_slide.cont
+           $03bd = fx_vol_slide.cont1
+           $03c4 = fx_vol_slide.cont2
+           $03d8 = _envelope_registers
+           $03e0 = fx_note_delay
+           $03f9 = fx_note_delay.play_note
+           $0417 = _play_note_routines
+           $0423 = fx_set_speed
+           $0429 = hUGE_set_position
+           $0429 = fx_pos_jump
+           $0433 = fx_pattern_break
+           $0438 = fx_note_cut
+           $0440 = fx_note_cut.loop
+           $0445 = fx_note_cut.cont
+           $044a = note_cut
+           $0461 = fx_set_volume
+           $0462 = set_channel_volume
+           $046d = set_chn_3_vol
+           $047f = set_chn_3_vol.three
+           $0483 = set_chn_3_vol.two
+           $0487 = set_chn_3_vol.one
+           $048b = set_chn_3_vol.zero
+           $048c = set_chn_3_vol.done
+           $048f = set_chn_2_vol
+           $049f = set_chn_1_vol
+           $04af = set_chn_4_vol
+           $04bb = fx_vibrato
+           $04ce = fx_vibrato.restore
+           $04d3 = fx_vibrato.go_up
+           $04de = fx_vibrato.finish_vibrato
+           $04e4 = fx_arpeggio
+           $04f0 = fx_arpeggio.greater_than_two
+           $04f2 = fx_arpeggio.test_greater_than_two
+           $0501 = fx_arpeggio.arp_options
+           $0507 = fx_arpeggio.reset_arp
+           $050a = fx_arpeggio.set_arp2
+           $050f = fx_arpeggio.set_arp1
+           $0510 = fx_arpeggio.finish_arp
+           $0513 = fx_arpeggio.finish_skip_add
+           $051c = fx_porta_up
+           $052b = fx_porta_up.finish
+           $0532 = fx_porta_down
+           $0544 = fx_toneporta
+           $0556 = fx_toneporta.return_skip
+           $0560 = fx_toneporta.do_toneporta
+           $0575 = fx_toneporta.high_byte_same
+           $057b = fx_toneporta.add
+           $058d = fx_toneporta.subtract
+           $05a3 = fx_toneporta.set_exact
+           $05a5 = fx_toneporta.done
+           $05b8 = _setup_instrument_pointer_ch4
+           $05c3 = _setup_instrument_pointer
+           $05ca = _setup_instrument_pointer.finish
+           $05d3 = _hUGE_dosound_banked
+           $05d3 = _hUGE_dosound
+           $0612 = _hUGE_dosound.write_mask1
+           $0615 = _hUGE_dosound.do_setvol1
+           $0628 = _hUGE_dosound.after_note1
+           $065d = _hUGE_dosound.write_mask2
+           $0660 = _hUGE_dosound.do_setvol2
+           $0673 = _hUGE_dosound.after_note2
+           $06fa = _hUGE_dosound.no_wave_copy
+           $06fb = _hUGE_dosound.write_mask3
+           $06fe = _hUGE_dosound.do_setvol3
+           $0709 = _hUGE_dosound.after_note3
+           $075a = _hUGE_dosound.write_mask4
+           $075d = _hUGE_dosound.do_setvol4
+           $0768 = _hUGE_dosound.after_note4
+           $076b = _hUGE_dosound.process_effects
+           $0787 = _hUGE_dosound.after_effect1
+           $07a3 = _hUGE_dosound.after_effect2
+           $07bf = _hUGE_dosound.after_effect3
+           $080a = _hUGE_dosound.done_macro
+           $0813 = process_tick
+           $0813 = _hUGE_dosound.after_effect4
+           $0825 = _newrow
+           $083d = _newrow.no_break
+           $0848 = _neworder
+           $0855 = _update_current_order
+           $085c = _noreset
+           $0861 = note_table
+  SECTION: $08f1-$1020 ($0730 bytes) ["menu title tiles"]
+           $08f1 = MenuTitleTiles
+           $1021 = MenuTitleTilesEnd
+  SECTION: $1021-$1420 ($0400 bytes) ["menu map"]
+           $1021 = MenuMap
+           $1421 = MenuMapEnd
+  SECTION: $1421-$1780 ($0360 bytes) ["background tiles"]
+           $1421 = BackgroundTiles
+           $1781 = BackgroundTilesEnd
+  SECTION: $1781-$1940 ($01c0 bytes) ["cactus tiles"]
+           $1781 = CactusTiles
+           $1941 = CactusTilesEnd
+  SECTION: $1941-$1a5f ($011f bytes) ["collision"]
+           $1941 = CollisionCheck
+           $194e = CollisionCheck.tryOtherY
+           $1956 = CollisionCheck.skip8x8Adjustment
+           $1962 = CollisionCheck.checkX
+           $196f = CollisionCheck.tryOtherX
+           $197c = CollisionCheck.collision
+           $1980 = CollisionCheck.end
+           $1984 = CollisionUpdate
+           $19ac = CollisionUpdate.endPointBalloon
+           $19c6 = CollisionUpdate.checkEnemyHitPlayer
+           $19d6 = CollisionUpdate.endEnemy
+           $19f0 = CollisionUpdate.checkEnemy2HitPlayer
+           $1a00 = CollisionUpdate.endEnemy2
+           $1a07 = CollisionUpdate.checkBirdHitPlayer
+           $1a18 = CollisionUpdate.endBird
+           $1a19 = CollisionUpdate.collisionWithPlayer
+           $1a23 = CollisionUpdate.end
+           $1a23 = CollisionUpdate.endEnemyHitPlayer
+           $1a24 = OffScreenXEnemies
+           $1a35 = OffScreenXEnemies.end
+           $1a37 = OffScreenYEnemies
+           $1a48 = OffScreenYEnemies.end
+           $1a4a = OffScreenX
+           $1a52 = OffScreenX.end
+           $1a54 = OffScreenY
+           $1a5e = OffScreenY.end
+  SECTION: $1a60-$1b6f ($0110 bytes) ["window tiles"]
+           $1a60 = WindowTiles
+           $1b70 = WindowTilesEnd
+  SECTION: $1b70-$1c45 ($00d6 bytes) ["graphics"]
+           $1b70 = LoadGameData
+           $1bb9 = ReplaceTilemapHorizontal
+           $1bbf = ReplaceTilemapHorizontal.loop
+           $1bc0 = LoadMenuData
+           $1be5 = SetupPalettes
+           $1bf0 = SetupClassicCutscenePalettes
+           $1bfd = RefreshScore
+           $1c3b = RefreshLives
+  SECTION: $1c46-$1d17 ($00d2 bytes) ["rom"]
+           $1c46 = START
+           $1c74 = MENULOOP
+           $1c86 = STARTCLASSIC
+           $1cd0 = CUTSCENELOOP
+           $1cea = PREGAMELOOP
+           $1cf3 = GAMELOOP
+           $1d15 = GAMELOOP.END
+  SECTION: $1d18-$1d67 ($0050 bytes) ["menu tiles"]
+           $1d18 = MenuTiles
+           $1d68 = MenuTilesEnd
+  SECTION: $1d68-$1d97 ($0030 bytes) ["interrupts"]
+           $1d68 = VBlank_Interrupt
+           $1d69 = LCD_Interrupt
+           $1d75 = LCD_Interrupt.clouds
+           $1d82 = LCD_Interrupt.farClouds
+           $1d92 = LCD_Interrupt.ground
+  SECTION: $1d98-$1dbc ($0025 bytes) ["scroll"]
+           $1d98 = HorizontalScroll
+           $1da5 = HorizontalScroll.end
+           $1da7 = VerticalScroll
+           $1db5 = VerticalScroll.end
+           $1db7 = ResetScroll
+  SECTION: $1dbd-$1de1 ($0025 bytes) ["general initialization"]
+           $1dbd = InitializeGameVars
+  SECTION: $1de2-$1dfd ($001c bytes) ["OAM DMA routine"]
+           $1de2 = CopyDMARoutine
+           $1de9 = CopyDMARoutine.copy
+           $1df0 = DMARoutine
+           $1df4 = DMARoutine.wait
+           $1df8 = DMARoutineEnd
+           $1df8 = OAMDMA
+  SECTION: $1dfe-$1e11 ($0014 bytes) ["window map"]
+           $1dfe = WindowMap
+           $1e12 = WindowMapEnd
+    SLACK: $21f3 bytes
 
 ROMX bank #1:
   SECTION: $4000-$4d15 ($0d16 bytes) ["Song Data"]
@@ -563,7 +564,7 @@ ROMX bank #1:
            $5c4f = MenuBalloonUpdate.respawn
            $5c56 = MenuBalloonUpdate.end
            $5c57 = DeathOfPointBalloon
-  SECTION: $5c6a-$5d59 ($00f0 bytes) ["classic"]
+  SECTION: $5c6a-$5d5f ($00f6 bytes) ["classic"]
            $5c6a = HandleCutsceneLoop
            $5c8e = HandleCutsceneLoop.end
            $5c8f = TryToUnpause
@@ -574,75 +575,77 @@ ROMX bank #1:
            $5cd8 = HandWaveAnimation.frame1
            $5cea = HandWaveAnimation.end
            $5ceb = IncrementScrollOffset
-           $5d01 = IncrementScrollOffset.end
-           $5d02 = ScrollIntoSky
-           $5d0d = ScrollIntoSky.slowScroll2
-           $5d19 = ScrollIntoSky.fastScroll
-           $5d25 = ScrollIntoSky.slowScroll
-           $5d2f = ScrollIntoSky.end
-           $5d38 = SetClassicMapStartPoint
-           $5d3d = ClassicGameManager
-           $5d50 = ClassicGameManager.levelThree
-           $5d53 = ClassicGameManager.levelTwo
-           $5d56 = ClassicGameManager.levelOne
-           $5d59 = ClassicGameManager.end
-  SECTION: $5d5a-$5de7 ($008e bytes) ["sound"]
-           $5d5a = AUDIO_OFF
-           $5d5e = AUDIO_ON
-           $5d63 = PopSound
-           $5d76 = FallingSound
-           $5d8b = StopFallingSound
-           $5d90 = CollectSound
-           $5da5 = WrongAnswerSound
-           $5dbc = Percussion
-           $5dc9 = Percussion2
-           $5dd6 = Bass
-           $5de7 = PlayMusic
-           $5de7 = Song1
-           $5de7 = PlayMusic.end
-  SECTION: $5de8-$5e4f ($0068 bytes) ["lcd"]
-           $5de8 = LCD_OFF
-           $5ded = LCD_ON
-           $5df2 = LCD_ON_BG_ONLY
-           $5df7 = WaitVBlank
-           $5dfa = WaitVBlank.loop
-           $5e02 = WaitVBlank.skipSpriteReset
-           $5e08 = WaitVBlank.skipSpriteSet
-           $5e0b = WaitVBlankNoWindow
-           $5e12 = ClearAllTiles
-           $5e2e = ClearMap
-           $5e35 = ClearMap.clear_map_loop
-           $5e47 = SetupWindow
-  SECTION: $5e50-$5ea6 ($0057 bytes) ["menu"]
-           $5e50 = SpawnMenuCursor
-           $5e5f = MoveCursor
-           $5e72 = MoveCursor.classicMode
-           $5e78 = MoveCursor.storyMode
-           $5e7e = SelectMode
-           $5e85 = SelectMode.classicMode
-           $5e89 = SelectMode.storyMode
-           $5e8a = MenuInput
-           $5e94 = MenuInput.moveSelected
-           $5e9d = MenuInput.selectMode
-           $5ea6 = MenuInput.end
-  SECTION: $5ea7-$5edc ($0036 bytes) ["math"]
-           $5ea7 = MODULO
-           $5ea9 = MODULO.loop
-           $5eae = RANDOM
-           $5eb7 = DIVISION
-           $5ebd = DIVISION.loop
-           $5ec2 = DIVISION.end
-           $5ec5 = ToBCD
-           $5edb = ToBCD.end
-  SECTION: $5edd-$5efa ($001e bytes) ["memory"]
-           $5edd = MEMCPY.memcpy_loop
-           $5edd = MEMCPY
-           $5ee1 = MEMCPY.memcpy_check_limit
-           $5ee7 = ClearOAM
-           $5ef1 = ClearRAM
-  SECTION: $5efb-$5f02 ($0008 bytes) ["timer"]
-           $5efb = UpdateGlobalTimer
-    SLACK: $20fd bytes
+           $5ceb = IncrementScrollOffset.scrollOffset1
+           $5cf9 = IncrementScrollOffset.scrollOffset2
+           $5d07 = IncrementScrollOffset.end
+           $5d08 = ScrollIntoSky
+           $5d13 = ScrollIntoSky.slowScroll2
+           $5d1f = ScrollIntoSky.fastScroll
+           $5d2b = ScrollIntoSky.slowScroll
+           $5d35 = ScrollIntoSky.end
+           $5d3e = SetClassicMapStartPoint
+           $5d43 = ClassicGameManager
+           $5d56 = ClassicGameManager.levelThree
+           $5d59 = ClassicGameManager.levelTwo
+           $5d5c = ClassicGameManager.levelOne
+           $5d5f = ClassicGameManager.end
+  SECTION: $5d60-$5ded ($008e bytes) ["sound"]
+           $5d60 = AUDIO_OFF
+           $5d64 = AUDIO_ON
+           $5d69 = PopSound
+           $5d7c = FallingSound
+           $5d91 = StopFallingSound
+           $5d96 = CollectSound
+           $5dab = WrongAnswerSound
+           $5dc2 = Percussion
+           $5dcf = Percussion2
+           $5ddc = Bass
+           $5ded = PlayMusic
+           $5ded = Song1
+           $5ded = PlayMusic.end
+  SECTION: $5dee-$5e55 ($0068 bytes) ["lcd"]
+           $5dee = LCD_OFF
+           $5df3 = LCD_ON
+           $5df8 = LCD_ON_BG_ONLY
+           $5dfd = WaitVBlank
+           $5e00 = WaitVBlank.loop
+           $5e08 = WaitVBlank.skipSpriteReset
+           $5e0e = WaitVBlank.skipSpriteSet
+           $5e11 = WaitVBlankNoWindow
+           $5e18 = ClearAllTiles
+           $5e34 = ClearMap
+           $5e3b = ClearMap.clear_map_loop
+           $5e4d = SetupWindow
+  SECTION: $5e56-$5eac ($0057 bytes) ["menu"]
+           $5e56 = SpawnMenuCursor
+           $5e65 = MoveCursor
+           $5e78 = MoveCursor.classicMode
+           $5e7e = MoveCursor.storyMode
+           $5e84 = SelectMode
+           $5e8b = SelectMode.classicMode
+           $5e8f = SelectMode.storyMode
+           $5e90 = MenuInput
+           $5e9a = MenuInput.moveSelected
+           $5ea3 = MenuInput.selectMode
+           $5eac = MenuInput.end
+  SECTION: $5ead-$5ee2 ($0036 bytes) ["math"]
+           $5ead = MODULO
+           $5eaf = MODULO.loop
+           $5eb4 = RANDOM
+           $5ebd = DIVISION
+           $5ec3 = DIVISION.loop
+           $5ec8 = DIVISION.end
+           $5ecb = ToBCD
+           $5ee1 = ToBCD.end
+  SECTION: $5ee3-$5f00 ($001e bytes) ["memory"]
+           $5ee3 = MEMCPY.memcpy_loop
+           $5ee3 = MEMCPY
+           $5ee7 = MEMCPY.memcpy_check_limit
+           $5eed = ClearOAM
+           $5ef7 = ClearRAM
+  SECTION: $5f01-$5f08 ($0008 bytes) ["timer"]
+           $5f01 = UpdateGlobalTimer
+    SLACK: $20f7 bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c046 ($0047 bytes) ["RAM vars"]
@@ -791,7 +794,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $1efd bytes in 1 bank
-    ROMX: $1f03 bytes in 1 bank
+    ROM0: $1e0d bytes in 1 bank
+    ROMX: $1f09 bytes in 1 bank
     WRAM0: $00d1 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
