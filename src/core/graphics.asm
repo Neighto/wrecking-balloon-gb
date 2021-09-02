@@ -124,8 +124,17 @@ SetupPalettes::
     ld a, %11100100
     ldh [rBGP], a
     ldh [rOCPD], a
-    ldh [rOBP0], a
-    ldh [rOBP1], a
+	ldh [rOBP1], a
+	ldh [rOBP0], a
+    ret
+
+SetupClassicCutscenePalettes::
+	ld a, %11100100
+    ldh [rBGP], a
+    ldh [rOCPD], a
+	ldh [rOBP1], a
+	ld a, %11100001
+	ldh [rOBP0], a
     ret
 
 RefreshScore::
