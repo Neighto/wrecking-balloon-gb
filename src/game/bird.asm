@@ -12,7 +12,7 @@ BIRD_SPAWN_C EQU 80
 BIRD_SPAWN_D EQU 110
 
 UpdateBirdPosition:
-    ld hl, bird
+    ld hl, wBird
     ; Update Y
     ld a, [bird_y]
     ld [hli], a
@@ -20,7 +20,7 @@ UpdateBirdPosition:
     ld a, [bird_x]
     ld [hl], a
   
-    ld hl, bird+4
+    ld hl, wBird+4
     ; Update Y
     ld a, [bird_y]
     ld [hli], a
@@ -29,7 +29,7 @@ UpdateBirdPosition:
     add 8
     ld [hl], a
 
-    ld hl, bird+8
+    ld hl, wBird+8
     ; Update Y
     ld a, [bird_y]
     ld [hli], a
@@ -86,7 +86,7 @@ SpawnBirdRight:
     ld [bird_alive], a
     ld [bird_spawn_right], a
     ; Bird left
-    ld hl, bird
+    ld hl, wBird
     ld a, [bird_y]
     ld [hli], a
     ld a, [bird_x]
@@ -95,7 +95,7 @@ SpawnBirdRight:
     inc l
     ld [hl], %00000000
     ; Bird middle
-    ld hl, bird+4
+    ld hl, wBird+4
     ld a, [bird_y]
     ld [hli], a
     ld a, [bird_x]
@@ -105,7 +105,7 @@ SpawnBirdRight:
     inc l
     ld [hl], %00000000
     ; Bird right
-    ld hl, bird+8
+    ld hl, wBird+8
     ld a, [bird_y]
     ld [hli], a
     ld a, [bird_x]
@@ -127,7 +127,7 @@ SpawnBirdLeft:
     ld a, 1
     ld [bird_alive], a
     ; Bird left
-    ld hl, bird
+    ld hl, wBird
     ld a, [bird_y]
     ld [hli], a
     ld a, [bird_x]
@@ -136,7 +136,7 @@ SpawnBirdLeft:
     inc l
     ld [hl], %00100000
     ; Bird middle
-    ld hl, bird+4
+    ld hl, wBird+4
     ld a, [bird_y]
     ld [hli], a
     ld a, [bird_x]
@@ -146,7 +146,7 @@ SpawnBirdLeft:
     inc l
     ld [hl], %00100000
     ; Bird right
-    ld hl, bird+8
+    ld hl, wBird+8
     ld a, [bird_y]
     ld [hli], a
     ld a, [bird_x]
@@ -199,15 +199,15 @@ BirdAnimate:
     ld a, [global_timer]
     and 7 ; bird_flapping_speed
     jp nz, .end
-    ld hl, bird+6
+    ld hl, wBird+6
     ld [hl], $98
     ld a, [bird_spawn_right]
     cp a, 0
     jr nz, .frame0FacingLeft
-    ld hl, bird+2
+    ld hl, wBird+2
     jr .frame0FacingEnd
 .frame0FacingLeft:
-    ld hl, bird+10
+    ld hl, wBird+10
 .frame0FacingEnd:
     ld [hl], $9A
     ld hl, bird_flapping_frame
@@ -217,15 +217,15 @@ BirdAnimate:
     ld a, [global_timer]
     and %00111111 ; bird_flapping_speed
     jp nz, .end
-    ld hl, bird+6
+    ld hl, wBird+6
     ld [hl], $94
     ld a, [bird_spawn_right]
     cp a, 0
     jr nz, .frame1FacingLeft
-    ld hl, bird+2
+    ld hl, wBird+2
     jr .frame1FacingEnd
 .frame1FacingLeft:
-    ld hl, bird+10
+    ld hl, wBird+10
 .frame1FacingEnd:
     ld [hl], $96
     ld hl, bird_flapping_frame

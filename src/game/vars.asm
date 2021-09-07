@@ -97,11 +97,11 @@ InitializeGameVars::
 	ret
 
 SECTION "OAM vars", WRAM0[$C100]
-	player_cactus:: DS 4*2
-	player_balloon:: DS 4*2
-	point_balloon:: DS 4*2
-	enemy_cactus:: DS 4*2
-	enemy_balloon:: DS 4*2
-	enemy2_cactus:: DS 4*2
-	enemy2_balloon:: DS 4*2
-	bird:: DS 4*3
+	wPlayerCactus:: DS 4*2
+	wPlayerBalloon:: DS 4*2
+	wPointBalloon:: DS 4*2
+	wEnemyCactus:: DS 4*2
+	wEnemyBalloon:: DS 4*2
+	wEnemy2Cactus:: DS 4*2
+	wEnemy2Balloon:: DS 4*2
+	wBird:: DS 4*3

@@ -10,7 +10,7 @@ PLAYER_MAX_DRIFT_X EQU 2
 PLAYER_MAX_DRIFT_Y EQU 2
 
 UpdateBalloonPosition:
-  ld hl, player_balloon
+  ld hl, wPlayerBalloon
   ; Update Y
   ld a, [player_y]
   ld [hli], a
@@ -18,7 +18,7 @@ UpdateBalloonPosition:
   ld a, [player_x]
   ld [hl], a
 
-  ld hl, player_balloon+4
+  ld hl, wPlayerBalloon+4
   ; Update Y
   ld a, [player_y]
   ld [hli], a
@@ -29,7 +29,7 @@ UpdateBalloonPosition:
   ret
 
 UpdateCactusPosition:
-  ld hl, player_cactus
+  ld hl, wPlayerCactus
   ; Update Y
   ld a, [player_cactus_y]
   ld [hli], a
@@ -37,7 +37,7 @@ UpdateCactusPosition:
   ld a, [player_cactus_x]
   ld [hl], a
 
-  ld hl, player_cactus+4
+  ld hl, wPlayerCactus+4
   ; Update Y
   ld a, [player_cactus_y]
   ld [hli], a
@@ -78,7 +78,7 @@ InitializePlayer::
   ld hl, player_speed
   ld [hl], 1
   ; Balloon left
-  ld hl, player_balloon
+  ld hl, wPlayerBalloon
   ld [hl], PLAYER_BALLOON_START_Y
   inc l
   ld [hl], PLAYER_START_X
@@ -87,7 +87,7 @@ InitializePlayer::
   inc l
   ld [hl], %00010000
   ; Balloon right
-  ld hl, player_balloon+4
+  ld hl, wPlayerBalloon+4
   ld [hl], PLAYER_BALLOON_START_Y
   inc l
   ld [hl], PLAYER_START_X+8
@@ -96,7 +96,7 @@ InitializePlayer::
   inc l
   ld [hl], %00110000
   ; Cactus left
-  ld hl, player_cactus
+  ld hl, wPlayerCactus
   ld [hl], PLAYER_START_Y
   inc l
   ld [hl], PLAYER_START_X
@@ -105,7 +105,7 @@ InitializePlayer::
   inc l
   ld [hl], %00010000
   ; Cactus right
-  ld hl, player_cactus+4
+  ld hl, wPlayerCactus+4
   ld [hl], PLAYER_START_Y
   inc l
   ld [hl], PLAYER_START_X+8
@@ -432,12 +432,12 @@ PopBalloonAnimation:
 
 .frame0:
   ; Popped left - frame 0
-  ld hl, player_balloon+2
+  ld hl, wPlayerBalloon+2
   ld [hl], $88
   inc l
   ld [hl], %00000000
   ; Popped right - frame 0
-  ld hl, player_balloon+6
+  ld hl, wPlayerBalloon+6
   ld [hl], $88
   inc l
   ld [hl], %00100000
@@ -446,12 +446,12 @@ PopBalloonAnimation:
   ret
 .frame1:
   ; Popped left - frame 1
-  ld hl, player_balloon+2
+  ld hl, wPlayerBalloon+2
   ld [hl], $8A
   inc l
   ld [hl], %00000000
   ; Popped right - frame 1
-  ld hl, player_balloon+6
+  ld hl, wPlayerBalloon+6
   ld [hl], $8A
   inc l
   ld [hl], %00100000
@@ -461,7 +461,7 @@ PopBalloonAnimation:
 .clear:
   ; Remove sprites
   xor a ; ld a, 0
-  ld hl, player_balloon
+  ld hl, wPlayerBalloon
   ld [hli], a
   ld [hli], a
   ld [hli], a
@@ -566,9 +566,9 @@ DeathOfPlayer::
   ld hl, player_falling
   ld [hl], a
   ; Screaming cactus
-  ld hl, player_cactus+2
+  ld hl, wPlayerCactus+2
   ld [hl], $90
-  ld hl, player_cactus+6
+  ld hl, wPlayerCactus+6
   ld [hl], $90
   ; Sound
   call PopSound
