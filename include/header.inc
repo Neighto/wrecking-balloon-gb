@@ -10,7 +10,7 @@ LCD_VECT:
 
 SECTION "header", ROM0[$100]
 	nop
-	call START
+	call Start
 
 	; 0104-0133 - Nintendo Logo
 	NINTENDO_LOGO

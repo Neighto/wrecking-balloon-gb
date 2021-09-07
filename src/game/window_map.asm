@@ -12,7 +12,7 @@ WindowWidth  EQU 20
 WindowHeight EQU 1
 WindowBank   EQU 0
 
-SECTION "window map", ROM0
+SECTION "window map", ROMX
 
 WindowMap::
     DB $40,$41,$42,$43,$44,$45,$47,$47,$47,$47

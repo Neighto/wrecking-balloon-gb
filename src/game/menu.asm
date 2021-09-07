@@ -2,6 +2,8 @@ INCLUDE "constants.inc"
 
 SECTION "menu", ROMX
 
+MENU_MODES EQU 2
+
 SpawnMenuCursor::
 	ld hl, wPlayerCactus ; Borrow
 	ld a, 104 ; y
@@ -36,10 +38,10 @@ SelectMode:
 	cp a, 0
 	jr nz, .storyMode
 .classicMode:
-	call STARTCLASSIC
+	call StartClassic
 	ret
 .storyMode:
-	; call STARTSTORY
+	; call StartStory
 	ret
 
 MenuInput::

@@ -5,7 +5,7 @@
 ;   Format               : Gameboy 4 color.
 ;   Tile size            : 8 x 8
 
-SECTION "window tiles", ROM0
+SECTION "window tiles", ROMX
 
 ; Start of tile array.
 WindowTiles::

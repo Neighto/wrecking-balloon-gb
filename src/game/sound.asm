@@ -1,5 +1,4 @@
 INCLUDE "hardware.inc"
-INCLUDE "constants.inc"
 
 SECTION "sound", ROMX
 
@@ -122,29 +121,4 @@ Bass::
   ; Frequency's higher data
   ld a, %11000011
   ld [rNR34], a
-  ret
-
-Song1:
-  ; DW Percussion, Bass, Percussion2
-
-PlayMusic::
-  ; ld a, [global_timer]
-  ; and TEMPO
-  ; jr nz, .end
-
-  ; ld a, [song_timer]
-  ; inc a
-  ; ld [song_timer], a
-  ; ld c, a
-
-  ; Read Song 1
-  ; ld hl, Song1
-  ; ld a, [song_index]
-  ; ld c, a
-  ; ld b, 0
-  ; ; inc c ; possibly issue is here, can we deduce inc is successfully causing subsequent line to be read?
-  ; ; inc c
-  ; add hl, bc
-  ; jp hl
-.end:
   ret

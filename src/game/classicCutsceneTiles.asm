@@ -1,5 +1,5 @@
 
-SECTION "classic cutscene tiles", ROM0
+SECTION "classic cutscene tiles", ROMX
 
 ClassicCutsceneTiles::
     INCBIN "incbin/Man_Wave.2bpp"

@@ -13,7 +13,7 @@ HandleCutsceneLoop::
 	ld b, a
 	call OffScreenY
 	cp a, 0
-	call nz, PREGAMELOOP
+	call nz, PregameLoop
 	; Can we scroll into the sky
 	ld a, [start_scroll]
 	cp a, 0
