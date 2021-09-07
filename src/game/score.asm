@@ -1,4 +1,4 @@
-SECTION "score", ROM0
+SECTION "score", ROMX
 
 InitializeScore::
     xor a ; ld a, 0

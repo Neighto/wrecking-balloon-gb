@@ -1,5 +1,5 @@
 INCLUDE "points.inc"
-INCLUDE "constants.inc"
+INCLUDE "balloonCactusConstants.inc"
 
 SECTION "enemy", ROMX
 

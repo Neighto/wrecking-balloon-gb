@@ -12,9 +12,6 @@ SECTION "RAM vars", WRAM0[$C000]
 	scroll_offset2:: DB
 	start_scroll:: DB ; TODO: Lots of vars... Can maybe make more generic for reuse
 
-	song_timer:: DB
-	song_index:: DB
-
 	player_x:: DB
 	player_y:: DB
 	player_cactus_x:: DB 
@@ -78,13 +75,11 @@ SECTION "RAM vars", WRAM0[$C000]
 	bird_alive:: DB
 	bird_spawn_right:: DB
 
-SECTION "general initialization", ROM0 
+SECTION "general initialization", ROMX
 InitializeGameVars::
 	xor a
 	ld [paused_game], a
 	ld [difficulty_level], a
-	ld [song_timer], a
-	ld [song_index], a
 	ld [selected_mode], a
 	ld [hand_waving_frame], a
 	ld [cutscene_timer], a

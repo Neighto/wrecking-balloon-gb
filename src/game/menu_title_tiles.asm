@@ -1,4 +1,4 @@
-SECTION "menu title tiles", ROM0
+SECTION "menu title tiles", ROMX
 
 ; Start of tile array.
 MenuTitleTiles::

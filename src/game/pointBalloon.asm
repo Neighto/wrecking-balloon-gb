@@ -1,5 +1,5 @@
 INCLUDE "points.inc"
-INCLUDE "constants.inc"
+INCLUDE "balloonCactusConstants.inc"
 
 SECTION "point balloon", ROMX
 
@@ -10,6 +10,8 @@ POINT_BALLOON_SPAWN_A EQU 32
 POINT_BALLOON_SPAWN_B EQU 64
 POINT_BALLOON_SPAWN_C EQU 96
 POINT_BALLOON_SPAWN_D EQU 128
+
+PB_SPRITE_MOVE_WAIT_TIME EQU %00000001
 
 UpdateBalloonPosition:
     ld hl, wPointBalloon

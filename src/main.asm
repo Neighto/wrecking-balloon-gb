@@ -3,14 +3,13 @@ INCLUDE "header.inc"
 
 SECTION "rom", ROM0
 
-START::
+Start::
 	di
 	ld sp, $FFFE
 	call WaitVBlankNoWindow
 	call LCD_OFF
 	call ClearMap
 	call ClearOAM
-	call ClearRAM
 	call ClearAllTiles
 	call ResetScroll
 	call LoadMenuData
@@ -22,16 +21,16 @@ START::
 	call InitializePointBalloon
 	call SpawnMenuCursor
 	call LCD_ON_BG_ONLY
-MENULOOP:
+MenuLoop:
 	call WaitVBlankNoWindow
 	; call _hUGE_dosound
 	call UpdateGlobalTimer
 	call MenuBalloonUpdate
 	call MenuInput
 	call OAMDMA
-	jp MENULOOP
+	jp MenuLoop
 
-STARTCLASSIC::
+StartClassic::
 	di
 	ld a, IEF_STAT ; Enable LCD Interrupt
 	ldh [rIE], a
@@ -61,7 +60,7 @@ STARTCLASSIC::
 	call InitializeBird
 	call RefreshLives
 	call LCD_ON_BG_ONLY
-CUTSCENELOOP:
+CutsceneLoop:
 	ei
 	call WaitVBlankNoWindow
 	di
@@ -71,13 +70,13 @@ CUTSCENELOOP:
 	call HandWaveAnimation
 	call UpdateGlobalTimer
 	call OAMDMA
-	jp CUTSCENELOOP
+	jp CutsceneLoop
 
-PREGAMELOOP::
+PregameLoop::
 	call ResetScroll
 	call SetupPalettes
 	call LCD_ON
-GAMELOOP:
+GameLoop:
 	call WaitVBlank
 	call TryToUnpause
 	ld a, [paused_game]
@@ -91,4 +90,4 @@ GAMELOOP:
 	call RefreshScore ; Might want to move somewhere to call less frequently
 	call OAMDMA
 .END:
-	jp GAMELOOP
+	jp GameLoop

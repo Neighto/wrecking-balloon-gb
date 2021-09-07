@@ -5,7 +5,7 @@
 ;   Format               : Gameboy 4 color.
 ;   Tile size            : 8 x 16
 
-SECTION "cactus tiles", ROM0
+SECTION "cactus tiles", ROMX
 
 ; Start of tile array.
 CactusTiles::
