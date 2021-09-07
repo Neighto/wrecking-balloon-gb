@@ -6,9 +6,15 @@ HAND_WAVE_START_Y EQU 112
 
 SECTION "classic", ROMX
 
-HandleCutsceneLoop::    
-	; Can we scroll into the sky
-	ld a, [start_scroll]
+HandleCutsceneLoop::
+    ; Are we done moving into the sky
+    ld a, [player_y]
+    add 16
+    ld b, a
+    call OffScreenY
+    call nz, PregameLoop
+	; Can we move into the sky
+	ld a, [starting_classic]
 	cp a, 0
     ; here we stop player from using controls and shoot player and cactus up
     jr z, .canWeScroll
@@ -25,7 +31,7 @@ HandleCutsceneLoop::
     cp a, 30
 	jr nc, .end
 	ld a, 1
-	ld [start_scroll], a
+	ld [starting_classic], a
 .end:
 	ret
 
@@ -94,9 +100,9 @@ IncrementScrollOffset::
 	ld a, [global_timer]
 	and %0000111
 	jr nz, .end
-	ld a, [scroll_offset]
+	ld a, [cloud_scroll_offset]
 	inc a
-	ld [scroll_offset], a
+	ld [cloud_scroll_offset], a
 .end:
 	ret
 

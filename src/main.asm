@@ -74,7 +74,14 @@ CutsceneLoop:
 	jp CutsceneLoop
 
 PregameLoop::
+	ld hl, started_classic
+	ld [hl], 1
+	ld a, 136 ; make constant TODO
+	ldh [rLYC], a
 	call ResetScroll
+	call ClearOAM
+	call ClearRAM
+	call InitializePlayer
 	call SetupPalettes
 	call LCD_ON
 GameLoop:
@@ -85,7 +92,7 @@ GameLoop:
 	ld a, [paused_game]
 	cp a, 1
 	jr z, .end
-	; call HorizontalScroll
+	call HorizontalScroll
 	call CollisionUpdate
 	call UpdateGlobalTimer
 	call PlayerUpdate
