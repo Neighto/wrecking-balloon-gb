@@ -71,6 +71,7 @@ InitializePlayer::
   ld [player_falling_timer], a
   ld [player_respawn_timer], a
   ld [player_invincible], a
+  ld [player_cant_move], a
   ld a, 1
   ld [player_alive], a
   ld [player_fall_speed], a
@@ -303,9 +304,12 @@ ResetSpeedUp:
   ret
 
 PlayerControls:
-	call ReadInput
+  ; argument d = input directions down
+  ; arguemnt e = input directions pressed
+  push bc
+  push af
   ; Right
-	ld a, [joypad_down]
+	ld a, d
 	call JOY_RIGHT
 	jr z, .endRight
   ; Right - are we offscreen?
@@ -318,7 +322,7 @@ PlayerControls:
 	call MoveRight
 .endRight:
   ; Left
-  ld a, [joypad_down]
+  ld a, d
 	call JOY_LEFT
 	jr z, .endLeft
   ; Left - are we offscreen?
@@ -331,7 +335,7 @@ PlayerControls:
 	call MoveLeft
 .endLeft:
   ; Up
-  ld a, [joypad_down]
+  ld a, d
 	call JOY_UP
 	jr z, .endUp
   ; Up - are we offscreen?
@@ -344,7 +348,7 @@ PlayerControls:
 	call MoveUp
 .endUp:
   ; Down
-  ld a, [joypad_down]
+  ld a, d
 	call JOY_DOWN
 	jr z, .endDown
   ; Down - are we offscreen?
@@ -358,38 +362,38 @@ PlayerControls:
 .endDown:
   ; Drift to center if Left / Right not held
   ; TODO: clean up quite inefficient
-  ld a, [joypad_down]
+  ld a, d
 	call JOY_RIGHT
 	jr nz, .endDriftToCenterX
-  ld a, [joypad_down]
+  ld a, d
 	call JOY_LEFT
   jr nz, .endDriftToCenterX
   call MoveCactusDriftCenterX
 .endDriftToCenterX:
   ; Drift to center if Up / Down not held
-  ld a, [joypad_down]
+  ld a, d
 	call JOY_UP
 	jr nz, .endDriftToCenterY
-  ld a, [joypad_down]
+  ld a, d
 	call JOY_DOWN
   jr nz, .endDriftToCenterY
   call MoveCactusDriftCenterY
 .endDriftToCenterY:
   ; START
-  ld a, [joypad_pressed]
+  ld a, e
   call JOY_START
   jr z, .endStart
   ld a, 1
   ld [paused_game], a ; pause
 .endStart:
   ; A
-  ld a, [joypad_down]
+  ld a, d
 	call JOY_A
 	jr z, .endA
   ; Do something
 .endA:
   ; B
-  ld a, [joypad_down]
+  ld a, d
 	call JOY_B
 	jr z, .endB
   call SpeedUp
@@ -398,6 +402,45 @@ PlayerControls:
   call ResetSpeedUp
 .end:
   call UpdatePlayerPosition
+  pop bc
+  pop af
+  ret
+
+MovePlayer:
+  call ReadInput
+  ld a, [joypad_down]
+  ld d, a
+  ld a, [joypad_pressed]
+  ld e, a
+  call PlayerControls
+  ret
+
+MovePlayerAutoMiddle::
+  ld d, 0
+  ld e, 0
+  ld a, [player_x]
+  cp a, SCRN_X/2
+  jr z, .end
+  jr nc, .moveLeft
+.moveRight:
+  ld d, %00010000 ; TODO make these constants
+  jr .end
+.moveLeft:
+  ld d, %00100000
+.end:
+  call PlayerControls
+  ret
+
+MovePlayerAutoFlyUp::
+  ld a, [player_y]
+  add 16
+  ld b, a
+  call OffScreenY
+  and 1
+  jr nz, .end
+  call MoveUp
+  call UpdatePlayerPosition
+.end:
   ret
 
 FallCactusDown:
@@ -524,10 +567,12 @@ PlayerUpdate::
   ; Check if invincible (like when respawning)
   call InvincibleBlink
   ; Get movement
+  ld a, [player_cant_move]
+  cp a, 0
+  jp nz, .end
   ld a, [global_timer]
 	and	PLAYER_SPRITE_MOVE_WAIT_TIME
-	jp nz, .end
-  call PlayerControls
+	call z, MovePlayer
   ret
 .popped:
   ; Can we respawn

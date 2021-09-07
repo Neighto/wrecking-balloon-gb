@@ -6,10 +6,11 @@ SECTION "rom", ROM0
 Start::
 	di
 	ld sp, $FFFE
-	call WaitVBlankNoWindow
+	call WaitVBlank
 	call LCD_OFF
 	call ClearMap
 	call ClearOAM
+	call ClearRAM
 	call ClearAllTiles
 	call ResetScroll
 	call LoadMenuData
@@ -22,7 +23,7 @@ Start::
 	call SpawnMenuCursor
 	call LCD_ON_BG_ONLY
 MenuLoop:
-	call WaitVBlankNoWindow
+	call WaitVBlank
 	; call _hUGE_dosound
 	call UpdateGlobalTimer
 	call MenuBalloonUpdate
@@ -62,7 +63,7 @@ StartClassic::
 	call LCD_ON_BG_ONLY
 CutsceneLoop:
 	ei
-	call WaitVBlankNoWindow
+	call WaitVBlank
 	di
 	call IncrementScrollOffset
 	call HandleCutsceneLoop
@@ -77,17 +78,19 @@ PregameLoop::
 	call SetupPalettes
 	call LCD_ON
 GameLoop:
+	ei
 	call WaitVBlank
+	di
 	call TryToUnpause
 	ld a, [paused_game]
 	cp a, 1
-	jr z, .END
-	call HorizontalScroll
+	jr z, .end
+	; call HorizontalScroll
 	call CollisionUpdate
 	call UpdateGlobalTimer
 	call PlayerUpdate
 	call ClassicGameManager
 	call RefreshScore ; Might want to move somewhere to call less frequently
 	call OAMDMA
-.END:
+.end:
 	jp GameLoop

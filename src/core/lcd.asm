@@ -18,26 +18,11 @@ LCD_ON_BG_ONLY::
     ld [rLCDC], a
     ret
 
-; Wait for the display to finish updating
 WaitVBlank::
-    ld hl, rLCDC
-.loop:
-    ld a, [rLY]
-    cp a, 136
-    jr c, .skipSpriteReset
-    res 1, [hl]
-.skipSpriteReset:
-    cp a, 144
-    jr c, .skipSpriteSet
-    set 1, [hl]
-.skipSpriteSet:
-    jr nz, .loop
-    ret
-
-WaitVBlankNoWindow::
+    ; TODO if this way pans out, ONCE AGAIN we can try to incorporate the Vblank flag
     ld a, [rLY]
     cp a, 144
-    jr nz, WaitVBlankNoWindow
+    jr nz, WaitVBlank
     ret
 
 ClearAllTiles::
