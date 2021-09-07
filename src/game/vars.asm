@@ -7,10 +7,9 @@ SECTION "RAM vars", WRAM0[$C000]
 	difficulty_level:: DB
 	selected_mode:: DB
 	hand_waving_frame:: DB
-	cutscene_timer:: DB
-	scroll_offset:: DB
-	scroll_offset2:: DB
-	start_scroll:: DB ; TODO: Lots of vars... Can maybe make more generic for reuse
+	cloud_scroll_offset:: DB
+	starting_classic:: DB ; TODO: Lots of vars... Can maybe make more generic for reuse
+	started_classic:: DB
 
 	player_x:: DB
 	player_y:: DB
@@ -83,10 +82,9 @@ InitializeGameVars::
 	ld [difficulty_level], a
 	ld [selected_mode], a
 	ld [hand_waving_frame], a
-	ld [cutscene_timer], a
-	ld [scroll_offset], a
-	ld [scroll_offset2], a
-	ld [start_scroll], a
+	ld [cloud_scroll_offset], a
+	ld [starting_classic], a
+	ld [started_classic], a
 
 	ld a, 2
 	ld [player_lives], a
