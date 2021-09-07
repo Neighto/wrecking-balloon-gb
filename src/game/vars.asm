@@ -28,6 +28,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	player_speed:: DB
 	player_lives:: DB
 	player_invincible:: DB ; Operates like a timer, when set, invincible immediately
+	player_cant_move:: DB
 
 	point_balloon_x:: DB
 	point_balloon_y:: DB

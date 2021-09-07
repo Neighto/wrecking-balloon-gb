@@ -6,23 +6,24 @@ HAND_WAVE_START_Y EQU 112
 
 SECTION "classic", ROMX
 
-HandleCutsceneLoop::
-	; Can we end loop
-	ld a, [rSCY]
-	inc a
-	ld b, a
-	call OffScreenY
-	cp a, 0
-	call nz, PregameLoop
+HandleCutsceneLoop::    
 	; Can we scroll into the sky
 	ld a, [start_scroll]
 	cp a, 0
-	call nz, ScrollIntoSky
+    ; here we stop player from using controls and shoot player and cactus up
+    jr z, .canWeScroll
+    ; Stop player control
+    ld hl, player_cant_move
+    ld [hl], 1
+    ; Move player to center and up
+    call MovePlayerAutoMiddle
+    call MovePlayerAutoFlyUp
+    ret
+.canWeScroll:
 	; Can we start scrolling into the sky
-	call ReadInput
-	ld a, [joypad_down]
-	call JOY_UP
-	jr z, .end
+    ld a, [player_y]
+    cp a, 30
+	jr nc, .end
 	ld a, 1
 	ld [start_scroll], a
 .end:
@@ -90,55 +91,14 @@ HandWaveAnimation::
 	ret
 
 IncrementScrollOffset::
-.scrollOffset1:
 	ld a, [global_timer]
 	and %0000111
-	jr nz, .scrollOffset2
+	jr nz, .end
 	ld a, [scroll_offset]
 	inc a
 	ld [scroll_offset], a
-.scrollOffset2:
-	ld a, [global_timer]
-	and %00000111
-	jr nz, .end
-    ld a, [scroll_offset2]
-    inc a
-    ld [scroll_offset2], a
 .end:
 	ret
-
-ScrollIntoSky:
-    push af
-    ld a, [global_timer]
-    and	2
-    jr nz, .end
-    ld a, [cutscene_timer]
-.slowScroll2:
-    cp a, 140
-    jr c, .fastScroll
-    ldh a, [rSCY]
-    sub 1
-    ldh [rSCY], a
-    jr .end
-.fastScroll:
-    cp a, 50
-    jr c, .slowScroll
-    ldh a, [rSCY]
-    sub 2
-    ldh [rSCY], a
-    jr .end
-.slowScroll:
-    cp a, 30
-    jr c, .end
-    ldh a, [rSCY]
-    sub 1
-    ldh [rSCY], a
-.end:
-    ld a, [cutscene_timer]
-    inc a
-    ld [cutscene_timer], a
-    pop af
-    ret
 
 SetClassicMapStartPoint::
     ld a, BACKGROUND_VSCROLL_START
