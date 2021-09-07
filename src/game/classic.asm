@@ -45,7 +45,7 @@ TryToUnpause::
 
 SpawnHandWave::
 	; Totally dumb for now... But we just take another enemy sprite slot
-    ld hl, enemy2_balloon
+    ld hl, wEnemy2Balloon
     ld a, HAND_WAVE_START_Y
     ld [hli], a
     ld a, HAND_WAVE_START_X
@@ -63,7 +63,7 @@ HandWaveAnimation::
 	ld a, BACKGROUND_VSCROLL_START
 	sub a, b
 	add a, HAND_WAVE_START_Y
-	ld [enemy2_balloon], a
+	ld [wEnemy2Balloon], a
 
 	; Here we animate
     ld a, [hand_waving_frame]
@@ -73,7 +73,7 @@ HandWaveAnimation::
     ld a, [global_timer]
     and 15
     jp nz, .end
-    ld hl, enemy2_balloon+2
+    ld hl, wEnemy2Balloon+2
     ld [hl], $A2
     ld hl, hand_waving_frame
     ld [hl], 1
@@ -82,7 +82,7 @@ HandWaveAnimation::
     ld a, [global_timer]
     and 15
     jp nz, .end
-    ld hl, enemy2_balloon+2
+    ld hl, wEnemy2Balloon+2
     ld [hl], $A0
     ld hl, hand_waving_frame
     ld [hl], 0

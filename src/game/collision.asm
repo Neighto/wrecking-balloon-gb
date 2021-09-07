@@ -99,8 +99,8 @@ CollisionUpdate::
     and 1
     jr z, .endPointBalloon
     ; Check collision
-    ld bc, point_balloon
-    ld hl, player_cactus
+    ld bc, wPointBalloon
+    ld hl, wPlayerCactus
     xor a ; ld a, 0
     call CollisionCheck
     and 1
@@ -114,8 +114,8 @@ CollisionUpdate::
     and 1
     jr z, .endEnemy
     ; Check collision
-    ld bc, enemy_balloon
-    ld hl, player_cactus
+    ld bc, wEnemyBalloon
+    ld hl, wPlayerCactus
     xor a ; ld a, 0
     call CollisionCheck
     and 1
@@ -123,8 +123,8 @@ CollisionUpdate::
     call DeathOfEnemy
     jr .endEnemy
 .checkEnemyHitPlayer:
-    ld bc, player_balloon
-    ld hl, enemy_cactus
+    ld bc, wPlayerBalloon
+    ld hl, wEnemyCactus
     xor a ; ld a, 0
     call CollisionCheck
     and 1
@@ -137,8 +137,8 @@ CollisionUpdate::
     and 1
     jr z, .endEnemy2
     ; Check collision
-    ld bc, enemy2_balloon
-    ld hl, player_cactus
+    ld bc, wEnemy2Balloon
+    ld hl, wPlayerCactus
     xor a ; ld a, 0
     call CollisionCheck
     and 1
@@ -147,8 +147,8 @@ CollisionUpdate::
     call DeathOfEnemy2
     jr .endEnemy2
 .checkEnemy2HitPlayer:
-    ld bc, player_balloon
-    ld hl, enemy2_cactus
+    ld bc, wPlayerBalloon
+    ld hl, wEnemy2Cactus
     xor a ; ld a, 0
     call CollisionCheck
     and 1
@@ -162,8 +162,8 @@ CollisionUpdate::
     jr z, .endBird
     ; Check collision bird
 .checkBirdHitPlayer:
-    ld bc, player_balloon
-    ld hl, bird
+    ld bc, wPlayerBalloon
+    ld hl, wBird
     ld a, 1
     call CollisionCheck
     and 1

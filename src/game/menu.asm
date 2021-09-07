@@ -3,7 +3,7 @@ INCLUDE "constants.inc"
 SECTION "menu", ROMX
 
 SpawnMenuCursor::
-	ld hl, player_cactus ; Borrow
+	ld hl, wPlayerCactus ; Borrow
 	ld a, 104 ; y
 	ld [hli], a
 	ld a, 56 ; x
@@ -24,11 +24,11 @@ MoveCursor:
 	jr nz, .storyMode
 .classicMode:
 	ld a, 104
-	ld [player_cactus], a
+	ld [wPlayerCactus], a
 	ret
 .storyMode:
 	ld a, 120
-	ld [player_cactus], a
+	ld [wPlayerCactus], a
 	ret
 
 SelectMode:

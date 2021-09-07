@@ -778,14 +778,14 @@ WRAM0 bank #0:
            $c08c = highmask4
            $c08d = _end_vars
   SECTION: $c100-$c143 ($0044 bytes) ["OAM vars"]
-           $c100 = player_cactus
-           $c108 = player_balloon
-           $c110 = point_balloon
-           $c118 = enemy_cactus
-           $c120 = enemy_balloon
-           $c128 = enemy2_cactus
-           $c130 = enemy2_balloon
-           $c138 = bird
+           $c100 = wPlayerCactus
+           $c108 = wPlayerBalloon
+           $c110 = wPointBalloon
+           $c118 = wEnemyCactus
+           $c120 = wEnemyBalloon
+           $c128 = wEnemy2Cactus
+           $c130 = wEnemy2Balloon
+           $c138 = wBird
     SLACK: $0f2f bytes
 
 HRAM bank #0:

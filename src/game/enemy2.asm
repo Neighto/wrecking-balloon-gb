@@ -12,7 +12,7 @@ ENEMY2_SPAWN_C EQU 96
 ENEMY2_SPAWN_D EQU 120
 
 UpdateBalloonPosition:
-    ld hl, enemy2_balloon
+    ld hl, wEnemy2Balloon
     ; Update Y
     ld a, [enemy2_balloon_y]
     ld [hli], a
@@ -20,7 +20,7 @@ UpdateBalloonPosition:
     ld a, [enemy2_balloon_x]
     ld [hl], a
     
-    ld hl, enemy2_balloon+4
+    ld hl, wEnemy2Balloon+4
     ; Update Y
     ld a, [enemy2_balloon_y]
     ld [hli], a
@@ -31,7 +31,7 @@ UpdateBalloonPosition:
     ret
 
 UpdateCactusPosition:
-    ld hl, enemy2_cactus
+    ld hl, wEnemy2Cactus
     ; Update Y
     ld a, [enemy2_cactus_y]
     ld [hli], a
@@ -39,7 +39,7 @@ UpdateCactusPosition:
     ld a, [enemy2_cactus_x]
     ld [hl], a
     
-    ld hl, enemy2_cactus+4
+    ld hl, wEnemy2Cactus+4
     ; Update Y
     ld a, [enemy2_cactus_y]
     ld [hli], a
@@ -126,7 +126,7 @@ SpawnEnemy:
     ld a, 1
     ld [enemy2_alive], a
     ; Balloon left
-    ld hl, enemy2_balloon
+    ld hl, wEnemy2Balloon
     ld a, [enemy2_balloon_y]
     ld [hl], a
     inc l
@@ -137,7 +137,7 @@ SpawnEnemy:
     inc l
     ld [hl], %00000000
     ; Balloon right
-    ld hl, enemy2_balloon+4
+    ld hl, wEnemy2Balloon+4
     ld a, [enemy2_balloon_y]
     ld [hl], a
     inc l
@@ -149,7 +149,7 @@ SpawnEnemy:
     inc l
     ld [hl], %00100000
     ; Cactus left
-    ld hl, enemy2_cactus
+    ld hl, wEnemy2Cactus
     ld a, [enemy2_cactus_y]
     ld [hl], a
     inc l
@@ -160,7 +160,7 @@ SpawnEnemy:
     inc l
     ld [hl], %00000000
     ; Cactus right
-    ld hl, enemy2_cactus+4
+    ld hl, wEnemy2Cactus+4
     ld a, [enemy2_cactus_y]
     ld [hl], a
     inc l
@@ -252,12 +252,12 @@ PopBalloonAnimation:
 
 .frame0:
     ; Popped left - frame 0
-    ld hl, enemy2_balloon+2
+    ld hl, wEnemy2Balloon+2
     ld [hl], $88
     inc l
     ld [hl], %00000000
     ; Popped right - frame 0
-    ld hl, enemy2_balloon+6
+    ld hl, wEnemy2Balloon+6
     ld [hl], $88
     inc l
     ld [hl], %00100000
@@ -266,12 +266,12 @@ PopBalloonAnimation:
     ret
 .frame1:
     ; Popped left - frame 1
-    ld hl, enemy2_balloon+2
+    ld hl, wEnemy2Balloon+2
     ld [hl], $8A
     inc l
     ld [hl], %00000000
     ; Popped right - frame 1
-    ld hl, enemy2_balloon+6
+    ld hl, wEnemy2Balloon+6
     ld [hl], $8A
     inc l
     ld [hl], %00100000
@@ -281,7 +281,7 @@ PopBalloonAnimation:
 .clear:
     ; Remove sprites
     xor a ; ld a, 0
-    ld hl, enemy2_balloon
+    ld hl, wEnemy2Balloon
     ld [hli], a
     ld [hli], a
     ld [hli], a
@@ -371,9 +371,9 @@ DeathOfEnemy2::
     ld hl, enemy2_falling
     ld [hl], a
     ; Screaming cactus
-    ld hl, enemy2_cactus+2
+    ld hl, wEnemy2Cactus+2
     ld [hl], $8E
-    ld hl, enemy2_cactus+6
+    ld hl, wEnemy2Cactus+6
     ld [hl], $8E
     ; Sound
     call PopSound

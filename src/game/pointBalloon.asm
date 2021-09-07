@@ -12,7 +12,7 @@ POINT_BALLOON_SPAWN_C EQU 96
 POINT_BALLOON_SPAWN_D EQU 128
 
 UpdateBalloonPosition:
-    ld hl, point_balloon
+    ld hl, wPointBalloon
     ; Update Y
     ld a, [point_balloon_y]
     ld [hli], a
@@ -20,7 +20,7 @@ UpdateBalloonPosition:
     ld a, [point_balloon_x]
     ld [hl], a
   
-    ld hl, point_balloon+4
+    ld hl, wPointBalloon+4
     ; Update Y
     ld a, [point_balloon_y]
     ld [hli], a
@@ -85,7 +85,7 @@ SpawnPointBalloon:
     ld [point_balloon_alive], a
 .balloonLeft:
     ; Balloon left
-    ld hl, point_balloon
+    ld hl, wPointBalloon
     ld a, [point_balloon_y]
     ld [hl], a
     inc l
@@ -102,7 +102,7 @@ SpawnPointBalloon:
     set 7, [hl]
 .balloonRight:
     ; Balloon right
-    ld hl, point_balloon+4
+    ld hl, wPointBalloon+4
     ld a, [point_balloon_y]
     ld [hl], a
     inc l
@@ -152,12 +152,12 @@ PopBalloonAnimation:
 
 .frame0:
     ; Popped left - frame 0
-    ld hl, point_balloon+2
+    ld hl, wPointBalloon+2
     ld [hl], $88
     inc l
     ld [hl], %00000000
     ; Popped right - frame 0
-    ld hl, point_balloon+6
+    ld hl, wPointBalloon+6
     ld [hl], $88
     inc l
     ld [hl], %00100000
@@ -166,12 +166,12 @@ PopBalloonAnimation:
     ret
 .frame1:
     ; Popped left - frame 1
-    ld hl, point_balloon+2
+    ld hl, wPointBalloon+2
     ld [hl], $8A
     inc l
     ld [hl], %00000000
     ; Popped right - frame 1
-    ld hl, point_balloon+6
+    ld hl, wPointBalloon+6
     ld [hl], $8A
     inc l
     ld [hl], %00100000
@@ -181,7 +181,7 @@ PopBalloonAnimation:
 .clear:
     ; Remove sprites
     xor a ; ld a, 0
-    ld hl, point_balloon
+    ld hl, wPointBalloon
     ld [hli], a
     ld [hli], a
     ld [hli], a
