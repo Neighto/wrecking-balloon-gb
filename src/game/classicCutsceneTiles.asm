@@ -1,7 +1,7 @@
 
-SECTION "classic cutscene tiles", ROMX
+SECTION "classic park tiles", ROMX
 
-ClassicCutsceneTiles::
+ClassicParkTiles::
     INCBIN "incbin/Man_Wave.2bpp"
     INCBIN "incbin/Man_Wave2.2bpp"
-ClassicCutsceneTilesEnd::
+ClassicParkTilesEnd::
