@@ -19,9 +19,7 @@ LCD_ON_BG_ONLY::
     ret
 
 WaitVBlank::
-    ; ld a, [rLY]
-    ; cp a, 144
-    ; jr nz, WaitVBlank
+    ei
     ld hl, vblank_flag
     xor a ; ld a, 0
 .loop:
@@ -30,6 +28,7 @@ WaitVBlank::
     cp a, [hl]
     jr z, .loop
     ld [hl], a
+    di
     ret
 
 ClearAllTiles::

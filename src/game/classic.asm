@@ -63,15 +63,6 @@ SpawnHandWave::
 
 ; NOTE if ram becomes a problem I could probably use modulo off global timer for frames
 HandWaveAnimation::
-	; Here we move the sprite as the screen moves
-	; ldh a, [rSCY]
-	; ld b, a
-	; ld a, BACKGROUND_VSCROLL_START
-	; sub a, b
-	; add a, HAND_WAVE_START_Y
-	; ld [wEnemy2Balloon], a
-
-	; Here we animate
     ld a, [hand_waving_frame]
     cp a, 0
     jr nz, .frame1
