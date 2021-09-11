@@ -4,9 +4,14 @@ INCLUDE "header.inc"
 SECTION "rom", ROM0
 
 Start::
-	di
+	ei
 	ld sp, $FFFE
+	ld a, IEF_STAT | IEF_VBLANK ; Enable LCD Interrupt
+	ldh [rIE], a
+	; ei
 	call WaitVBlank
+	; di
+	call AUDIO_OFF
 	call LCD_OFF
 	call ClearMap
 	call ClearOAM
@@ -22,25 +27,22 @@ Start::
 	call InitializePointBalloon
 	call SpawnMenuCursor
 	call LCD_ON_BG_ONLY
-MenuLoop:
-	call WaitVBlank
-	; call _hUGE_dosound
-	call UpdateGlobalTimer
-	call MenuBalloonUpdate
-	call MenuInput
-	call OAMDMA
-	jp MenuLoop
+; MenuLoop:
+; 	ei
+; 	call WaitVBlank
+; 	di
+; 	; call _hUGE_dosound
+; 	call UpdateGlobalTimer
+; 	call MenuBalloonUpdate
+; 	call MenuInput
+; 	call OAMDMA
+; 	jp MenuLoop
 
 StartClassic::
-	di
-	ld a, IEF_STAT ; Enable LCD Interrupt
-	ldh [rIE], a
 	ld a, 0
 	ldh [rLYC], a
 	ld a, STATF_LYC
 	ldh [rSTAT], a
-	ei
-
 	call WaitVBlank
 	call LCD_OFF
 	call SetupClassicCutscenePalettes

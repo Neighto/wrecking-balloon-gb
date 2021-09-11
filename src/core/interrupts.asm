@@ -3,7 +3,11 @@ INCLUDE "hardware.inc"
 SECTION "interrupts", ROM0
 
 VBlank_Interrupt::
-    ret
+    push hl
+    ld hl, vblank_flag
+    ld [hl], 1
+    pop hl
+    reti
 
 LCD_Interrupt_Park:
 	ld a, [rLYC]
@@ -51,8 +55,15 @@ LCD_Interrupt_Classic:
     ret
 
 LCD_Interrupt::
-    ld a, [started_classic]
-    cp a, 0
-    call nz, LCD_Interrupt_Classic
+    push hl
+    push af
     call LCD_Interrupt_Park
+
+    ; TODO : Figuring out how lcd interrupt can co-exist with vblank
+    ; ld a, [started_classic]
+    ; cp a, 0
+    ; jp nz, LCD_Interrupt_Classic
+    ; jp LCD_Interrupt_Park
+    pop af
+    pop hl
     ret
