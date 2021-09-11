@@ -4,11 +4,14 @@ INCLUDE "header.inc"
 SECTION "rom", ROM0
 
 Start::
+	di
 	ld sp, $FFFE
 	ld a, IEF_STAT | IEF_VBLANK ; Enable LCD and VBLANK interrupts
 	ldh [rIE], a
+	ld a, STATF_LYC
+	ldh [rSTAT], a
 	call WaitVBlank
-	call AUDIO_OFF
+	; call AUDIO_OFF
 	call LCD_OFF
 	call ClearMap
 	call ClearOAM
@@ -34,13 +37,10 @@ MenuLoop:
 	jp MenuLoop
 
 StartClassic::
-	ld a, 0
-	ldh [rLYC], a
-	ld a, STATF_LYC
-	ldh [rSTAT], a
+	call SetParkLYC
 	call WaitVBlank
 	call LCD_OFF
-	call SetupClassicCutscenePalettes
+	call SetupParkPalettes
 	call ClearMap
 	call ClearOAM
 	call ClearRAM
@@ -58,21 +58,19 @@ StartClassic::
 	call InitializeBird
 	call RefreshLives
 	call LCD_ON_BG_ONLY
-CutsceneLoop:
+ParkLoop:
 	call WaitVBlank
 	call IncrementScrollOffset
-	call HandleCutsceneLoop
+	call HandleParkLoop
 	call PlayerUpdate
 	call HandWaveAnimation
 	call UpdateGlobalTimer
 	call OAMDMA
-	jp CutsceneLoop
+	jp ParkLoop
 
 PregameLoop::
-	ld hl, started_classic
-	ld [hl], 1
-	ld a, 136 ; make constant TODO
-	ldh [rLYC], a
+	call StartedClassic
+	call SetClassicLYC
 	call ResetScroll
 	call ClearOAM
 	call ClearRAM

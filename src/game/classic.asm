@@ -6,7 +6,7 @@ HAND_WAVE_START_Y EQU 112
 
 SECTION "classic", ROMX
 
-HandleCutsceneLoop::
+HandleParkLoop::
     ; Are we done moving into the sky
     ld a, [player_y]
     ld b, a
@@ -48,6 +48,13 @@ TryToUnpause::
 	ld [hl], a ; pause
 .end:
 	ret
+
+StartedClassic::
+    push hl
+    ld hl, started_classic
+	ld [hl], 1
+    pop hl
+    ret
 
 SpawnHandWave::
 	; Totally dumb for now... But we just take another enemy sprite slot

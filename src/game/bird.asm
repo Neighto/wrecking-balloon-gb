@@ -10,8 +10,13 @@ BIRD_SPAWN_A EQU 20
 BIRD_SPAWN_B EQU 50
 BIRD_SPAWN_C EQU 80
 BIRD_SPAWN_D EQU 110
+BIRD_HORIZONTAL_SPEED EQU 2
+BIRD_VERTICAL_SPEED EQU 1
+BIRD_FLAP_UP_SPEED EQU 5
 
 UpdateBirdPosition:
+    push hl
+    push af
     ld hl, wBird
     ; Update Y
     ld a, [bird_y]
@@ -37,9 +42,13 @@ UpdateBirdPosition:
     ld a, [bird_x]
     add 16
     ld [hl], a
+    pop af
+    pop hl
     ret
 
 SetSpawnPoint:
+    push hl
+    push af
     ld hl, bird_y
     ld a, 4
     call RANDOM
@@ -53,19 +62,22 @@ SetSpawnPoint:
     jr z, .spawnD
 .spawnA:
     ld [hl], BIRD_SPAWN_A
-    ret
+    jr .end
 .spawnB:
     ld [hl], BIRD_SPAWN_B
-    ret
+    jr .end
 .spawnC:
     ld [hl], BIRD_SPAWN_C
-    ret
+    jr .end
 .spawnD:
     ld [hl], BIRD_SPAWN_D
+.end:
+    pop af
+    pop hl
     ret
 
 InitializeBird::
-    ; Set variables
+    push af
     xor a ; ld a, 0
     ld [bird_flapping_frame], a
     ld [bird_alive], a
@@ -73,9 +85,12 @@ InitializeBird::
     ld [bird_spawn_right], a
     ld [bird_x], a
     ld [bird_y], a
+    pop af
     ret
 
 SpawnBirdRight:
+    push hl
+    push af
     ld hl, bird_x
     ld [hl], BIRD_START_RIGHT_X
     call SetSpawnPoint
@@ -114,9 +129,13 @@ SpawnBirdRight:
     ld [hl], $9A
     inc l
     ld [hl], %00000000
+    pop af
+    pop hl
     ret
 
 SpawnBirdLeft:
+    push hl
+    push af
     ld hl, bird_x
     ld [hl], BIRD_START_LEFT_X
     call SetSpawnPoint
@@ -155,43 +174,25 @@ SpawnBirdLeft:
     ld [hl], $92
     inc l
     ld [hl], %00100000
+    pop af
+    pop hl
     ret
 
 SpawnBird:
     ; TODO: Would be funny if it came from one side then the other - clearly just one bird
+    push af
     ld a, 2
     call RANDOM
     cp a, 0
     call z, SpawnBirdLeft
     cp a, 1
     call z, SpawnBirdRight
-    ret
-
-MoveBirdLeft:
-    ld hl, bird_x
-    ld a, 2
-    call DecrementPosition
-    ret
-
-MoveBirdRight:
-    ld hl, bird_x
-    ld a, 2
-    call IncrementPosition
-    ret 
-
-MoveBirdDown:
-    ld hl, bird_y
-    ld a, 1
-    call IncrementPosition
-    ret
-
-MoveBirdUp:
-    ld hl, bird_y
-    ld a, 5
-    call DecrementPosition
+    pop af
     ret
 
 BirdAnimate:
+    push hl
+    push af
     ld a, [bird_flapping_frame]
     cp a, 0
     jr nz, .frame1
@@ -212,7 +213,7 @@ BirdAnimate:
     ld [hl], $9A
     ld hl, bird_flapping_frame
     ld [hl], 1
-    ret
+    jr .end
 .frame1:
     ld a, [global_timer]
     and %00111111 ; bird_flapping_speed
@@ -230,11 +231,18 @@ BirdAnimate:
     ld [hl], $96
     ld hl, bird_flapping_frame
     ld [hl], 0
-    call MoveBirdUp
+    ld hl, bird_y
+    ld a, BIRD_FLAP_UP_SPEED
+    call DecrementPosition
 .end:
+    pop af
+    pop hl
     ret
 
 BirdUpdate::
+    push hl
+    push bc
+    push af
     ; Check if alive
     ld a, [bird_alive]
     and 1
@@ -247,15 +255,21 @@ BirdUpdate::
     and 1
     jr z, .moveRight
 .moveLeft:
-    call MoveBirdLeft
+    ld hl, bird_x
+    ld a, BIRD_HORIZONTAL_SPEED
+    call DecrementPosition
     jr .moveDown
 .moveRight:
-    call MoveBirdRight
+    ld hl, bird_x
+    ld a, BIRD_HORIZONTAL_SPEED
+    call IncrementPosition
 .moveDown:
     ld a, [global_timer]
     and BIRD_SPRITE_FALLING_TIME
     jr nz, .moveEnd
-    call MoveBirdDown
+    ld hl, bird_y
+    ld a, BIRD_VERTICAL_SPEED
+    call IncrementPosition
 .moveEnd:
     call BirdAnimate
     call UpdateBirdPosition
@@ -269,9 +283,12 @@ BirdUpdate::
 .died:
     xor a ; ld a, 0
     ld [bird_alive], a
-    ret ; Maybe remove
+    jr .end
 .isDead:
     ; TODO add respawn timer
     call SpawnBird
 .end:
+    pop af
+    pop bc
+    pop hl
     ret

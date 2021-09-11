@@ -31,43 +31,21 @@ WaitVBlank::
     di
     ret
 
-ClearAllTiles::
-    ld hl, _VRAM8000
-    ld bc, _VRAM8800 - _VRAM8000
-    call ResetInRange
-    ld hl, _VRAM8800
-    ld bc, _VRAM9000 - _VRAM8800
-    call ResetInRange
-    ld hl, _VRAM9000
-    ld bc, _SCRN0 - _VRAM9000
-    call ResetInRange
-    ret
-
-ClearMap::
-    ld hl, _SCRN0
-    ld bc, $400
-    push hl
-.clear_map_loop
-    ;wait for hblank
-    ld  hl, rSTAT
-    bit 1, [hl]
-    jr nz, .clear_map_loop
-    pop hl
-    xor a ; ld a, 0
-    ld [hli], a
-    push hl
-    dec bc
-    ld a, b
-    or c
-    jr nz, .clear_map_loop
-    pop hl
-    ret
-
 SetupWindow::
     ld a, 136
 	ld [rWY], a
 	ld a, 7
 	ld [rWX], a
+    ret
+
+SetParkLYC::
+    xor a ; ld a, 0
+	ldh [rLYC], a
+    ret 
+
+SetClassicLYC::
+	ld a, 136
+	ldh [rLYC], a
     ret
 
 SECTION "scroll", ROM0
@@ -80,18 +58,6 @@ HorizontalScroll::
     ldh a, [rSCX]
     inc a
     ldh  [rSCX], a
-.end:
-    pop af
-    ret
-
-VerticalScroll::
-    push af
-    ld a, [global_timer]
-    and	BACKGROUND_VSCROLL_SPEED
-    jr nz, .end
-    ldh a, [rSCY]
-    sub 1
-    ldh [rSCY], a
 .end:
     pop af
     ret

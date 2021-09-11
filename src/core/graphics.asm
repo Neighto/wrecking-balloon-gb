@@ -50,10 +50,10 @@ LoadGameData::
 	ld hl, _VRAM9000
 	ld de, BackgroundTilesEnd - BackgroundTiles
 	call MEMCPY
-	; Copy the classic cutscene tiles
-	ld bc, ClassicCutsceneTiles
+	; Copy the classic park tiles
+	ld bc, ClassicParkTiles
 	ld hl, _VRAM8800+$0200
-	ld de, ClassicCutsceneTilesEnd - ClassicCutsceneTiles
+	ld de, ClassicParkTilesEnd - ClassicParkTiles
 	call MEMCPY
 	; Copy the window tiles
 	ld bc, WindowTiles
@@ -83,28 +83,6 @@ ReplaceTilemapHorizontal::
 
 	ret
 
-
-	;; TODO !!! MASSIVELY CLEAN
-; ClearBottom::
-;     ld hl, $9A40
-;     ld bc, $1BF
-;     push hl
-; .clear_map_loop
-;     ;wait for hblank
-;     ld  hl, rSTAT
-;     bit 1, [hl]
-;     jr nz, .clear_map_loop
-;     pop hl
-;     xor a ; ld a, 0
-;     ld [hli], a
-;     push hl
-;     dec bc
-;     ld a, b
-;     or c
-;     jr nz, .clear_map_loop
-;     pop hl
-;     ret
-
 LoadMenuData::
 	ld bc, MenuTitleTiles
 	ld hl, _VRAM9000
@@ -128,7 +106,7 @@ SetupPalettes::
 	ldh [rOBP0], a
     ret
 
-SetupClassicCutscenePalettes::
+SetupParkPalettes::
 	ld a, %11100100
     ldh [rBGP], a
     ldh [rOCPD], a
@@ -185,3 +163,35 @@ RefreshLives::
 	ld [LIVES_ADDRESS], a
 	pop af
 	ret
+
+ClearAllTiles::
+    ld hl, _VRAM8000
+    ld bc, _VRAM8800 - _VRAM8000
+    call ResetInRange
+    ld hl, _VRAM8800
+    ld bc, _VRAM9000 - _VRAM8800
+    call ResetInRange
+    ld hl, _VRAM9000
+    ld bc, _SCRN0 - _VRAM9000
+    call ResetInRange
+    ret
+
+ClearMap::
+    ld hl, _SCRN0
+    ld bc, $400
+    push hl
+.clear_map_loop
+    ;wait for hblank
+    ld  hl, rSTAT
+    bit 1, [hl]
+    jr nz, .clear_map_loop
+    pop hl
+    xor a ; ld a, 0
+    ld [hli], a
+    push hl
+    dec bc
+    ld a, b
+    or c
+    jr nz, .clear_map_loop
+    pop hl
+    ret
