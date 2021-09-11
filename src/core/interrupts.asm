@@ -57,13 +57,15 @@ LCD_Interrupt_Classic:
 LCD_Interrupt::
     push hl
     push af
+    ld a, [started_classic]
+    cp a, 1
+    jr z, .classic
+.park:
     call LCD_Interrupt_Park
-
-    ; TODO : Figuring out how lcd interrupt can co-exist with vblank
-    ; ld a, [started_classic]
-    ; cp a, 0
-    ; jp nz, LCD_Interrupt_Classic
-    ; jp LCD_Interrupt_Park
+    jr .end
+.classic:
+    call LCD_Interrupt_Classic
+.end:
     pop af
     pop hl
     ret

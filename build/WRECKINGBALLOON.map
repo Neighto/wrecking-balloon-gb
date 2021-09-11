@@ -186,32 +186,36 @@ ROM0 bank #0:
            $0e02 = OffScreenX.end
            $0e04 = OffScreenY
            $0e0e = OffScreenY.end
-  SECTION: $0e10-$0ee5 ($00d6 bytes) ["graphics"]
-           $0e10 = LoadGameData
-           $0e59 = ReplaceTilemapHorizontal
-           $0e5f = ReplaceTilemapHorizontal.loop
-           $0e60 = LoadMenuData
-           $0e85 = SetupPalettes
-           $0e90 = SetupClassicCutscenePalettes
-           $0e9d = RefreshScore
-           $0edb = RefreshLives
-  SECTION: $0ee6-$0fba ($00d5 bytes) ["rom"]
-           $0ee6 = Start
-           $0f1b = StartClassic
-           $0f5f = CutsceneLoop
-           $0f79 = PregameLoop
-           $0f94 = GameLoop
-           $0fb8 = GameLoop.end
-  SECTION: $0fbb-$1008 ($004e bytes) ["interrupts"]
-           $0fbb = VBlank_Interrupt
-           $0fc3 = LCD_Interrupt_Park
-           $0fce = LCD_Interrupt_Park.clouds
-           $0fdb = LCD_Interrupt_Park.ground
-           $0fe3 = LCD_Interrupt_Classic
-           $0fed = LCD_Interrupt_Classic.showSprites
-           $0ff7 = LCD_Interrupt_Classic.hideSpritesOnWindow
-           $1001 = LCD_Interrupt
-    SLACK: $302b bytes
+  SECTION: $0e10-$0ef1 ($00e2 bytes) ["rom"]
+           $0e10 = Start
+           $0e44 = MenuLoop
+           $0e56 = StartClassic
+           $0e9a = CutsceneLoop
+           $0eb2 = PregameLoop
+           $0ecd = GameLoop
+           $0eef = GameLoop.end
+  SECTION: $0ef2-$0fc7 ($00d6 bytes) ["graphics"]
+           $0ef2 = LoadGameData
+           $0f3b = ReplaceTilemapHorizontal
+           $0f41 = ReplaceTilemapHorizontal.loop
+           $0f42 = LoadMenuData
+           $0f67 = SetupPalettes
+           $0f72 = SetupClassicCutscenePalettes
+           $0f7f = RefreshScore
+           $0fbd = RefreshLives
+  SECTION: $0fc8-$1021 ($005a bytes) ["interrupts"]
+           $0fc8 = VBlank_Interrupt
+           $0fd0 = LCD_Interrupt_Park
+           $0fdb = LCD_Interrupt_Park.clouds
+           $0fe8 = LCD_Interrupt_Park.ground
+           $0ff0 = LCD_Interrupt_Classic
+           $0ffa = LCD_Interrupt_Classic.showSprites
+           $1004 = LCD_Interrupt_Classic.hideSpritesOnWindow
+           $100e = LCD_Interrupt
+           $1017 = LCD_Interrupt.park
+           $101c = LCD_Interrupt.classic
+           $101f = LCD_Interrupt.end
+    SLACK: $3012 bytes
 
 ROMX bank #1:
   SECTION: $4000-$4d15 ($0d16 bytes) ["Song Data"]
@@ -583,66 +587,66 @@ ROMX bank #1:
            $6b15 = Percussion
            $6b22 = Percussion2
            $6b2f = Bass
-  SECTION: $6b40-$6b98 ($0059 bytes) ["lcd"]
+  SECTION: $6b40-$6b9a ($005b bytes) ["lcd"]
            $6b40 = LCD_OFF
            $6b45 = LCD_ON
            $6b4a = LCD_ON_BG_ONLY
            $6b4f = WaitVBlank
-           $6b53 = WaitVBlank.loop
-           $6b5b = ClearAllTiles
-           $6b77 = ClearMap
-           $6b7e = ClearMap.clear_map_loop
-           $6b90 = SetupWindow
-  SECTION: $6b99-$6bef ($0057 bytes) ["menu"]
-           $6b99 = SpawnMenuCursor
-           $6ba8 = MoveCursor
-           $6bbb = MoveCursor.classicMode
-           $6bc1 = MoveCursor.storyMode
-           $6bc7 = SelectMode
-           $6bce = SelectMode.classicMode
-           $6bd2 = SelectMode.storyMode
-           $6bd3 = MenuInput
-           $6bdd = MenuInput.moveSelected
-           $6be6 = MenuInput.selectMode
-           $6bef = MenuInput.end
-  SECTION: $6bf0-$6c3f ($0050 bytes) ["menu tiles"]
-           $6bf0 = MenuTiles
-           $6c40 = MenuTilesEnd
-  SECTION: $6c40-$6c7f ($0040 bytes) ["classic cutscene tiles"]
-           $6c40 = ClassicCutsceneTiles
-           $6c80 = ClassicCutsceneTilesEnd
-  SECTION: $6c80-$6cb5 ($0036 bytes) ["math"]
-           $6c80 = MODULO
-           $6c82 = MODULO.loop
-           $6c87 = RANDOM
-           $6c90 = DIVISION
-           $6c96 = DIVISION.loop
-           $6c9b = DIVISION.end
-           $6c9e = ToBCD
-           $6cb4 = ToBCD.end
-  SECTION: $6cb6-$6ce5 ($0030 bytes) ["score"]
-           $6cb6 = InitializeScore
-           $6cbe = IncreaseDifficulty
-           $6cc5 = IncreaseDifficulty.scoreMid
-           $6cc5 = IncreaseDifficulty.scoreLow
-           $6cc5 = IncreaseDifficulty.scoreHigh
-           $6cc6 = AddPoints
-           $6cd9 = AddPoints.carry
-           $6ce3 = AddPoints.end
-  SECTION: $6ce6-$6d04 ($001f bytes) ["general initialization"]
-           $6ce6 = InitializeGameVars
-  SECTION: $6d05-$6d22 ($001e bytes) ["memory"]
-           $6d05 = MEMCPY.memcpy_loop
-           $6d05 = MEMCPY
-           $6d09 = MEMCPY.memcpy_check_limit
-           $6d0f = ClearOAM
-           $6d19 = ClearRAM
-  SECTION: $6d23-$6d36 ($0014 bytes) ["window map"]
-           $6d23 = WindowMap
-           $6d37 = WindowMapEnd
-  SECTION: $6d37-$6d3e ($0008 bytes) ["timer"]
-           $6d37 = UpdateGlobalTimer
-    SLACK: $12c1 bytes
+           $6b54 = WaitVBlank.loop
+           $6b5d = ClearAllTiles
+           $6b79 = ClearMap
+           $6b80 = ClearMap.clear_map_loop
+           $6b92 = SetupWindow
+  SECTION: $6b9b-$6bf1 ($0057 bytes) ["menu"]
+           $6b9b = SpawnMenuCursor
+           $6baa = MoveCursor
+           $6bbd = MoveCursor.classicMode
+           $6bc3 = MoveCursor.storyMode
+           $6bc9 = SelectMode
+           $6bd0 = SelectMode.classicMode
+           $6bd4 = SelectMode.storyMode
+           $6bd5 = MenuInput
+           $6bdf = MenuInput.moveSelected
+           $6be8 = MenuInput.selectMode
+           $6bf1 = MenuInput.end
+  SECTION: $6bf2-$6c41 ($0050 bytes) ["menu tiles"]
+           $6bf2 = MenuTiles
+           $6c42 = MenuTilesEnd
+  SECTION: $6c42-$6c81 ($0040 bytes) ["classic cutscene tiles"]
+           $6c42 = ClassicCutsceneTiles
+           $6c82 = ClassicCutsceneTilesEnd
+  SECTION: $6c82-$6cb7 ($0036 bytes) ["math"]
+           $6c82 = MODULO
+           $6c84 = MODULO.loop
+           $6c89 = RANDOM
+           $6c92 = DIVISION
+           $6c98 = DIVISION.loop
+           $6c9d = DIVISION.end
+           $6ca0 = ToBCD
+           $6cb6 = ToBCD.end
+  SECTION: $6cb8-$6ce7 ($0030 bytes) ["score"]
+           $6cb8 = InitializeScore
+           $6cc0 = IncreaseDifficulty
+           $6cc7 = IncreaseDifficulty.scoreMid
+           $6cc7 = IncreaseDifficulty.scoreLow
+           $6cc7 = IncreaseDifficulty.scoreHigh
+           $6cc8 = AddPoints
+           $6cdb = AddPoints.carry
+           $6ce5 = AddPoints.end
+  SECTION: $6ce8-$6d06 ($001f bytes) ["general initialization"]
+           $6ce8 = InitializeGameVars
+  SECTION: $6d07-$6d24 ($001e bytes) ["memory"]
+           $6d07 = MEMCPY.memcpy_loop
+           $6d07 = MEMCPY
+           $6d0b = MEMCPY.memcpy_check_limit
+           $6d11 = ClearOAM
+           $6d1b = ClearRAM
+  SECTION: $6d25-$6d38 ($0014 bytes) ["window map"]
+           $6d25 = WindowMap
+           $6d39 = WindowMapEnd
+  SECTION: $6d39-$6d40 ($0008 bytes) ["timer"]
+           $6d39 = UpdateGlobalTimer
+    SLACK: $12bf bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c045 ($0046 bytes) ["RAM vars"]
@@ -790,7 +794,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $0fd5 bytes in 1 bank
-    ROMX: $2d3f bytes in 1 bank
+    ROM0: $0fee bytes in 1 bank
+    ROMX: $2d41 bytes in 1 bank
     WRAM0: $00d0 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

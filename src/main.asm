@@ -4,13 +4,10 @@ INCLUDE "header.inc"
 SECTION "rom", ROM0
 
 Start::
-	ei
 	ld sp, $FFFE
-	ld a, IEF_STAT | IEF_VBLANK ; Enable LCD Interrupt
+	ld a, IEF_STAT | IEF_VBLANK ; Enable LCD and VBLANK interrupts
 	ldh [rIE], a
-	; ei
 	call WaitVBlank
-	; di
 	call AUDIO_OFF
 	call LCD_OFF
 	call ClearMap
@@ -27,16 +24,14 @@ Start::
 	call InitializePointBalloon
 	call SpawnMenuCursor
 	call LCD_ON_BG_ONLY
-; MenuLoop:
-; 	ei
-; 	call WaitVBlank
-; 	di
-; 	; call _hUGE_dosound
-; 	call UpdateGlobalTimer
-; 	call MenuBalloonUpdate
-; 	call MenuInput
-; 	call OAMDMA
-; 	jp MenuLoop
+MenuLoop:
+	call WaitVBlank
+	; call _hUGE_dosound
+	call UpdateGlobalTimer
+	call MenuBalloonUpdate
+	call MenuInput
+	call OAMDMA
+	jp MenuLoop
 
 StartClassic::
 	ld a, 0
@@ -64,9 +59,7 @@ StartClassic::
 	call RefreshLives
 	call LCD_ON_BG_ONLY
 CutsceneLoop:
-	ei
 	call WaitVBlank
-	di
 	call IncrementScrollOffset
 	call HandleCutsceneLoop
 	call PlayerUpdate
@@ -87,9 +80,7 @@ PregameLoop::
 	call SetupPalettes
 	call LCD_ON
 GameLoop:
-	ei
 	call WaitVBlank
-	di
 	call TryToUnpause
 	ld a, [paused_game]
 	cp a, 1
