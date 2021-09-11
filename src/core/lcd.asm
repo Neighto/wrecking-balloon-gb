@@ -5,24 +5,31 @@ SECTION "lcd", ROMX
 
 LCD_OFF::
     ld a, 0
-    ld [rLCDC], a
+    ldh [rLCDC], a
     ret
 
 LCD_ON::
     ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJON | LCDCF_OBJ16 | LCDCF_WINON | LCDCF_WIN9C00
-    ld [rLCDC], a
+    ldh [rLCDC], a
     ret
 
 LCD_ON_BG_ONLY::
     ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJON | LCDCF_OBJ16
-    ld [rLCDC], a
+    ldh [rLCDC], a
     ret
 
 WaitVBlank::
-    ; TODO if this way pans out, ONCE AGAIN we can try to incorporate the Vblank flag
-    ld a, [rLY]
-    cp a, 144
-    jr nz, WaitVBlank
+    ; ld a, [rLY]
+    ; cp a, 144
+    ; jr nz, WaitVBlank
+    ld hl, vblank_flag
+    xor a ; ld a, 0
+.loop:
+    halt 
+    nop
+    cp a, [hl]
+    jr z, .loop
+    ld [hl], a
     ret
 
 ClearAllTiles::

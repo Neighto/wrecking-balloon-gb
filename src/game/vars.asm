@@ -1,4 +1,5 @@
 SECTION "RAM vars", WRAM0[$C000]
+	vblank_flag:: DB
 	score:: DS 3
 	global_timer:: DB
 	joypad_down:: DB
@@ -78,6 +79,7 @@ SECTION "RAM vars", WRAM0[$C000]
 SECTION "general initialization", ROMX
 InitializeGameVars::
 	xor a
+	ld [vblank_flag], a
 	ld [paused_game], a
 	ld [difficulty_level], a
 	ld [selected_mode], a
