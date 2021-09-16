@@ -75,10 +75,12 @@ PregameLoop::
 	call ClearOAM
 	call ClearRAM
 	call InitializePlayer
+	call SpawnCountdown ; *******
 	call SetupPalettes
 	call LCD_ON
 GameLoop:
 	call WaitVBlank
+	call CountdownAnimation ; *******
 	call TryToUnpause
 	ld a, [paused_game]
 	cp a, 1
