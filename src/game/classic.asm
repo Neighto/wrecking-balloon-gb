@@ -4,6 +4,9 @@ INCLUDE "hardware.inc"
 HAND_WAVE_START_X EQU 120
 HAND_WAVE_START_Y EQU 112
 
+COUNTDOWN_START_X EQU 80
+COUNTDOWN_START_Y EQU 50
+
 SECTION "classic", ROMX
 
 HandleParkLoop::
@@ -92,6 +95,62 @@ HandWaveAnimation::
     ld [hl], 0
 .end:
 	ret
+
+SpawnCountdown::
+    ld hl, wEnemyBalloon
+    ld a, COUNTDOWN_START_Y
+    ld [hli], a
+    ld a, COUNTDOWN_START_X
+    ld [hli], a
+    ld hl, wEnemyBalloon+4
+    ld a, COUNTDOWN_START_Y
+    ld [hli], a
+    ld a, COUNTDOWN_START_X+8
+    ld [hli], a
+	ret
+
+CountdownAnimation::
+    ld a, [countdown_frame]
+    cp a, 0
+    jr z, .frame0
+    cp a, 1
+    jr z, .frame1
+    cp a, 2
+    jr z, .frame2
+.frame0:
+    ld a, [global_timer]
+    and %00011111
+    jp nz, .end
+    ld hl, wEnemyBalloon+2
+    ld [hl], $B8
+    ld hl, wEnemyBalloon+6
+    ld [hl], $BA
+    ld hl, countdown_frame
+    ld [hl], 1
+    ret
+.frame1:
+    ld a, [global_timer]
+    and %00011111
+    jp nz, .end
+    ld hl, wEnemyBalloon+2
+    ld [hl], $B4
+    ld hl, wEnemyBalloon+6
+    ld [hl], $B6
+    ld hl, countdown_frame
+    ld [hl], 2
+    ret
+.frame2:
+    ld a, [global_timer]
+    and %00011111
+    jp nz, .end
+    ld hl, wEnemyBalloon+2
+    ld [hl], $B0
+    ld hl, wEnemyBalloon+6
+    ld [hl], $B2
+    ld hl, countdown_frame
+    ld [hl], 0
+.end:
+    ret
 
 IncrementScrollOffset::
 	ld a, [global_timer]

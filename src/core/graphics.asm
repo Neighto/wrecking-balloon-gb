@@ -55,6 +55,11 @@ LoadGameData::
 	ld hl, _VRAM8800+$0200
 	ld de, ClassicParkTilesEnd - ClassicParkTiles
 	call MEMCPY
+	; Copy the countdown tiles
+	ld bc, CountdownTiles
+	ld hl, _VRAM8800+$0300
+	ld de, CountdownTilesEnd - CountdownTiles
+	call MEMCPY
 	; Copy the window tiles
 	ld bc, WindowTiles
 	ld hl, $9400
