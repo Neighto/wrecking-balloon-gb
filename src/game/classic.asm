@@ -6,6 +6,7 @@ HAND_WAVE_START_Y EQU 112
 
 COUNTDOWN_START_X EQU 80
 COUNTDOWN_START_Y EQU 50
+COUNTDOWN_SPEED EQU %00011111
 
 SECTION "classic", ROMX
 
@@ -117,9 +118,11 @@ CountdownAnimation::
     jr z, .frame1
     cp a, 2
     jr z, .frame2
+    cp a, 3
+    jr z, .frame3
 .frame0:
     ld a, [global_timer]
-    and %00011111
+    and COUNTDOWN_SPEED
     jp nz, .end
     ld hl, wEnemyBalloon+2
     ld [hl], $B8
@@ -130,7 +133,7 @@ CountdownAnimation::
     ret
 .frame1:
     ld a, [global_timer]
-    and %00011111
+    and COUNTDOWN_SPEED
     jp nz, .end
     ld hl, wEnemyBalloon+2
     ld [hl], $B4
@@ -141,14 +144,24 @@ CountdownAnimation::
     ret
 .frame2:
     ld a, [global_timer]
-    and %00011111
+    and COUNTDOWN_SPEED
     jp nz, .end
     ld hl, wEnemyBalloon+2
     ld [hl], $B0
     ld hl, wEnemyBalloon+6
     ld [hl], $B2
     ld hl, countdown_frame
-    ld [hl], 0
+    ld [hl], 3
+.frame3:
+    ld a, [global_timer]
+    and COUNTDOWN_SPEED
+    jp nz, .end
+    ld hl, wEnemyBalloon+2
+    ld [hl], $B0 ; what will this be?
+    ld hl, wEnemyBalloon+6
+    ld [hl], $B2
+    ld hl, countdown_frame
+    ld [hl], 0 ; end...
 .end:
     ret
 

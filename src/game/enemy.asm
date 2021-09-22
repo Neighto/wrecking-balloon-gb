@@ -133,7 +133,7 @@ SpawnEnemy:
     ld a, [enemy_balloon_x]
     ld [hl], a
     inc l
-    ld [hl], $86
+    ld [hl], $84
     inc l
     ld [hl], %00000000
     ; Balloon right
@@ -145,7 +145,7 @@ SpawnEnemy:
     add 8
     ld [hl], a
     inc l
-    ld [hl], $86
+    ld [hl], $84
     inc l
     ld [hl], %00100000
     ; Cactus left
@@ -156,7 +156,7 @@ SpawnEnemy:
     ld a, [enemy_cactus_x]
     ld [hl], a
     inc l
-    ld [hl], $84
+    ld [hl], $86
     inc l
     ld [hl], %00000000
     ; Cactus right
@@ -168,7 +168,7 @@ SpawnEnemy:
     add 8
     ld [hl], a
     inc l
-    ld [hl], $84
+    ld [hl], $86
     inc l
     ld [hl], %00100000
     ret

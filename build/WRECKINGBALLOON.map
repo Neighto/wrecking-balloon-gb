@@ -552,7 +552,7 @@ ROMX bank #1:
            $68ef = MenuBalloonUpdate.respawn
            $68f6 = MenuBalloonUpdate.end
            $68f7 = DeathOfPointBalloon
-  SECTION: $690a-$6a27 ($011e bytes) ["classic"]
+  SECTION: $690a-$6a42 ($0139 bytes) ["classic"]
            $690a = HandleParkLoop
            $6927 = HandleParkLoop.canWeScroll
            $6933 = HandleParkLoop.end
@@ -566,94 +566,95 @@ ROMX bank #1:
            $698c = HandWaveAnimation.end
            $698d = SpawnCountdown
            $69a0 = CountdownAnimation
-           $69af = CountdownAnimation.frame0
-           $69c7 = CountdownAnimation.frame1
-           $69df = CountdownAnimation.frame2
-           $69f6 = CountdownAnimation.end
-           $69f7 = IncrementScrollOffset
-           $6a05 = IncrementScrollOffset.end
-           $6a06 = SetClassicMapStartPoint
-           $6a0b = ClassicGameManager
-           $6a1e = ClassicGameManager.levelThree
-           $6a21 = ClassicGameManager.levelTwo
-           $6a24 = ClassicGameManager.levelOne
-           $6a27 = ClassicGameManager.end
-  SECTION: $6a28-$6b37 ($0110 bytes) ["window tiles"]
-           $6a28 = WindowTiles
-           $6b38 = WindowTilesEnd
-  SECTION: $6b38-$6bf7 ($00c0 bytes) ["countdown tiles"]
-           $6b38 = CountdownTiles
-           $6bf8 = CountdownTilesEnd
-  SECTION: $6bf8-$6c84 ($008d bytes) ["sound"]
-           $6bf8 = AUDIO_OFF
-           $6bfc = AUDIO_ON
-           $6c01 = PopSound
-           $6c14 = FallingSound
-           $6c29 = StopFallingSound
-           $6c2e = CollectSound
-           $6c43 = WrongAnswerSound
-           $6c5a = Percussion
-           $6c67 = Percussion2
-           $6c74 = Bass
-  SECTION: $6c85-$6cdb ($0057 bytes) ["menu"]
-           $6c85 = SpawnMenuCursor
-           $6c94 = MoveCursor
-           $6ca7 = MoveCursor.classicMode
-           $6cad = MoveCursor.storyMode
-           $6cb3 = SelectMode
-           $6cba = SelectMode.classicMode
-           $6cbe = SelectMode.storyMode
-           $6cbf = MenuInput
-           $6cc9 = MenuInput.moveSelected
-           $6cd2 = MenuInput.selectMode
-           $6cdb = MenuInput.end
-  SECTION: $6cdc-$6d2b ($0050 bytes) ["menu tiles"]
-           $6cdc = MenuTiles
-           $6d2c = MenuTilesEnd
-  SECTION: $6d2c-$6d6b ($0040 bytes) ["classic park tiles"]
-           $6d2c = ClassicParkTiles
-           $6d6c = ClassicParkTilesEnd
-  SECTION: $6d6c-$6da1 ($0036 bytes) ["math"]
-           $6d6c = MODULO
-           $6d6e = MODULO.loop
-           $6d73 = RANDOM
-           $6d7c = DIVISION
-           $6d82 = DIVISION.loop
-           $6d87 = DIVISION.end
-           $6d8a = ToBCD
-           $6da0 = ToBCD.end
-  SECTION: $6da2-$6dd1 ($0030 bytes) ["score"]
-           $6da2 = InitializeScore
-           $6daa = IncreaseDifficulty
-           $6db1 = IncreaseDifficulty.scoreMid
-           $6db1 = IncreaseDifficulty.scoreLow
-           $6db1 = IncreaseDifficulty.scoreHigh
-           $6db2 = AddPoints
-           $6dc5 = AddPoints.carry
-           $6dcf = AddPoints.end
-  SECTION: $6dd2-$6e00 ($002f bytes) ["lcd"]
-           $6dd2 = LCD_OFF
-           $6dd7 = LCD_ON
-           $6ddc = LCD_ON_BG_ONLY
-           $6de1 = WaitVBlank
-           $6de6 = WaitVBlank.loop
-           $6def = SetupWindow
-           $6df8 = SetParkLYC
-           $6dfc = SetClassicLYC
-  SECTION: $6e01-$6e22 ($0022 bytes) ["general initialization"]
-           $6e01 = InitializeGameVars
-  SECTION: $6e23-$6e40 ($001e bytes) ["memory"]
-           $6e23 = MEMCPY.memcpy_loop
-           $6e23 = MEMCPY
-           $6e27 = MEMCPY.memcpy_check_limit
-           $6e2d = ClearOAM
-           $6e37 = ClearRAM
-  SECTION: $6e41-$6e54 ($0014 bytes) ["window map"]
-           $6e41 = WindowMap
-           $6e55 = WindowMapEnd
-  SECTION: $6e55-$6e5c ($0008 bytes) ["timer"]
-           $6e55 = UpdateGlobalTimer
-    SLACK: $11a3 bytes
+           $69b3 = CountdownAnimation.frame0
+           $69cb = CountdownAnimation.frame1
+           $69e3 = CountdownAnimation.frame2
+           $69fa = CountdownAnimation.frame3
+           $6a11 = CountdownAnimation.end
+           $6a12 = IncrementScrollOffset
+           $6a20 = IncrementScrollOffset.end
+           $6a21 = SetClassicMapStartPoint
+           $6a26 = ClassicGameManager
+           $6a39 = ClassicGameManager.levelThree
+           $6a3c = ClassicGameManager.levelTwo
+           $6a3f = ClassicGameManager.levelOne
+           $6a42 = ClassicGameManager.end
+  SECTION: $6a43-$6b52 ($0110 bytes) ["window tiles"]
+           $6a43 = WindowTiles
+           $6b53 = WindowTilesEnd
+  SECTION: $6b53-$6c32 ($00e0 bytes) ["countdown tiles"]
+           $6b53 = CountdownTiles
+           $6c33 = CountdownTilesEnd
+  SECTION: $6c33-$6cbf ($008d bytes) ["sound"]
+           $6c33 = AUDIO_OFF
+           $6c37 = AUDIO_ON
+           $6c3c = PopSound
+           $6c4f = FallingSound
+           $6c64 = StopFallingSound
+           $6c69 = CollectSound
+           $6c7e = WrongAnswerSound
+           $6c95 = Percussion
+           $6ca2 = Percussion2
+           $6caf = Bass
+  SECTION: $6cc0-$6d16 ($0057 bytes) ["menu"]
+           $6cc0 = SpawnMenuCursor
+           $6ccf = MoveCursor
+           $6ce2 = MoveCursor.classicMode
+           $6ce8 = MoveCursor.storyMode
+           $6cee = SelectMode
+           $6cf5 = SelectMode.classicMode
+           $6cf9 = SelectMode.storyMode
+           $6cfa = MenuInput
+           $6d04 = MenuInput.moveSelected
+           $6d0d = MenuInput.selectMode
+           $6d16 = MenuInput.end
+  SECTION: $6d17-$6d66 ($0050 bytes) ["menu tiles"]
+           $6d17 = MenuTiles
+           $6d67 = MenuTilesEnd
+  SECTION: $6d67-$6da6 ($0040 bytes) ["classic park tiles"]
+           $6d67 = ClassicParkTiles
+           $6da7 = ClassicParkTilesEnd
+  SECTION: $6da7-$6ddc ($0036 bytes) ["math"]
+           $6da7 = MODULO
+           $6da9 = MODULO.loop
+           $6dae = RANDOM
+           $6db7 = DIVISION
+           $6dbd = DIVISION.loop
+           $6dc2 = DIVISION.end
+           $6dc5 = ToBCD
+           $6ddb = ToBCD.end
+  SECTION: $6ddd-$6e0c ($0030 bytes) ["score"]
+           $6ddd = InitializeScore
+           $6de5 = IncreaseDifficulty
+           $6dec = IncreaseDifficulty.scoreMid
+           $6dec = IncreaseDifficulty.scoreLow
+           $6dec = IncreaseDifficulty.scoreHigh
+           $6ded = AddPoints
+           $6e00 = AddPoints.carry
+           $6e0a = AddPoints.end
+  SECTION: $6e0d-$6e3b ($002f bytes) ["lcd"]
+           $6e0d = LCD_OFF
+           $6e12 = LCD_ON
+           $6e17 = LCD_ON_BG_ONLY
+           $6e1c = WaitVBlank
+           $6e21 = WaitVBlank.loop
+           $6e2a = SetupWindow
+           $6e33 = SetParkLYC
+           $6e37 = SetClassicLYC
+  SECTION: $6e3c-$6e5d ($0022 bytes) ["general initialization"]
+           $6e3c = InitializeGameVars
+  SECTION: $6e5e-$6e7b ($001e bytes) ["memory"]
+           $6e5e = MEMCPY.memcpy_loop
+           $6e5e = MEMCPY
+           $6e62 = MEMCPY.memcpy_check_limit
+           $6e68 = ClearOAM
+           $6e72 = ClearRAM
+  SECTION: $6e7c-$6e8f ($0014 bytes) ["window map"]
+           $6e7c = WindowMap
+           $6e90 = WindowMapEnd
+  SECTION: $6e90-$6e97 ($0008 bytes) ["timer"]
+           $6e90 = UpdateGlobalTimer
+    SLACK: $1168 bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c046 ($0047 bytes) ["RAM vars"]
@@ -803,6 +804,6 @@ HRAM bank #0:
 
 USED:
     ROM0: $101f bytes in 1 bank
-    ROMX: $2e5d bytes in 1 bank
+    ROMX: $2e98 bytes in 1 bank
     WRAM0: $00d1 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
