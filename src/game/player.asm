@@ -92,7 +92,7 @@ InitializePlayer::
   inc l
   ld [hl], PLAYER_START_X
   inc l
-  ld [hl], $82
+  ld [hl], $80
   inc l
   ld [hl], %00010000
   ; Balloon right
@@ -101,7 +101,7 @@ InitializePlayer::
   inc l
   ld [hl], PLAYER_START_X+8
   inc l
-  ld [hl], $82
+  ld [hl], $80
   inc l
   ld [hl], %00110000
   ; Cactus left
@@ -110,7 +110,7 @@ InitializePlayer::
   inc l
   ld [hl], PLAYER_START_X
   inc l
-  ld [hl], $80 ;$8C
+  ld [hl], $82
   inc l
   ld [hl], %00010000
   ; Cactus right
@@ -119,7 +119,7 @@ InitializePlayer::
   inc l
   ld [hl], PLAYER_START_X+8
   inc l
-  ld [hl], $80 ;$8C
+  ld [hl], $82
   inc l
   ld [hl], %00110000
   ret

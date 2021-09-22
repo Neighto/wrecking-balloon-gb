@@ -221,7 +221,7 @@ PointBalloonUpdate::
     cp a, 150
     jr nz, .respawnSkip
     ld b, 0
-    ld c, $86
+    ld c, $84
     call SpawnPointBalloon
 .respawnSkip:
     ; Check if we need to play popping animation
