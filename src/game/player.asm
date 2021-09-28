@@ -426,7 +426,7 @@ MovePlayerAutoMiddle::
   ld d, %00010000 ; TODO make these constants
   jr .end
 .moveLeft:
-  ld d, %00100000
+  ld d, OAMF_XFLIP
 .end:
   call PlayerControls
   ret
@@ -484,7 +484,7 @@ PopBalloonAnimation:
   ld hl, wPlayerBalloon+6
   ld [hl], $88
   inc l
-  ld [hl], %00100000
+  ld [hl], OAMF_XFLIP
   ld hl, player_popping_frame
   ld [hl], 1
   ret
@@ -498,7 +498,7 @@ PopBalloonAnimation:
   ld hl, wPlayerBalloon+6
   ld [hl], $8A
   inc l
-  ld [hl], %00100000
+  ld [hl], OAMF_XFLIP
   ld hl, player_popping_frame
   ld [hl], 2
   ret

@@ -1,5 +1,6 @@
 INCLUDE "points.inc"
 INCLUDE "balloonCactusConstants.inc"
+INCLUDE "hardware.inc"
 
 SECTION "point balloon", ROMX
 
@@ -115,7 +116,7 @@ SpawnPointBalloon:
     ld a, c
     ld [hl], a
     inc l
-    ld [hl], %00100000
+    ld [hl], OAMF_XFLIP
     ld a, b
     cp a, 0
     jr z, .end
@@ -162,7 +163,7 @@ PopBalloonAnimation:
     ld hl, wPointBalloon+6
     ld [hl], $88
     inc l
-    ld [hl], %00100000
+    ld [hl], OAMF_XFLIP
     ld hl, point_balloon_popping_frame
     ld [hl], 1
     ret
@@ -176,7 +177,7 @@ PopBalloonAnimation:
     ld hl, wPointBalloon+6
     ld [hl], $8A
     inc l
-    ld [hl], %00100000
+    ld [hl], OAMF_XFLIP
     ld hl, point_balloon_popping_frame
     ld [hl], 2
     ret

@@ -1,5 +1,6 @@
 INCLUDE "points.inc"
 INCLUDE "balloonCactusConstants.inc"
+INCLUDE "hardware.inc"
 
 SECTION "enemy", ROMX
 
@@ -147,7 +148,7 @@ SpawnEnemy:
     inc l
     ld [hl], $84
     inc l
-    ld [hl], %00100000
+    ld [hl], OAMF_XFLIP
     ; Cactus left
     ld hl, wEnemyCactus
     ld a, [enemy_cactus_y]
@@ -170,7 +171,7 @@ SpawnEnemy:
     inc l
     ld [hl], $86
     inc l
-    ld [hl], %00100000
+    ld [hl], OAMF_XFLIP
     ret
 
 MoveBalloonRight:
@@ -260,7 +261,7 @@ PopBalloonAnimation:
     ld hl, wEnemyBalloon+6
     ld [hl], $88
     inc l
-    ld [hl], %00100000
+    ld [hl], OAMF_XFLIP
     ld hl, enemy_popping_frame
     ld [hl], 1
     ret
@@ -274,7 +275,7 @@ PopBalloonAnimation:
     ld hl, wEnemyBalloon+6
     ld [hl], $8A
     inc l
-    ld [hl], %00100000
+    ld [hl], OAMF_XFLIP
     ld hl, enemy_popping_frame
     ld [hl], 2
     ret

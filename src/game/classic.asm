@@ -187,7 +187,7 @@ CountdownAnimation::
     ld hl, wEnemyBalloon+6
     ld [hl], $BC
     inc l
-    ld [hl], %00100000 ; todo call FLIP
+    ld [hl], OAMF_XFLIP
     ld hl, countdown_frame
     ld [hl], 4
     ret
