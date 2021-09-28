@@ -1,4 +1,5 @@
 INCLUDE "points.inc"
+INCLUDE "hardware.inc"
 
 SECTION "bird", ROMX
 
@@ -153,7 +154,7 @@ SpawnBirdLeft:
     ld [hli], a
     ld [hl], $9A
     inc l
-    ld [hl], %00100000
+    ld [hl], OAMF_XFLIP
     ; Bird middle
     ld hl, wBird+4
     ld a, [bird_y]
@@ -163,7 +164,7 @@ SpawnBirdLeft:
     ld [hli], a
     ld [hl], $98
     inc l
-    ld [hl], %00100000
+    ld [hl], OAMF_XFLIP
     ; Bird right
     ld hl, wBird+8
     ld a, [bird_y]
@@ -173,7 +174,7 @@ SpawnBirdLeft:
     ld [hli], a
     ld [hl], $92
     inc l
-    ld [hl], %00100000
+    ld [hl], OAMF_XFLIP
     pop af
     pop hl
     ret
