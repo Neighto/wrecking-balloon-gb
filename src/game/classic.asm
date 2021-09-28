@@ -10,18 +10,41 @@ COUNTDOWN_SPEED EQU %00011111
 
 SECTION "classic", ROMX
 
-HandleParkLoop::
-    ; Are we done moving into the sky
+InitializeClassicVars::
+    xor a ; ld a, 0
+	ld [fade_frame], a
+    ret
+
+ParkFadeOut:
+    ld a, [classic_mode_stage]
+	cp a, STAGE_CLASSIC_STARTING
+	jr z, .fadeOut
+    ; Can we start fading out (are we offscreen)
     ld a, [player_y]
-    add 8 ; Buffer for extra time before screen switch
+    add 4 ; Buffer for extra time before screen switch
     ld b, a
     call OffScreenYEnemies
-    call nz, PregameLoop
-	; Can we move into the sky
-    ld a, [classic_mode_stage]
-    cp a, STAGE_CLASSIC_STARTING
-    ; here we stop player from using controls and shoot player and cactus up
-    jr z, .canWeScroll
+    jr nz, .startFadeOut
+    ret
+.startFadeOut:
+    ld hl, classic_mode_stage
+    ld [hl], STAGE_CLASSIC_STARTING
+	ret
+.fadeOut:
+	call HasFadedOut
+	cp a, 0
+	jr nz, .hasFadedOut
+	call FadeOutPalettes
+	ret
+.hasFadedOut:
+	call PregameLoop
+    ret
+
+UpdatePark::
+    call ParkFadeOut
+    call HandWaveAnimation
+    call IncrementScrollOffset
+.moveUp:
     ld a, [player_y]
     add 16
     cp a, 80
@@ -32,10 +55,6 @@ HandleParkLoop::
     jr nz, .end
 .flyUpFast:
     call MovePlayerAutoFlyUp
-    ret
-.canWeScroll:
-	ld a, STAGE_CLASSIC_STARTING
-	ld [classic_mode_stage], a
 .end:
 	ret
 
@@ -53,6 +72,13 @@ TryToUnpause::
 	ld [hl], a ; pause
 .end:
 	ret
+
+ParkEnteredClassic::
+    push hl
+    ld hl, classic_mode_stage
+	ld [hl], STAGE_CLASSIC_PARK_ENTERED
+    pop hl
+    ret
 
 StartedClassic::
     push hl

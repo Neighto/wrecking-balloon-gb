@@ -35,6 +35,7 @@ MenuLoop:
 	jp MenuLoop
 
 StartClassic::
+	call ParkEnteredClassic
 	call SetParkLYC
 	call WaitVBlank
 	call LCD_OFF
@@ -55,14 +56,13 @@ StartClassic::
 	call InitializeEnemy
 	call InitializeEnemy2
 	call InitializeBird
+	call InitializeClassicVars
 	call RefreshLives
 	call LCD_ON_BG_ONLY
 ParkLoop:
 	call WaitVBlank
-	call IncrementScrollOffset
-	call HandleParkLoop
-	call HandWaveAnimation
 	call UpdateGlobalTimer
+	call UpdatePark
 	call OAMDMA
 	jp ParkLoop
 
