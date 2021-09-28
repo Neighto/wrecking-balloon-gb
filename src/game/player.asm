@@ -432,15 +432,8 @@ MovePlayerAutoMiddle::
   ret
 
 MovePlayerAutoFlyUp::
-  ld a, [player_y]
-  add 16
-  ld b, a
-  call OffScreenY
-  and 1
-  jr nz, .end
   call MoveUp
   call UpdatePlayerPosition
-.end:
   ret
 
 FallCactusDown:

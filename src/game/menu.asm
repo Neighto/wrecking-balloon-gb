@@ -16,7 +16,7 @@ SpawnMenuCursor::
 	ret
 
 MoveCursor:
-	call CollectSound
+	; call CollectSound
 	ld a, [selected_mode]
 	inc a
 	ld d, MENU_MODES
@@ -38,24 +38,43 @@ SelectMode:
 	cp a, 0
 	jr nz, .storyMode
 .classicMode:
-	call StartClassic
+	call CollectSound
+	ld hl, classic_mode_stage
+	ld [hl], STAGE_CLASSIC_SELECTED
+	; call StartClassic
 	ret
 .storyMode:
 	; call StartStory
 	ret
 
-MenuInput::
+MenuInput:
 	ld a, [global_timer]
 	and %00000011
 	jr nz, .end
 	call ReadInput	
 .moveSelected:
-	ld a, [joypad_pressed]
-	call JOY_SELECT
-	call nz, MoveCursor
+	; ld a, [joypad_pressed]
+	; call JOY_SELECT
+	; call nz, MoveCursor
 .selectMode:
 	ld a, [joypad_down]
 	call JOY_START
 	call nz, SelectMode
 .end:
+	ret
+
+UpdateMenu::
+	ld a, [classic_mode_stage]
+	cp a, STAGE_CLASSIC_SELECTED
+	jr z, .fadeOut
+	call MenuInput
+	ret
+.fadeOut:
+	call HasFadedOut
+	cp a, 0
+	jr nz, .hasFadedOut
+	call FadeOutPalettes
+	ret
+.hasFadedOut:
+	call StartClassic
 	ret

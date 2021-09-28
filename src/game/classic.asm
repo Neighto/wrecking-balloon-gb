@@ -13,28 +13,29 @@ SECTION "classic", ROMX
 HandleParkLoop::
     ; Are we done moving into the sky
     ld a, [player_y]
+    add 8 ; Buffer for extra time before screen switch
     ld b, a
     call OffScreenYEnemies
     call nz, PregameLoop
 	; Can we move into the sky
-	ld a, [starting_classic]
-	cp a, 0
+    ld a, [classic_mode_stage]
+    cp a, STAGE_CLASSIC_STARTING
     ; here we stop player from using controls and shoot player and cactus up
     jr z, .canWeScroll
-    ; Stop player control
-    ld hl, player_cant_move
-    ld [hl], 1
-    ; Move player to center and up
-    call MovePlayerAutoMiddle
+    ld a, [player_y]
+    add 16
+    cp a, 80
+    jr c, .flyUpFast
+.flyUpNormal:
+    ld a, [global_timer]
+    and %00000011
+    jr nz, .end
+.flyUpFast:
     call MovePlayerAutoFlyUp
     ret
 .canWeScroll:
-	; Can we start scrolling into the sky
-    ld a, [player_y]
-    cp a, 30
-	jr nc, .end
-	ld a, 1
-	ld [starting_classic], a
+	ld a, STAGE_CLASSIC_STARTING
+	ld [classic_mode_stage], a
 .end:
 	ret
 
@@ -55,8 +56,8 @@ TryToUnpause::
 
 StartedClassic::
     push hl
-    ld hl, started_classic
-	ld [hl], 1
+    ld hl, classic_mode_stage
+	ld [hl], STAGE_CLASSIC_STARTED
     pop hl
     ret
 
@@ -111,6 +112,9 @@ SpawnCountdown::
 	ret
 
 CountdownAnimation::
+    ld a, [global_timer]
+    and COUNTDOWN_SPEED
+    jp nz, .end
     ld a, [countdown_frame]
     cp a, 0
     jr z, .frame0
@@ -120,10 +124,14 @@ CountdownAnimation::
     jr z, .frame2
     cp a, 3
     jr z, .frame3
+    cp a, 4
+    jr z, .frame4
+    cp a, 5
+    jr z, .frame5
+    cp a, 6
+    jr z, .remove
+    ret
 .frame0:
-    ld a, [global_timer]
-    and COUNTDOWN_SPEED
-    jp nz, .end
     ld hl, wEnemyBalloon+2
     ld [hl], $B8
     ld hl, wEnemyBalloon+6
@@ -132,9 +140,6 @@ CountdownAnimation::
     ld [hl], 1
     ret
 .frame1:
-    ld a, [global_timer]
-    and COUNTDOWN_SPEED
-    jp nz, .end
     ld hl, wEnemyBalloon+2
     ld [hl], $B4
     ld hl, wEnemyBalloon+6
@@ -143,25 +148,53 @@ CountdownAnimation::
     ld [hl], 2
     ret
 .frame2:
-    ld a, [global_timer]
-    and COUNTDOWN_SPEED
-    jp nz, .end
     ld hl, wEnemyBalloon+2
     ld [hl], $B0
     ld hl, wEnemyBalloon+6
     ld [hl], $B2
     ld hl, countdown_frame
     ld [hl], 3
+    ret
 .frame3:
-    ld a, [global_timer]
-    and COUNTDOWN_SPEED
-    jp nz, .end
     ld hl, wEnemyBalloon+2
-    ld [hl], $B0 ; what will this be?
+    ld [hl], $BC
     ld hl, wEnemyBalloon+6
-    ld [hl], $B2
+    ld [hl], $BC
+    inc l
+    ld [hl], %00100000 ; todo call FLIP
     ld hl, countdown_frame
-    ld [hl], 0 ; end...
+    ld [hl], 4
+    ret
+.frame4:
+    ld hl, wEnemyBalloon+2
+    ld [hl], $88
+    ld hl, wEnemyBalloon+6
+    ld [hl], $88
+    ld hl, countdown_frame
+    ld [hl], 5
+    ret
+.frame5:
+    ld hl, wEnemyBalloon+2
+    ld [hl], $8A
+    ld hl, wEnemyBalloon+6
+    ld [hl], $8A
+    ld hl, countdown_frame
+    ld [hl], 6
+    ret
+.remove:
+    ; todo make erase func for oam
+    ld hl, wEnemyBalloon
+    xor a ; ld a, 0
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld hl, countdown_frame
+    ld [hl], 7
 .end:
     ret
 

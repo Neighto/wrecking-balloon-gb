@@ -19,20 +19,18 @@ Start::
 	call ClearAllTiles
 	call ResetScroll
 	call LoadMenuData
-	; ld hl, song_descriptor
-	; call hUGE_init
+	ld hl, menuTheme
+	call hUGE_init
 	call SetupPalettes
 	call CopyDMARoutine
 	call InitializeGameVars
-	call InitializePointBalloon
 	call SpawnMenuCursor
 	call LCD_ON_BG_ONLY
 MenuLoop:
 	call WaitVBlank
-	; call _hUGE_dosound
+	call _hUGE_dosound
 	call UpdateGlobalTimer
-	call MenuBalloonUpdate
-	call MenuInput
+	call UpdateMenu
 	call OAMDMA
 	jp MenuLoop
 
@@ -44,6 +42,7 @@ StartClassic::
 	call ClearMap
 	call ClearOAM
 	call ClearRAM
+	call ClearSound
 	call ClearAllTiles
 	call ResetScroll
 	call SetClassicMapStartPoint
@@ -62,7 +61,6 @@ ParkLoop:
 	call WaitVBlank
 	call IncrementScrollOffset
 	call HandleParkLoop
-	call PlayerUpdate
 	call HandWaveAnimation
 	call UpdateGlobalTimer
 	call OAMDMA
