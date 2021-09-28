@@ -19,8 +19,8 @@ Start::
 	call ClearAllTiles
 	call ResetScroll
 	call LoadMenuData
-	ld hl, menuTheme
-	call hUGE_init
+	; ld hl, menuTheme
+	; call hUGE_init
 	call SetupPalettes
 	call CopyDMARoutine
 	call InitializeGameVars
@@ -28,7 +28,7 @@ Start::
 	call LCD_ON_BG_ONLY
 MenuLoop:
 	call WaitVBlank
-	call _hUGE_dosound
+	; call _hUGE_dosound
 	call UpdateGlobalTimer
 	call UpdateMenu
 	call OAMDMA
@@ -59,12 +59,12 @@ StartClassic::
 	call InitializeClassicVars
 	call RefreshLives
 	call LCD_ON_BG_ONLY
-ParkLoop:
-	call WaitVBlank
-	call UpdateGlobalTimer
-	call UpdatePark
-	call OAMDMA
-	jp ParkLoop
+; ParkLoop:
+; 	call WaitVBlank
+; 	call UpdateGlobalTimer
+; 	call UpdatePark
+; 	call OAMDMA
+; 	jp ParkLoop
 
 PregameLoop::
 	call StartedClassic
@@ -73,22 +73,13 @@ PregameLoop::
 	call ClearOAM
 	call ClearRAM
 	call InitializePlayer
-	call SpawnCountdown ; *******
+	call SpawnCountdown
 	call SetupPalettes
 	call LCD_ON
 GameLoop:
 	call WaitVBlank
-	call CountdownAnimation ; *******
-	call TryToUnpause
-	ld a, [paused_game]
-	cp a, 1
-	jr z, .end
-	call HorizontalScroll
-	call CollisionUpdate
+	call UpdateClassic
 	call UpdateGlobalTimer
-	call PlayerUpdate
-	call ClassicGameManager
-	call RefreshScore ; Might want to move somewhere to call less frequently
 	call OAMDMA
 .end:
 	jp GameLoop

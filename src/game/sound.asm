@@ -84,7 +84,7 @@ WrongAnswerSound::
   ld  [rNR51],a
   ret
 
-Percussion::
+PercussionSound::
   ; Volume envelope
   ld a, %10000001
   ld [rNR42], a
@@ -96,19 +96,7 @@ Percussion::
   ld [rNR44], a
   ret
 
-Percussion2::
-  ; Volume envelope
-  ld a, %10000001
-  ld [rNR42], a
-  ; Polynomial counter
-  ld a, %00111011
-  ld [rNR43], a
-  ; Counter/consecutive initial
-  ld a, %10000000
-  ld [rNR44], a
-  ret
-
-Bass::
+BassSound::
   ; Sound on/off
   ld a, %10000000
   ld [rNR30], a

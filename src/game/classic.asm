@@ -7,6 +7,7 @@ HAND_WAVE_START_Y EQU 112
 COUNTDOWN_START_X EQU 80
 COUNTDOWN_START_Y EQU 50
 COUNTDOWN_SPEED EQU %00011111
+COUNTDOWN_BALLOON_POP_SPEED EQU %00000011
 
 SECTION "classic", ROMX
 
@@ -138,9 +139,20 @@ SpawnCountdown::
 	ret
 
 CountdownAnimation::
+    ; See if we go to faster-frames balloon pop
+    ld a, [countdown_frame]
+    cp a, 4
+    jr nc, .balloonPop
+.countdown:
     ld a, [global_timer]
     and COUNTDOWN_SPEED
     jp nz, .end
+    jr .frames
+.balloonPop:
+    ld a, [global_timer]
+    and COUNTDOWN_BALLOON_POP_SPEED
+    jp nz, .end
+.frames:
     ld a, [countdown_frame]
     cp a, 0
     jr z, .frame0
@@ -158,6 +170,7 @@ CountdownAnimation::
     jr z, .remove
     ret
 .frame0:
+    call PercussionSound
     ld hl, wEnemyBalloon+2
     ld [hl], $B8
     ld hl, wEnemyBalloon+6
@@ -166,6 +179,7 @@ CountdownAnimation::
     ld [hl], 1
     ret
 .frame1:
+    call PercussionSound
     ld hl, wEnemyBalloon+2
     ld [hl], $B4
     ld hl, wEnemyBalloon+6
@@ -174,6 +188,7 @@ CountdownAnimation::
     ld [hl], 2
     ret
 .frame2:
+    call PercussionSound
     ld hl, wEnemyBalloon+2
     ld [hl], $B0
     ld hl, wEnemyBalloon+6
@@ -192,6 +207,7 @@ CountdownAnimation::
     ld [hl], 4
     ret
 .frame4:
+    call PopSound
     ld hl, wEnemyBalloon+2
     ld [hl], $88
     ld hl, wEnemyBalloon+6
@@ -239,7 +255,7 @@ SetClassicMapStartPoint::
     ldh [rSCY], a
     ret
 
-ClassicGameManager::
+ClassicGameManager:
     call PointBalloonUpdate
 
     ld a, [difficulty_level]
@@ -256,5 +272,20 @@ ClassicGameManager::
     call BirdUpdate
 .levelOne:
 	call EnemyUpdate
+.end:
+    ret
+
+UpdateClassic::
+	call TryToUnpause
+	ld a, [paused_game]
+	cp a, 1
+	jr z, .end
+	call CountdownAnimation ; *******
+    ; to do block movement until done and add sound
+	call HorizontalScroll
+	call CollisionUpdate
+    call PlayerUpdate
+	call ClassicGameManager
+	call RefreshScore ; Might want to move somewhere to call less frequently
 .end:
     ret
