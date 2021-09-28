@@ -8,7 +8,7 @@ AUDIO_OFF::
 	ret
 
 AUDIO_ON::
-    ld a, 1
+  ld a, 1
 	ld [rNR52], a
 	ret
 
@@ -121,4 +121,16 @@ Bass::
   ; Frequency's higher data
   ld a, %11000011
   ld [rNR34], a
+  ret
+
+ClearSound::
+  ld a, %00000000
+  ; C1
+  ld [rNR12], a
+  ; C2
+  ld [rNR22], a
+  ; C3
+  ld [rNR30], a
+  ; C4
+  ld [rNR42], a
   ret

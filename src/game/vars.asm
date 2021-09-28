@@ -10,8 +10,8 @@ SECTION "RAM vars", WRAM0[$C000]
 	hand_waving_frame:: DB
 	countdown_frame:: DB
 	cloud_scroll_offset:: DB
-	starting_classic:: DB ; TODO: Lots of vars... Can maybe make more generic for reuse
-	started_classic:: DB
+	classic_mode_stage:: DB
+	fade_frame:: DB
 
 	player_x:: DB
 	player_y:: DB
@@ -87,8 +87,8 @@ InitializeGameVars::
 	ld [hand_waving_frame], a
 	ld [countdown_frame], a
 	ld [cloud_scroll_offset], a
-	ld [starting_classic], a
-	ld [started_classic], a
+	ld [classic_mode_stage], a
+	ld [fade_frame], a
 
 	ld a, 2
 	ld [player_lives], a

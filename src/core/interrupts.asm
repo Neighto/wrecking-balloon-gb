@@ -1,4 +1,5 @@
 INCLUDE "hardware.inc"
+INCLUDE "constants.inc"
 
 SECTION "interrupts", ROM0
 
@@ -57,8 +58,8 @@ LCD_Interrupt_Classic:
 LCD_Interrupt::
     push hl
     push af
-    ld a, [started_classic]
-    cp a, 1
+    ld a, [classic_mode_stage]
+    cp a, STAGE_CLASSIC_STARTED
     jr z, .classic
 .park:
     call LCD_Interrupt_Park

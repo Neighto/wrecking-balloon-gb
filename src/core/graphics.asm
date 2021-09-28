@@ -1,10 +1,19 @@
 INCLUDE "hardware.inc"
+INCLUDE "constants.inc"
 
 SECTION "OAM DMA routine", ROM0
 
 NUMBERS_TILE_OFFSET EQU $47
 SCORE_INDEX_ONE_ADDRESS EQU $9C0B
 LIVES_ADDRESS EQU $9C10
+
+PARK_WAVE_PALETTE EQU %11100001
+
+FADE_SPEED EQU %00000011
+FADE_PALETTE_1 EQU %11100100
+FADE_PALETTE_2 EQU %10000100
+FADE_PALETTE_3 EQU %01000000
+FADE_PALETTE_4 EQU %00000000
 
 ; Move DMA routine to HRAM
 CopyDMARoutine::
@@ -103,22 +112,78 @@ LoadMenuData::
 	call MEMCPY
 	ret
 
-SetupPalettes::
-    ld a, %11100100
-    ldh [rBGP], a
+SetAllPalettes:
+	; B = argument
+	push af
+	ld a, b
+	ldh [rBGP], a
     ldh [rOCPD], a
 	ldh [rOBP1], a
 	ldh [rOBP0], a
+	pop af
+    ret
+
+SetupPalettes::
+	push bc
+    ld b, MAIN_PALETTE
+    call SetAllPalettes
+	pop bc
     ret
 
 SetupParkPalettes::
-	ld a, %11100100
+	ld a, MAIN_PALETTE
     ldh [rBGP], a
     ldh [rOCPD], a
 	ldh [rOBP1], a
-	ld a, %11100001
+	ld a, PARK_WAVE_PALETTE
 	ldh [rOBP0], a
     ret
+
+FadeOutPalettes::
+	ld a, [global_timer]
+	and FADE_SPEED
+	jr z, .fadeOut
+	ret
+.fadeOut:
+	ld a, [fade_frame]
+	cp a, 0
+	jr z, .fade1
+	cp a, 1
+	jr z, .fade2
+	cp a, 2
+	jr z, .fade3
+	cp a, 3
+	jr z, .fade4
+	ret
+.fade1:
+    ld b, FADE_PALETTE_1
+	jr .end
+.fade2:
+	ld b, FADE_PALETTE_2
+	jr .end
+.fade3:
+	ld b, FADE_PALETTE_3
+	jr .end
+.fade4:
+	ld b, FADE_PALETTE_4
+.end:
+	call SetAllPalettes
+	ld a, [fade_frame]
+	inc a
+	ld [fade_frame], a
+	ret
+
+HasFadedOut::
+	; => A as 1 or 0
+	ld a, [rBGP]
+	cp a, FADE_PALETTE_4
+	jr z, .true
+.false:
+	xor a ; ld a, 0
+	ret
+.true:
+	ld a, 1
+	ret
 
 RefreshScore::
 	push af
