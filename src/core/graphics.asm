@@ -173,10 +173,56 @@ FadeOutPalettes::
 	ld [fade_frame], a
 	ret
 
+FadeInPalettes::
+	ld a, [global_timer]
+	and FADE_SPEED
+	jr z, .fadeIn
+	ret
+.fadeIn:
+	ld a, [fade_frame]
+	cp a, 0
+	jr z, .fade1
+	cp a, 1
+	jr z, .fade2
+	cp a, 2
+	jr z, .fade3
+	cp a, 3
+	jr z, .fade4
+	ret
+.fade1:
+    ld b, FADE_PALETTE_4
+	jr .end
+.fade2:
+	ld b, FADE_PALETTE_3
+	jr .end
+.fade3:
+	ld b, FADE_PALETTE_2
+	jr .end
+.fade4:
+	ld b, FADE_PALETTE_1
+.end:
+	call SetAllPalettes
+	ld a, [fade_frame]
+	inc a
+	ld [fade_frame], a
+	ret
+
 HasFadedOut::
 	; => A as 1 or 0
 	ld a, [rBGP]
 	cp a, FADE_PALETTE_4
+	jr z, .true
+.false:
+	xor a ; ld a, 0
+	ret
+.true:
+	ld a, 1
+	ret
+
+HasFadedIn::
+	; => A as 1 or 0
+	ld a, [rBGP]
+	cp a, FADE_PALETTE_1
 	jr z, .true
 .false:
 	xor a ; ld a, 0
