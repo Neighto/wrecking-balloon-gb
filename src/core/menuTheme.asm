@@ -1,6 +1,6 @@
 include "include/hUGE.inc"
 
-SECTION "Song Data", ROMX
+SECTION "menu theme", ROMX
 
 menuTheme::
 db 8

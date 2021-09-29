@@ -286,6 +286,7 @@ UpdateClassic::
 	ld a, [paused_game]
 	cp a, 1
 	jr z, .end
+    ; call _hUGE_dosound
 	call CollisionUpdate
     call PlayerUpdate
 .countdownSkip:
