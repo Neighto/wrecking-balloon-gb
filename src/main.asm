@@ -56,6 +56,7 @@ StartClassic::
 	call InitializeEnemy
 	call InitializeEnemy2
 	call InitializeBird
+	call InitializeBomb
 	call InitializeClassicVars
 	call RefreshLives
 	call LCD_ON_BG_ONLY

@@ -78,6 +78,16 @@ SECTION "RAM vars", WRAM0[$C000]
 	bird_spawn_right:: DB
 	bird_speed:: DB
 
+	; Bomb
+	bomb_x:: DB
+	bomb_y:: DB
+	bomb_respawn_timer:: DB
+	bomb_alive:: DB
+	bomb_speed:: DB
+	bomb_popping:: DB
+	bomb_popping_frame:: DB
+	bomb_pop_timer:: DB
+
 SECTION "general initialization", ROMX
 InitializeGameVars::
 	xor a
@@ -104,3 +114,4 @@ SECTION "OAM vars", WRAM0[$C100]
 	wEnemy2Cactus:: DS 4*2
 	wEnemy2Balloon:: DS 4*2
 	wBird:: DS 4*3
+	wBomb:: DS 4*2
