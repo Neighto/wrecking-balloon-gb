@@ -10,11 +10,11 @@ dw duty_instruments, wave_instruments, noise_instruments
 dw routines
 dw waves
 
-order_cnt: db 6
-order1: dw P0,P4,P8
-order2: dw P1,P5,P9
-order3: dw P2,P6,P10
-order4: dw P3,P7,P11
+order_cnt: db 10
+order1: dw P0,P4,P8,P4,P8
+order2: dw P1,P5,P9,P5,P9
+order3: dw P2,P6,P10,P6,P10
+order4: dw P3,P7,P11,P7,P11
 
 P0:
  dn ___,0,$000
