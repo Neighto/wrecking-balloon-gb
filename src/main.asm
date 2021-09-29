@@ -59,12 +59,12 @@ StartClassic::
 	call InitializeClassicVars
 	call RefreshLives
 	call LCD_ON_BG_ONLY
-ParkLoop:
-	call WaitVBlank
-	call UpdateGlobalTimer
-	call UpdatePark
-	call OAMDMA
-	jp ParkLoop
+; ParkLoop:
+; 	call WaitVBlank
+; 	call UpdateGlobalTimer
+; 	call UpdatePark
+; 	call OAMDMA
+; 	jp ParkLoop
 
 PregameLoop::
 	call StartedClassic
@@ -72,8 +72,8 @@ PregameLoop::
 	call ResetScroll
 	call ClearOAM
 	call ClearRAM
-	; ld hl, angryTheme
-	; call hUGE_init
+	ld hl, angryTheme
+	call hUGE_init
 	call InitializePlayer
 	call SpawnCountdown
 	call SetupPalettes

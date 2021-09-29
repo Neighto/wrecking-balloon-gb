@@ -86,6 +86,8 @@ InitializeBird::
     ld [bird_spawn_right], a
     ld [bird_x], a
     ld [bird_y], a
+    ld a, BIRD_HORIZONTAL_SPEED
+    ld [bird_speed], a
     pop af
     ret
 
@@ -257,12 +259,12 @@ BirdUpdate::
     jr z, .moveRight
 .moveLeft:
     ld hl, bird_x
-    ld a, BIRD_HORIZONTAL_SPEED
+    ld a, [bird_speed]
     call DecrementPosition
     jr .moveDown
 .moveRight:
     ld hl, bird_x
-    ld a, BIRD_HORIZONTAL_SPEED
+    ld a, [bird_speed]
     call IncrementPosition
 .moveDown:
     ld a, [global_timer]

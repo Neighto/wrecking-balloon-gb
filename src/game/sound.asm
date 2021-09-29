@@ -14,7 +14,7 @@ AUDIO_ON::
 
 PopSound::
     ; Volume envelope
-    ld a, %10000001
+    ld a, %11110001
     ld [rNR42], a
     ; Polynomial counter
     ld a, %01111011
@@ -36,7 +36,7 @@ FallingSound::
   ld a, %11000000
   ld [rNR11], a
   ; Volume envelope
-  ld a, %00111000
+  ld a, %11111000
   ld [rNR12], a
   ; Frequency lo
   ld a,%11111111
