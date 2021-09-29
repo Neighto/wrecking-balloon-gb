@@ -76,6 +76,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	bird_respawn_timer:: DB
 	bird_alive:: DB
 	bird_spawn_right:: DB
+	bird_speed:: DB
 
 SECTION "general initialization", ROMX
 InitializeGameVars::

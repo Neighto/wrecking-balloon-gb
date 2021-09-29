@@ -65,6 +65,7 @@ TryToUnpause::
 	cp a, [hl]
 	jr z, .end
 	; Is paused
+    call ClearSound
 	call ReadInput
 	ld a, [joypad_pressed]
 	call JOY_START
@@ -259,13 +260,18 @@ ClassicGameManager:
     call PointBalloonUpdate
 
     ld a, [difficulty_level]
-    cp a, 3
+    cp a, 12
+    jr nc, .levelFive
+    cp a, 6
     jr nc, .levelThree
-    cp a, 2
+    cp a, 3
     jr nc, .levelTwo
     cp a, 1
     jr nc, .levelOne
     ret
+.levelFive:
+    ld a, 4
+    ld [bird_speed], a
 .levelThree:
     call Enemy2Update
 .levelTwo:
@@ -286,7 +292,7 @@ UpdateClassic::
 	ld a, [paused_game]
 	cp a, 1
 	jr z, .end
-    ; call _hUGE_dosound
+    call _hUGE_dosound
 	call CollisionUpdate
     call PlayerUpdate
 .countdownSkip:
