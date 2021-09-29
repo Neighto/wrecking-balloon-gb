@@ -257,7 +257,9 @@ SetClassicMapStartPoint::
     ret
 
 ClassicGameManager:
-    call PointBalloonUpdate
+    push af
+    ; call PointBalloonUpdate
+    call BombUpdate
 
     ld a, [difficulty_level]
     cp a, 12
@@ -268,7 +270,7 @@ ClassicGameManager:
     jr nc, .levelTwo
     cp a, 1
     jr nc, .levelOne
-    ret
+    jr .end
 .levelFive:
     ld a, 4
     ld [bird_speed], a
@@ -279,6 +281,7 @@ ClassicGameManager:
 .levelOne:
 	call EnemyUpdate
 .end:
+    pop af
     ret
 
 UpdateClassic::

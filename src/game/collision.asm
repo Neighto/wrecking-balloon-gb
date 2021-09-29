@@ -155,6 +155,21 @@ CollisionUpdate::
     jr z, .endEnemy2
     jr .collisionWithPlayer
 .endEnemy2:
+    ; BOMB
+    ; Check if alive
+    ld a, [bomb_alive]
+    and 1
+    jr z, .endBomb
+    ; Check collision
+    ld bc, wBomb
+    ld hl, wPlayerCactus
+    xor a ; ld a, 0
+    call CollisionCheck
+    and 1
+    jr z, .endBomb
+    call DeathOfBomb
+    jr .collisionWithPlayer
+.endBomb:
     ; Bird
     ; Check if alive
     ld a, [bird_alive]
