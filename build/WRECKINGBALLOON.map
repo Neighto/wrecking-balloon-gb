@@ -14,13 +14,21 @@ ROM0 bank #0:
            $0040 = VBLANK_VECT
   SECTION: $0048-$004b ($0004 bytes) ["LCD IRQ"]
            $0048 = LCD_VECT
-  SECTION: $004c-$00ff ($00b4 bytes) ["rom"]
-           $004c = Start
-           $007f = MenuLoop
-           $008e = StartClassic
-           $00d6 = PregameLoop
-           $00f1 = GameLoop
-           $00fd = GameLoop.end
+  SECTION: $004c-$00be ($0073 bytes) ["joypad"]
+           $004c = ReadInput
+           $007c = JOY_RIGHT
+           $0084 = JOY_LEFT
+           $008c = JOY_UP
+           $0094 = JOY_DOWN
+           $009c = JOY_A
+           $00a4 = JOY_B
+           $00ac = JOY_SELECT
+           $00b4 = JOY_START
+           $00bc = JOY_FALSE
+  SECTION: $00bf-$00ce ($0010 bytes) ["tools"]
+           $00bf = IncrementPosition
+           $00c2 = DecrementPosition
+           $00c7 = ResetInRange
   SECTION: $0100-$014f ($0050 bytes) ["header"]
   SECTION: $0150-$08f0 ($07a1 bytes) ["Sound Driver"]
            $0150 = _hUGE_init_banked
@@ -209,34 +217,26 @@ ROM0 bank #0:
            $0fa2 = OffScreenX.end
            $0fa4 = OffScreenY
            $0fae = OffScreenY.end
-  SECTION: $0fb0-$1022 ($0073 bytes) ["joypad"]
-           $0fb0 = ReadInput
-           $0fe0 = JOY_RIGHT
-           $0fe8 = JOY_LEFT
-           $0ff0 = JOY_UP
-           $0ff8 = JOY_DOWN
-           $1000 = JOY_A
-           $1008 = JOY_B
-           $1010 = JOY_SELECT
-           $1018 = JOY_START
-           $1020 = JOY_FALSE
-  SECTION: $1023-$107c ($005a bytes) ["interrupts"]
-           $1023 = VBlank_Interrupt
-           $102b = LCD_Interrupt_Park
-           $1036 = LCD_Interrupt_Park.clouds
-           $1043 = LCD_Interrupt_Park.ground
-           $104b = LCD_Interrupt_Classic
-           $1055 = LCD_Interrupt_Classic.showSprites
-           $105f = LCD_Interrupt_Classic.hideSpritesOnWindow
-           $1069 = LCD_Interrupt
-           $1072 = LCD_Interrupt.park
-           $1077 = LCD_Interrupt.classic
-           $107a = LCD_Interrupt.end
-  SECTION: $107d-$108c ($0010 bytes) ["tools"]
-           $107d = IncrementPosition
-           $1080 = DecrementPosition
-           $1085 = ResetInRange
-    SLACK: $2f86 bytes
+  SECTION: $0fb0-$106c ($00bd bytes) ["rom"]
+           $0fb0 = Start
+           $0fe9 = MenuLoop
+           $0ffb = StartClassic
+           $1043 = PregameLoop
+           $105e = GameLoop
+           $106a = GameLoop.end
+  SECTION: $106d-$10c6 ($005a bytes) ["interrupts"]
+           $106d = VBlank_Interrupt
+           $1075 = LCD_Interrupt_Park
+           $1080 = LCD_Interrupt_Park.clouds
+           $108d = LCD_Interrupt_Park.ground
+           $1095 = LCD_Interrupt_Classic
+           $109f = LCD_Interrupt_Classic.showSprites
+           $10a9 = LCD_Interrupt_Classic.hideSpritesOnWindow
+           $10b3 = LCD_Interrupt
+           $10bc = LCD_Interrupt.park
+           $10c1 = LCD_Interrupt.classic
+           $10c4 = LCD_Interrupt.end
+    SLACK: $2f7d bytes
 
 ROMX bank #1:
   SECTION: $4000-$475f ($0760 bytes) ["menu title tiles"]
@@ -606,85 +606,85 @@ ROMX bank #1:
            $62e9 = MenuBalloonUpdate.respawn
            $62f0 = MenuBalloonUpdate.end
            $62f1 = DeathOfPointBalloon
-  SECTION: $6304-$6433 ($0130 bytes) ["window tiles"]
+  SECTION: $6304-$6423 ($0120 bytes) ["window tiles"]
            $6304 = WindowTiles
-           $6434 = WindowTilesEnd
-  SECTION: $6434-$6513 ($00e0 bytes) ["countdown tiles"]
-           $6434 = CountdownTiles
-           $6514 = CountdownTilesEnd
-  SECTION: $6514-$659e ($008b bytes) ["sound"]
-           $6514 = AUDIO_OFF
-           $6518 = AUDIO_ON
-           $651d = PopSound
-           $6530 = FallingSound
-           $6545 = StopFallingSound
-           $654a = CollectSound
-           $655f = WrongAnswerSound
-           $6576 = PercussionSound
-           $6583 = BassSound
-           $6594 = ClearSound
-  SECTION: $659f-$6608 ($006a bytes) ["menu"]
-           $659f = SpawnMenuCursor
-           $65ae = MoveCursor
-           $65be = MoveCursor.classicMode
-           $65c4 = MoveCursor.storyMode
-           $65ca = SelectMode
-           $65d1 = SelectMode.classicMode
-           $65da = SelectMode.storyMode
-           $65db = MenuInput
-           $65e5 = MenuInput.selectMode
-           $65e5 = MenuInput.moveSelected
-           $65ee = MenuInput.end
-           $65ef = UpdateMenu
-           $65fa = UpdateMenu.fadeOut
-           $6605 = UpdateMenu.hasFadedOut
-  SECTION: $6609-$6658 ($0050 bytes) ["menu tiles"]
-           $6609 = MenuTiles
-           $6659 = MenuTilesEnd
-  SECTION: $6659-$6698 ($0040 bytes) ["classic park tiles"]
-           $6659 = ClassicParkTiles
-           $6699 = ClassicParkTilesEnd
-  SECTION: $6699-$66ce ($0036 bytes) ["math"]
-           $6699 = MODULO
-           $669b = MODULO.loop
-           $66a0 = RANDOM
-           $66a9 = DIVISION
-           $66af = DIVISION.loop
-           $66b4 = DIVISION.end
-           $66b7 = ToBCD
-           $66cd = ToBCD.end
-  SECTION: $66cf-$66fe ($0030 bytes) ["score"]
-           $66cf = InitializeScore
-           $66d7 = IncreaseDifficulty
-           $66de = IncreaseDifficulty.scoreMid
-           $66de = IncreaseDifficulty.scoreLow
-           $66de = IncreaseDifficulty.scoreHigh
-           $66df = AddPoints
-           $66f2 = AddPoints.carry
-           $66fc = AddPoints.end
-  SECTION: $66ff-$672d ($002f bytes) ["lcd"]
-           $66ff = LCD_OFF
-           $6704 = LCD_ON
-           $6709 = LCD_ON_BG_ONLY
-           $670e = WaitVBlank
-           $6713 = WaitVBlank.loop
-           $671c = SetupWindow
-           $6725 = SetParkLYC
-           $6729 = SetClassicLYC
-  SECTION: $672e-$674f ($0022 bytes) ["general initialization"]
-           $672e = InitializeGameVars
-  SECTION: $6750-$676d ($001e bytes) ["memory"]
-           $6750 = MEMCPY.memcpy_loop
-           $6750 = MEMCPY
-           $6754 = MEMCPY.memcpy_check_limit
-           $675a = ClearOAM
-           $6764 = ClearRAM
-  SECTION: $676e-$6781 ($0014 bytes) ["window map"]
-           $676e = WindowMap
-           $6782 = WindowMapEnd
-  SECTION: $6782-$6789 ($0008 bytes) ["timer"]
-           $6782 = UpdateGlobalTimer
-    SLACK: $1876 bytes
+           $6424 = WindowTilesEnd
+  SECTION: $6424-$6503 ($00e0 bytes) ["countdown tiles"]
+           $6424 = CountdownTiles
+           $6504 = CountdownTilesEnd
+  SECTION: $6504-$658e ($008b bytes) ["sound"]
+           $6504 = AUDIO_OFF
+           $6508 = AUDIO_ON
+           $650d = PopSound
+           $6520 = FallingSound
+           $6535 = StopFallingSound
+           $653a = CollectSound
+           $654f = WrongAnswerSound
+           $6566 = PercussionSound
+           $6573 = BassSound
+           $6584 = ClearSound
+  SECTION: $658f-$65f8 ($006a bytes) ["menu"]
+           $658f = SpawnMenuCursor
+           $659e = MoveCursor
+           $65ae = MoveCursor.classicMode
+           $65b4 = MoveCursor.storyMode
+           $65ba = SelectMode
+           $65c1 = SelectMode.classicMode
+           $65ca = SelectMode.storyMode
+           $65cb = MenuInput
+           $65d5 = MenuInput.selectMode
+           $65d5 = MenuInput.moveSelected
+           $65de = MenuInput.end
+           $65df = UpdateMenu
+           $65ea = UpdateMenu.fadeOut
+           $65f5 = UpdateMenu.hasFadedOut
+  SECTION: $65f9-$6648 ($0050 bytes) ["menu tiles"]
+           $65f9 = MenuTiles
+           $6649 = MenuTilesEnd
+  SECTION: $6649-$6688 ($0040 bytes) ["classic park tiles"]
+           $6649 = ClassicParkTiles
+           $6689 = ClassicParkTilesEnd
+  SECTION: $6689-$66be ($0036 bytes) ["math"]
+           $6689 = MODULO
+           $668b = MODULO.loop
+           $6690 = RANDOM
+           $6699 = DIVISION
+           $669f = DIVISION.loop
+           $66a4 = DIVISION.end
+           $66a7 = ToBCD
+           $66bd = ToBCD.end
+  SECTION: $66bf-$66ee ($0030 bytes) ["score"]
+           $66bf = InitializeScore
+           $66c7 = IncreaseDifficulty
+           $66ce = IncreaseDifficulty.scoreMid
+           $66ce = IncreaseDifficulty.scoreLow
+           $66ce = IncreaseDifficulty.scoreHigh
+           $66cf = AddPoints
+           $66e2 = AddPoints.carry
+           $66ec = AddPoints.end
+  SECTION: $66ef-$671d ($002f bytes) ["lcd"]
+           $66ef = LCD_OFF
+           $66f4 = LCD_ON
+           $66f9 = LCD_ON_BG_ONLY
+           $66fe = WaitVBlank
+           $6703 = WaitVBlank.loop
+           $670c = SetupWindow
+           $6715 = SetParkLYC
+           $6719 = SetClassicLYC
+  SECTION: $671e-$673f ($0022 bytes) ["general initialization"]
+           $671e = InitializeGameVars
+  SECTION: $6740-$675d ($001e bytes) ["memory"]
+           $6740 = MEMCPY.memcpy_loop
+           $6740 = MEMCPY
+           $6744 = MEMCPY.memcpy_check_limit
+           $674a = ClearOAM
+           $6754 = ClearRAM
+  SECTION: $675e-$6771 ($0014 bytes) ["window map"]
+           $675e = WindowMap
+           $6772 = WindowMapEnd
+  SECTION: $6772-$6779 ($0008 bytes) ["timer"]
+           $6772 = UpdateGlobalTimer
+    SLACK: $1886 bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c046 ($0047 bytes) ["RAM vars"]
@@ -833,7 +833,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $107a bytes in 1 bank
-    ROMX: $278a bytes in 1 bank
+    ROM0: $1083 bytes in 1 bank
+    ROMX: $277a bytes in 1 bank
     WRAM0: $00d1 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

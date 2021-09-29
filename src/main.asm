@@ -19,8 +19,8 @@ Start::
 	call ClearAllTiles
 	call ResetScroll
 	call LoadMenuData
-	; ld hl, menuTheme
-	; call hUGE_init
+	ld hl, menuTheme
+	call hUGE_init
 	call SetupPalettes
 	call CopyDMARoutine
 	call InitializeGameVars
@@ -28,7 +28,7 @@ Start::
 	call LCD_ON_BG_ONLY
 MenuLoop:
 	call WaitVBlank
-	; call _hUGE_dosound
+	call _hUGE_dosound
 	call UpdateGlobalTimer
 	call UpdateMenu
 	call OAMDMA
