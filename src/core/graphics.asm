@@ -38,8 +38,10 @@ DMARoutineEnd:
 
 OAMDMA::
   	; Call DMA subroutine to copy the bytes to OAM for sprites begin to draw
+	push af
 	ld a, HIGH($C100)
 	call hOAMDMA
+	pop af
 	ret
 
 SECTION "OAM DMA", HRAM
