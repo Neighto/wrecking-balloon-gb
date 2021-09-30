@@ -218,26 +218,27 @@ ROM0 bank #0:
            $0fc0 = OffScreenX.end
            $0fc2 = OffScreenY
            $0fcc = OffScreenY.end
-  SECTION: $0fce-$1093 ($00c6 bytes) ["rom"]
+  SECTION: $0fce-$10a2 ($00d5 bytes) ["rom"]
            $0fce = Start
            $1007 = MenuLoop
            $1019 = StartClassic
-           $1064 = PregameLoop
-           $1085 = GameLoop
-           $1091 = GameLoop.end
-  SECTION: $1094-$10ed ($005a bytes) ["interrupts"]
-           $1094 = VBlank_Interrupt
-           $109c = LCD_Interrupt_Park
-           $10a7 = LCD_Interrupt_Park.clouds
-           $10b4 = LCD_Interrupt_Park.ground
-           $10bc = LCD_Interrupt_Classic
-           $10c6 = LCD_Interrupt_Classic.showSprites
-           $10d0 = LCD_Interrupt_Classic.hideSpritesOnWindow
-           $10da = LCD_Interrupt
-           $10e3 = LCD_Interrupt.park
-           $10e8 = LCD_Interrupt.classic
-           $10eb = LCD_Interrupt.end
-    SLACK: $2f54 bytes
+           $1064 = ParkLoop
+           $1073 = PregameLoop
+           $1094 = GameLoop
+           $10a0 = GameLoop.end
+  SECTION: $10a3-$10fc ($005a bytes) ["interrupts"]
+           $10a3 = VBlank_Interrupt
+           $10ab = LCD_Interrupt_Park
+           $10b6 = LCD_Interrupt_Park.clouds
+           $10c3 = LCD_Interrupt_Park.ground
+           $10cb = LCD_Interrupt_Classic
+           $10d5 = LCD_Interrupt_Classic.showSprites
+           $10df = LCD_Interrupt_Classic.hideSpritesOnWindow
+           $10e9 = LCD_Interrupt
+           $10f2 = LCD_Interrupt.park
+           $10f7 = LCD_Interrupt.classic
+           $10fa = LCD_Interrupt.end
+    SLACK: $2f45 bytes
 
 ROMX bank #1:
   SECTION: $4000-$4b3d ($0b3e bytes) ["Song Data2"]
@@ -996,7 +997,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $10ac bytes in 1 bank
+    ROM0: $10bb bytes in 1 bank
     ROMX: $3544 bytes in 1 bank
     WRAM0: $00e6 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

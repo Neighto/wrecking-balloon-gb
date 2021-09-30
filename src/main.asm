@@ -60,12 +60,12 @@ StartClassic::
 	call InitializeClassicVars
 	call RefreshLives
 	call LCD_ON_BG_ONLY
-; ParkLoop:
-; 	call WaitVBlank
-; 	call UpdateGlobalTimer
-; 	call UpdatePark
-; 	call OAMDMA
-; 	jp ParkLoop
+ParkLoop:
+	call WaitVBlank
+	call UpdateGlobalTimer
+	call UpdatePark
+	call OAMDMA
+	jp ParkLoop
 
 PregameLoop::
 	call StartedClassic
