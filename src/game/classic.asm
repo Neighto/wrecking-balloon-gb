@@ -261,15 +261,15 @@ ClassicGameManager:
     call PointBalloonUpdate
 
     ld a, [difficulty_level]
-    cp a, 50
+    cp a, 70
     jr nc, .levelSeven
-    cp a, 25
+    cp a, 40
     jr nc, .levelSix
-    cp a, 12
+    cp a, 25
     jr nc, .levelFive
-    cp a, 6
+    cp a, 12
     jr nc, .levelThree
-    cp a, 3
+    cp a, 6
     jr nc, .levelTwo
     cp a, 1
     jr nc, .levelOne
