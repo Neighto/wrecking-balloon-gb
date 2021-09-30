@@ -129,6 +129,8 @@ SetupPalettes::
 	push bc
     ld b, MAIN_PALETTE
     call SetAllPalettes
+	ld a, %11011000
+	ldh [rOBP1], a
 	pop bc
     ret
 
