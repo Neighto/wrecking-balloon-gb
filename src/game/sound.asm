@@ -30,10 +30,10 @@ PopSound::
 
 ExplosionSound::
   ; Volume envelope
-  ld a, %11110111
+  ld a, %10110111
   ld [rNR42], a
   ; Polynomial counter
-  ld a, %01110000
+  ld a, %01110001
   ld [rNR43], a
   ; Counter/consecutive initial
   ld a, %10000000
