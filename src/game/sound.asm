@@ -28,6 +28,22 @@ PopSound::
     ld  [rNR51],a
     ret
 
+ExplosionSound::
+  ; Volume envelope
+  ld a, %11110111
+  ld [rNR42], a
+  ; Polynomial counter
+  ld a, %01110000
+  ld [rNR43], a
+  ; Counter/consecutive initial
+  ld a, %10000000
+  ld [rNR44], a
+  ; Master volume
+  ld  a,%11111111
+  ld  [rNR50],a
+  ld  [rNR51],a
+  ret
+
 FallingSound::
   ; Sweep register
   ld a, %01111111

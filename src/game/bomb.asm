@@ -4,10 +4,6 @@ INCLUDE "hardware.inc"
 
 SECTION "bomb", ROMX
 
-; BIRD_SPRITE_MOVE_WAIT_TIME EQU %00000011
-; BIRD_SPRITE_FALLING_TIME EQU %00001111
-; BIRD_START_LEFT_X EQU 0
-; BIRD_START_RIGHT_X EQU 160
 BOMB_START_Y EQU 150
 BOMB_SPAWN_A EQU 40
 BOMB_SPAWN_B EQU 60
@@ -131,82 +127,11 @@ SpawnBomb:
 
 FloatBombUp:
     ld hl, bomb_y
-    ld a, [hl]
-    dec a
-    dec a
-    ; todo use speed var
+    ld a, [bomb_speed]
+    cpl
+    add [hl]
     ld [hl], a
     call UpdateBombPosition
-    ret
-
-PopBalloonAnimation:
-    ; Check what frame we are on
-    ld a, [bomb_popping_frame]
-    cp a, 0
-    jr z, .frame0
-
-    ld a, [bomb_pop_timer]
-	inc	a
-	ld [bomb_pop_timer], a
-    and POPPING_BALLOON_ANIMATION_SPEED
-    jp nz, .end
-    ; Can do next frame
-    ; Check what frame we are on
-    ld a, [bomb_popping_frame]
-    cp a, 1
-    jr z, .frame1
-    cp a, 2
-    jr z, .clear
-    ret
-
-.frame0:
-    ; Popped left - frame 0
-    ld hl, wBomb+2
-    ld [hl], $88
-    inc l
-    ld [hl], %00000000
-    ; Popped right - frame 0
-    ld hl, wBomb+6
-    ld [hl], $88
-    inc l
-    ld [hl], OAMF_XFLIP
-    ld hl, bomb_popping_frame
-    ld [hl], 1
-    ret
-.frame1:
-    ; Popped left - frame 1
-    ld hl, wBomb+2
-    ld [hl], $8A
-    inc l
-    ld [hl], %00000000
-    ; Popped right - frame 1
-    ld hl, wBomb+6
-    ld [hl], $8A
-    inc l
-    ld [hl], OAMF_XFLIP
-    ld hl, bomb_popping_frame
-    ld [hl], 2
-    ret
-.clear:
-    ; Remove sprites
-    xor a ; ld a, 0
-    ld hl, wBomb
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hl], a
-    ; Reset variables
-    ld hl, bomb_popping
-    ld [hl], a
-    ld hl, bomb_pop_timer
-    ld [hl], a
-    ld hl, bomb_popping_frame
-    ld [hl], a
-.end:
     ret
 
 BombUpdate::
@@ -240,8 +165,7 @@ BombUpdate::
     ; Check if we need to play popping animation
     ld a, [bomb_popping]
     cp a, 0
-    call nz, ExplosionAnimation ; *******
-    ; call nz, PopBalloonAnimation
+    call nz, ExplosionAnimation
 .end:
     ret
 
@@ -254,7 +178,7 @@ DeathOfBomb::
     ld hl, bomb_popping
     ld [hl], 1
     ; Sound
-    call PopSound
+    call ExplosionSound
     ret
 
 SpawnExplosion::
@@ -369,11 +293,23 @@ ExplosionAnimation:
     ret
 .frame2:
     ; Flip palette
+    ld hl, wBomb+3
+    ld [hl], OAMF_PAL1
+    ld hl, wBomb+7
+    ld [hl], OAMF_PAL1
+    ld hl, wBomb+11
+    ld [hl], OAMF_PAL1 | OAMF_XFLIP
     ld hl, bomb_popping_frame
     ld [hl], 3
     ret
 .frame3:
     ; Flip palette
+    ld hl, wBomb+3
+    ld [hl], OAMF_PAL0
+    ld hl, wBomb+7
+    ld [hl], OAMF_PAL0
+    ld hl, wBomb+11
+    ld [hl], OAMF_PAL0 | OAMF_XFLIP
     ld hl, bomb_popping_frame
     ld [hl], 4
     ret

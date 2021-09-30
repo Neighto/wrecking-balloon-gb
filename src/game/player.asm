@@ -94,7 +94,7 @@ InitializePlayer::
   inc l
   ld [hl], $80
   inc l
-  ld [hl], %00010000
+  ld [hl], OAMF_PAL0
   ; Balloon right
   ld hl, wPlayerBalloon+4
   ld [hl], PLAYER_BALLOON_START_Y
@@ -103,7 +103,7 @@ InitializePlayer::
   inc l
   ld [hl], $80
   inc l
-  ld [hl], %00110000
+  ld [hl], OAMF_PAL0 | OAMF_XFLIP
   ; Cactus left
   ld hl, wPlayerCactus
   ld [hl], PLAYER_START_Y
@@ -112,7 +112,7 @@ InitializePlayer::
   inc l
   ld [hl], $82
   inc l
-  ld [hl], %00010000
+  ld [hl], OAMF_PAL0
   ; Cactus right
   ld hl, wPlayerCactus+4
   ld [hl], PLAYER_START_Y
@@ -121,7 +121,7 @@ InitializePlayer::
   inc l
   ld [hl], $82
   inc l
-  ld [hl], %00110000
+  ld [hl], OAMF_PAL0 | OAMF_XFLIP
   ret
 
 SpawnPlayer:
@@ -617,7 +617,7 @@ DeathOfPlayer::
   ld hl, wPlayerCactus+6
   ld [hl], $90
   ; Sound
-  call PopSound
+  ; call PopSound ; Conflicts with explosion sound
   call FallingSound
   ret
 
@@ -644,11 +644,23 @@ InvincibleBlink::
 	and INVINCIBLE_BLINK_FAST_SPEED
   jr z, .defaultPalette
 .blinkEnd:
-  ld a, %11011000
-	ldh [rOBP1], a ; TODO alternatively let's alternate the OBP0 and OBP1
+  ld hl, wPlayerBalloon+3
+  ld [hl], OAMF_PAL1
+  ld hl, wPlayerBalloon+7
+  ld [hl], OAMF_PAL1 | OAMF_XFLIP
+  ld hl, wPlayerCactus+3
+  ld [hl], OAMF_PAL1
+  ld hl, wPlayerCactus+7
+  ld [hl], OAMF_PAL1 | OAMF_XFLIP
   ret
 .defaultPalette:
-  ld a, %11100100
-	ldh [rOBP1], a
+  ld hl, wPlayerBalloon+3
+  ld [hl], OAMF_PAL0
+  ld hl, wPlayerBalloon+7
+  ld [hl], OAMF_PAL0 | OAMF_XFLIP
+  ld hl, wPlayerCactus+3
+  ld [hl], OAMF_PAL0
+  ld hl, wPlayerCactus+7
+  ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .end:
   ret
