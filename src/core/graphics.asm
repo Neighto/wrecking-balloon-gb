@@ -138,9 +138,9 @@ SetupParkPalettes::
 	ld a, MAIN_PALETTE
     ldh [rBGP], a
     ldh [rOCPD], a
-	ldh [rOBP1], a
-	ld a, PARK_WAVE_PALETTE
 	ldh [rOBP0], a
+	ld a, PARK_WAVE_PALETTE
+	ldh [rOBP1], a
     ret
 
 FadeOutPalettes::

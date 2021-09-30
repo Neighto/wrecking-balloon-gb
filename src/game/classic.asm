@@ -98,7 +98,7 @@ SpawnHandWave::
     ld [hli], a
     ld [hl], $B0
     inc l
-    ld [hl], %00000000
+    ld [hl], OAMF_PAL1
 	ret
 
 ; NOTE if ram becomes a problem I could probably use modulo off global timer for frames
@@ -258,8 +258,7 @@ SetClassicMapStartPoint::
 
 ClassicGameManager:
     push af
-    ; call PointBalloonUpdate
-    call BombUpdate
+    call PointBalloonUpdate
 
     ld a, [difficulty_level]
     cp a, 25
