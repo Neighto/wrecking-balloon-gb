@@ -645,7 +645,7 @@ InvincibleBlink::
   jr z, .defaultPalette
 .blinkEnd:
   ld a, %11011000
-	ldh [rOBP1], a
+	ldh [rOBP1], a ; TODO alternatively let's alternate the OBP0 and OBP1
   ret
 .defaultPalette:
   ld a, %11100100

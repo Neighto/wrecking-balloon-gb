@@ -96,7 +96,7 @@ SpawnHandWave::
     ld [hli], a
     ld a, HAND_WAVE_START_X
     ld [hli], a
-    ld [hl], $A0
+    ld [hl], $B0
     inc l
     ld [hl], %00000000
 	ret
@@ -111,7 +111,7 @@ HandWaveAnimation::
     and 15
     jp nz, .end
     ld hl, wEnemy2Balloon+2
-    ld [hl], $A2
+    ld [hl], $B2
     ld hl, hand_waving_frame
     ld [hl], 1
     ret
@@ -120,7 +120,7 @@ HandWaveAnimation::
     and 15
     jp nz, .end
     ld hl, wEnemy2Balloon+2
-    ld [hl], $A0
+    ld [hl], $B0
     ld hl, hand_waving_frame
     ld [hl], 0
 .end:
@@ -173,35 +173,35 @@ CountdownAnimation::
 .frame0:
     call PercussionSound
     ld hl, wEnemyBalloon+2
-    ld [hl], $B8
+    ld [hl], $C8
     ld hl, wEnemyBalloon+6
-    ld [hl], $BA
+    ld [hl], $CA
     ld hl, countdown_frame
     ld [hl], 1
     ret
 .frame1:
     call PercussionSound
     ld hl, wEnemyBalloon+2
-    ld [hl], $B4
+    ld [hl], $C4
     ld hl, wEnemyBalloon+6
-    ld [hl], $B6
+    ld [hl], $C6
     ld hl, countdown_frame
     ld [hl], 2
     ret
 .frame2:
     call PercussionSound
     ld hl, wEnemyBalloon+2
-    ld [hl], $B0
+    ld [hl], $C0
     ld hl, wEnemyBalloon+6
-    ld [hl], $B2
+    ld [hl], $C2
     ld hl, countdown_frame
     ld [hl], 3
     ret
 .frame3:
     ld hl, wEnemyBalloon+2
-    ld [hl], $BC
+    ld [hl], $CC
     ld hl, wEnemyBalloon+6
-    ld [hl], $BC
+    ld [hl], $CC
     inc l
     ld [hl], OAMF_XFLIP
     ld hl, countdown_frame
@@ -262,6 +262,8 @@ ClassicGameManager:
     call BombUpdate
 
     ld a, [difficulty_level]
+    cp a, 25
+    jr nc, .levelSix
     cp a, 12
     jr nc, .levelFive
     cp a, 6
@@ -271,6 +273,8 @@ ClassicGameManager:
     cp a, 1
     jr nc, .levelOne
     jr .end
+.levelSix:
+    call BombUpdate
 .levelFive:
     ld a, 4
     ld [bird_speed], a
