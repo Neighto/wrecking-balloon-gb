@@ -11,6 +11,7 @@ CactusTiles::
     INCBIN "incbin/Bird1.2bpp"
     INCBIN "incbin/Bird2.2bpp"
     INCBIN "incbin/Bomb.2bpp"
+    INCBIN "incbin/Explosion2.2bpp"
 CactusTilesEnd::
 
 ;rgbgfx -m -h -o incbin/Player.2bpp assets/GIMP/Sprites/Player.png

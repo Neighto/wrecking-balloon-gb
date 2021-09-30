@@ -114,4 +114,4 @@ SECTION "OAM vars", WRAM0[$C100]
 	wEnemy2Cactus:: DS 4*2
 	wEnemy2Balloon:: DS 4*2
 	wBird:: DS 4*3
-	wBomb:: DS 4*2
+	wBomb:: DS 4*3

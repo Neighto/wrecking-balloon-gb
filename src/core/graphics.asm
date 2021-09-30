@@ -63,12 +63,12 @@ LoadGameData::
 	call MEMCPY
 	; Copy the classic park tiles
 	ld bc, ClassicParkTiles
-	ld hl, _VRAM8800+$0200
+	ld hl, _VRAM8800+$0300
 	ld de, ClassicParkTilesEnd - ClassicParkTiles
 	call MEMCPY
 	; Copy the countdown tiles
 	ld bc, CountdownTiles
-	ld hl, _VRAM8800+$0300
+	ld hl, _VRAM8800+$0400
 	ld de, CountdownTilesEnd - CountdownTiles
 	call MEMCPY
 	; Copy the window tiles
