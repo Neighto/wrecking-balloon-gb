@@ -15,6 +15,27 @@ SpawnMenuCursor::
 	ld [hl], %00000000
 	ret
 
+BlinkMenuCursor::
+	; Check timer
+	ld a, [global_timer]
+	and %00011111
+	jr z, .blink
+	ret
+.blink:
+	; Check what tile and flip it
+	ld hl, wPlayerCactus+2 ; Borrow
+	ld a, [hl]
+	cp a, $00
+	jr nz, .empty
+.show:
+	ld a, $80
+	ld [hl], a
+	ret
+.empty:
+	ld a, $00
+	ld [hl], a
+	ret
+
 MoveCursor:
 	; call CollectSound
 	ld a, [selected_mode]
@@ -64,6 +85,7 @@ MenuInput:
 	ret
 
 UpdateMenu::
+	call BlinkMenuCursor
 	ld a, [classic_mode_stage]
 	cp a, STAGE_CLASSIC_SELECTED
 	jr z, .fadeOut

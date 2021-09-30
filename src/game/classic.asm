@@ -261,6 +261,8 @@ ClassicGameManager:
     call PointBalloonUpdate
 
     ld a, [difficulty_level]
+    cp a, 50
+    jr nc, .levelSeven
     cp a, 25
     jr nc, .levelSix
     cp a, 12
@@ -272,6 +274,9 @@ ClassicGameManager:
     cp a, 1
     jr nc, .levelOne
     jr .end
+.levelSeven:
+    ld a, 2
+    ld [bomb_speed], a
 .levelSix:
     call BombUpdate
 .levelFive:
