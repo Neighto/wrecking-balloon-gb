@@ -1,4 +1,5 @@
 INCLUDE "hardware.inc"
+INCLUDE "macro.inc"
 
 SECTION "memory", ROMX
 
@@ -18,13 +19,9 @@ MEMCPY::
     ret
 
 ClearOAM::
-    ld hl, _OAMRAM
-    ld bc, $A0
-    call ResetInRange
+    RESET_IN_RANGE _OAMRAM, $A0
     ret
 
 ClearRAM::
-    ld hl, $C100
-    ld bc, $A0
-    call ResetInRange
+    RESET_IN_RANGE $C100, $A0
     ret

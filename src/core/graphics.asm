@@ -1,5 +1,6 @@
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
+INCLUDE "macro.inc"
 
 SECTION "OAM DMA routine", ROM0
 
@@ -285,15 +286,9 @@ RefreshLives::
 	ret
 
 ClearAllTiles::
-    ld hl, _VRAM8000
-    ld bc, _VRAM8800 - _VRAM8000
-    call ResetInRange
-    ld hl, _VRAM8800
-    ld bc, _VRAM9000 - _VRAM8800
-    call ResetInRange
-    ld hl, _VRAM9000
-    ld bc, _SCRN0 - _VRAM9000
-    call ResetInRange
+	RESET_IN_RANGE _VRAM8000, _VRAM8800 - _VRAM8000
+	RESET_IN_RANGE _VRAM8800, _VRAM9000 - _VRAM8800
+	RESET_IN_RANGE _VRAM9000, _SCRN0 - _VRAM9000
     ret
 
 ClearMap::

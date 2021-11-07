@@ -1,6 +1,7 @@
 INCLUDE "points.inc"
 INCLUDE "balloonCactusConstants.inc"
 INCLUDE "hardware.inc"
+INCLUDE "macro.inc"
 
 SECTION "enemy", ROMX
 
@@ -174,38 +175,20 @@ SpawnEnemy:
     ld [hl], OAMF_XFLIP
     ret
 
-MoveBalloonRight:
-    ld hl, enemy_balloon_x
-    ld a, 1
-    call IncrementPosition
-    ret 
-
-MoveCactusRight:
-    ld hl, enemy_cactus_x
-    ld a, 1
-    call IncrementPosition
-    ret
-
 MoveBalloonDown:
     ld hl, enemy_balloon_y
     ld a, 1
-    call IncrementPosition
-    ret
-
-MoveCactusDown:
-    ld hl, enemy_cactus_y
-    ld a, 1
-    call IncrementPosition
+    INCREMENT_POS enemy_balloon_y, 1
     ret
 
 MoveRight:
-    call MoveBalloonRight
-    call MoveCactusRight
+    INCREMENT_POS enemy_balloon_x, 1
+    INCREMENT_POS enemy_cactus_x, 1
     ret
 
 MoveDown:
-    call MoveBalloonDown
-    call MoveCactusDown
+    INCREMENT_POS enemy_balloon_y, 1
+    INCREMENT_POS enemy_cactus_y, 1
     ret
 
 MoveEnemy:
@@ -226,9 +209,7 @@ FallCactusDown:
     add a, a
     ld [hl], a
 .skipAcceleration
-    ld a, [hl]
-    ld hl, enemy_cactus_y
-    call IncrementPosition
+    INCREMENT_POS enemy_cactus_y, [enemy_fall_speed]
     ret
 
 PopBalloonAnimation:
