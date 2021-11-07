@@ -1,5 +1,6 @@
 INCLUDE "hardware.inc"
 INCLUDE "balloonCactusConstants.inc"
+INCLUDE "macro.inc"
 
 SECTION "player", ROMX
 
@@ -135,54 +136,6 @@ SpawnPlayer:
   call StopFallingSound
   ret
 
-MoveBalloonUp:
-  ld hl, player_y
-  ld a, [player_speed]
-  call DecrementPosition
-  ret
-
-MoveBalloonRight:
-  ld hl, player_x
-  ld a, [player_speed]
-  call IncrementPosition
-  ret 
-
-MoveBalloonLeft:
-  ld hl, player_x
-  ld a, [player_speed]
-  call DecrementPosition
-  ret
-
-MoveBalloonDown:
-  ld hl, player_y
-  ld a, [player_speed]
-  call IncrementPosition
-  ret
-
-MoveCactusUp:
-  ld hl, player_cactus_y
-  ld a, [player_speed]
-  call DecrementPosition
-  ret
-
-MoveCactusRight:
-  ld hl, player_cactus_x
-  ld a, [player_speed]
-  call IncrementPosition
-  ret
-
-MoveCactusLeft:
-  ld hl, player_cactus_x
-  ld a, [player_speed]
-  call DecrementPosition
-  ret
-
-MoveCactusDown:
-  ld hl, player_cactus_y
-  ld a, [player_speed]
-  call IncrementPosition
-  ret
-
 MoveCactusDriftLeft:
   ; Move left until limit is reached
   ld a, [global_timer]
@@ -271,26 +224,26 @@ MoveCactusDriftCenterY:
   ret
 
 MoveRight:
-  call MoveBalloonRight
-  call MoveCactusRight
+  INCREMENT_POS player_x, [player_speed]
+  INCREMENT_POS player_cactus_x, [player_speed]
   call MoveCactusDriftLeft
   ret
 
 MoveLeft:
-  call MoveBalloonLeft
-  call MoveCactusLeft
+  DECREMENT_POS player_x, [player_speed]
+  DECREMENT_POS player_cactus_x, [player_speed]
   call MoveCactusDriftRight
   ret
 
 MoveDown:
-  call MoveBalloonDown
-  call MoveCactusDown
+  INCREMENT_POS player_y, [player_speed]
+  INCREMENT_POS player_cactus_y, [player_speed]
   call MoveCactusDriftUp
   ret
 
 MoveUp:
-  call MoveBalloonUp
-  call MoveCactusUp
+  DECREMENT_POS player_y, [player_speed]
+  DECREMENT_POS player_cactus_y, [player_speed]
   ret
 
 SpeedUp:
@@ -449,9 +402,7 @@ FallCactusDown:
   add a, a
   ld [hl], a
 .skipAcceleration
-  ld a, [hl]
-  ld hl, player_cactus_y
-  call IncrementPosition
+  INCREMENT_POS player_cactus_y, [player_fall_speed]
   ret
 
 PopBalloonAnimation:
