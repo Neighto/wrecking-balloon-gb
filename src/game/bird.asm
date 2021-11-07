@@ -1,5 +1,6 @@
 INCLUDE "points.inc"
 INCLUDE "hardware.inc"
+INCLUDE "macro.inc"
 
 SECTION "bird", ROMX
 
@@ -234,9 +235,7 @@ BirdAnimate:
     ld [hl], $96
     ld hl, bird_flapping_frame
     ld [hl], 0
-    ld hl, bird_y
-    ld a, BIRD_FLAP_UP_SPEED
-    call DecrementPosition
+    DECREMENT_POS bird_y, BIRD_FLAP_UP_SPEED
 .end:
     pop af
     pop hl
@@ -258,21 +257,15 @@ BirdUpdate::
     and 1
     jr z, .moveRight
 .moveLeft:
-    ld hl, bird_x
-    ld a, [bird_speed]
-    call DecrementPosition
+    DECREMENT_POS bird_x, [bird_speed]
     jr .moveDown
 .moveRight:
-    ld hl, bird_x
-    ld a, [bird_speed]
-    call IncrementPosition
+    INCREMENT_POS bird_x, [bird_speed]
 .moveDown:
     ld a, [global_timer]
     and BIRD_SPRITE_FALLING_TIME
     jr nz, .moveEnd
-    ld hl, bird_y
-    ld a, BIRD_VERTICAL_SPEED
-    call IncrementPosition
+    INCREMENT_POS bird_y, BIRD_VERTICAL_SPEED
 .moveEnd:
     call BirdAnimate
     call UpdateBirdPosition

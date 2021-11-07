@@ -17,3 +17,18 @@ MACRO DECREMENT_POS
     add [hl]
     ld [hl], a
 ENDM
+
+MACRO RESET_IN_RANGE
+    ; argument hl is starting address
+    ; argument bc is distance
+    ; uses a
+    ld hl, \1
+    ld bc, \2
+.loop\@:
+    xor a ; ld a, 0
+    ld [hli], a
+    dec bc
+    ld a, b
+    or c
+    jr nz, .loop\@
+ENDM
