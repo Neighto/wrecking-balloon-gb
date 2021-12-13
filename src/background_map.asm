@@ -1,5 +1,5 @@
 SECTION "background map", ROMX
 
 BackgroundMap:: 
-    INCBIN "incbin/Classic_Map.tilemap"
+    INCBIN "incbin/background/Classic_Map.tilemap"
 BackgroundMapEnd::

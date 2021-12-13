@@ -1,5 +1,5 @@
 SECTION "menu map", ROM0
 
 MenuMap::
-    INCBIN "incbin/WB.tilemap"
+    INCBIN "incbin/background/WB.tilemap"
 MenuMapEnd::

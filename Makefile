@@ -10,7 +10,10 @@ OUTPUT		:=	$(BIN_DIR)/$(GAME_NAME)
 SRC_ASM		:=	$(wildcard $(SRC_DIR)/*.asm)
 OBJ_FILES	:=	$(addprefix $(BIN_DIR)/$(OBJ_DIR)/, $(SRC_ASM:src/%.asm=%.o))
 
-.PHONY: all clean
+ASSETS_DIR	:=  assets
+IMG_DIR		:= images
+
+.PHONY: all clean tileset tilemap
 
 all: fix
 	
@@ -22,6 +25,15 @@ build: $(OBJ_FILES)
 	
 $(BIN_DIR)/$(OBJ_DIR)/%.o : $(SRC_DIR)/%.asm
 	rgbasm -i $(INC_DIR) -o $@ $<
+
+# Use to make a tileset (ex: make arg={png_path_from_images} tileset)
+# Special case used flag -u instead of -m for doing countdown numbers
+tileset: 
+	rgbgfx -u -h -o incbin/$(arg).2bpp  $(ASSETS_DIR)/$(IMG_DIR)/$(arg).png
+
+# Use to make a tilemap and tileset (ex: make arg={png_path_from_images} tilemap)
+tilemap: 
+	rgbgfx -u -t incbin/$(arg).tilemap -o incbin/$(arg).2bpp  $(ASSETS_DIR)/$(IMG_DIR)/$(arg).png
 
 # Use clean if there are changes to the inc files
 clean: 

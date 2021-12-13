@@ -605,231 +605,231 @@ ROMX bank #1:
            $65bf = Enemy2Update.notPopping
            $65c9 = Enemy2Update.end
            $65ca = DeathOfEnemy2
-  SECTION: $65ec-$680b ($0220 bytes) ["cactus tiles"]
+  SECTION: $65ec-$67fb ($0210 bytes) ["cactus tiles"]
            $65ec = CactusTiles
-           $680c = CactusTilesEnd
-  SECTION: $680c-$69fc ($01f1 bytes) ["classic"]
-           $680c = InitializeClassicVars
-           $6811 = ParkFadeOut
-           $6824 = ParkFadeOut.startFadeOut
-           $682a = ParkFadeOut.fadeOut
-           $6835 = ParkFadeOut.hasFadedOut
-           $6839 = UpdatePark
-           $6842 = UpdatePark.moveUp
-           $684b = UpdatePark.flyUpNormal
-           $6852 = UpdatePark.flyUpFast
-           $6855 = UpdatePark.end
-           $6856 = TryToUnpause
-           $686d = TryToUnpause.end
-           $686e = ParkEnteredClassic
-           $6876 = StartedClassic
-           $687e = SpawnHandWave
-           $688d = HandWaveAnimation
-           $6894 = HandWaveAnimation.frame0
-           $68a7 = HandWaveAnimation.frame1
-           $68b9 = HandWaveAnimation.end
-           $68ba = SpawnCountdown
-           $68cd = CountdownAnimation
-           $68d4 = CountdownAnimation.countdown
-           $68de = CountdownAnimation.balloonPop
-           $68e6 = CountdownAnimation.frames
-           $6906 = CountdownAnimation.frame0
-           $6919 = CountdownAnimation.frame1
-           $692c = CountdownAnimation.frame2
-           $693f = CountdownAnimation.frame3
-           $6952 = CountdownAnimation.frame4
-           $6965 = CountdownAnimation.frame5
-           $6975 = CountdownAnimation.remove
-           $6986 = CountdownAnimation.end
-           $6987 = IncrementScrollOffset
-           $6995 = IncrementScrollOffset.end
-           $6996 = SetClassicMapStartPoint
-           $699b = ClassicGameManager
-           $69bc = ClassicGameManager.levelSeven
-           $69c1 = ClassicGameManager.levelSix
-           $69c4 = ClassicGameManager.levelFive
-           $69c9 = ClassicGameManager.levelThree
-           $69cc = ClassicGameManager.levelTwo
-           $69cf = ClassicGameManager.levelOne
-           $69d2 = ClassicGameManager.end
-           $69d4 = UpdateClassic
-           $69e0 = UpdateClassic.countdownComplete
-           $69f3 = UpdateClassic.countdownSkip
-           $69fc = UpdateClassic.end
-  SECTION: $69fd-$6be8 ($01ec bytes) ["bomb"]
-           $69fd = UpdateBombPosition
-           $6a21 = SetSpawnPoint
-           $6a3b = SetSpawnPoint.spawnA
-           $6a3f = SetSpawnPoint.spawnB
-           $6a43 = SetSpawnPoint.spawnC
-           $6a47 = SetSpawnPoint.spawnD
-           $6a49 = SetSpawnPoint.end
-           $6a4c = InitializeBomb
-           $6a6e = SpawnBomb
-           $6a7a = SpawnBomb.balloonLeft
-           $6a8d = SpawnBomb.balloonRight
-           $6aa2 = SpawnBomb.end
-           $6aa4 = FloatBombUp
-           $6ab1 = BombUpdate
-           $6ac2 = BombUpdate.checkOffscreen
-           $6ad2 = BombUpdate.popped
-           $6ae0 = BombUpdate.respawnSkip
-           $6ae8 = BombUpdate.end
-           $6ae9 = DeathOfBomb
-           $6af7 = SpawnExplosion
-           $6af7 = SpawnExplosion.left
-           $6b0a = SpawnExplosion.middle
-           $6b1f = SpawnExplosion.right
-           $6b34 = SpawnExplosion.end
-           $6b35 = ExplosionAnimation
-           $6b5c = ExplosionAnimation.frame0
-           $6b72 = ExplosionAnimation.frame1
-           $6ba2 = ExplosionAnimation.frame2
-           $6bb7 = ExplosionAnimation.frame3
-           $6bcc = ExplosionAnimation.clear
-           $6be8 = ExplosionAnimation.end
-  SECTION: $6be9-$6dbf ($01d7 bytes) ["bird"]
-           $6be9 = UpdateBirdPosition
-           $6c13 = SetSpawnPoint
-           $6c2d = SetSpawnPoint.spawnA
-           $6c31 = SetSpawnPoint.spawnB
-           $6c35 = SetSpawnPoint.spawnC
-           $6c39 = SetSpawnPoint.spawnD
-           $6c3b = SetSpawnPoint.end
-           $6c3e = InitializeBird
-           $6c59 = SpawnBirdRight
-           $6ca9 = SpawnBirdLeft
-           $6cf9 = SpawnBird
-           $6d0b = BirdAnimate
-           $6d14 = BirdAnimate.frame0
-           $6d2d = BirdAnimate.frame0FacingLeft
-           $6d30 = BirdAnimate.frame0FacingEnd
-           $6d39 = BirdAnimate.frame1
-           $6d52 = BirdAnimate.frame1FacingLeft
-           $6d55 = BirdAnimate.frame1FacingEnd
-           $6d65 = BirdAnimate.end
-           $6d68 = BirdUpdate
-           $6d80 = BirdUpdate.moveLeft
-           $6d8c = BirdUpdate.moveRight
-           $6d94 = BirdUpdate.moveDown
-           $6da2 = BirdUpdate.moveEnd
-           $6da8 = BirdUpdate.checkOffscreen
-           $6db3 = BirdUpdate.died
-           $6db9 = BirdUpdate.isDead
-           $6dbc = BirdUpdate.end
-  SECTION: $6dc0-$6f3f ($0180 bytes) ["point balloon"]
-           $6dc0 = UpdateBalloonPosition
-           $6dd9 = InitializePointBalloon
-           $6df7 = InitializePointBalloon.nextSpawnPoint
-           $6e13 = InitializePointBalloon.spawnA
-           $6e17 = InitializePointBalloon.spawnB
-           $6e1b = InitializePointBalloon.spawnC
-           $6e1f = InitializePointBalloon.spawnD
-           $6e21 = InitializePointBalloon.endNextSpawnPoint
-           $6e22 = SpawnPointBalloon
-           $6e2f = SpawnPointBalloon.balloonLeft
-           $6e48 = SpawnPointBalloon.balloonRight
-           $6e63 = SpawnPointBalloon.end
-           $6e65 = FloatPointBalloonUp
-           $6e6f = PopBalloonAnimation
-           $6e90 = PopBalloonAnimation.frame0
-           $6ea6 = PopBalloonAnimation.frame1
-           $6ebc = PopBalloonAnimation.clear
-           $6ed4 = PopBalloonAnimation.end
-           $6ed5 = PointBalloonUpdate
-           $6ee7 = PointBalloonUpdate.popped
-           $6ef9 = PointBalloonUpdate.respawnSkip
-           $6f03 = PointBalloonUpdate.end
-           $6f04 = MenuBalloonUpdate
-           $6f25 = MenuBalloonUpdate.respawn
-           $6f2c = MenuBalloonUpdate.end
-           $6f2d = DeathOfPointBalloon
-  SECTION: $6f40-$705f ($0120 bytes) ["window tiles"]
-           $6f40 = WindowTiles
-           $7060 = WindowTilesEnd
-  SECTION: $7060-$713f ($00e0 bytes) ["countdown tiles"]
-           $7060 = CountdownTiles
-           $7140 = CountdownTilesEnd
-  SECTION: $7140-$71dd ($009e bytes) ["sound"]
-           $7140 = AUDIO_OFF
-           $7144 = AUDIO_ON
-           $7149 = PopSound
-           $715c = ExplosionSound
-           $716f = FallingSound
-           $7184 = StopFallingSound
-           $7189 = CollectSound
-           $719e = WrongAnswerSound
-           $71b5 = PercussionSound
-           $71c2 = BassSound
-           $71d3 = ClearSound
-  SECTION: $71de-$7262 ($0085 bytes) ["menu"]
-           $71de = SpawnMenuCursor
-           $71ed = BlinkMenuCursor
-           $71f5 = BlinkMenuCursor.blink
-           $71fd = BlinkMenuCursor.show
-           $7201 = BlinkMenuCursor.empty
-           $7205 = MoveCursor
-           $7215 = MoveCursor.classicMode
-           $721b = MoveCursor.storyMode
-           $7221 = SelectMode
-           $7228 = SelectMode.classicMode
-           $7231 = SelectMode.storyMode
-           $7232 = MenuInput
-           $723c = MenuInput.selectMode
-           $723c = MenuInput.moveSelected
-           $7245 = MenuInput.end
-           $7246 = UpdateMenu
-           $7254 = UpdateMenu.fadeOut
-           $725f = UpdateMenu.hasFadedOut
-  SECTION: $7263-$72b2 ($0050 bytes) ["menu tiles"]
-           $7263 = MenuTiles
-           $72b3 = MenuTilesEnd
-  SECTION: $72b3-$72f2 ($0040 bytes) ["classic park tiles"]
-           $72b3 = ClassicParkTiles
-           $72f3 = ClassicParkTilesEnd
-  SECTION: $72f3-$7328 ($0036 bytes) ["math"]
-           $72f3 = MODULO
-           $72f5 = MODULO.loop
-           $72fa = RANDOM
-           $7303 = DIVISION
-           $7309 = DIVISION.loop
-           $730e = DIVISION.end
-           $7311 = ToBCD
-           $7327 = ToBCD.end
-  SECTION: $7329-$7358 ($0030 bytes) ["score"]
-           $7329 = InitializeScore
-           $7331 = IncreaseDifficulty
-           $7338 = IncreaseDifficulty.scoreMid
-           $7338 = IncreaseDifficulty.scoreLow
-           $7338 = IncreaseDifficulty.scoreHigh
-           $7339 = AddPoints
-           $734c = AddPoints.carry
-           $7356 = AddPoints.end
-  SECTION: $7359-$7387 ($002f bytes) ["lcd"]
-           $7359 = LCD_OFF
-           $735e = LCD_ON
-           $7363 = LCD_ON_BG_ONLY
-           $7368 = WaitVBlank
-           $736d = WaitVBlank.loop
-           $7376 = SetupWindow
-           $737f = SetParkLYC
-           $7383 = SetClassicLYC
-  SECTION: $7388-$73ad ($0026 bytes) ["memory"]
-           $7388 = MEMCPY.memcpy_loop
-           $7388 = MEMCPY
-           $738c = MEMCPY.memcpy_check_limit
-           $7392 = ClearOAM
-           $7398 = ClearOAM.loop_u1
-           $73a0 = ClearRAM
-           $73a6 = ClearRAM.loop_u2
-  SECTION: $73ae-$73cf ($0022 bytes) ["general initialization"]
-           $73ae = InitializeGameVars
-  SECTION: $73d0-$73e3 ($0014 bytes) ["window map"]
-           $73d0 = WindowMap
-           $73e4 = WindowMapEnd
-  SECTION: $73e4-$73eb ($0008 bytes) ["timer"]
-           $73e4 = UpdateGlobalTimer
-    SLACK: $0c14 bytes
+           $67fc = CactusTilesEnd
+  SECTION: $67fc-$69ec ($01f1 bytes) ["classic"]
+           $67fc = InitializeClassicVars
+           $6801 = ParkFadeOut
+           $6814 = ParkFadeOut.startFadeOut
+           $681a = ParkFadeOut.fadeOut
+           $6825 = ParkFadeOut.hasFadedOut
+           $6829 = UpdatePark
+           $6832 = UpdatePark.moveUp
+           $683b = UpdatePark.flyUpNormal
+           $6842 = UpdatePark.flyUpFast
+           $6845 = UpdatePark.end
+           $6846 = TryToUnpause
+           $685d = TryToUnpause.end
+           $685e = ParkEnteredClassic
+           $6866 = StartedClassic
+           $686e = SpawnHandWave
+           $687d = HandWaveAnimation
+           $6884 = HandWaveAnimation.frame0
+           $6897 = HandWaveAnimation.frame1
+           $68a9 = HandWaveAnimation.end
+           $68aa = SpawnCountdown
+           $68bd = CountdownAnimation
+           $68c4 = CountdownAnimation.countdown
+           $68ce = CountdownAnimation.balloonPop
+           $68d6 = CountdownAnimation.frames
+           $68f6 = CountdownAnimation.frame0
+           $6909 = CountdownAnimation.frame1
+           $691c = CountdownAnimation.frame2
+           $692f = CountdownAnimation.frame3
+           $6942 = CountdownAnimation.frame4
+           $6955 = CountdownAnimation.frame5
+           $6965 = CountdownAnimation.remove
+           $6976 = CountdownAnimation.end
+           $6977 = IncrementScrollOffset
+           $6985 = IncrementScrollOffset.end
+           $6986 = SetClassicMapStartPoint
+           $698b = ClassicGameManager
+           $69ac = ClassicGameManager.levelSeven
+           $69b1 = ClassicGameManager.levelSix
+           $69b4 = ClassicGameManager.levelFive
+           $69b9 = ClassicGameManager.levelThree
+           $69bc = ClassicGameManager.levelTwo
+           $69bf = ClassicGameManager.levelOne
+           $69c2 = ClassicGameManager.end
+           $69c4 = UpdateClassic
+           $69d0 = UpdateClassic.countdownComplete
+           $69e3 = UpdateClassic.countdownSkip
+           $69ec = UpdateClassic.end
+  SECTION: $69ed-$6bd8 ($01ec bytes) ["bomb"]
+           $69ed = UpdateBombPosition
+           $6a11 = SetSpawnPoint
+           $6a2b = SetSpawnPoint.spawnA
+           $6a2f = SetSpawnPoint.spawnB
+           $6a33 = SetSpawnPoint.spawnC
+           $6a37 = SetSpawnPoint.spawnD
+           $6a39 = SetSpawnPoint.end
+           $6a3c = InitializeBomb
+           $6a5e = SpawnBomb
+           $6a6a = SpawnBomb.balloonLeft
+           $6a7d = SpawnBomb.balloonRight
+           $6a92 = SpawnBomb.end
+           $6a94 = FloatBombUp
+           $6aa1 = BombUpdate
+           $6ab2 = BombUpdate.checkOffscreen
+           $6ac2 = BombUpdate.popped
+           $6ad0 = BombUpdate.respawnSkip
+           $6ad8 = BombUpdate.end
+           $6ad9 = DeathOfBomb
+           $6ae7 = SpawnExplosion
+           $6ae7 = SpawnExplosion.left
+           $6afa = SpawnExplosion.middle
+           $6b0f = SpawnExplosion.right
+           $6b24 = SpawnExplosion.end
+           $6b25 = ExplosionAnimation
+           $6b4c = ExplosionAnimation.frame0
+           $6b62 = ExplosionAnimation.frame1
+           $6b92 = ExplosionAnimation.frame2
+           $6ba7 = ExplosionAnimation.frame3
+           $6bbc = ExplosionAnimation.clear
+           $6bd8 = ExplosionAnimation.end
+  SECTION: $6bd9-$6daf ($01d7 bytes) ["bird"]
+           $6bd9 = UpdateBirdPosition
+           $6c03 = SetSpawnPoint
+           $6c1d = SetSpawnPoint.spawnA
+           $6c21 = SetSpawnPoint.spawnB
+           $6c25 = SetSpawnPoint.spawnC
+           $6c29 = SetSpawnPoint.spawnD
+           $6c2b = SetSpawnPoint.end
+           $6c2e = InitializeBird
+           $6c49 = SpawnBirdRight
+           $6c99 = SpawnBirdLeft
+           $6ce9 = SpawnBird
+           $6cfb = BirdAnimate
+           $6d04 = BirdAnimate.frame0
+           $6d1d = BirdAnimate.frame0FacingLeft
+           $6d20 = BirdAnimate.frame0FacingEnd
+           $6d29 = BirdAnimate.frame1
+           $6d42 = BirdAnimate.frame1FacingLeft
+           $6d45 = BirdAnimate.frame1FacingEnd
+           $6d55 = BirdAnimate.end
+           $6d58 = BirdUpdate
+           $6d70 = BirdUpdate.moveLeft
+           $6d7c = BirdUpdate.moveRight
+           $6d84 = BirdUpdate.moveDown
+           $6d92 = BirdUpdate.moveEnd
+           $6d98 = BirdUpdate.checkOffscreen
+           $6da3 = BirdUpdate.died
+           $6da9 = BirdUpdate.isDead
+           $6dac = BirdUpdate.end
+  SECTION: $6db0-$6f2f ($0180 bytes) ["point balloon"]
+           $6db0 = UpdateBalloonPosition
+           $6dc9 = InitializePointBalloon
+           $6de7 = InitializePointBalloon.nextSpawnPoint
+           $6e03 = InitializePointBalloon.spawnA
+           $6e07 = InitializePointBalloon.spawnB
+           $6e0b = InitializePointBalloon.spawnC
+           $6e0f = InitializePointBalloon.spawnD
+           $6e11 = InitializePointBalloon.endNextSpawnPoint
+           $6e12 = SpawnPointBalloon
+           $6e1f = SpawnPointBalloon.balloonLeft
+           $6e38 = SpawnPointBalloon.balloonRight
+           $6e53 = SpawnPointBalloon.end
+           $6e55 = FloatPointBalloonUp
+           $6e5f = PopBalloonAnimation
+           $6e80 = PopBalloonAnimation.frame0
+           $6e96 = PopBalloonAnimation.frame1
+           $6eac = PopBalloonAnimation.clear
+           $6ec4 = PopBalloonAnimation.end
+           $6ec5 = PointBalloonUpdate
+           $6ed7 = PointBalloonUpdate.popped
+           $6ee9 = PointBalloonUpdate.respawnSkip
+           $6ef3 = PointBalloonUpdate.end
+           $6ef4 = MenuBalloonUpdate
+           $6f15 = MenuBalloonUpdate.respawn
+           $6f1c = MenuBalloonUpdate.end
+           $6f1d = DeathOfPointBalloon
+  SECTION: $6f30-$704f ($0120 bytes) ["window tiles"]
+           $6f30 = WindowTiles
+           $7050 = WindowTilesEnd
+  SECTION: $7050-$714f ($0100 bytes) ["countdown tiles"]
+           $7050 = CountdownTiles
+           $7150 = CountdownTilesEnd
+  SECTION: $7150-$71ed ($009e bytes) ["sound"]
+           $7150 = AUDIO_OFF
+           $7154 = AUDIO_ON
+           $7159 = PopSound
+           $716c = ExplosionSound
+           $717f = FallingSound
+           $7194 = StopFallingSound
+           $7199 = CollectSound
+           $71ae = WrongAnswerSound
+           $71c5 = PercussionSound
+           $71d2 = BassSound
+           $71e3 = ClearSound
+  SECTION: $71ee-$7272 ($0085 bytes) ["menu"]
+           $71ee = SpawnMenuCursor
+           $71fd = BlinkMenuCursor
+           $7205 = BlinkMenuCursor.blink
+           $720d = BlinkMenuCursor.show
+           $7211 = BlinkMenuCursor.empty
+           $7215 = MoveCursor
+           $7225 = MoveCursor.classicMode
+           $722b = MoveCursor.storyMode
+           $7231 = SelectMode
+           $7238 = SelectMode.classicMode
+           $7241 = SelectMode.storyMode
+           $7242 = MenuInput
+           $724c = MenuInput.selectMode
+           $724c = MenuInput.moveSelected
+           $7255 = MenuInput.end
+           $7256 = UpdateMenu
+           $7264 = UpdateMenu.fadeOut
+           $726f = UpdateMenu.hasFadedOut
+  SECTION: $7273-$72c2 ($0050 bytes) ["menu tiles"]
+           $7273 = MenuTiles
+           $72c3 = MenuTilesEnd
+  SECTION: $72c3-$7302 ($0040 bytes) ["classic park tiles"]
+           $72c3 = ClassicParkTiles
+           $7303 = ClassicParkTilesEnd
+  SECTION: $7303-$7338 ($0036 bytes) ["math"]
+           $7303 = MODULO
+           $7305 = MODULO.loop
+           $730a = RANDOM
+           $7313 = DIVISION
+           $7319 = DIVISION.loop
+           $731e = DIVISION.end
+           $7321 = ToBCD
+           $7337 = ToBCD.end
+  SECTION: $7339-$7368 ($0030 bytes) ["score"]
+           $7339 = InitializeScore
+           $7341 = IncreaseDifficulty
+           $7348 = IncreaseDifficulty.scoreMid
+           $7348 = IncreaseDifficulty.scoreLow
+           $7348 = IncreaseDifficulty.scoreHigh
+           $7349 = AddPoints
+           $735c = AddPoints.carry
+           $7366 = AddPoints.end
+  SECTION: $7369-$7397 ($002f bytes) ["lcd"]
+           $7369 = LCD_OFF
+           $736e = LCD_ON
+           $7373 = LCD_ON_BG_ONLY
+           $7378 = WaitVBlank
+           $737d = WaitVBlank.loop
+           $7386 = SetupWindow
+           $738f = SetParkLYC
+           $7393 = SetClassicLYC
+  SECTION: $7398-$73bd ($0026 bytes) ["memory"]
+           $7398 = MEMCPY.memcpy_loop
+           $7398 = MEMCPY
+           $739c = MEMCPY.memcpy_check_limit
+           $73a2 = ClearOAM
+           $73a8 = ClearOAM.loop_u1
+           $73b0 = ClearRAM
+           $73b6 = ClearRAM.loop_u2
+  SECTION: $73be-$73df ($0022 bytes) ["general initialization"]
+           $73be = InitializeGameVars
+  SECTION: $73e0-$73f3 ($0014 bytes) ["window map"]
+           $73e0 = WindowMap
+           $73f4 = WindowMapEnd
+  SECTION: $73f4-$73fb ($0008 bytes) ["timer"]
+           $73f4 = UpdateGlobalTimer
+    SLACK: $0c04 bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c04f ($0050 bytes) ["RAM vars"]
@@ -989,6 +989,6 @@ HRAM bank #0:
 
 USED:
     ROM0: $10b7 bytes in 1 bank
-    ROMX: $33ec bytes in 1 bank
+    ROMX: $33fc bytes in 1 bank
     WRAM0: $00e6 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
