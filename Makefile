@@ -2,18 +2,22 @@
 
 GAME_NAME	:= 	WRECKINGBALLOON
 
-SRC_DIR		:=	src
-INC_DIR		:=	$(SRC_DIR)/include
-OBJ_DIR		:=	obj
-BIN_DIR		:=	bin
-OUTPUT		:=	$(BIN_DIR)/$(GAME_NAME)
-SRC_ASM		:=	$(wildcard $(SRC_DIR)/*.asm)
-OBJ_FILES	:=	$(addprefix $(BIN_DIR)/$(OBJ_DIR)/, $(SRC_ASM:src/%.asm=%.o))
+SRC_DIR		 :=	src
+INC_DIR		 :=	$(SRC_DIR)/include
+OBJ_DIR		 :=	obj
+BIN_DIR		 :=	bin
+OUTPUT		 :=	$(BIN_DIR)/$(GAME_NAME)
+SRC_ASM		 :=	$(wildcard $(SRC_DIR)/*.asm)
+OBJ_FILES	 :=	$(addprefix $(BIN_DIR)/$(OBJ_DIR)/, $(SRC_ASM:src/%.asm=%.o))
 
-ASSETS_DIR	:=  assets
-IMG_DIR		:=  $(ASSETS_DIR)/images
-PNG_FILES	:=  $(wildcard $(IMG_DIR)/sprite/*.png) # fix to not just be sprite folder...
-FILT_PNG 	:=  $(foreach file, $(PNG_FILES), $(basename $(subst $(IMG_DIR)/, ,$(file))))
+ASSETS_DIR	 := assets
+IMG_DIR		 := $(ASSETS_DIR)/images
+SPRITE_DIR	 := $(IMG_DIR)/sprite
+BKGRND_DIR	 := $(IMG_DIR)/background
+WINDOW_DIR	 := $(IMG_DIR)/window
+SPRITE_FILES := $(foreach file, $(wildcard $(SPRITE_DIR)/*.png), $(basename $(subst $(IMG_DIR)/, ,$(file))))
+BKGRND_FILES := $(foreach file, $(wildcard $(BKGRND_DIR)/*.png), $(basename $(subst $(IMG_DIR)/, ,$(file))))
+WINDOW_FILES := $(foreach file, $(wildcard $(WINDOW_DIR)/*.png), $(basename $(subst $(IMG_DIR)/, ,$(file))))
 
 .PHONY: all clean tileset tilemap
 
@@ -39,17 +43,19 @@ ifdef path
 	rgbgfx $(flag) -h -o incbin/$(path).2bpp  $(IMG_DIR)/$(path).png
 	@echo "Ran rgbgfx - tileset for $(path)"
 else
-	$(foreach file, $(FILT_PNG), rgbgfx $(flag) -h -o incbin/$(file).2bpp $(IMG_DIR)/$(file).png;)
+	$(foreach file, $(SPRITE_FILES), rgbgfx $(flag) -h -o incbin/$(file).2bpp $(IMG_DIR)/$(file).png;)
 	@echo "Ran rgbgfx - tileset for all"
 endif
 
 # Use to make a tilemap and tileset (ex: make path={png_path_from_images} tilemap)
+# Omit path to generate all
 tilemap: 
 ifdef path
 	rgbgfx -u -t incbin/$(path).tilemap -o incbin/$(path).2bpp  $(IMG_DIR)/$(path).png
 	@echo "Ran rgbgfx - tilemap for $(path)"
 else
-	rgbgfx -u -t incbin/$(path).tilemap -o incbin/$(path).2bpp  $(IMG_DIR)/$(path).png
+	$(foreach file, $(BKGRND_FILES), rgbgfx -u -t  incbin/$(file).tilemap -o incbin/$(file).2bpp $(IMG_DIR)/$(file).png;)
+	$(foreach file, $(WINDOW_FILES), rgbgfx -u -t  incbin/$(file).tilemap -o incbin/$(file).2bpp $(IMG_DIR)/$(file).png;)
 	@echo "Ran rgbgfx - tilemap for all"
 endif
 
