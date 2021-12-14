@@ -28,10 +28,10 @@ Start::
 	call LCD_ON_BG_ONLY
 MenuLoop:
 	call WaitVBlank
-	call _hUGE_dosound
-	call UpdateGlobalTimer
-	call UpdateMenu
 	call OAMDMA
+	call _hUGE_dosound
+	call UpdateMenu
+	call UpdateGlobalTimer
 	jp MenuLoop
 
 StartClassic::
@@ -62,9 +62,9 @@ StartClassic::
 	call LCD_ON_BG_ONLY
 ParkLoop:
 	call WaitVBlank
-	call UpdateGlobalTimer
-	call UpdatePark
 	call OAMDMA
+	call UpdatePark
+	call UpdateGlobalTimer
 	jp ParkLoop
 
 PregameLoop::
@@ -81,8 +81,8 @@ PregameLoop::
 	call LCD_ON
 GameLoop:
 	call WaitVBlank
+	call OAMDMA
 	call UpdateClassic
 	call UpdateGlobalTimer
-	call OAMDMA
 .end:
 	jp GameLoop
