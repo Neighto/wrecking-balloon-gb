@@ -72,6 +72,11 @@ LoadGameData::
 	ld hl, _VRAM8800+$0400
 	ld de, CountdownTilesEnd - CountdownTiles
 	call MEMCPY
+	; Copy the boss tiles
+	ld bc, PropellerCactusTiles
+	ld hl, _VRAM8800+$0500
+	ld de, PropellerCactusTilesEnd - PropellerCactusTiles
+	call MEMCPY
 	; Copy the window tiles
 	ld bc, WindowTiles
 	ld hl, $9400

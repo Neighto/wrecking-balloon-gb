@@ -1,4 +1,12 @@
-SECTION "window map", ROMX
+SECTION "tilemaps", ROMX
+
+BackgroundMap:: 
+    INCBIN "incbin/background/Classic_Map.tilemap"
+BackgroundMapEnd::
+
+MenuMap::
+    INCBIN "incbin/background/WB.tilemap"
+MenuMapEnd::
 
 WindowMap::
     DB $40,$41,$42,$43,$44,$45,$46,$47,$47,$47

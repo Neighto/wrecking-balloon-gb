@@ -258,7 +258,8 @@ SetClassicMapStartPoint::
 
 ClassicGameManager:
     push af
-    call PointBalloonUpdate
+    ; call PointBalloonUpdate
+    call PropellerCactusUpdate
 
     ld a, [difficulty_level]
     cp a, 70

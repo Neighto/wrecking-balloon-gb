@@ -26,13 +26,13 @@ Start::
 	call InitializeGameVars
 	call SpawnMenuCursor
 	call LCD_ON_BG_ONLY
-MenuLoop:
-	call WaitVBlank
-	call OAMDMA
-	call _hUGE_dosound
-	call UpdateMenu
-	call UpdateGlobalTimer
-	jp MenuLoop
+; MenuLoop:
+; 	call WaitVBlank
+; 	call OAMDMA
+; 	call _hUGE_dosound
+; 	call UpdateMenu
+; 	call UpdateGlobalTimer
+; 	jp MenuLoop
 
 StartClassic::
 	call ParkEnteredClassic
@@ -55,17 +55,18 @@ StartClassic::
 	call InitializePointBalloon
 	call InitializeEnemy
 	call InitializeEnemy2
+	call InitializePropellerCactus
 	call InitializeBird
 	call InitializeBomb
 	call InitializeClassicVars
 	call RefreshLives
 	call LCD_ON_BG_ONLY
-ParkLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdatePark
-	call UpdateGlobalTimer
-	jp ParkLoop
+; ParkLoop:
+; 	call WaitVBlank
+; 	call OAMDMA
+; 	call UpdatePark
+; 	call UpdateGlobalTimer
+; 	jp ParkLoop
 
 PregameLoop::
 	call StartedClassic
