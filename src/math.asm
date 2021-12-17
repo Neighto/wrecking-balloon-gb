@@ -69,3 +69,27 @@ ToBCD::
 .end:
     pop bc
     ret
+
+
+MULTIPLY::
+    ; simple multiply formula
+    ; argument 'b'
+    ; argument 'c'
+    ; uses 'a' and 'd' as counter
+    ; returns 'a' as solution
+    push de
+    xor a ; ld a, 0
+    ld d, a
+.loop:
+    ld a, c
+    cp a, 0
+    jr z, .end
+    ld a, b
+    add a, d
+    ld d, a
+    dec c
+    jr .loop
+.end:
+    ld a, d
+    pop de
+    ret

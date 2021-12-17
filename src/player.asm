@@ -38,7 +38,8 @@ UpdateBalloonPosition:
   ret
 
 UpdateCactusPosition:
-  ld hl, wPlayerCactus
+  SET_HL_TO_ADDRESS wOAM, wPlayerCactus
+  ; ld hl, wPlayerCactus
   ; Update Y
   ld a, [player_cactus_y]
   ld [hli], a
@@ -46,7 +47,8 @@ UpdateCactusPosition:
   ld a, [player_cactus_x]
   ld [hl], a
 
-  ld hl, wPlayerCactus+4
+  SET_HL_TO_ADDRESS wOAM+4, wPlayerCactus
+  ; ld hl, wPlayerCactus+4
   ; Update Y
   ld a, [player_cactus_y]
   ld [hli], a
@@ -62,6 +64,16 @@ UpdatePlayerPosition:
   ret
 
 InitializePlayer::
+
+  ; CLEAN
+  ld b, 2 ; need 2 sprites for player cactus
+  call RequestOAMSpace ; Except we should only do this ONCE
+  ld b, a
+  ld c, 4
+  call MULTIPLY
+  ld hl, wPlayerCactus
+  ld [hl], a
+
   ; Set variables
   xor a ; ld a, 0
   ld [player_popping], a
@@ -106,7 +118,7 @@ InitializePlayer::
   inc l
   ld [hl], OAMF_PAL0 | OAMF_XFLIP
   ; Cactus left
-  ld hl, wPlayerCactus
+  SET_HL_TO_ADDRESS wOAM, wPlayerCactus
   ld [hl], PLAYER_START_Y
   inc l
   ld [hl], PLAYER_START_X
@@ -115,7 +127,8 @@ InitializePlayer::
   inc l
   ld [hl], OAMF_PAL0
   ; Cactus right
-  ld hl, wPlayerCactus+4
+  SET_HL_TO_ADDRESS wOAM+4, wPlayerCactus
+  ; inc l
   ld [hl], PLAYER_START_Y
   inc l
   ld [hl], PLAYER_START_X+8
@@ -563,9 +576,11 @@ DeathOfPlayer::
   ld hl, player_falling
   ld [hl], a
   ; Screaming cactus
-  ld hl, wPlayerCactus+2
+  SET_HL_TO_ADDRESS wOAM+2, wPlayerCactus
+  ; ld hl, wPlayerCactus+2
   ld [hl], $90
-  ld hl, wPlayerCactus+6
+  SET_HL_TO_ADDRESS wOAM+6, wPlayerCactus
+  ; ld hl, wPlayerCactus+6
   ld [hl], $90
   ; Sound
   ; call PopSound ; Conflicts with explosion sound
@@ -599,9 +614,11 @@ InvincibleBlink::
   ld [hl], OAMF_PAL1
   ld hl, wPlayerBalloon+7
   ld [hl], OAMF_PAL1 | OAMF_XFLIP
-  ld hl, wPlayerCactus+3
+  SET_HL_TO_ADDRESS wOAM+3, wPlayerCactus
+  ; ld hl, wPlayerCactus+3
   ld [hl], OAMF_PAL1
-  ld hl, wPlayerCactus+7
+  SET_HL_TO_ADDRESS wOAM+7, wPlayerCactus
+  ; ld hl, wPlayerCactus+7
   ld [hl], OAMF_PAL1 | OAMF_XFLIP
   ret
 .defaultPalette:
@@ -609,9 +626,11 @@ InvincibleBlink::
   ld [hl], OAMF_PAL0
   ld hl, wPlayerBalloon+7
   ld [hl], OAMF_PAL0 | OAMF_XFLIP
-  ld hl, wPlayerCactus+3
+  SET_HL_TO_ADDRESS wOAM+3, wPlayerCactus
+  ; ld hl, wPlayerCactus+3
   ld [hl], OAMF_PAL0
-  ld hl, wPlayerCactus+7
+  SET_HL_TO_ADDRESS wOAM+7, wPlayerCactus
+  ; ld hl, wPlayerCactus+7
   ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .end:
   ret
