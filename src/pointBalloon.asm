@@ -17,7 +17,7 @@ PB_SPRITE_MOVE_WAIT_TIME EQU %00000001
 
 UpdateBalloonPosition:
     
-    SET_HL_TO_ADDRESS wOAM, wPointBalloon
+    SET_HL_TO_ADDRESS wOAM, wPointBalloonOAM
     ; Update Y
     ld a, [point_balloon_y]
     ld [hli], a
@@ -25,7 +25,7 @@ UpdateBalloonPosition:
     ld a, [point_balloon_x]
     ld [hl], a
   
-    SET_HL_TO_ADDRESS wOAM+4, wPointBalloon
+    SET_HL_TO_ADDRESS wOAM+4, wPointBalloonOAM
     ; Update Y
     ld a, [point_balloon_y]
     ld [hli], a
@@ -81,19 +81,20 @@ InitializePointBalloon::
 
 SpawnPointBalloon:
     push af
-
-    ld b, 2
-	call RequestOAMSpaceOffset
-	ld [wPointBalloon], a
-
     xor a ; ld a, 0
     ld [point_balloon_respawn_timer], a
     call InitializePointBalloon
     ld a, 1
     ld [point_balloon_alive], a
+
+    ; Request OAM
+    ld b, 2
+	call RequestOAMSpaceOffset
+	ld [wPointBalloonOAM], a
+
 .balloonLeft:
     ; Balloon left
-    SET_HL_TO_ADDRESS wOAM, wPointBalloon
+    SET_HL_TO_ADDRESS wOAM, wPointBalloonOAM
     ld a, [point_balloon_y]
     ld [hl], a
     inc l
@@ -150,12 +151,12 @@ PopBalloonAnimation:
 
 .frame0:
     ; Popped left - frame 0
-    SET_HL_TO_ADDRESS wOAM+2, wPointBalloon
+    SET_HL_TO_ADDRESS wOAM+2, wPointBalloonOAM
     ld [hl], $88
     inc l
     ld [hl], %00000000
     ; Popped right - frame 0
-    SET_HL_TO_ADDRESS wOAM+6, wPointBalloon
+    SET_HL_TO_ADDRESS wOAM+6, wPointBalloonOAM
     ld [hl], $88
     inc l
     ld [hl], OAMF_XFLIP
@@ -164,12 +165,12 @@ PopBalloonAnimation:
     ret
 .frame1:
     ; Popped left - frame 1
-    SET_HL_TO_ADDRESS wOAM+2, wPointBalloon
+    SET_HL_TO_ADDRESS wOAM+2, wPointBalloonOAM
     ld [hl], $8A
     inc l
     ld [hl], %00000000
     ; Popped right - frame 1
-    SET_HL_TO_ADDRESS wOAM+6, wPointBalloon
+    SET_HL_TO_ADDRESS wOAM+6, wPointBalloonOAM
     ld [hl], $8A
     inc l
     ld [hl], OAMF_XFLIP
@@ -179,7 +180,7 @@ PopBalloonAnimation:
 .clear:
     ; Remove sprites
     xor a ; ld a, 0
-    SET_HL_TO_ADDRESS wOAM, wPointBalloon
+    SET_HL_TO_ADDRESS wOAM, wPointBalloonOAM
     ld [hli], a
     ld [hli], a
     ld [hli], a

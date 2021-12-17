@@ -36,7 +36,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	player_invincible:: DB ; Operates like a timer, when set, invincible immediately
 	player_cant_move:: DB
 
-	wPointBalloon:: DB
+	wPointBalloonOAM:: DB
 	point_balloon_x:: DB
 	point_balloon_y:: DB
 	point_balloon_alive:: DB
@@ -46,8 +46,8 @@ SECTION "RAM vars", WRAM0[$C000]
 	point_balloon_respawn_timer:: DB
 
 	; Enemy 1
-	wEnemyCactus:: DB
-	wEnemyBalloon:: DB
+	wEnemyCactusOAM:: DB
+	wEnemyBalloonOAM:: DB
 	enemy_balloon_x:: DB
 	enemy_balloon_y:: DB
 	enemy_cactus_x:: DB 
@@ -80,7 +80,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	enemy2_respawn_timer:: DB
 
 	; Bird
-	wBird:: DB
+	wBirdOAM:: DB
 	bird_x:: DB
 	bird_y:: DB
 	bird_flapping_frame:: DB
@@ -118,4 +118,6 @@ InitializeGameVars::
 	ret
 
 SECTION "OAM vars", WRAM0[$C100]
-	wOAM:: DS 4*40 ; maybe later make it so player has its own space (since it should never be unable to spawn)
+OAMVars::
+	wOAM:: DS 4*40 ; 40 sprites with 4 bytes each of attributes
+OAMVarsEnd::

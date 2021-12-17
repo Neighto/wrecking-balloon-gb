@@ -62,7 +62,6 @@ UpdatePlayerPosition:
   ret
 
 InitializePlayer::
-
   ; Set variables
   xor a ; ld a, 0
   ld [player_popping], a
@@ -96,19 +95,20 @@ InitializePlayer::
 
   ; Cactus left
   SET_HL_TO_ADDRESS wOAM, wOAMPlayerCactus
-  ld [hl], PLAYER_START_Y
-  inc l
-  ld [hl], PLAYER_START_X
-  inc l
+  ld a, [player_cactus_y]
+  ld [hli], a
+  ld a, [player_cactus_x]
+  ld [hli], a
   ld [hl], $82
   inc l
   ld [hl], OAMF_PAL0
   ; Cactus right
   inc l
-  ld [hl], PLAYER_START_Y
-  inc l
-  ld [hl], PLAYER_START_X+8
-  inc l
+  ld a, [player_cactus_y]
+  ld [hli], a
+  ld a, [player_cactus_x]
+  add 8
+  ld [hli], a
   ld [hl], $82
   inc l
   ld [hl], OAMF_PAL0 | OAMF_XFLIP
@@ -118,30 +118,56 @@ InitializePlayer::
   call RequestOAMSpaceOffset
   ld [wOAMPlayerBalloon], a
 
+  ; TODO: Something weird happens if something spawns before the player does, probably because somewhere we rely on cactus + balloon side by side
+
   ; Balloon left
   SET_HL_TO_ADDRESS wOAM, wOAMPlayerBalloon
-  ld [hl], PLAYER_BALLOON_START_Y
-  inc l
-  ld [hl], PLAYER_START_X
-  inc l
+  ld a, [player_y]
+  ld [hli], a
+  ld a, [player_x]
+  ld [hli], a
   ld [hl], $80
   inc l
   ld [hl], OAMF_PAL0
   ; Balloon right
   inc l
-  ld [hl], PLAYER_BALLOON_START_Y
-  inc l
-  ld [hl], PLAYER_START_X+8
-  inc l
+  ld a, [player_y]
+  ld [hli], a
+  ld a, [player_x]
+  add 8
+  ld [hli], a
   ld [hl], $80
   inc l
   ld [hl], OAMF_PAL0 | OAMF_XFLIP
+  ret
+
+ClearPlayer:
+  xor a ; ld a, 0
+  SET_HL_TO_ADDRESS wOAM, wOAMPlayerCactus
+  ld [hli], a
+  ld [hli], a
+  ld [hli], a
+  ld [hli], a
+  ld [hli], a
+  ld [hli], a
+  ld [hli], a
+  ld [hl], a
+  SET_HL_TO_ADDRESS wOAM, wOAMPlayerBalloon
+  ld [hli], a
+  ld [hli], a
+  ld [hli], a
+  ld [hli], a
+  ld [hli], a
+  ld [hli], a
+  ld [hli], a
+  ld [hl], a
   ret
 
 SpawnPlayer:
   ; Probably temporary
   xor a ; ld a, 0
   ld [player_respawn_timer], a
+  call ClearPlayer
   call InitializePlayer
   
   ld a, INVINCIBLE_RESPAWN_TIME
@@ -506,7 +532,6 @@ CactusFalling:
   ; Reset variables
   ld hl, enemy_falling
   ld [hl], 0
-  ; Here I "could" clear the sprite info, but no point
 .end
   ret
 
@@ -581,7 +606,7 @@ DeathOfPlayer::
   SET_HL_TO_ADDRESS wOAM+6, wOAMPlayerCactus
   ld [hl], $90
   ; Sound
-  ; call PopSound ; Conflicts with explosion sound
+  call PopSound ; Conflicts with explosion sound
   call FallingSound
   ret
 

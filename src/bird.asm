@@ -19,7 +19,7 @@ BIRD_FLAP_UP_SPEED EQU 5
 UpdateBirdPosition:
     push hl
     push af
-    ld hl, wBird
+    SET_HL_TO_ADDRESS wOAM, wBirdOAM
     ; Update Y
     ld a, [bird_y]
     ld [hli], a
@@ -27,7 +27,7 @@ UpdateBirdPosition:
     ld a, [bird_x]
     ld [hl], a
   
-    ld hl, wBird+4
+    SET_HL_TO_ADDRESS wOAM+4, wBirdOAM
     ; Update Y
     ld a, [bird_y]
     ld [hli], a
@@ -36,7 +36,7 @@ UpdateBirdPosition:
     add 8
     ld [hl], a
 
-    ld hl, wBird+8
+    SET_HL_TO_ADDRESS wOAM+8, wBirdOAM
     ; Update Y
     ld a, [bird_y]
     ld [hli], a
@@ -104,8 +104,14 @@ SpawnBirdRight:
     ld a, 1
     ld [bird_alive], a
     ld [bird_spawn_right], a
+
+    ; Request OAM
+    ld b, 3
+    call RequestOAMSpaceOffset
+    ld [wBirdOAM], a
+
     ; Bird left
-    ld hl, wBird
+    SET_HL_TO_ADDRESS wOAM, wBirdOAM
     ld a, [bird_y]
     ld [hli], a
     ld a, [bird_x]
@@ -114,7 +120,7 @@ SpawnBirdRight:
     inc l
     ld [hl], %00000000
     ; Bird middle
-    ld hl, wBird+4
+    inc l
     ld a, [bird_y]
     ld [hli], a
     ld a, [bird_x]
@@ -124,7 +130,7 @@ SpawnBirdRight:
     inc l
     ld [hl], %00000000
     ; Bird right
-    ld hl, wBird+8
+    inc l
     ld a, [bird_y]
     ld [hli], a
     ld a, [bird_x]
@@ -149,8 +155,14 @@ SpawnBirdLeft:
     ld [bird_spawn_right], a
     ld a, 1
     ld [bird_alive], a
+
+    ; Request OAM
+    ld b, 3
+    call RequestOAMSpaceOffset
+    ld [wBirdOAM], a
+
     ; Bird left
-    ld hl, wBird
+    SET_HL_TO_ADDRESS wOAM, wBirdOAM
     ld a, [bird_y]
     ld [hli], a
     ld a, [bird_x]
@@ -159,7 +171,7 @@ SpawnBirdLeft:
     inc l
     ld [hl], OAMF_XFLIP
     ; Bird middle
-    ld hl, wBird+4
+    inc l
     ld a, [bird_y]
     ld [hli], a
     ld a, [bird_x]
@@ -169,7 +181,7 @@ SpawnBirdLeft:
     inc l
     ld [hl], OAMF_XFLIP
     ; Bird right
-    ld hl, wBird+8
+    inc l
     ld a, [bird_y]
     ld [hli], a
     ld a, [bird_x]
@@ -204,15 +216,15 @@ BirdAnimate:
     ld a, [global_timer]
     and 7 ; bird_flapping_speed
     jp nz, .end
-    ld hl, wBird+6
+    SET_HL_TO_ADDRESS wOAM+6, wBirdOAM
     ld [hl], $98
     ld a, [bird_spawn_right]
     cp a, 0
     jr nz, .frame0FacingLeft
-    ld hl, wBird+2
+    SET_HL_TO_ADDRESS wOAM+2, wBirdOAM
     jr .frame0FacingEnd
 .frame0FacingLeft:
-    ld hl, wBird+10
+    SET_HL_TO_ADDRESS wOAM+10, wBirdOAM
 .frame0FacingEnd:
     ld [hl], $9A
     ld hl, bird_flapping_frame
@@ -222,15 +234,15 @@ BirdAnimate:
     ld a, [global_timer]
     and %00111111 ; bird_flapping_speed
     jp nz, .end
-    ld hl, wBird+6
+    SET_HL_TO_ADDRESS wOAM+6, wBirdOAM
     ld [hl], $94
     ld a, [bird_spawn_right]
     cp a, 0
     jr nz, .frame1FacingLeft
-    ld hl, wBird+2
+    SET_HL_TO_ADDRESS wOAM+2, wBirdOAM
     jr .frame1FacingEnd
 .frame1FacingLeft:
-    ld hl, wBird+10
+    SET_HL_TO_ADDRESS wOAM+10, wBirdOAM
 .frame1FacingEnd:
     ld [hl], $96
     ld hl, bird_flapping_frame
@@ -239,6 +251,24 @@ BirdAnimate:
 .end:
     pop af
     pop hl
+    ret
+
+ClearBird:
+    ; todo make a clear function or macro
+    xor a ; ld a, 0
+    SET_HL_TO_ADDRESS wOAM, wBirdOAM
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hl], a
     ret
 
 BirdUpdate::
@@ -279,6 +309,7 @@ BirdUpdate::
 .died:
     xor a ; ld a, 0
     ld [bird_alive], a
+    call ClearBird
     jr .end
 .isDead:
     ; TODO add respawn timer

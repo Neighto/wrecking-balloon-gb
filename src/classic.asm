@@ -265,6 +265,7 @@ SetClassicMapStartPoint::
 ClassicGameManager:
     push af
     call PointBalloonUpdate
+    call BirdUpdate
     ; call PropellerCactusUpdate
 
     ld a, [difficulty_level]

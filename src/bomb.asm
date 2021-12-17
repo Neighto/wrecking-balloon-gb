@@ -178,7 +178,7 @@ DeathOfBomb::
     ld hl, bomb_popping
     ld [hl], 1
     ; Sound
-    call ExplosionSound
+    ; call ExplosionSound ; conflicts with the other sound
     ret
 
 SpawnExplosion::
