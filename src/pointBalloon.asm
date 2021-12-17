@@ -96,11 +96,9 @@ SpawnPointBalloon:
     ; Balloon left
     SET_HL_TO_ADDRESS wOAM, wPointBalloonOAM
     ld a, [point_balloon_y]
-    ld [hl], a
-    inc l
+    ld [hli], a
     ld a, [point_balloon_x]
-    ld [hl], a
-    inc l
+    ld [hli], a
     ld [hl], $84
     inc l
     ld [hl], %00000000
@@ -108,12 +106,10 @@ SpawnPointBalloon:
     ; Balloon right
     inc l
     ld a, [point_balloon_y]
-    ld [hl], a
-    inc l
+    ld [hli], a
     ld a, [point_balloon_x]
     add 8
-    ld [hl], a
-    inc l
+    ld [hli], a
     ld [hl], $84
     inc l
     ld [hl], OAMF_XFLIP

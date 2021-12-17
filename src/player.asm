@@ -526,7 +526,7 @@ CactusFalling:
   ret
 .offScreen:
   ; Reset variables
-  ld hl, enemy_falling
+  ld hl, player_falling
   ld [hl], 0
   call ClearPlayerCactus
 .end
