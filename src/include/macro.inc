@@ -41,9 +41,16 @@ MACRO SET_HL_TO_ADDRESS
     ld de, \2
     ld h, b
     ld l, c
-    ; ld a, [de]
-    ; add a, l ; might cause issues if no carry to h?
-    ; ld l, a
-    ; add hl, de ; issue is adding to [hl] me thinks
+    ld a, [de]
+    add a, l ; might cause issues if no carry to h?
+    ld l, a
+ENDM
 
+MACRO NEW_AND_SIMPLE
+    ld bc, \1 ; wPlayerCactus
+    ld l, \2 ; offset
+    ld h, $C1
+    ld a, [bc]
+    add l
+    ld l, a
 ENDM

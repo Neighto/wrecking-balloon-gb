@@ -107,7 +107,6 @@ InitializeGameVars::
 	ret
 
 SECTION "OAM vars", WRAM0[$C100]
-	; wPlayerCactus:: DS 4*2
 	wOAM:: DS 4*2 ; for testing
 	wPlayerBalloon:: DS 4*2
 	wPointBalloon:: DS 4*2
