@@ -39,7 +39,6 @@ UpdateBalloonPosition:
 
 UpdateCactusPosition:
   SET_HL_TO_ADDRESS wOAM, wPlayerCactus
-  ; ld hl, wPlayerCactus
   ; Update Y
   ld a, [player_cactus_y]
   ld [hli], a
@@ -48,7 +47,6 @@ UpdateCactusPosition:
   ld [hl], a
 
   SET_HL_TO_ADDRESS wOAM+4, wPlayerCactus
-  ; ld hl, wPlayerCactus+4
   ; Update Y
   ld a, [player_cactus_y]
   ld [hli], a
@@ -72,7 +70,18 @@ InitializePlayer::
   ld c, 4
   call MULTIPLY
   ld hl, wPlayerCactus
-  ld [hl], a
+  ld [hl], LOW(wOAM)
+  ld b, 0
+  ld c, a
+  add hl, bc
+
+  ; say the above made sense and worked... then to use it I would do:
+  ; ld bc, wPlayerCactus+offset
+  ; ld h, $C1
+  ; ld l, [bc]
+  ;can prob be simpler since we know it starts C1
+  ; can I set wPlayerCactus to instead be the wROAM address?
+
 
   ; Set variables
   xor a ; ld a, 0
@@ -118,7 +127,8 @@ InitializePlayer::
   inc l
   ld [hl], OAMF_PAL0 | OAMF_XFLIP
   ; Cactus left
-  SET_HL_TO_ADDRESS wOAM, wPlayerCactus
+  NEW_AND_SIMPLE wPlayerCactus, 0
+  ; SET_HL_TO_ADDRESS wOAM, wPlayerCactus
   ld [hl], PLAYER_START_Y
   inc l
   ld [hl], PLAYER_START_X
@@ -127,7 +137,8 @@ InitializePlayer::
   inc l
   ld [hl], OAMF_PAL0
   ; Cactus right
-  SET_HL_TO_ADDRESS wOAM+4, wPlayerCactus
+  NEW_AND_SIMPLE wPlayerCactus, 4
+  ; SET_HL_TO_ADDRESS wOAM+4, wPlayerCactus
   ; inc l
   ld [hl], PLAYER_START_Y
   inc l
@@ -577,10 +588,8 @@ DeathOfPlayer::
   ld [hl], a
   ; Screaming cactus
   SET_HL_TO_ADDRESS wOAM+2, wPlayerCactus
-  ; ld hl, wPlayerCactus+2
   ld [hl], $90
   SET_HL_TO_ADDRESS wOAM+6, wPlayerCactus
-  ; ld hl, wPlayerCactus+6
   ld [hl], $90
   ; Sound
   ; call PopSound ; Conflicts with explosion sound
@@ -615,10 +624,8 @@ InvincibleBlink::
   ld hl, wPlayerBalloon+7
   ld [hl], OAMF_PAL1 | OAMF_XFLIP
   SET_HL_TO_ADDRESS wOAM+3, wPlayerCactus
-  ; ld hl, wPlayerCactus+3
   ld [hl], OAMF_PAL1
   SET_HL_TO_ADDRESS wOAM+7, wPlayerCactus
-  ; ld hl, wPlayerCactus+7
   ld [hl], OAMF_PAL1 | OAMF_XFLIP
   ret
 .defaultPalette:
@@ -627,10 +634,8 @@ InvincibleBlink::
   ld hl, wPlayerBalloon+7
   ld [hl], OAMF_PAL0 | OAMF_XFLIP
   SET_HL_TO_ADDRESS wOAM+3, wPlayerCactus
-  ; ld hl, wPlayerCactus+3
   ld [hl], OAMF_PAL0
   SET_HL_TO_ADDRESS wOAM+7, wPlayerCactus
-  ; ld hl, wPlayerCactus+7
   ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .end:
   ret
