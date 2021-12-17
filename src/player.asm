@@ -19,7 +19,7 @@ INVINCIBLE_BLINK_NORMAL_SPEED EQU %00001000
 INVINCIBLE_BLINK_FAST_SPEED EQU %00000100
 
 UpdateBalloonPosition:
-  SET_HL_TO_ADDRESS wOAM, wOAMPlayerBalloon
+  SET_HL_TO_ADDRESS wOAM, wPlayerBalloonOAM
   ; Update Y
   ld a, [player_y]
   ld [hli], a
@@ -27,7 +27,7 @@ UpdateBalloonPosition:
   ld a, [player_x]
   ld [hl], a
 
-  SET_HL_TO_ADDRESS wOAM+4, wOAMPlayerBalloon
+  SET_HL_TO_ADDRESS wOAM+4, wPlayerBalloonOAM
   ; Update Y
   ld a, [player_y]
   ld [hli], a
@@ -38,7 +38,7 @@ UpdateBalloonPosition:
   ret
 
 UpdateCactusPosition:
-  SET_HL_TO_ADDRESS wOAM, wOAMPlayerCactus
+  SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
   ; Update Y
   ld a, [player_cactus_y]
   ld [hli], a
@@ -46,7 +46,7 @@ UpdateCactusPosition:
   ld a, [player_cactus_x]
   ld [hl], a
 
-  SET_HL_TO_ADDRESS wOAM+4, wOAMPlayerCactus
+  SET_HL_TO_ADDRESS wOAM+4, wPlayerCactusOAM
   ; Update Y
   ld a, [player_cactus_y]
   ld [hli], a
@@ -86,15 +86,15 @@ InitializePlayer::
   ld hl, player_cactus_y
   ld [hl], PLAYER_START_Y
   ld hl, player_speed
-  ld [hl], 1
+  ld [hl], 2
 
   ; CLEAN (like only do this once... not each init)
   ld b, 2 ; need 2 sprites for player cactus
   call RequestOAMSpaceOffset
-  ld [wOAMPlayerCactus], a
+  ld [wPlayerCactusOAM], a
 
   ; Cactus left
-  SET_HL_TO_ADDRESS wOAM, wOAMPlayerCactus
+  SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
   ld a, [player_cactus_y]
   ld [hli], a
   ld a, [player_cactus_x]
@@ -116,12 +116,13 @@ InitializePlayer::
   ; CLEAN
   ld b, 2 ; need 2 sprites for player balloon
   call RequestOAMSpaceOffset
-  ld [wOAMPlayerBalloon], a
+  ld [wPlayerBalloonOAM], a
 
-  ; TODO: Something weird happens if something spawns before the player does, probably because somewhere we rely on cactus + balloon side by side
+  ; TODO: Something weird happens if something spawns before the player does
+  ; When player dies and something else is spawning in too...
 
   ; Balloon left
-  SET_HL_TO_ADDRESS wOAM, wOAMPlayerBalloon
+  SET_HL_TO_ADDRESS wOAM, wPlayerBalloonOAM
   ld a, [player_y]
   ld [hli], a
   ld a, [player_x]
@@ -141,9 +142,9 @@ InitializePlayer::
   ld [hl], OAMF_PAL0 | OAMF_XFLIP
   ret
 
-ClearPlayer:
+ClearPlayerCactus:
   xor a ; ld a, 0
-  SET_HL_TO_ADDRESS wOAM, wOAMPlayerCactus
+  SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
   ld [hli], a
   ld [hli], a
   ld [hli], a
@@ -152,7 +153,11 @@ ClearPlayer:
   ld [hli], a
   ld [hli], a
   ld [hl], a
-  SET_HL_TO_ADDRESS wOAM, wOAMPlayerBalloon
+  ret
+
+ClearPlayerBalloon:
+  xor a ; ld a, 0
+  SET_HL_TO_ADDRESS wOAM, wPlayerBalloonOAM
   ld [hli], a
   ld [hli], a
   ld [hli], a
@@ -167,7 +172,6 @@ SpawnPlayer:
   ; Probably temporary
   xor a ; ld a, 0
   ld [player_respawn_timer], a
-  call ClearPlayer
   call InitializePlayer
   
   ld a, INVINCIBLE_RESPAWN_TIME
@@ -287,12 +291,12 @@ MoveUp:
 
 SpeedUp:
   ld hl, player_speed
-  ld [hl], 2
+  ld [hl], 1
   ret
 
 ResetSpeedUp:
   ld hl, player_speed
-  ld [hl], 1
+  ld [hl], 2
   ret
 
 PlayerControls:
@@ -424,7 +428,8 @@ MovePlayerAutoMiddle::
   ret
 
 MovePlayerAutoFlyUp::
-  call MoveUp
+  DECREMENT_POS player_y, 1
+  DECREMENT_POS player_cactus_y, 1
   call UpdatePlayerPosition
   ret
 
@@ -466,12 +471,12 @@ PopBalloonAnimation:
 
 .frame0:
   ; Popped left - frame 0
-  SET_HL_TO_ADDRESS wOAM+2, wOAMPlayerBalloon
+  SET_HL_TO_ADDRESS wOAM+2, wPlayerBalloonOAM
   ld [hl], $88
   inc l
   ld [hl], %00000000
   ; Popped right - frame 0
-  SET_HL_TO_ADDRESS wOAM+6, wOAMPlayerBalloon
+  SET_HL_TO_ADDRESS wOAM+6, wPlayerBalloonOAM
   ld [hl], $88
   inc l
   ld [hl], OAMF_XFLIP
@@ -480,12 +485,12 @@ PopBalloonAnimation:
   ret
 .frame1:
   ; Popped left - frame 1
-  SET_HL_TO_ADDRESS wOAM+2, wOAMPlayerBalloon
+  SET_HL_TO_ADDRESS wOAM+2, wPlayerBalloonOAM
   ld [hl], $8A
   inc l
   ld [hl], %00000000
   ; Popped right - frame 1
-  SET_HL_TO_ADDRESS wOAM+6, wOAMPlayerBalloon
+  SET_HL_TO_ADDRESS wOAM+6, wPlayerBalloonOAM
   ld [hl], $8A
   inc l
   ld [hl], OAMF_XFLIP
@@ -494,16 +499,7 @@ PopBalloonAnimation:
   ret
 .clear:
   ; Remove sprites
-  xor a ; ld a, 0
-  SET_HL_TO_ADDRESS wOAM, wOAMPlayerBalloon ; this clear may cause issue with oam thing
-  ld [hli], a
-  ld [hli], a
-  ld [hli], a
-  ld [hli], a
-  ld [hli], a
-  ld [hli], a
-  ld [hli], a
-  ld [hl], a
+  call ClearPlayerBalloon
   ; Reset variables
   ld hl, player_popping
   ld [hl], a
@@ -532,6 +528,7 @@ CactusFalling:
   ; Reset variables
   ld hl, enemy_falling
   ld [hl], 0
+  call ClearPlayerCactus
 .end
   ret
 
@@ -601,9 +598,9 @@ DeathOfPlayer::
   ld hl, player_falling
   ld [hl], a
   ; Screaming cactus
-  SET_HL_TO_ADDRESS wOAM+2, wOAMPlayerCactus
+  SET_HL_TO_ADDRESS wOAM+2, wPlayerCactusOAM
   ld [hl], $90
-  SET_HL_TO_ADDRESS wOAM+6, wOAMPlayerCactus
+  SET_HL_TO_ADDRESS wOAM+6, wPlayerCactusOAM
   ld [hl], $90
   ; Sound
   call PopSound ; Conflicts with explosion sound
@@ -633,23 +630,23 @@ InvincibleBlink::
 	and INVINCIBLE_BLINK_FAST_SPEED
   jp z, .defaultPalette
 .blinkEnd:
-  SET_HL_TO_ADDRESS wOAM+3, wOAMPlayerBalloon
+  SET_HL_TO_ADDRESS wOAM+3, wPlayerBalloonOAM
   ld [hl], OAMF_PAL1
-  SET_HL_TO_ADDRESS wOAM+7, wOAMPlayerBalloon
+  SET_HL_TO_ADDRESS wOAM+7, wPlayerBalloonOAM
   ld [hl], OAMF_PAL1 | OAMF_XFLIP
-  SET_HL_TO_ADDRESS wOAM+3, wOAMPlayerCactus
+  SET_HL_TO_ADDRESS wOAM+3, wPlayerCactusOAM
   ld [hl], OAMF_PAL1
-  SET_HL_TO_ADDRESS wOAM+7, wOAMPlayerCactus
+  SET_HL_TO_ADDRESS wOAM+7, wPlayerCactusOAM
   ld [hl], OAMF_PAL1 | OAMF_XFLIP
   ret
 .defaultPalette:
-  SET_HL_TO_ADDRESS wOAM+3, wOAMPlayerBalloon
+  SET_HL_TO_ADDRESS wOAM+3, wPlayerBalloonOAM
   ld [hl], OAMF_PAL0
-  SET_HL_TO_ADDRESS wOAM+7, wOAMPlayerBalloon
+  SET_HL_TO_ADDRESS wOAM+7, wPlayerBalloonOAM
   ld [hl], OAMF_PAL0 | OAMF_XFLIP
-  SET_HL_TO_ADDRESS wOAM+3, wOAMPlayerCactus
+  SET_HL_TO_ADDRESS wOAM+3, wPlayerCactusOAM
   ld [hl], OAMF_PAL0
-  SET_HL_TO_ADDRESS wOAM+7, wOAMPlayerCactus
+  SET_HL_TO_ADDRESS wOAM+7, wPlayerCactusOAM
   ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .end:
   ret
