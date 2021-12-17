@@ -27,29 +27,28 @@ ClearRAM::
     ret
 
 
-RequestOAMSpace::
+RequestOAMSpace:
     ; b = sprite space needed
     ; returns a as start sprite # in wOAM
-    xor a ; ld a, 0
-    ld c, a ; c = how many sprites we've found free so far
+    ld c, 0 ; c = how many sprites we've found free so far
     ld hl, wOAM
     ld d, OAM_COUNT
 .loop:
     ld a, [hl]
     cp a, 0
-    jr nz, .isNotZero
+    jr nz, .isNotZero4
     inc l
     ld a, [hl]
     cp a, 0
-    jr nz, .isNotZero
+    jr nz, .isNotZero3
     inc l
     ld a, [hl]
     cp a, 0
-    jr nz, .isNotZero
+    jr nz, .isNotZero2
     inc l
     ld a, [hl]
     cp a, 0
-    jr nz, .isNotZero
+    jr nz, .isNotZero1
     ; FREE TO USE
     inc c
     ; DO WE HAVE ENOUGH SPACE
@@ -62,10 +61,15 @@ RequestOAMSpace::
     sub a, c
     inc a
     ret
-.isNotZero:
+.isNotZero4:
+    inc l
+.isNotZero3:
+    inc l
+.isNotZero2:
+    inc l
+.isNotZero1:
     ; RESET FREE SPRITES SINCE IT WASNT CLEAR
-    xor a ; ld a, 0
-    ld c, a
+    ld c, 0
 .notEnoughSprites:
     ; LOOP TO NEXT SPRITE
     inc l
@@ -75,4 +79,13 @@ RequestOAMSpace::
     jr nz, .loop
     ; RETURN -1
     ld a, -1
+    ret
+
+RequestOAMSpaceOffset::
+    ; b = sprite space needed
+    ; returns a as start sprite offset in wOAM
+    call RequestOAMSpace
+    ld b, a
+    ld c, 4
+    call MULTIPLY
     ret

@@ -13,7 +13,11 @@ SECTION "RAM vars", WRAM0[$C000]
 	classic_mode_stage:: DB
 	fade_frame:: DB
 
-	wPlayerCactus:: DB
+	wOAMGeneral1:: DB
+	wOAMGeneral2:: DB
+
+	wOAMPlayerCactus:: DB
+	wOAMPlayerBalloon:: DB
 	player_x:: DB
 	player_y:: DB
 	player_cactus_x:: DB 
@@ -32,6 +36,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	player_invincible:: DB ; Operates like a timer, when set, invincible immediately
 	player_cant_move:: DB
 
+	wPointBalloon:: DB
 	point_balloon_x:: DB
 	point_balloon_y:: DB
 	point_balloon_alive:: DB
@@ -41,6 +46,8 @@ SECTION "RAM vars", WRAM0[$C000]
 	point_balloon_respawn_timer:: DB
 
 	; Enemy 1
+	wEnemyCactus:: DB
+	wEnemyBalloon:: DB
 	enemy_balloon_x:: DB
 	enemy_balloon_y:: DB
 	enemy_cactus_x:: DB 
@@ -56,6 +63,8 @@ SECTION "RAM vars", WRAM0[$C000]
 	enemy_respawn_timer:: DB
 
 	; Enemy 2
+	wEnemy2Cactus:: DB
+	wEnemy2Balloon:: DB
 	enemy2_balloon_x:: DB
 	enemy2_balloon_y:: DB
 	enemy2_cactus_x:: DB 
@@ -71,6 +80,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	enemy2_respawn_timer:: DB
 
 	; Bird
+	wBird:: DB
 	bird_x:: DB
 	bird_y:: DB
 	bird_flapping_frame:: DB
@@ -80,6 +90,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	bird_speed:: DB
 
 	; Bomb
+	wBomb:: DB
 	bomb_x:: DB
 	bomb_y:: DB
 	bomb_respawn_timer:: DB
@@ -107,13 +118,4 @@ InitializeGameVars::
 	ret
 
 SECTION "OAM vars", WRAM0[$C100]
-	wOAM:: DS 4*2 ; for testing
-	wPlayerBalloon:: DS 4*2
-	wPointBalloon:: DS 4*2
-	wEnemyCactus:: DS 4*2
-	wEnemyBalloon:: DS 4*2
-	wEnemy2Cactus:: DS 4*2
-	wEnemy2Balloon:: DS 4*2
-	wBird:: DS 4*3
-	wBomb:: DS 4*3
-	wPropellerCactus:: DS 4*8
+	wOAM:: DS 4*40 ; maybe later make it so player has its own space (since it should never be unable to spawn)

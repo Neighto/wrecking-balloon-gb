@@ -1,5 +1,6 @@
 INCLUDE "constants.inc"
 INCLUDE "hardware.inc"
+INCLUDE "macro.inc"
 
 HAND_WAVE_START_X EQU 120
 HAND_WAVE_START_Y EQU 112
@@ -90,8 +91,10 @@ StartedClassic::
     ret
 
 SpawnHandWave::
-	; Totally dumb for now... But we just take another enemy sprite slot
-    ld hl, wEnemy2Balloon
+	ld b, 1 ; need 1 sprite for cursor
+	call RequestOAMSpaceOffset
+	ld [wOAMGeneral1], a
+	SET_HL_TO_ADDRESS wOAM, wOAMGeneral1
     ld a, HAND_WAVE_START_Y
     ld [hli], a
     ld a, HAND_WAVE_START_X
@@ -110,7 +113,7 @@ HandWaveAnimation::
     ld a, [global_timer]
     and 15
     jp nz, .end
-    ld hl, wEnemy2Balloon+2
+    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
     ld [hl], $B2
     ld hl, hand_waving_frame
     ld [hl], 1
@@ -119,7 +122,7 @@ HandWaveAnimation::
     ld a, [global_timer]
     and 15
     jp nz, .end
-    ld hl, wEnemy2Balloon+2
+    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
     ld [hl], $B0
     ld hl, hand_waving_frame
     ld [hl], 0
@@ -127,12 +130,15 @@ HandWaveAnimation::
 	ret
 
 SpawnCountdown::
-    ld hl, wEnemyBalloon
+	ld b, 2
+	call RequestOAMSpaceOffset
+	ld [wOAMGeneral1], a
+	SET_HL_TO_ADDRESS wOAM, wOAMGeneral1
     ld a, COUNTDOWN_START_Y
     ld [hli], a
     ld a, COUNTDOWN_START_X
     ld [hli], a
-    ld hl, wEnemyBalloon+4
+    SET_HL_TO_ADDRESS wOAM+4, wOAMGeneral1
     ld a, COUNTDOWN_START_Y
     ld [hli], a
     ld a, COUNTDOWN_START_X+8
@@ -156,51 +162,51 @@ CountdownAnimation::
 .frames:
     ld a, [countdown_frame]
     cp a, 0
-    jr z, .frame0
+    jp z, .frame0
     cp a, 1
-    jr z, .frame1
+    jp z, .frame1
     cp a, 2
-    jr z, .frame2
+    jp z, .frame2
     cp a, 3
-    jr z, .frame3
+    jp z, .frame3
     cp a, 4
-    jr z, .frame4
+    jp z, .frame4
     cp a, 5
-    jr z, .frame5
+    jp z, .frame5
     cp a, 6
-    jr z, .remove
+    jp z, .remove
     ret
 .frame0:
     call PercussionSound
-    ld hl, wEnemyBalloon+2
+    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
     ld [hl], $C8
-    ld hl, wEnemyBalloon+6
+    SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
     ld [hl], $CA
     ld hl, countdown_frame
     ld [hl], 1
     ret
 .frame1:
     call PercussionSound
-    ld hl, wEnemyBalloon+2
+    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
     ld [hl], $C4
-    ld hl, wEnemyBalloon+6
+    SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
     ld [hl], $C6
     ld hl, countdown_frame
     ld [hl], 2
     ret
 .frame2:
     call PercussionSound
-    ld hl, wEnemyBalloon+2
+    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
     ld [hl], $C0
-    ld hl, wEnemyBalloon+6
+    SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
     ld [hl], $C2
     ld hl, countdown_frame
     ld [hl], 3
     ret
 .frame3:
-    ld hl, wEnemyBalloon+2
+    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
     ld [hl], $CC
-    ld hl, wEnemyBalloon+6
+    SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
     ld [hl], $CC
     inc l
     ld [hl], OAMF_XFLIP
@@ -209,24 +215,24 @@ CountdownAnimation::
     ret
 .frame4:
     call PopSound
-    ld hl, wEnemyBalloon+2
+    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
     ld [hl], $88
-    ld hl, wEnemyBalloon+6
+    SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
     ld [hl], $88
     ld hl, countdown_frame
     ld [hl], 5
     ret
 .frame5:
-    ld hl, wEnemyBalloon+2
+    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
     ld [hl], $8A
-    ld hl, wEnemyBalloon+6
+    SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
     ld [hl], $8A
     ld hl, countdown_frame
     ld [hl], 6
     ret
 .remove:
     ; todo make erase func for oam
-    ld hl, wEnemyBalloon
+    SET_HL_TO_ADDRESS wOAM, wOAMGeneral1
     xor a ; ld a, 0
     ld [hli], a
     ld [hli], a
@@ -258,7 +264,7 @@ SetClassicMapStartPoint::
 
 ClassicGameManager:
     push af
-    ; call PointBalloonUpdate
+    call PointBalloonUpdate
     ; call PropellerCactusUpdate
 
     ld a, [difficulty_level]

@@ -1,11 +1,15 @@
 INCLUDE "constants.inc"
+INCLUDE "macro.inc"
 
 SECTION "menu", ROMX
 
 MENU_MODES EQU 2
 
 SpawnMenuCursor::
-	ld hl, wPlayerCactus ; Borrow
+	ld b, 1 ; need 1 sprite for cursor
+	call RequestOAMSpaceOffset
+	ld [wOAMGeneral1], a
+	SET_HL_TO_ADDRESS wOAM, wOAMGeneral1
 	ld a, 104 ; y
 	ld [hli], a
 	ld a, 56 ; x
@@ -23,7 +27,7 @@ BlinkMenuCursor::
 	ret
 .blink:
 	; Check what tile and flip it
-	ld hl, wPlayerCactus+2 ; Borrow
+	SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
 	ld a, [hl]
 	cp a, $00
 	jr nz, .empty
@@ -46,12 +50,14 @@ MoveCursor:
 	cp a, 0
 	jr nz, .storyMode
 .classicMode:
+	SET_HL_TO_ADDRESS wOAM, wOAMGeneral1
 	ld a, 104
-	ld [wPlayerCactus], a
+	ld [hl], a
 	ret
 .storyMode:
+	SET_HL_TO_ADDRESS wOAM, wOAMGeneral1
 	ld a, 120
-	ld [wPlayerCactus], a
+	ld [hl], a
 	ret
 
 SelectMode:
