@@ -1,5 +1,6 @@
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
+INCLUDE "macro.inc"
 
 SECTION "collision", ROM0
 
@@ -99,8 +100,9 @@ CollisionUpdate::
     and 1
     jr z, .endPointBalloon
     ; Check collision
-    ld bc, wPointBalloon
-    ld hl, wOAMPlayerCactus
+    SET_HL_TO_ADDRESS wOAM, wPointBalloonOAM
+    LD_BC_HL
+    SET_HL_TO_ADDRESS wOAM, wOAMPlayerCactus
     xor a ; ld a, 0
     call CollisionCheck
     and 1
@@ -114,8 +116,9 @@ CollisionUpdate::
     and 1
     jr z, .endEnemy
     ; Check collision
-    ld bc, wEnemyBalloon
-    ld hl, wOAMPlayerCactus
+    SET_HL_TO_ADDRESS wOAM, wEnemyBalloonOAM
+    LD_BC_HL
+    SET_HL_TO_ADDRESS wOAM, wOAMPlayerCactus
     xor a ; ld a, 0
     call CollisionCheck
     and 1
@@ -123,13 +126,14 @@ CollisionUpdate::
     call DeathOfEnemy
     jr .endEnemy
 .checkEnemyHitPlayer:
-    ld bc, wOAMPlayerBalloon
-    ld hl, wEnemyCactus
+    SET_HL_TO_ADDRESS wOAM, wOAMPlayerBalloon
+    LD_BC_HL
+    SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
     xor a ; ld a, 0
     call CollisionCheck
     and 1
     jr z, .endEnemy
-    jr .collisionWithPlayer
+    jp .collisionWithPlayer
 .endEnemy:
     ; Enemy 2
     ; Check if alive
@@ -137,8 +141,9 @@ CollisionUpdate::
     and 1
     jr z, .endEnemy2
     ; Check collision
-    ld bc, wEnemy2Balloon
-    ld hl, wOAMPlayerCactus
+    SET_HL_TO_ADDRESS wOAM, wEnemy2Balloon
+    LD_BC_HL
+    SET_HL_TO_ADDRESS wOAM, wOAMPlayerCactus
     xor a ; ld a, 0
     call CollisionCheck
     and 1
@@ -147,13 +152,14 @@ CollisionUpdate::
     call DeathOfEnemy2
     jr .endEnemy2
 .checkEnemy2HitPlayer:
-    ld bc, wOAMPlayerBalloon
-    ld hl, wEnemy2Cactus
+    SET_HL_TO_ADDRESS wOAM, wOAMPlayerBalloon
+    LD_BC_HL
+    SET_HL_TO_ADDRESS wOAM, wEnemy2Cactus
     xor a ; ld a, 0
     call CollisionCheck
     and 1
     jr z, .endEnemy2
-    jr .collisionWithPlayer
+    jp .collisionWithPlayer
 .endEnemy2:
     ; BOMB
     ; Check if alive
@@ -161,14 +167,15 @@ CollisionUpdate::
     and 1
     jr z, .endBomb
     ; Check collision
-    ld bc, wBomb
-    ld hl, wOAMPlayerCactus
+    SET_HL_TO_ADDRESS wOAM, wBomb
+    LD_BC_HL
+    SET_HL_TO_ADDRESS wOAM, wOAMPlayerCactus
     xor a ; ld a, 0
     call CollisionCheck
     and 1
     jr z, .endBomb
     call DeathOfBomb
-    jr .collisionWithPlayer
+    jp .collisionWithPlayer
 .endBomb:
     ; Bird
     ; Check if alive
@@ -177,13 +184,14 @@ CollisionUpdate::
     jr z, .endBird
     ; Check collision bird
 .checkBirdHitPlayer:
-    ld bc, wOAMPlayerBalloon
-    ld hl, wBird
+    SET_HL_TO_ADDRESS wOAM, wOAMPlayerBalloon
+    LD_BC_HL
+    SET_HL_TO_ADDRESS wOAM, wBirdOAM
     ld a, 1
     call CollisionCheck
     and 1
     jr z, .endEnemyHitPlayer
-    jr .collisionWithPlayer
+    jp .collisionWithPlayer
 .endBird:
     ret
 .collisionWithPlayer:

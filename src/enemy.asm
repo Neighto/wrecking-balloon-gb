@@ -14,7 +14,7 @@ ENEMY_SPAWN_C EQU 96
 ENEMY_SPAWN_D EQU 120
 
 UpdateBalloonPosition:
-    ld hl, wEnemyBalloon
+    SET_HL_TO_ADDRESS wOAM, wEnemyBalloonOAM
     ; Update Y
     ld a, [enemy_balloon_y]
     ld [hli], a
@@ -22,7 +22,7 @@ UpdateBalloonPosition:
     ld a, [enemy_balloon_x]
     ld [hl], a
   
-    ld hl, wEnemyBalloon+4
+    SET_HL_TO_ADDRESS wOAM+4, wEnemyBalloonOAM
     ; Update Y
     ld a, [enemy_balloon_y]
     ld [hli], a
@@ -33,7 +33,7 @@ UpdateBalloonPosition:
     ret
 
 UpdateCactusPosition:
-    ld hl, wEnemyCactus
+    SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
     ; Update Y
     ld a, [enemy_cactus_y]
     ld [hli], a
@@ -41,7 +41,7 @@ UpdateCactusPosition:
     ld a, [enemy_cactus_x]
     ld [hl], a
   
-    ld hl, wEnemyCactus+4
+    SET_HL_TO_ADDRESS wOAM+4, wEnemyCactusOAM
     ; Update Y
     ld a, [enemy_cactus_y]
     ld [hli], a
@@ -127,8 +127,14 @@ SpawnEnemy:
     call InitializeEnemy
     ld a, 1
     ld [enemy_alive], a
+
+    ; Request OAM
+    ld b, 2
+    call RequestOAMSpaceOffset
+    ld [wEnemyBalloonOAM], a
+
     ; Balloon left
-    ld hl, wEnemyBalloon
+    SET_HL_TO_ADDRESS wOAM, wEnemyBalloonOAM
     ld a, [enemy_balloon_y]
     ld [hl], a
     inc l
@@ -139,7 +145,7 @@ SpawnEnemy:
     inc l
     ld [hl], %00000000
     ; Balloon right
-    ld hl, wEnemyBalloon+4
+    inc l
     ld a, [enemy_balloon_y]
     ld [hl], a
     inc l
@@ -150,8 +156,14 @@ SpawnEnemy:
     ld [hl], $84
     inc l
     ld [hl], OAMF_XFLIP
+
+    ; Request OAM
+    ld b, 2
+    call RequestOAMSpaceOffset
+    ld [wEnemyCactusOAM], a
+
     ; Cactus left
-    ld hl, wEnemyCactus
+    SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
     ld a, [enemy_cactus_y]
     ld [hl], a
     inc l
@@ -162,7 +174,7 @@ SpawnEnemy:
     inc l
     ld [hl], %00000000
     ; Cactus right
-    ld hl, wEnemyCactus+4
+    inc l
     ld a, [enemy_cactus_y]
     ld [hl], a
     inc l
@@ -234,12 +246,12 @@ PopBalloonAnimation:
 
 .frame0:
     ; Popped left - frame 0
-    ld hl, wEnemyBalloon+2
+    SET_HL_TO_ADDRESS wOAM+2, wEnemyBalloonOAM
     ld [hl], $88
     inc l
     ld [hl], %00000000
     ; Popped right - frame 0
-    ld hl, wEnemyBalloon+6
+    SET_HL_TO_ADDRESS wOAM+6, wEnemyBalloonOAM
     ld [hl], $88
     inc l
     ld [hl], OAMF_XFLIP
@@ -248,12 +260,12 @@ PopBalloonAnimation:
     ret
 .frame1:
     ; Popped left - frame 1
-    ld hl, wEnemyBalloon+2
+    SET_HL_TO_ADDRESS wOAM+2, wEnemyBalloonOAM
     ld [hl], $8A
     inc l
     ld [hl], %00000000
     ; Popped right - frame 1
-    ld hl, wEnemyBalloon+6
+    SET_HL_TO_ADDRESS wOAM+6, wEnemyBalloonOAM
     ld [hl], $8A
     inc l
     ld [hl], OAMF_XFLIP
@@ -263,7 +275,7 @@ PopBalloonAnimation:
 .clear:
     ; Remove sprites
     xor a ; ld a, 0
-    ld hl, wEnemyBalloon
+    SET_HL_TO_ADDRESS wOAM, wEnemyBalloonOAM
     ld [hli], a
     ld [hli], a
     ld [hli], a
@@ -350,9 +362,9 @@ DeathOfEnemy::
     ld [enemy_popping], a
     ld [enemy_falling], a
     ; Screaming cactus
-    ld hl, wEnemyCactus+2
+    SET_HL_TO_ADDRESS wOAM+2, wEnemyCactusOAM
     ld [hl], $8E
-    ld hl, wEnemyCactus+6
+    SET_HL_TO_ADDRESS wOAM+6, wEnemyCactusOAM
     ld [hl], $8E
     ; Sound
     call PopSound
