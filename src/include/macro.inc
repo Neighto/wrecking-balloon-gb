@@ -34,23 +34,14 @@ MACRO RESET_IN_RANGE
 ENDM
 
 MACRO SET_HL_TO_ADDRESS
-    ; argument bc is starting address
-    ; argument de is offset
-    ; uses de and hl
-    ld bc, \1
-    ld de, \2
-    ld h, b
-    ld l, c
-    ld a, [de]
+    ; argument hl is starting address
+    ; argument bc is offset
+    ; uses a
+    ld hl, \1
+    ld bc, \2
+    push af
+    ld a, [bc]
     add a, l ; might cause issues if no carry to h?
     ld l, a
-ENDM
-
-MACRO NEW_AND_SIMPLE
-    ld bc, \1 ; wPlayerCactus
-    ld l, \2 ; offset
-    ld h, $C1
-    ld a, [bc]
-    add l
-    ld l, a
+    pop af
 ENDM

@@ -1,6 +1,7 @@
 INCLUDE "points.inc"
 INCLUDE "balloonCactusConstants.inc"
 INCLUDE "hardware.inc"
+INCLUDE "macro.inc"
 
 SECTION "point balloon", ROMX
 
@@ -15,7 +16,8 @@ POINT_BALLOON_SPAWN_D EQU 128
 PB_SPRITE_MOVE_WAIT_TIME EQU %00000001
 
 UpdateBalloonPosition:
-    ld hl, wPointBalloon
+    
+    SET_HL_TO_ADDRESS wOAM, wPointBalloon
     ; Update Y
     ld a, [point_balloon_y]
     ld [hli], a
@@ -23,7 +25,7 @@ UpdateBalloonPosition:
     ld a, [point_balloon_x]
     ld [hl], a
   
-    ld hl, wPointBalloon+4
+    SET_HL_TO_ADDRESS wOAM+4, wPointBalloon
     ; Update Y
     ld a, [point_balloon_y]
     ld [hli], a
@@ -78,9 +80,12 @@ InitializePointBalloon::
     ret
 
 SpawnPointBalloon:
-    ; argument b = render priority
-    ; argument c = point balloon tile
     push af
+
+    ld b, 2
+	call RequestOAMSpaceOffset
+	ld [wPointBalloon], a
+
     xor a ; ld a, 0
     ld [point_balloon_respawn_timer], a
     call InitializePointBalloon
@@ -88,24 +93,19 @@ SpawnPointBalloon:
     ld [point_balloon_alive], a
 .balloonLeft:
     ; Balloon left
-    ld hl, wPointBalloon
+    SET_HL_TO_ADDRESS wOAM, wPointBalloon
     ld a, [point_balloon_y]
     ld [hl], a
     inc l
     ld a, [point_balloon_x]
     ld [hl], a
     inc l
-    ld a, c
-    ld [hl], a
+    ld [hl], $84
     inc l
     ld [hl], %00000000
-    ld a, b
-    cp a, 0
-    jr z, .balloonRight
-    set 7, [hl]
 .balloonRight:
     ; Balloon right
-    ld hl, wPointBalloon+4
+    inc l
     ld a, [point_balloon_y]
     ld [hl], a
     inc l
@@ -113,14 +113,9 @@ SpawnPointBalloon:
     add 8
     ld [hl], a
     inc l
-    ld a, c
-    ld [hl], a
+    ld [hl], $84
     inc l
     ld [hl], OAMF_XFLIP
-    ld a, b
-    cp a, 0
-    jr z, .end
-    set 7, [hl]
 .end:
     pop af
     ret
@@ -155,12 +150,12 @@ PopBalloonAnimation:
 
 .frame0:
     ; Popped left - frame 0
-    ld hl, wPointBalloon+2
+    SET_HL_TO_ADDRESS wOAM+2, wPointBalloon
     ld [hl], $88
     inc l
     ld [hl], %00000000
     ; Popped right - frame 0
-    ld hl, wPointBalloon+6
+    SET_HL_TO_ADDRESS wOAM+6, wPointBalloon
     ld [hl], $88
     inc l
     ld [hl], OAMF_XFLIP
@@ -169,12 +164,12 @@ PopBalloonAnimation:
     ret
 .frame1:
     ; Popped left - frame 1
-    ld hl, wPointBalloon+2
+    SET_HL_TO_ADDRESS wOAM+2, wPointBalloon
     ld [hl], $8A
     inc l
     ld [hl], %00000000
     ; Popped right - frame 1
-    ld hl, wPointBalloon+6
+    SET_HL_TO_ADDRESS wOAM+6, wPointBalloon
     ld [hl], $8A
     inc l
     ld [hl], OAMF_XFLIP
@@ -184,7 +179,7 @@ PopBalloonAnimation:
 .clear:
     ; Remove sprites
     xor a ; ld a, 0
-    ld hl, wPointBalloon
+    SET_HL_TO_ADDRESS wOAM, wPointBalloon
     ld [hli], a
     ld [hli], a
     ld [hli], a
@@ -221,8 +216,6 @@ PointBalloonUpdate::
     ld [point_balloon_respawn_timer], a
     cp a, 150
     jr nz, .respawnSkip
-    ld b, 0
-    ld c, $84
     call SpawnPointBalloon
 .respawnSkip:
     ; Check if we need to play popping animation
@@ -230,32 +223,6 @@ PointBalloonUpdate::
     and 1
     jr z, .end
     call PopBalloonAnimation
-.end:
-    ret
-
-MenuBalloonUpdate::
-    ; Check if we can respawn
-    ld a, [point_balloon_alive]
-    and 1
-    jr z, .respawn
-    ; Check if we can move
-    ld a, [global_timer]
-    and	PB_SPRITE_MOVE_WAIT_TIME
-    jr nz, .end
-    call FloatPointBalloonUp
-    ; Check if we have flown too high
-    ld a, [point_balloon_y]
-    ld b, a
-    call OffScreenYEnemies
-    and 1
-    jr z, .end
-    xor a ; ld a, 0
-    ld [point_balloon_alive], a
-    ret
-.respawn:
-	ld b, 1
-	ld c, $82
-	call SpawnPointBalloon
 .end:
     ret
 

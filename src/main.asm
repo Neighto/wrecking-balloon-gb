@@ -26,6 +26,7 @@ Start::
 	call InitializeGameVars
 	call SpawnMenuCursor
 	call LCD_ON_BG_ONLY
+	; Comment out MenuLoop to skip menu
 ; MenuLoop:
 ; 	call WaitVBlank
 ; 	call OAMDMA
@@ -61,6 +62,7 @@ StartClassic::
 	call InitializeClassicVars
 	call RefreshLives
 	call LCD_ON_BG_ONLY
+	; Comment out ParkLoop to skip park cutscene
 ; ParkLoop:
 ; 	call WaitVBlank
 ; 	call OAMDMA
