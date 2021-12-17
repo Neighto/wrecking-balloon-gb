@@ -259,7 +259,7 @@ SetClassicMapStartPoint::
 ClassicGameManager:
     push af
     ; call PointBalloonUpdate
-    call PropellerCactusUpdate
+    ; call PropellerCactusUpdate
 
     ld a, [difficulty_level]
     cp a, 70
@@ -279,16 +279,16 @@ ClassicGameManager:
     ld a, 2
     ld [bomb_speed], a
 .levelSix:
-    call BombUpdate
+    ; call BombUpdate
 .levelFive:
     ld a, 4
     ld [bird_speed], a
 .levelThree:
-    call Enemy2Update
+    ; call Enemy2Update
 .levelTwo:
-    call BirdUpdate
+    ; call BirdUpdate
 .levelOne:
-	call EnemyUpdate
+	; call EnemyUpdate
 .end:
     pop af
     ret

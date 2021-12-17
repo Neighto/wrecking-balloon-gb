@@ -13,6 +13,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	classic_mode_stage:: DB
 	fade_frame:: DB
 
+	wPlayerCactus:: DB
 	player_x:: DB
 	player_y:: DB
 	player_cactus_x:: DB 
@@ -106,7 +107,8 @@ InitializeGameVars::
 	ret
 
 SECTION "OAM vars", WRAM0[$C100]
-	wPlayerCactus:: DS 4*2
+	; wPlayerCactus:: DS 4*2
+	wOAM:: DS 4*2 ; for testing
 	wPlayerBalloon:: DS 4*2
 	wPointBalloon:: DS 4*2
 	wEnemyCactus:: DS 4*2
