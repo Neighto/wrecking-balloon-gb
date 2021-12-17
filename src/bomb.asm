@@ -1,6 +1,7 @@
 INCLUDE "points.inc"
 INCLUDE "balloonCactusConstants.inc"
 INCLUDE "hardware.inc"
+INCLUDE "macro.inc"
 
 SECTION "bomb", ROMX
 
@@ -16,7 +17,7 @@ BOMB_SPRITE_MOVE_WAIT_TIME EQU %00000001
 UpdateBombPosition:
     push hl
     push af
-    ld hl, wBomb
+    SET_HL_TO_ADDRESS wOAM, wBombOAM
     ; Update Y
     ld a, [bomb_y]
     ld [hli], a
@@ -24,7 +25,7 @@ UpdateBombPosition:
     ld a, [bomb_x]
     ld [hl], a
   
-    ld hl, wBomb+4
+    SET_HL_TO_ADDRESS wOAM+4, wBombOAM
     ; Update Y
     ld a, [bomb_y]
     ld [hli], a
@@ -33,9 +34,13 @@ UpdateBombPosition:
     add 8
     ld [hl], a
 
-    ld hl, wBomb+8
+    SET_HL_TO_ADDRESS wOAM+8, wBombOAM
     ; Update Y
     ld a, [bomb_y]
+    ld [hli], a
+    ; Update X
+    ld a, [bomb_x]
+    add 16
     ld [hl], a
     pop af
     pop hl
@@ -94,33 +99,45 @@ SpawnBomb:
     call SetSpawnPoint
     ld a, 1
     ld [bomb_alive], a
+
+    ; Request OAM
+    ld b, 3
+    call RequestOAMSpaceOffset
+    ld [wBombOAM], a
+
 .balloonLeft:
     ; Balloon left
-    ld hl, wBomb
+    SET_HL_TO_ADDRESS wOAM, wBombOAM
     ld a, [bomb_y]
-    ld [hl], a
-    inc l
+    ld [hli], a
     ld a, [bomb_x]
-    ld [hl], a
-    inc l
+    ld [hli], a
     ld a, $9C
     ld [hl], a
     inc l
     ld [hl], %00000000
 .balloonRight:
     ; Balloon right
-    ld hl, wBomb+4
-    ld a, [bomb_y]
-    ld [hl], a
     inc l
+    ld a, [bomb_y]
+    ld [hli], a
     ld a, [bomb_x]
     add 8
-    ld [hl], a
-    inc l
+    ld [hli], a
     ld a, $9C
     ld [hl], a
     inc l
     ld [hl], OAMF_XFLIP
+.bombSpace:
+    ; Keep out of sight
+    inc l
+    ld a, 1
+    ld [hli], a
+    ld [hli], a
+    ld a, $00
+    ld [hl], a
+    inc l
+    ld [hl], %00000000
 .end:
     pop af
     ret
@@ -132,6 +149,23 @@ FloatBombUp:
     add [hl]
     ld [hl], a
     call UpdateBombPosition
+    ret
+
+ClearBomb:
+    xor a ; ld a, 0
+    SET_HL_TO_ADDRESS wOAM, wBombOAM
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hl], a
     ret
 
 BombUpdate::
@@ -150,6 +184,7 @@ BombUpdate::
     call OffScreenYEnemies
     cp a, 0
     jr z, .end
+    call ClearBomb
     xor a ; ld a, 0
     ld [bomb_alive], a
     ret
@@ -181,48 +216,6 @@ DeathOfBomb::
     ; call ExplosionSound ; conflicts with the other sound
     ret
 
-SpawnExplosion::
-.left:
-    ld hl, wBomb
-    ld a, [bomb_y]
-    ld [hl], a
-    inc l
-    ld a, [bomb_x]
-    ld [hl], a
-    inc l
-    ld a, $9E
-    ld [hl], a
-    inc l
-    ld [hl], %00000000
-.middle:
-    ld hl, wBomb+4
-    ld a, [bomb_y]
-    ld [hl], a
-    inc l
-    ld a, [bomb_x]
-    add 8
-    ld [hl], a
-    inc l
-    ld a, $A0
-    ld [hl], a
-    inc l
-    ld [hl], %00000000
-.right:
-    ld hl, wBomb+8 ; to do dont do this just inc l from before
-    ld a, [bomb_y]
-    ld [hl], a
-    inc l
-    ld a, [bomb_x]
-    add 16
-    ld [hl], a
-    inc l
-    ld a, $9E
-    ld [hl], a
-    inc l
-    ld [hl], OAMF_XFLIP
-.end:
-    ret
-
 ExplosionAnimation:
     ; Check what frame we are on
     ld a, [bomb_popping_frame]
@@ -238,23 +231,23 @@ ExplosionAnimation:
     ; Check what frame we are on
     ld a, [bomb_popping_frame]
     cp a, 1
-    jr z, .frame1
+    jp z, .frame1
     cp a, 2
-    jr z, .frame2
+    jp z, .frame2
     cp a, 3
-    jr z, .frame3
+    jp z, .frame3
     cp a, 4
-    jr z, .clear
+    jp z, .clear
     ret
 
 .frame0:
     ; Popped left - frame 0
-    ld hl, wBomb+2
+    SET_HL_TO_ADDRESS wOAM+2, wBombOAM
     ld [hl], $88
     inc l
     ld [hl], %00000000
     ; Popped right - frame 0
-    ld hl, wBomb+6
+    SET_HL_TO_ADDRESS wOAM+6, wBombOAM
     ld [hl], $88
     inc l
     ld [hl], OAMF_XFLIP
@@ -263,7 +256,7 @@ ExplosionAnimation:
     ret
 .frame1:
     ; Explosion left
-    ld hl, wBomb+1
+    SET_HL_TO_ADDRESS wOAM+1, wBombOAM
     ld a, [bomb_x]
     sub 4
     ld [hl], a
@@ -271,7 +264,7 @@ ExplosionAnimation:
     ld a, $9E
     ld [hl], a
     ; Explosion middle
-    ld hl, wBomb+5
+    SET_HL_TO_ADDRESS wOAM+5, wBombOAM
     ld a, [bomb_x]
     add 4
     ld [hl], a
@@ -279,7 +272,7 @@ ExplosionAnimation:
     ld a, $A0
     ld [hl], a
     ; Explosion right
-    ld hl, wBomb+9
+    SET_HL_TO_ADDRESS wOAM+9, wBombOAM
     ld a, [bomb_x]
     add 12
     ld [hl], a
@@ -293,42 +286,29 @@ ExplosionAnimation:
     ret
 .frame2:
     ; Flip palette
-    ld hl, wBomb+3
+    SET_HL_TO_ADDRESS wOAM+3, wBombOAM
     ld [hl], OAMF_PAL1
-    ld hl, wBomb+7
+    SET_HL_TO_ADDRESS wOAM+7, wBombOAM
     ld [hl], OAMF_PAL1
-    ld hl, wBomb+11
+    SET_HL_TO_ADDRESS wOAM+11, wBombOAM
     ld [hl], OAMF_PAL1 | OAMF_XFLIP
     ld hl, bomb_popping_frame
     ld [hl], 3
     ret
 .frame3:
     ; Flip palette
-    ld hl, wBomb+3
+    SET_HL_TO_ADDRESS wOAM+3, wBombOAM
     ld [hl], OAMF_PAL0
-    ld hl, wBomb+7
+    SET_HL_TO_ADDRESS wOAM+7, wBombOAM
     ld [hl], OAMF_PAL0
-    ld hl, wBomb+11
+    SET_HL_TO_ADDRESS wOAM+11, wBombOAM
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
     ld hl, bomb_popping_frame
     ld [hl], 4
     ret
 .clear:
     ; Remove sprites
-    xor a ; ld a, 0
-    ld hl, wBomb
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hl], a
+    call ClearBomb
     ; Reset variables
     ld hl, bomb_popping
     ld [hl], a

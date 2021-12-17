@@ -121,6 +121,32 @@ InitializeEnemy::
 .endNextSpawnPoint:
     ret
 
+ClearEnemyCactus:
+    xor a ; ld a, 0
+    SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hl], a
+    ret 
+
+ClearEnemyBalloon:
+    xor a ; ld a, 0
+    SET_HL_TO_ADDRESS wOAM, wEnemyBalloonOAM
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hl], a
+    ret
+
 SpawnEnemy:
     xor a ; ld a, 0
     ld [enemy_respawn_timer], a    
@@ -274,16 +300,7 @@ PopBalloonAnimation:
     ret
 .clear:
     ; Remove sprites
-    xor a ; ld a, 0
-    SET_HL_TO_ADDRESS wOAM, wEnemyBalloonOAM
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hl], a
+    call ClearEnemyBalloon
     ; Reset variables
     ld hl, enemy_popping
     ld [hl], a
@@ -312,7 +329,7 @@ CactusFalling:
     ; Reset variables
     ld hl, enemy_falling
     ld [hl], 0
-    ; Here I "could" clear the sprite info, but no point
+    call ClearEnemyCactus
 .end
     ret
 

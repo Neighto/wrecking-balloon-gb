@@ -102,7 +102,7 @@ CollisionUpdate::
     ; Check collision
     SET_HL_TO_ADDRESS wOAM, wPointBalloonOAM
     LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, wOAMPlayerCactus
+    SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
     xor a ; ld a, 0
     call CollisionCheck
     and 1
@@ -118,7 +118,7 @@ CollisionUpdate::
     ; Check collision
     SET_HL_TO_ADDRESS wOAM, wEnemyBalloonOAM
     LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, wOAMPlayerCactus
+    SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
     xor a ; ld a, 0
     call CollisionCheck
     and 1
@@ -126,7 +126,7 @@ CollisionUpdate::
     call DeathOfEnemy
     jr .endEnemy
 .checkEnemyHitPlayer:
-    SET_HL_TO_ADDRESS wOAM, wOAMPlayerBalloon
+    SET_HL_TO_ADDRESS wOAM, wPlayerBalloonOAM
     LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
     xor a ; ld a, 0
@@ -141,9 +141,9 @@ CollisionUpdate::
     and 1
     jr z, .endEnemy2
     ; Check collision
-    SET_HL_TO_ADDRESS wOAM, wEnemy2Balloon
+    SET_HL_TO_ADDRESS wOAM, wEnemy2BalloonOAM
     LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, wOAMPlayerCactus
+    SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
     xor a ; ld a, 0
     call CollisionCheck
     and 1
@@ -152,9 +152,9 @@ CollisionUpdate::
     call DeathOfEnemy2
     jr .endEnemy2
 .checkEnemy2HitPlayer:
-    SET_HL_TO_ADDRESS wOAM, wOAMPlayerBalloon
+    SET_HL_TO_ADDRESS wOAM, wPlayerBalloonOAM
     LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, wEnemy2Cactus
+    SET_HL_TO_ADDRESS wOAM, wEnemy2CactusOAM
     xor a ; ld a, 0
     call CollisionCheck
     and 1
@@ -167,9 +167,9 @@ CollisionUpdate::
     and 1
     jr z, .endBomb
     ; Check collision
-    SET_HL_TO_ADDRESS wOAM, wBomb
+    SET_HL_TO_ADDRESS wOAM, wBombOAM
     LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, wOAMPlayerCactus
+    SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
     xor a ; ld a, 0
     call CollisionCheck
     and 1
@@ -184,7 +184,7 @@ CollisionUpdate::
     jr z, .endBird
     ; Check collision bird
 .checkBirdHitPlayer:
-    SET_HL_TO_ADDRESS wOAM, wOAMPlayerBalloon
+    SET_HL_TO_ADDRESS wOAM, wPlayerBalloonOAM
     LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, wBirdOAM
     ld a, 1

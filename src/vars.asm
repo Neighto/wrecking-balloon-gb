@@ -16,8 +16,8 @@ SECTION "RAM vars", WRAM0[$C000]
 	wOAMGeneral1:: DB
 	wOAMGeneral2:: DB
 
-	wOAMPlayerCactus:: DB
-	wOAMPlayerBalloon:: DB
+	wPlayerCactusOAM:: DB
+	wPlayerBalloonOAM:: DB
 	player_x:: DB
 	player_y:: DB
 	player_cactus_x:: DB 
@@ -63,8 +63,8 @@ SECTION "RAM vars", WRAM0[$C000]
 	enemy_respawn_timer:: DB
 
 	; Enemy 2
-	wEnemy2Cactus:: DB
-	wEnemy2Balloon:: DB
+	wEnemy2CactusOAM:: DB
+	wEnemy2BalloonOAM:: DB
 	enemy2_balloon_x:: DB
 	enemy2_balloon_y:: DB
 	enemy2_cactus_x:: DB 
@@ -90,7 +90,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	bird_speed:: DB
 
 	; Bomb
-	wBomb:: DB
+	wBombOAM:: DB
 	bomb_x:: DB
 	bomb_y:: DB
 	bomb_respawn_timer:: DB

@@ -14,7 +14,7 @@ ENEMY2_SPAWN_C EQU 96
 ENEMY2_SPAWN_D EQU 120
 
 UpdateBalloonPosition:
-    ld hl, wEnemy2Balloon
+    SET_HL_TO_ADDRESS wOAM, wEnemy2BalloonOAM
     ; Update Y
     ld a, [enemy2_balloon_y]
     ld [hli], a
@@ -22,7 +22,7 @@ UpdateBalloonPosition:
     ld a, [enemy2_balloon_x]
     ld [hl], a
     
-    ld hl, wEnemy2Balloon+4
+    SET_HL_TO_ADDRESS wOAM+4, wEnemy2BalloonOAM
     ; Update Y
     ld a, [enemy2_balloon_y]
     ld [hli], a
@@ -33,7 +33,7 @@ UpdateBalloonPosition:
     ret
 
 UpdateCactusPosition:
-    ld hl, wEnemy2Cactus
+    SET_HL_TO_ADDRESS wOAM, wEnemy2CactusOAM
     ; Update Y
     ld a, [enemy2_cactus_y]
     ld [hli], a
@@ -41,7 +41,7 @@ UpdateCactusPosition:
     ld a, [enemy2_cactus_x]
     ld [hl], a
     
-    ld hl, wEnemy2Cactus+4
+    SET_HL_TO_ADDRESS wOAM+4, wEnemy2CactusOAM
     ; Update Y
     ld a, [enemy2_cactus_y]
     ld [hli], a
@@ -121,14 +121,46 @@ InitializeEnemy2::
 .endNextSpawnPoint:
     ret
 
+ClearEnemy2Cactus:
+    xor a ; ld a, 0
+    SET_HL_TO_ADDRESS wOAM, wEnemy2CactusOAM
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hl], a
+    ret 
+
+ClearEnemy2Balloon:
+    xor a ; ld a, 0
+    SET_HL_TO_ADDRESS wOAM, wEnemy2BalloonOAM
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hl], a
+    ret
+
 SpawnEnemy:
     xor a ; ld a, 0
     ld [enemy2_respawn_timer], a
     call InitializeEnemy2
     ld a, 1
     ld [enemy2_alive], a
+
+    ; Request OAM
+    ld b, 2
+    call RequestOAMSpaceOffset
+    ld [wEnemy2BalloonOAM], a
+
     ; Balloon left
-    ld hl, wEnemy2Balloon
+    SET_HL_TO_ADDRESS wOAM, wEnemy2BalloonOAM
     ld a, [enemy2_balloon_y]
     ld [hl], a
     inc l
@@ -139,7 +171,7 @@ SpawnEnemy:
     inc l
     ld [hl], %00000000
     ; Balloon right
-    ld hl, wEnemy2Balloon+4
+    SET_HL_TO_ADDRESS wOAM+4, wEnemy2BalloonOAM
     ld a, [enemy2_balloon_y]
     ld [hl], a
     inc l
@@ -150,8 +182,14 @@ SpawnEnemy:
     ld [hl], $84
     inc l
     ld [hl], OAMF_XFLIP
+
+    ; Request OAM
+    ld b, 2
+    call RequestOAMSpaceOffset
+    ld [wEnemy2CactusOAM], a
+
     ; Cactus left
-    ld hl, wEnemy2Cactus
+    SET_HL_TO_ADDRESS wOAM, wEnemy2CactusOAM
     ld a, [enemy2_cactus_y]
     ld [hl], a
     inc l
@@ -162,7 +200,7 @@ SpawnEnemy:
     inc l
     ld [hl], %00000000
     ; Cactus right
-    ld hl, wEnemy2Cactus+4
+    inc l
     ld a, [enemy2_cactus_y]
     ld [hl], a
     inc l
@@ -228,12 +266,12 @@ PopBalloonAnimation:
 
 .frame0:
     ; Popped left - frame 0
-    ld hl, wEnemy2Balloon+2
+    SET_HL_TO_ADDRESS wOAM+2, wEnemy2BalloonOAM
     ld [hl], $88
     inc l
     ld [hl], %00000000
     ; Popped right - frame 0
-    ld hl, wEnemy2Balloon+6
+    SET_HL_TO_ADDRESS wOAM+6, wEnemy2BalloonOAM
     ld [hl], $88
     inc l
     ld [hl], OAMF_XFLIP
@@ -242,12 +280,12 @@ PopBalloonAnimation:
     ret
 .frame1:
     ; Popped left - frame 1
-    ld hl, wEnemy2Balloon+2
+    SET_HL_TO_ADDRESS wOAM+2, wEnemy2BalloonOAM
     ld [hl], $8A
     inc l
     ld [hl], %00000000
     ; Popped right - frame 1
-    ld hl, wEnemy2Balloon+6
+    SET_HL_TO_ADDRESS wOAM+6, wEnemy2BalloonOAM
     ld [hl], $8A
     inc l
     ld [hl], OAMF_XFLIP
@@ -256,16 +294,7 @@ PopBalloonAnimation:
     ret
 .clear:
     ; Remove sprites
-    xor a ; ld a, 0
-    ld hl, wEnemy2Balloon
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hl], a
+    call ClearEnemy2Balloon
     ; Reset variables
     ld hl, enemy2_popping
     ld [hl], a
@@ -294,7 +323,7 @@ CactusFalling:
     ; Reset variables
     ld hl, enemy2_falling
     ld [hl], 0
-    ; Here I "could" clear the sprite info, but no point
+    call ClearEnemy2Cactus
 .end
     ret
 
@@ -347,9 +376,9 @@ DeathOfEnemy2::
     ld hl, enemy2_falling
     ld [hl], a
     ; Screaming cactus
-    ld hl, wEnemy2Cactus+2
+    SET_HL_TO_ADDRESS wOAM+2, wEnemy2CactusOAM
     ld [hl], $8E
-    ld hl, wEnemy2Cactus+6
+    SET_HL_TO_ADDRESS wOAM+6, wEnemy2CactusOAM
     ld [hl], $8E
     ; Sound
     call PopSound
