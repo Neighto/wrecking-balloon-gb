@@ -36,7 +36,7 @@ LCD_Interrupt_Park:
 
 LCD_Interrupt_Classic:
     ld a, [rLYC]
-    cp a, 136
+    cp a, 128 ; reference value!!
     jr z, .hideSpritesOnWindow
     cp a, 144
     jr z, .showSprites
@@ -48,7 +48,7 @@ LCD_Interrupt_Classic:
     set 1, [hl]
     ret
 .hideSpritesOnWindow:
-    ; AT LINE 136
+    ; AT LINE 128
     ld a, 144
     ldh [rLYC], a
     ld hl, rLCDC

@@ -32,7 +32,7 @@ WaitVBlank::
     ret
 
 SetupWindow::
-    ld a, 136
+    ld a, 128
 	ld [rWY], a
 	ld a, 7
 	ld [rWX], a
