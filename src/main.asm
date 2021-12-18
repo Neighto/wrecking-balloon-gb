@@ -27,13 +27,13 @@ Start::
 	call SpawnMenuCursor
 	call LCD_ON_BG_ONLY
 	; Comment out MenuLoop to skip menu
-MenuLoop:
-	call WaitVBlank
-	call OAMDMA
-	call _hUGE_dosound
-	call UpdateMenu
-	call UpdateGlobalTimer
-	jp MenuLoop
+; MenuLoop:
+; 	call WaitVBlank
+; 	call OAMDMA
+; 	call _hUGE_dosound
+; 	call UpdateMenu
+; 	call UpdateGlobalTimer
+; 	jp MenuLoop
 
 StartClassic::
 	call ParkEnteredClassic
@@ -63,12 +63,12 @@ StartClassic::
 	call RefreshLives
 	call LCD_ON_BG_ONLY
 	; Comment out ParkLoop to skip park cutscene
-ParkLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdatePark
-	call UpdateGlobalTimer
-	jp ParkLoop
+; ParkLoop:
+; 	call WaitVBlank
+; 	call OAMDMA
+; 	call UpdatePark
+; 	call UpdateGlobalTimer
+; 	jp ParkLoop
 
 PregameLoop::
 	call StartedClassic
