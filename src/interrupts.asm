@@ -3,70 +3,119 @@ INCLUDE "constants.inc"
 
 SECTION "interrupts", ROM0
 
-VBlank_Interrupt::
+VBlankInterrupt::
     push hl
+    push af
     ld hl, vblank_flag
     ld [hl], 1
+    ldh a, [rLCDC]
+    or LCDCF_OBJON
+    ldh [rLCDC], a
+    pop af
     pop hl
     reti
 
-LCD_Interrupt_Park:
-	ld a, [rLYC]
+LCDInterrupt::
+    push af
+    push bc
+    push hl
+	ld hl, wLCDInterrupt
+	ld a, [hli]
+	ld h, [hl]
+	ld l, a
+    jp hl
+
+LCDInterruptEnd:
+    pop hl
+    pop bc
+    pop af
+    reti
+
+SetBaseInterrupts::
+	ld hl, wLCDInterrupt
+    ld a, LOW(LCDInterruptEnd)
+    ld [hli], a
+    ld a, HIGH(LCDInterruptEnd)
+    ld [hl], a
+
+    ld a, IEF_STAT | IEF_VBLANK ; Enable LCD and VBLANK interrupts
+	ldh [rIE], a
+	ld a, STATF_LYC
+	ldh [rSTAT], a
+    ret
+
+ParkLCDInterrupt:
+    ld a, [rLYC]
 	cp a, 0
     jr z, .clouds
     CP a, 72
     jr z, .ground
-    ret
+    jr .end
 .clouds:
-    ; AT LINE 0
     ld a, 72
 	ldh [rLYC], a
     ld a, [rSCX]
     ld hl, cloud_scroll_offset
     add a, [hl]
 	ldh [rSCX], a
-    ret
+    jr .end
 .ground:
-    ; AT LINE 72
-    ld a, 0
-    ldh [rLYC], a
     xor a ; ld a, 0
+    ldh [rLYC], a
 	ldh [rSCX], a
-    ret
+.end:
+    jp LCDInterruptEnd
 
-LCD_Interrupt_Classic:
-    ld a, [rLYC]
-    cp a, 128 ; reference value!!
-    jr z, .hideSpritesOnWindow
-    cp a, 144
-    jr z, .showSprites
-.showSprites:
-    ; AT LINE 144
-    ld a, 136
-    ldh [rLYC], a
-    ld hl, rLCDC
-    set 1, [hl]
-    ret
-.hideSpritesOnWindow:
-    ; AT LINE 128
-    ld a, 144
-    ldh [rLYC], a
+SetParkInterrupts::
+    xor a ; ld a, 0
+	ldh [rLYC], a
+
+    ld hl, wLCDInterrupt
+    ld a, LOW(ParkLCDInterrupt)
+    ld [hli], a
+    ld a, HIGH(ParkLCDInterrupt)
+    ld [hl], a
+    ret 
+
+ClassicLCDInterrupt:
+    ; We call nop multiple times to delay hiding sprites so it happens on a new line read
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
+    nop
     ld hl, rLCDC
     res 1, [hl]
-    ret
+    jp LCDInterruptEnd
 
-LCD_Interrupt::
-    push hl
-    push af
-    ld a, [classic_mode_stage]
-    cp a, STAGE_CLASSIC_STARTED
-    jr z, .classic
-.park:
-    call LCD_Interrupt_Park
-    jr .end
-.classic:
-    call LCD_Interrupt_Classic
-.end:
-    pop af
-    pop hl
+SetClassicInterrupts::
+	ld a, WINDOW_START_Y-1
+	ldh [rLYC], a
+
+    ld hl, wLCDInterrupt
+    ld a, LOW(ClassicLCDInterrupt)
+    ld [hli], a
+    ld a, HIGH(ClassicLCDInterrupt)
+    ld [hl], a
     ret
