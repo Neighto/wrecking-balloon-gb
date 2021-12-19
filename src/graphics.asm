@@ -96,13 +96,57 @@ LoadGameData::
 
 	; Function where we REPLACE tilemap for a new one
 ReplaceTilemapHorizontal::
-	; takes b as index of tilemap we want to replace (0= first 8 cols, 1= second 8 cols, etc [0-3])
-	; Replace 8 previous tile columns once we are past them
-	ld hl, $9800
-	ld bc, $07
-	; once we hit $07, then we add $20 to hl
-.loop:
+	; ; read rSCX => once we know it is greater than 160 => col 0
+	; ldh a, [rSCX]
+	; ; really we just want to ask: what col is behind our screen?
+	push af
+	push hl
+	push bc
+	push de
 
+	; Continue if rSCX is multiple of 8
+	ldh a, [rSCX]
+	ld d, 8
+	call MODULO
+	cp a, 0
+	jr nz, .end
+	; Get column just outside of visible reach
+	ldh a, [rSCX]
+	cp a, 0
+	jr z, .handleZero
+	call DIVISION
+	dec a
+	jr .handleZeroEnd
+.handleZero:
+	ld a, SCRN_VX_B-1
+.handleZeroEnd:
+	ld hl, _SCRN0
+	add a, l
+	ld l, a
+	; Set screen height to load in
+	ld b, SCRN_Y_B
+.loop:
+	; Update tile
+	ld a, 82 ; temp
+	call RANDOM ; temp
+	ld [hl], a
+	; Jump to next column
+	ld a, l
+	add a, $20
+	ld l, a
+	ld a, h
+	adc a, 0
+	ld h, a
+	; Do we loop
+	dec b
+	ld a, b
+	cp a, 0
+	jr nz, .loop
+.end:
+	pop de
+	pop bc
+	pop hl
+	pop af
 	ret
 
 LoadMenuData::

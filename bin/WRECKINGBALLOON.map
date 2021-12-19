@@ -12,12 +12,12 @@ ROM0 bank #0:
            $002d = ResetScroll
   SECTION: $0040-$0042 ($0003 bytes) ["vblank IRQ"]
   SECTION: $0048-$004a ($0003 bytes) ["LCD IRQ"]
-  SECTION: $004b-$00fc ($00b2 bytes) ["rom"]
+  SECTION: $004b-$00ff ($00b5 bytes) ["rom"]
            $004b = Start
            $007f = StartClassic
            $00cd = PregameLoop
            $00ee = GameLoop
-           $00fa = GameLoop.end
+           $00fd = GameLoop.end
   SECTION: $0100-$014f ($0050 bytes) ["header"]
   SECTION: $0150-$08f0 ($07a1 bytes) ["Sound Driver"]
            $0150 = _hUGE_init_banked
@@ -143,94 +143,97 @@ ROM0 bank #0:
            $0855 = _update_current_order
            $085c = _noreset
            $0861 = note_table
-  SECTION: $08f1-$0ab2 ($01c2 bytes) ["graphics"]
+  SECTION: $08f1-$0ae8 ($01f8 bytes) ["graphics"]
            $08f1 = LoadGameData
            $0952 = ReplaceTilemapHorizontal
-           $0958 = ReplaceTilemapHorizontal.loop
-           $0959 = LoadMenuData
-           $097e = SetAllPalettes
-           $098a = SetupPalettes
-           $0996 = SetupParkPalettes
-           $09a3 = FadeOutPalettes
-           $09ab = FadeOutPalettes.fadeOut
-           $09bf = FadeOutPalettes.fade1
-           $09c3 = FadeOutPalettes.fade2
-           $09c7 = FadeOutPalettes.fade3
-           $09cb = FadeOutPalettes.fade4
-           $09cd = FadeOutPalettes.end
-           $09d8 = FadeInPalettes
-           $09e0 = FadeInPalettes.fadeIn
-           $09f4 = FadeInPalettes.fade1
-           $09f8 = FadeInPalettes.fade2
-           $09fc = FadeInPalettes.fade3
-           $0a00 = FadeInPalettes.fade4
-           $0a02 = FadeInPalettes.end
-           $0a0d = HasFadedOut
-           $0a13 = HasFadedOut.false
-           $0a15 = HasFadedOut.true
-           $0a18 = HasFadedIn
-           $0a1e = HasFadedIn.false
-           $0a20 = HasFadedIn.true
-           $0a23 = RefreshScore
-           $0a61 = RefreshLives
-           $0a6c = ClearAllTiles
-           $0a73 = ClearAllTiles.loop_u1
-           $0a82 = ClearAllTiles.loop_u2
-           $0a91 = ClearAllTiles.loop_u3
-           $0a9a = ClearMap
-           $0aa1 = ClearMap.clear_map_loop
-  SECTION: $0ab3-$0c6d ($01bb bytes) ["collision"]
-           $0ab3 = CollisionCheck
-           $0ac0 = CollisionCheck.tryOtherY
-           $0ac8 = CollisionCheck.skip8x8Adjustment
-           $0ad4 = CollisionCheck.checkX
-           $0ae1 = CollisionCheck.tryOtherX
-           $0aee = CollisionCheck.collision
-           $0af2 = CollisionCheck.end
-           $0af6 = CollisionUpdate
-           $0b30 = CollisionUpdate.endPointBalloon
-           $0b5c = CollisionUpdate.checkEnemyHitPlayer
-           $0b7f = CollisionUpdate.endEnemy
-           $0bab = CollisionUpdate.checkEnemy2HitPlayer
-           $0bce = CollisionUpdate.endEnemy2
-           $0bfb = CollisionUpdate.endBomb
-           $0c02 = CollisionUpdate.checkBirdHitPlayer
-           $0c26 = CollisionUpdate.endBird
-           $0c27 = CollisionUpdate.collisionWithPlayer
-           $0c31 = CollisionUpdate.end
-           $0c31 = CollisionUpdate.endEnemyHitPlayer
-           $0c32 = OffScreenXEnemies
-           $0c43 = OffScreenXEnemies.end
-           $0c45 = OffScreenYEnemies
-           $0c56 = OffScreenYEnemies.end
-           $0c58 = OffScreenX
-           $0c60 = OffScreenX.end
-           $0c62 = OffScreenY
-           $0c6c = OffScreenY.end
-  SECTION: $0c6e-$0cfc ($008f bytes) ["interrupts"]
-           $0c6e = VBlankInterrupt
-           $0c7e = LCDInterrupt
-           $0c88 = LCDInterruptEnd
-           $0c8c = SetBaseInterrupts
-           $0c9e = ParkLCDInterrupt
-           $0caa = ParkLCDInterrupt.clouds
-           $0cb8 = ParkLCDInterrupt.ground
-           $0cbd = ParkLCDInterrupt.end
-           $0cc0 = SetParkInterrupts
-           $0ccd = ClassicLCDInterrupt
-           $0cef = SetClassicInterrupts
-  SECTION: $0cfd-$0d6f ($0073 bytes) ["joypad"]
-           $0cfd = ReadInput
-           $0d2d = JOY_RIGHT
-           $0d35 = JOY_LEFT
-           $0d3d = JOY_UP
-           $0d45 = JOY_DOWN
-           $0d4d = JOY_A
-           $0d55 = JOY_B
-           $0d5d = JOY_SELECT
-           $0d65 = JOY_START
-           $0d6d = JOY_FALSE
-    SLACK: $32a5 bytes
+           $096d = ReplaceTilemapHorizontal.handleZero
+           $096f = ReplaceTilemapHorizontal.handleZeroEnd
+           $0976 = ReplaceTilemapHorizontal.loop
+           $098a = ReplaceTilemapHorizontal.end
+           $098f = LoadMenuData
+           $09b4 = SetAllPalettes
+           $09c0 = SetupPalettes
+           $09cc = SetupParkPalettes
+           $09d9 = FadeOutPalettes
+           $09e1 = FadeOutPalettes.fadeOut
+           $09f5 = FadeOutPalettes.fade1
+           $09f9 = FadeOutPalettes.fade2
+           $09fd = FadeOutPalettes.fade3
+           $0a01 = FadeOutPalettes.fade4
+           $0a03 = FadeOutPalettes.end
+           $0a0e = FadeInPalettes
+           $0a16 = FadeInPalettes.fadeIn
+           $0a2a = FadeInPalettes.fade1
+           $0a2e = FadeInPalettes.fade2
+           $0a32 = FadeInPalettes.fade3
+           $0a36 = FadeInPalettes.fade4
+           $0a38 = FadeInPalettes.end
+           $0a43 = HasFadedOut
+           $0a49 = HasFadedOut.false
+           $0a4b = HasFadedOut.true
+           $0a4e = HasFadedIn
+           $0a54 = HasFadedIn.false
+           $0a56 = HasFadedIn.true
+           $0a59 = RefreshScore
+           $0a97 = RefreshLives
+           $0aa2 = ClearAllTiles
+           $0aa9 = ClearAllTiles.loop_u1
+           $0ab8 = ClearAllTiles.loop_u2
+           $0ac7 = ClearAllTiles.loop_u3
+           $0ad0 = ClearMap
+           $0ad7 = ClearMap.clear_map_loop
+  SECTION: $0ae9-$0ca3 ($01bb bytes) ["collision"]
+           $0ae9 = CollisionCheck
+           $0af6 = CollisionCheck.tryOtherY
+           $0afe = CollisionCheck.skip8x8Adjustment
+           $0b0a = CollisionCheck.checkX
+           $0b17 = CollisionCheck.tryOtherX
+           $0b24 = CollisionCheck.collision
+           $0b28 = CollisionCheck.end
+           $0b2c = CollisionUpdate
+           $0b66 = CollisionUpdate.endPointBalloon
+           $0b92 = CollisionUpdate.checkEnemyHitPlayer
+           $0bb5 = CollisionUpdate.endEnemy
+           $0be1 = CollisionUpdate.checkEnemy2HitPlayer
+           $0c04 = CollisionUpdate.endEnemy2
+           $0c31 = CollisionUpdate.endBomb
+           $0c38 = CollisionUpdate.checkBirdHitPlayer
+           $0c5c = CollisionUpdate.endBird
+           $0c5d = CollisionUpdate.collisionWithPlayer
+           $0c67 = CollisionUpdate.end
+           $0c67 = CollisionUpdate.endEnemyHitPlayer
+           $0c68 = OffScreenXEnemies
+           $0c79 = OffScreenXEnemies.end
+           $0c7b = OffScreenYEnemies
+           $0c8c = OffScreenYEnemies.end
+           $0c8e = OffScreenX
+           $0c96 = OffScreenX.end
+           $0c98 = OffScreenY
+           $0ca2 = OffScreenY.end
+  SECTION: $0ca4-$0d32 ($008f bytes) ["interrupts"]
+           $0ca4 = VBlankInterrupt
+           $0cb4 = LCDInterrupt
+           $0cbe = LCDInterruptEnd
+           $0cc2 = SetBaseInterrupts
+           $0cd4 = ParkLCDInterrupt
+           $0ce0 = ParkLCDInterrupt.clouds
+           $0cee = ParkLCDInterrupt.ground
+           $0cf3 = ParkLCDInterrupt.end
+           $0cf6 = SetParkInterrupts
+           $0d03 = ClassicLCDInterrupt
+           $0d25 = SetClassicInterrupts
+  SECTION: $0d33-$0da5 ($0073 bytes) ["joypad"]
+           $0d33 = ReadInput
+           $0d63 = JOY_RIGHT
+           $0d6b = JOY_LEFT
+           $0d73 = JOY_UP
+           $0d7b = JOY_DOWN
+           $0d83 = JOY_A
+           $0d8b = JOY_B
+           $0d93 = JOY_SELECT
+           $0d9b = JOY_START
+           $0da3 = JOY_FALSE
+    SLACK: $326c bytes
 
 ROMX bank #1:
   SECTION: $4000-$4b3d ($0b3e bytes) ["Song Data2"]
@@ -1021,7 +1024,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $0d5b bytes in 1 bank
+    ROM0: $0d94 bytes in 1 bank
     ROMX: $3e34 bytes in 1 bank
     WRAM0: $014b bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

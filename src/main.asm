@@ -79,10 +79,12 @@ PregameLoop::
 	call SpawnCountdown
 	call SetupPalettes
 	call LCD_ON
+	; call ReplaceTilemapHorizontal ; testing
 GameLoop:
 	call WaitVBlank
 	call OAMDMA
 	call UpdateClassic
+	call ReplaceTilemapHorizontal ; testing
 	call UpdateGlobalTimer
 .end:
 	jp GameLoop
