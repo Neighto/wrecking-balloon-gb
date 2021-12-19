@@ -535,7 +535,7 @@ CactusFalling:
 NoMoreLives:
   call StopFallingSound
   ; Back to menu
-  call Start
+  call Start ; change this so it leads to intermediate screen to say GAME OVER, maybe play small jingle + start to continue
   ret
 
 PlayerUpdate::
