@@ -51,11 +51,11 @@ endif
 # Omit path to generate all
 tilemap: 
 ifdef path
-	rgbgfx -u -t incbin/$(path).tilemap -o incbin/$(path).2bpp  $(IMG_DIR)/$(path).png
+	rgbgfx -u -t incbin/$(path).tilemap -o incbin/$(path).2bpp $(IMG_DIR)/$(path).png
 	@echo "Ran rgbgfx - tilemap for $(path)"
 else
-	$(foreach file, $(BKGRND_FILES), rgbgfx -u -t  incbin/$(file).tilemap -o incbin/$(file).2bpp $(IMG_DIR)/$(file).png;)
-	$(foreach file, $(WINDOW_FILES), rgbgfx -u -t  incbin/$(file).tilemap -o incbin/$(file).2bpp $(IMG_DIR)/$(file).png;)
+	$(foreach file, $(BKGRND_FILES), rgbgfx -u -t incbin/$(file).tilemap -o incbin/$(file).2bpp $(IMG_DIR)/$(file).png;)
+	$(foreach file, $(WINDOW_FILES), rgbgfx -u -t incbin/$(file).tilemap -o incbin/$(file).2bpp $(IMG_DIR)/$(file).png;)
 	@echo "Ran rgbgfx - tilemap for all"
 endif
 

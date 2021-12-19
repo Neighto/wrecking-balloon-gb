@@ -1,16 +1,12 @@
 SECTION "vblank IRQ", ROM0[$40]
-VBLANK_VECT:
-	call VBlank_Interrupt
-	reti
+	jp VBlankInterrupt
 
 SECTION	"LCD IRQ", ROM0[$48]
-LCD_VECT:
-	call LCD_Interrupt
-	reti
+	jp LCDInterrupt
 
 SECTION "header", ROM0[$100]
 	nop
-	call Start
+	jp Start
 
 	; 0104-0133 - Nintendo Logo
 	NINTENDO_LOGO

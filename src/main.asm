@@ -6,10 +6,7 @@ SECTION "rom", ROM0
 Start::
 	di
 	ld sp, $FFFE
-	ld a, IEF_STAT | IEF_VBLANK ; Enable LCD and VBLANK interrupts
-	ldh [rIE], a
-	ld a, STATF_LYC
-	ldh [rSTAT], a
+	call SetBaseInterrupts
 	call WaitVBlank
 	; call AUDIO_OFF
 	call LCD_OFF
@@ -37,7 +34,7 @@ Start::
 
 StartClassic::
 	call ParkEnteredClassic
-	call SetParkLYC
+	call SetParkInterrupts
 	call WaitVBlank
 	call LCD_OFF
 	call SetupParkPalettes
@@ -72,7 +69,7 @@ StartClassic::
 
 PregameLoop::
 	call StartedClassic
-	call SetClassicLYC
+	call SetClassicInterrupts
 	call ResetScroll
 	call ClearOAM
 	call ClearRAM

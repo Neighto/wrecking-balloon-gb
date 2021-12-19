@@ -16,6 +16,8 @@ SECTION "RAM vars", WRAM0[$C000]
 	wOAMGeneral1:: DB
 	wOAMGeneral2:: DB
 
+	wLCDInterrupt:: DS 2
+
 	wPlayerCactusOAM:: DB
 	wPlayerBalloonOAM:: DB
 	player_x:: DB

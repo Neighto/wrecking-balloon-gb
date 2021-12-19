@@ -38,16 +38,6 @@ SetupWindow::
 	ld [rWX], a
     ret
 
-SetParkLYC::
-    xor a ; ld a, 0
-	ldh [rLYC], a
-    ret 
-
-SetClassicLYC::
-	ld a, 136
-	ldh [rLYC], a
-    ret
-
 SECTION "scroll", ROM0
 
 HorizontalScroll::
