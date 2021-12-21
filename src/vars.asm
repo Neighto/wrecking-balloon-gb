@@ -17,6 +17,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	wOAMGeneral2:: DB
 
 	wUpdateTilemapAddress:: DS 2
+	wUpdateTilemapOffset:: DB
 
 	wLCDInterrupt:: DS 2
 
@@ -116,6 +117,7 @@ InitializeGameVars::
 	ld [cloud_scroll_offset], a
 	ld [classic_mode_stage], a
 	ld [fade_frame], a
+	ld [wUpdateTilemapOffset], a
 
 	ld a, 2
 	ld [player_lives], a

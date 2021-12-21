@@ -4,7 +4,7 @@ INCLUDE "macro.inc"
 
 SECTION "OAM DMA routine", ROM0
 
-NUMBERS_TILE_OFFSET EQU $49
+NUMBERS_TILE_OFFSET EQU $E9
 SCORE_INDEX_ONE_ADDRESS EQU $9C2C
 LIVES_ADDRESS EQU $9C32
 
@@ -79,14 +79,14 @@ LoadGameData::
 	call MEMCPY
 	; Copy the window tiles
 	ld bc, WindowTiles
-	ld hl, $9400
+	ld hl, $8E00
 	ld de, WindowTilesEnd - WindowTiles
 	call MEMCPY
 	; Copy the tilemap
-	; ld bc, BackgroundMap
-	; ld hl, _SCRN0
-	; ld de, BackgroundMapEnd - BackgroundMap
-	; call MEMCPY
+	ld bc, BackgroundMap
+	ld hl, _SCRN0
+	ld de, BackgroundMapEnd - BackgroundMap
+	call MEMCPY
 	; ; Copy the window
 	ld bc, WindowMap
 	ld hl, _SCRN1
@@ -101,8 +101,7 @@ ReplaceTilemapHorizontal::
 	push hl
 	push de
 	push bc
-	; todo need to check when we are done...
-
+	; todo need to check when we are done... Unless we are ALWAYS doing it...
 
 	; Continue if rSCX is multiple of 8
 	ldh a, [rSCX]
@@ -138,6 +137,12 @@ ReplaceTilemapHorizontal::
 	; Set screen height to load in
 	ld d, SCRN_Y_B
 .loop:
+	; Update tile
+	ld a, [bc]
+	ld e, a
+	ld a, [wUpdateTilemapOffset]
+	add a, e
+	ld [hl], a
 	; Jump to next row
 	ld a, c
 	add a, $20
@@ -146,8 +151,6 @@ ReplaceTilemapHorizontal::
 	adc a, 0
 	ld b, a
 	ld a, [bc]
-	; Update tile
-	ld [hl], a
 	; Jump to next row
 	ld a, l
 	add a, $20
