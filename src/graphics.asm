@@ -83,10 +83,10 @@ LoadGameData::
 	ld de, WindowTilesEnd - WindowTiles
 	call MEMCPY
 	; Copy the tilemap
-	ld bc, BackgroundMap
-	ld hl, _SCRN0
-	ld de, BackgroundMapEnd - BackgroundMap
-	call MEMCPY
+	; ld bc, BackgroundMap
+	; ld hl, _SCRN0
+	; ld de, BackgroundMapEnd - BackgroundMap
+	; call MEMCPY
 	; ; Copy the window
 	ld bc, WindowMap
 	ld hl, _SCRN1
@@ -94,15 +94,15 @@ LoadGameData::
 	call MEMCPY
 	ret
 
-	; Function where we REPLACE tilemap for a new one
+	; Function where we REPLACE tilemap for a new one by transition
 ReplaceTilemapHorizontal::
-	; ; read rSCX => once we know it is greater than 160 => col 0
-	; ldh a, [rSCX]
-	; ; really we just want to ask: what col is behind our screen?
+	; Need to set wUpdateTilemapAddress before calling else crash
 	push af
 	push hl
-	push bc
 	push de
+	push bc
+	; todo need to check when we are done...
+
 
 	; Continue if rSCX is multiple of 8
 	ldh a, [rSCX]
@@ -110,7 +110,13 @@ ReplaceTilemapHorizontal::
 	call MODULO
 	cp a, 0
 	jr nz, .end
-	; Get column just outside of visible reach
+	; Get target tilemap
+	ld hl, wUpdateTilemapAddress
+	ld a, [hli]
+	ld c, a
+	ld a, [hl]
+	ld b, a
+	; Figure out column we want to update
 	ldh a, [rSCX]
 	cp a, 0
 	jr z, .handleZero
@@ -120,17 +126,29 @@ ReplaceTilemapHorizontal::
 .handleZero:
 	ld a, SCRN_VX_B-1
 .handleZeroEnd:
+	; Set hl to the correct column
+	ld d, a
 	ld hl, _SCRN0
 	add a, l
 	ld l, a
+	; Set bc to the correct column
+	ld a, d
+	add a, c
+	ld c, a
 	; Set screen height to load in
-	ld b, SCRN_Y_B
+	ld d, SCRN_Y_B
 .loop:
+	; Jump to next row
+	ld a, c
+	add a, $20
+	ld c, a
+	ld a, b
+	adc a, 0
+	ld b, a
+	ld a, [bc]
 	; Update tile
-	ld a, 82 ; temp
-	call RANDOM ; temp
 	ld [hl], a
-	; Jump to next column
+	; Jump to next row
 	ld a, l
 	add a, $20
 	ld l, a
@@ -138,13 +156,13 @@ ReplaceTilemapHorizontal::
 	adc a, 0
 	ld h, a
 	; Do we loop
-	dec b
-	ld a, b
+	dec d
+	ld a, d
 	cp a, 0
 	jr nz, .loop
 .end:
-	pop de
 	pop bc
+	pop de
 	pop hl
 	pop af
 	ret

@@ -55,6 +55,7 @@ ToBCD::
     ; uses 'b' 'c' as holder
     ; returns 'a' as BCD number
     push bc
+    push de
     ld b, a ; save a
     ld d, 10
     call MODULO
@@ -67,6 +68,7 @@ ToBCD::
     swap a
     or c
 .end:
+    pop de
     pop bc
     ret
 
