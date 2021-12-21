@@ -16,6 +16,8 @@ SECTION "RAM vars", WRAM0[$C000]
 	wOAMGeneral1:: DB
 	wOAMGeneral2:: DB
 
+	wUpdateTilemapAddress:: DS 2
+
 	wLCDInterrupt:: DS 2
 
 	wPlayerCactusOAM:: DB

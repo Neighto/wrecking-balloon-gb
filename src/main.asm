@@ -79,12 +79,17 @@ PregameLoop::
 	call SpawnCountdown
 	call SetupPalettes
 	call LCD_ON
-	; call ReplaceTilemapHorizontal ; testing
+
+	;testing set tilemap we want to use
+	ld hl, wUpdateTilemapAddress
+    ld a, LOW(BackgroundMap)
+    ld [hli], a
+    ld a, HIGH(BackgroundMap)
+    ld [hl], a
 GameLoop:
 	call WaitVBlank
 	call OAMDMA
 	call UpdateClassic
-	call ReplaceTilemapHorizontal ; testing
 	call UpdateGlobalTimer
 .end:
 	jp GameLoop

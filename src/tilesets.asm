@@ -20,6 +20,7 @@ PropellerCactusTilesEnd::
 
 BackgroundTiles::
     INCBIN "incbin/background/Classic_Map.2bpp"
+    INCBIN "incbin/background/World2.2bpp"
 BackgroundTilesEnd::
 
 ClassicParkTiles::
