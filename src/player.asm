@@ -129,7 +129,7 @@ InitializePlayer::
   ld [hli], a
   ld [hl], $80
   inc l
-  ld [hl], OAMF_PAL0
+  ld [hl], OAMF_PAL1
   ; Balloon right
   inc l
   ld a, [player_y]
@@ -139,7 +139,7 @@ InitializePlayer::
   ld [hli], a
   ld [hl], $80
   inc l
-  ld [hl], OAMF_PAL0 | OAMF_XFLIP
+  ld [hl], OAMF_PAL1 | OAMF_XFLIP
   ret
 
 ClearPlayerCactus:
@@ -630,23 +630,23 @@ InvincibleBlink::
 	and INVINCIBLE_BLINK_FAST_SPEED
   jp z, .defaultPalette
 .blinkEnd:
-  SET_HL_TO_ADDRESS wOAM+3, wPlayerBalloonOAM
-  ld [hl], OAMF_PAL1
-  SET_HL_TO_ADDRESS wOAM+7, wPlayerBalloonOAM
-  ld [hl], OAMF_PAL1 | OAMF_XFLIP
-  SET_HL_TO_ADDRESS wOAM+3, wPlayerCactusOAM
-  ld [hl], OAMF_PAL1
-  SET_HL_TO_ADDRESS wOAM+7, wPlayerCactusOAM
-  ld [hl], OAMF_PAL1 | OAMF_XFLIP
+  SET_HL_TO_ADDRESS wOAM+2, wPlayerBalloonOAM
+  ld [hl], $A2
+  SET_HL_TO_ADDRESS wOAM+6, wPlayerBalloonOAM
+  ld [hl], $A2
+  SET_HL_TO_ADDRESS wOAM+2, wPlayerCactusOAM
+  ld [hl], $A4
+  SET_HL_TO_ADDRESS wOAM+6, wPlayerCactusOAM
+  ld [hl], $A4
   ret
 .defaultPalette:
-  SET_HL_TO_ADDRESS wOAM+3, wPlayerBalloonOAM
-  ld [hl], OAMF_PAL0
-  SET_HL_TO_ADDRESS wOAM+7, wPlayerBalloonOAM
-  ld [hl], OAMF_PAL0 | OAMF_XFLIP
-  SET_HL_TO_ADDRESS wOAM+3, wPlayerCactusOAM
-  ld [hl], OAMF_PAL0
-  SET_HL_TO_ADDRESS wOAM+7, wPlayerCactusOAM
-  ld [hl], OAMF_PAL0 | OAMF_XFLIP
+  SET_HL_TO_ADDRESS wOAM+2, wPlayerBalloonOAM
+  ld [hl], $80
+  SET_HL_TO_ADDRESS wOAM+6, wPlayerBalloonOAM
+  ld [hl], $80
+  SET_HL_TO_ADDRESS wOAM+2, wPlayerCactusOAM
+  ld [hl], $82
+  SET_HL_TO_ADDRESS wOAM+6, wPlayerCactusOAM
+  ld [hl], $82
 .end:
   ret

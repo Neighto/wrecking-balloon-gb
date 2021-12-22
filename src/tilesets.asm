@@ -12,6 +12,7 @@ CactusTiles::
     INCBIN "incbin/sprite/Bird2.2bpp"
     INCBIN "incbin/sprite/Bomb.2bpp"
     INCBIN "incbin/sprite/Explosion2.2bpp"
+    INCBIN "incbin/sprite/PlayerInvincible.2bpp"
 CactusTilesEnd::
 
 PropellerCactusTiles::

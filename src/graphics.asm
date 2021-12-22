@@ -8,8 +8,6 @@ NUMBERS_TILE_OFFSET EQU $E9
 SCORE_INDEX_ONE_ADDRESS EQU $9C2C
 LIVES_ADDRESS EQU $9C32
 
-PARK_WAVE_PALETTE EQU %11100001
-
 FADE_SPEED EQU %00000011
 FADE_PALETTE_1 EQU %11100100
 FADE_PALETTE_2 EQU %10000100
@@ -185,33 +183,27 @@ LoadMenuData::
 	call MEMCPY
 	ret
 
-SetAllPalettes:
-	; B = argument
+SetupPalettes::
 	push af
-	ld a, b
+    ld a, MAIN_PALETTE
 	ldh [rBGP], a
     ldh [rOCPD], a
 	ldh [rOBP1], a
 	ldh [rOBP0], a
+	ld a, MAIN_PALETTE2
+	ldh [rOBP1], a
 	pop af
     ret
 
-SetupPalettes::
-	push bc
-    ld b, MAIN_PALETTE
-    call SetAllPalettes
-	ld a, %11011000
-	ldh [rOBP1], a
-	pop bc
-    ret
-
 SetupParkPalettes::
+	push af
 	ld a, MAIN_PALETTE
     ldh [rBGP], a
     ldh [rOCPD], a
 	ldh [rOBP0], a
-	ld a, PARK_WAVE_PALETTE
+	ld a, MAIN_PALETTE2
 	ldh [rOBP1], a
+	pop af
     ret
 
 FadeOutPalettes::
@@ -242,7 +234,10 @@ FadeOutPalettes::
 .fade4:
 	ld b, FADE_PALETTE_4
 .end:
-	call SetAllPalettes
+	ldh [rBGP], a
+    ldh [rOCPD], a
+	ldh [rOBP1], a
+	ldh [rOBP0], a
 	ld a, [fade_frame]
 	inc a
 	ld [fade_frame], a
@@ -265,18 +260,21 @@ FadeInPalettes::
 	jr z, .fade4
 	ret
 .fade1:
-    ld b, FADE_PALETTE_4
+    ld a, FADE_PALETTE_4
 	jr .end
 .fade2:
-	ld b, FADE_PALETTE_3
+	ld a, FADE_PALETTE_3
 	jr .end
 .fade3:
-	ld b, FADE_PALETTE_2
+	ld a, FADE_PALETTE_2
 	jr .end
 .fade4:
-	ld b, FADE_PALETTE_1
+	ld a, FADE_PALETTE_1
 .end:
-	call SetAllPalettes
+	ldh [rBGP], a
+    ldh [rOCPD], a
+	ldh [rOBP1], a
+	ldh [rOBP0], a
 	ld a, [fade_frame]
 	inc a
 	ld [fade_frame], a
