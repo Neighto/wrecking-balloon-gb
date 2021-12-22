@@ -99,9 +99,9 @@ SpawnPointBalloon:
     ld [hli], a
     ld a, [point_balloon_x]
     ld [hli], a
-    ld [hl], $84
+    ld [hl], ENEMY_BALLOON_TILE
     inc l
-    ld [hl], %00000000
+    ld [hl], OAMF_PAL1
 .balloonRight:
     ; Balloon right
     inc l
@@ -110,9 +110,9 @@ SpawnPointBalloon:
     ld a, [point_balloon_x]
     add 8
     ld [hli], a
-    ld [hl], $84
+    ld [hl], ENEMY_BALLOON_TILE
     inc l
-    ld [hl], OAMF_XFLIP
+    ld [hl], OAMF_PAL1 | OAMF_XFLIP
 .end:
     pop af
     ret

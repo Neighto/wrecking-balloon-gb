@@ -167,9 +167,9 @@ SpawnEnemy:
     ld a, [enemy_balloon_x]
     ld [hl], a
     inc l
-    ld [hl], $84
+    ld [hl], ENEMY_BALLOON_TILE
     inc l
-    ld [hl], %00000000
+    ld [hl], OAMF_PAL1
     ; Balloon right
     inc l
     ld a, [enemy_balloon_y]
@@ -179,9 +179,9 @@ SpawnEnemy:
     add 8
     ld [hl], a
     inc l
-    ld [hl], $84
+    ld [hl], ENEMY_BALLOON_TILE
     inc l
-    ld [hl], OAMF_XFLIP
+    ld [hl], OAMF_PAL1 | OAMF_XFLIP
 
     ; Request OAM
     ld b, 2
