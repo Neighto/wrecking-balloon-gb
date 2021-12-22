@@ -197,10 +197,10 @@ CollisionUpdate::
     ld a, [bird_alive]
     cp a, 0
     jr z, .endCactusHitBird
-    ; Check if dead
-    ld a, [enemy_alive]
+    ; Check if falling
+    ld a, [enemy_falling]
     cp a, 0
-    jr nz, .endCactusHitBird
+    jr z, .endCactusHitBird
     SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
     LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, wBirdOAM
@@ -210,6 +210,24 @@ CollisionUpdate::
     jr z, .endCactusHitBird
     call DeathOfBird
 .endCactusHitBird
+    ; Enemy cactus 2 hit bird
+    ; Check if alive
+    ld a, [bird_alive]
+    cp a, 0
+    jr z, .endCactus2HitBird
+    ; Check if falling
+    ld a, [enemy2_falling]
+    cp a, 0
+    jr z, .endCactus2HitBird
+    SET_HL_TO_ADDRESS wOAM, wEnemy2CactusOAM
+    LD_BC_HL
+    SET_HL_TO_ADDRESS wOAM, wBirdOAM
+    xor a ; ld a, 0
+    call CollisionCheck
+    and 1
+    jr z, .endCactus2HitBird
+    call DeathOfBird
+.endCactus2HitBird
     ret
 .collisionWithPlayer:
     ; Check if player is invincible
