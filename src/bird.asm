@@ -84,6 +84,7 @@ InitializeBird::
     ld [bird_flapping_frame], a
     ld [bird_alive], a
     ld [bird_respawn_timer], a
+    ld [bird_falling], a
     ld [bird_spawn_right], a
     ld [bird_x], a
     ld [bird_y], a
@@ -101,6 +102,7 @@ SpawnBirdRight:
     xor a ; ld a, 0
     ld [bird_flapping_frame], a
     ld [bird_respawn_timer], a
+    ld [bird_falling], a
     ld a, 1
     ld [bird_alive], a
     ld [bird_spawn_right], a
@@ -152,6 +154,7 @@ SpawnBirdLeft:
     xor a ; ld a, 0
     ld [bird_flapping_frame], a
     ld [bird_respawn_timer], a
+    ld [bird_falling], a
     ld [bird_spawn_right], a
     ld a, 1
     ld [bird_alive], a
@@ -306,16 +309,47 @@ BirdUpdate::
     call OffScreenXEnemies
     and 1
     jr z, .end
-.died:
+.offscreen:
     xor a ; ld a, 0
     ld [bird_alive], a
-    call ClearBird
-    jr .end
 .isDead:
-    ; TODO add respawn timer
+    ; Fall
+    ld a, [bird_falling]
+    cp a, 0
+    jr z, .respawning
+    ld a, [global_timer]
+    and	%00000011
+    jr nz, .respawning
+    SET_HL_TO_ADDRESS wOAM, wBirdOAM
+    dec [hl]
+.respawning:
+    ; Can we respawn
+    ld a, [bird_respawn_timer]
+    inc a
+    ld [bird_respawn_timer], a
+    cp a, 120
+    jr nz, .end
+    call ClearBird
     call SpawnBird
 .end:
     pop af
     pop bc
     pop hl
+    ret
+
+DeathOfBird::
+    ; Death
+    xor a ; ld a, 0
+    ld [bird_alive], a
+    ld a, 1
+    ld [bird_falling], a
+    ; Screaming bird
+    SET_HL_TO_ADDRESS wOAM+2, wBirdOAM
+    ld [hl], $A6
+    SET_HL_TO_ADDRESS wOAM+6, wBirdOAM
+    ld [hl], $A8
+    SET_HL_TO_ADDRESS wOAM+10, wBirdOAM
+    ld [hl], $AA
+    ; Sound
+    call ExplosionSound
     ret
