@@ -103,8 +103,14 @@ ReplaceTilemapHorizontal::
 	ld a, [wCanUpdateTilemap]
 	cp a, 0
 	jr z, .end
-	; Continue if rSCX is multiple of 8
+	; Check if we have already checked this SCX value
+	ld a, [wLastUpdatedSCX]
+	ld b, a
 	ldh a, [rSCX]
+	cp a, b
+	jr z, .end
+	ld [wLastUpdatedSCX], a
+	; Continue if rSCX is multiple of 8
 	ld d, 8
 	call MODULO
 	cp a, 0
@@ -142,7 +148,9 @@ ReplaceTilemapHorizontal::
 	ld e, a
 	ld a, [wUpdateTilemapOffset]
 	add a, e
+	call LCD_OFF
 	ld [hl], a
+	call LCD_ON
 	; Jump to next row
 	ld a, c
 	add a, $20
@@ -168,6 +176,62 @@ ReplaceTilemapHorizontal::
 	pop de
 	pop hl
 	pop af
+	ret
+
+MoveToNextTilemap::
+	push hl
+	push af
+	; Should we update tilemap
+	ldh a, [rSCX]
+	cp a, 5
+	jr nc, .end
+	; Have we already read this
+	ld a, [alreadyReadThis]
+	cp a, 0
+	jr nz, .end2
+	; We have read this
+	ld a, 1
+	ld [alreadyReadThis], a
+	; Set the tilemap address to update
+	ld a, [wCanUpdateTilemap]
+	cp a, 0
+	jr z, .clouds2
+	cp a, 1
+	jr z, .clouds2
+.clouds1:
+	; Default loaded tilemap
+	ld hl, wUpdateTilemapAddress
+	ld a, LOW(BackgroundMap)
+	ld [hli], a
+	ld a, HIGH(BackgroundMap)
+	ld [hl], a
+	ld a, $0
+	ld [wUpdateTilemapOffset], a
+	ld a, 1
+	ld [wCanUpdateTilemap], a
+	jr .end2
+.clouds2:
+	ld hl, wUpdateTilemapAddress
+	ld a, LOW(World2Map)
+	ld [hli], a
+	ld a, HIGH(World2Map)
+	ld [hl], a
+	ld a, $37
+	ld [wUpdateTilemapOffset], a
+	ld a, 2
+	ld [wCanUpdateTilemap], a
+	jr .end2
+.end:
+	; Should we reset update
+	ld a, [rSCX]
+	cp a, 10
+	jr nc, .end2
+	ld a, 0 
+	ld [alreadyReadThis], a
+.end2:
+	call ReplaceTilemapHorizontal
+	pop af
+	pop hl
 	ret
 
 LoadMenuData::
