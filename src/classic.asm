@@ -315,8 +315,8 @@ UpdateClassic::
     call PlayerUpdate
 .countdownSkip:
     call HorizontalScroll
-    ld bc, BackgroundMap ; testing
-	call ReplaceTilemapHorizontal ; testing
+    call MoveToNextTilemap
+    call ReplaceTilemapHorizontal ; testing
 	call ClassicGameManager
 	call RefreshScore ; Might want to move somewhere to call less frequently
 .end:

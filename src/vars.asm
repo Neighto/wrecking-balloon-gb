@@ -18,6 +18,8 @@ SECTION "RAM vars", WRAM0[$C000]
 
 	wUpdateTilemapAddress:: DS 2
 	wUpdateTilemapOffset:: DB
+	wCanUpdateTilemap:: DB
+	alreadyReadThis:: DB
 
 	wLCDInterrupt:: DS 2
 
@@ -106,6 +108,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	bomb_pop_timer:: DB
 
 SECTION "general initialization", ROMX
+
 InitializeGameVars::
 	xor a
 	ld [vblank_flag], a
@@ -118,6 +121,8 @@ InitializeGameVars::
 	ld [classic_mode_stage], a
 	ld [fade_frame], a
 	ld [wUpdateTilemapOffset], a
+	ld [wCanUpdateTilemap], a
+	ld [alreadyReadThis], a
 
 	ld a, 2
 	ld [player_lives], a
