@@ -93,6 +93,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	bird_y:: DB
 	bird_flapping_frame:: DB
 	bird_respawn_timer:: DB
+	bird_falling:: DB
 	bird_alive:: DB
 	bird_spawn_right:: DB
 	bird_speed:: DB
