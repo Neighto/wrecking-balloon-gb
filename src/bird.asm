@@ -285,7 +285,7 @@ BirdUpdate::
     ; Check if we can move
     ld a, [global_timer]
     and	BIRD_SPRITE_MOVE_WAIT_TIME
-    jr nz, .end
+    jp nz, .end
     ld a, [bird_spawn_right]
     and 1
     jr z, .moveRight
@@ -318,10 +318,10 @@ BirdUpdate::
     cp a, 0
     jr z, .respawning
     ld a, [global_timer]
-    and	%00000011
+    and	%00000001
     jr nz, .respawning
-    SET_HL_TO_ADDRESS wOAM, wBirdOAM
-    dec [hl]
+    INCREMENT_POS bird_y, 1
+    call UpdateBirdPosition
 .respawning:
     ; Can we respawn
     ld a, [bird_respawn_timer]
