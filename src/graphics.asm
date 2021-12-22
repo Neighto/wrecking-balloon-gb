@@ -99,8 +99,10 @@ ReplaceTilemapHorizontal::
 	push hl
 	push de
 	push bc
-	; todo need to check when we are done... Unless we are ALWAYS doing it...
-
+	; Can we update tilemap
+	ld a, [wCanUpdateTilemap]
+	cp a, 0
+	jr z, .end
 	; Continue if rSCX is multiple of 8
 	ldh a, [rSCX]
 	ld d, 8
@@ -223,16 +225,16 @@ FadeOutPalettes::
 	jr z, .fade4
 	ret
 .fade1:
-    ld b, FADE_PALETTE_1
+    ld a, FADE_PALETTE_1
 	jr .end
 .fade2:
-	ld b, FADE_PALETTE_2
+	ld a, FADE_PALETTE_2
 	jr .end
 .fade3:
-	ld b, FADE_PALETTE_3
+	ld a, FADE_PALETTE_3
 	jr .end
 .fade4:
-	ld b, FADE_PALETTE_4
+	ld a, FADE_PALETTE_4
 .end:
 	ldh [rBGP], a
     ldh [rOCPD], a

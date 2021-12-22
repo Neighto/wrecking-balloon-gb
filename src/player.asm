@@ -614,7 +614,7 @@ InvincibleBlink::
   jp z, .end
   dec a
   ld [player_invincible], a
-  ; At the end make sure we stop on default palette
+  ; At the end make sure we stop on default tileset
   cp a, 3
   jp c, .defaultPalette
   ; Are we blinking normal or fast (faster at the end)
