@@ -4,13 +4,17 @@ INCLUDE "constants.inc"
 SECTION "lcd", ROMX
 
 LCD_OFF::
+    push af
     ld a, 0
     ldh [rLCDC], a
+    pop af
     ret
 
 LCD_ON::
+    push af
     ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJON | LCDCF_OBJ16 | LCDCF_WINON | LCDCF_WIN9C00
     ldh [rLCDC], a
+    pop af
     ret
 
 LCD_ON_BG_ONLY::
@@ -47,7 +51,7 @@ HorizontalScroll::
     jr nz, .end
     ldh a, [rSCX]
     inc a
-    ldh  [rSCX], a
+    ldh [rSCX], a
 .end:
     pop af
     ret

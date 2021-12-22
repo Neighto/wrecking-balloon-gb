@@ -315,8 +315,7 @@ UpdateClassic::
     call PlayerUpdate
 .countdownSkip:
     call HorizontalScroll
-    call MoveToNextTilemap
-    call ReplaceTilemapHorizontal ; testing
+    call MoveToNextTilemap ; BLINKS WHEN THIS OCCURS TOO FAST - wait... does HScroll go faster if less code before it???
 	call ClassicGameManager
 	call RefreshScore ; Might want to move somewhere to call less frequently
 .end:

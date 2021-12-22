@@ -20,6 +20,7 @@ SECTION "RAM vars", WRAM0[$C000]
 	wUpdateTilemapOffset:: DB
 	wCanUpdateTilemap:: DB
 	alreadyReadThis:: DB
+	wLastUpdatedSCX:: DB
 
 	wLCDInterrupt:: DS 2
 
@@ -123,6 +124,8 @@ InitializeGameVars::
 	ld [wUpdateTilemapOffset], a
 	ld [wCanUpdateTilemap], a
 	ld [alreadyReadThis], a
+
+	ld [wLastUpdatedSCX], a
 
 	ld a, 2
 	ld [player_lives], a
