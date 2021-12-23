@@ -126,6 +126,7 @@ InitializeGameVars::
 	ld [wCanUpdateTilemap], a
 	ld [alreadyReadThis], a
 
+	ld a, 255
 	ld [wLastUpdatedSCX], a
 
 	ld a, 2

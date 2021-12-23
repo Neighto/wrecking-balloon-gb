@@ -110,11 +110,7 @@ ReplaceTilemapHorizontal::
 	cp a, b
 	jr z, .end
 	ld [wLastUpdatedSCX], a
-	; Continue if rSCX is multiple of 8
-	ld d, 8
-	call MODULO
-	cp a, 0
-	jr nz, .end
+	; Todo currently we check rSCX multiple times for the same column (but that helps reduce errors)
 	; Get target tilemap
 	ld hl, wUpdateTilemapAddress
 	ld a, [hli]
@@ -123,14 +119,14 @@ ReplaceTilemapHorizontal::
 	ld b, a
 	; Figure out column we want to update
 	ldh a, [rSCX]
-	cp a, 0
-	jr z, .handleZero
+	ld d, 8
 	call DIVISION
-	dec a
-	jr .handleZeroEnd
+	cp a, 0
+	jr nz, .handleZeroEnd
 .handleZero:
-	ld a, SCRN_VX_B-1
+	ld a, SCRN_VX_B
 .handleZeroEnd:
+	dec a
 	; Set hl to the correct column
 	ld d, a
 	ld hl, _SCRN0
@@ -140,17 +136,15 @@ ReplaceTilemapHorizontal::
 	ld a, d
 	add a, c
 	ld c, a
-	; Set screen height to load in
-	ld d, SCRN_Y_B
+	; Set screen height to load in	
+	ld d, SCRN_Y_B-2
 .loop:
 	; Update tile
 	ld a, [bc]
 	ld e, a
 	ld a, [wUpdateTilemapOffset]
 	add a, e
-	call LCD_OFF
 	ld [hl], a
-	call LCD_ON
 	; Jump to next row
 	ld a, c
 	add a, $20
@@ -223,7 +217,7 @@ MoveToNextTilemap::
 	jr .end2
 .end:
 	; Should we reset update
-	ld a, [rSCX]
+	ldh a, [rSCX]
 	cp a, 10
 	jr nc, .end2
 	ld a, 0 

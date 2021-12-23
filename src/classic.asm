@@ -302,18 +302,22 @@ ClassicGameManager:
 UpdateClassic::
     ld a, [countdown_frame]
     cp a, 7 ; TODO dont hardcode in case we change it in CountdownAnimation
-    jr nc, .countdownComplete
-	call CountdownAnimation
-    jr .countdownSkip
+    jr c, .countdownProgress
 .countdownComplete:
 	call TryToUnpause
 	ld a, [paused_game]
 	cp a, 1
 	jr z, .end
-    call _hUGE_dosound
+    call HorizontalScroll
+    call MoveToNextTilemap
 	call CollisionUpdate
     call PlayerUpdate
-.countdownSkip:
+    call ClassicGameManager
+	call RefreshScore
+    call _hUGE_dosound
+    ret
+.countdownProgress:
+    call CountdownAnimation
     call HorizontalScroll
     call MoveToNextTilemap
 	call ClassicGameManager

@@ -320,7 +320,7 @@ BirdUpdate::
     ld a, [global_timer]
     and	%00000001
     jr nz, .respawning
-    INCREMENT_POS bird_y, 1
+    INCREMENT_POS bird_y, 2
     call UpdateBirdPosition
 .respawning:
     ; Can we respawn
