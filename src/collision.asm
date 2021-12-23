@@ -204,7 +204,7 @@ CollisionUpdate::
     SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
     LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, wBirdOAM
-    xor a ; ld a, 0
+    ld a, 1
     call CollisionCheck
     and 1
     jr z, .endCactusHitBird
@@ -222,7 +222,7 @@ CollisionUpdate::
     SET_HL_TO_ADDRESS wOAM, wEnemy2CactusOAM
     LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, wBirdOAM
-    xor a ; ld a, 0
+    ld a, 1
     call CollisionCheck
     and 1
     jr z, .endCactus2HitBird
