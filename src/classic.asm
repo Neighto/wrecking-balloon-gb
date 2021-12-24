@@ -304,11 +304,11 @@ UpdateClassicCountdown::
     cp a, 7 ; TODO dont hardcode in case we change it in CountdownAnimation
     jp nc, GameLoop
     call CountdownAnimation
+	call ClassicGameManager
+    call RefreshScore
     call HorizontalScroll
     call MoveToNextTilemap
     call ReplaceTilemapHorizontal
-	call ClassicGameManager
-	call RefreshScore
     ret
 
 UpdateClassic::
@@ -316,13 +316,13 @@ UpdateClassic::
 	ld a, [paused_game]
 	cp a, 1
 	jr z, .end
-    call HorizontalScroll
-    call MoveToNextTilemap
-    call ReplaceTilemapHorizontal
 	call CollisionUpdate
     call PlayerUpdate
     call ClassicGameManager
 	call RefreshScore
+    call HorizontalScroll           ; issue: 
+    call MoveToNextTilemap          ; these rarely get reached and do not finish
+    call ReplaceTilemapHorizontal   ; if brought before, messes up OAM requesting...
     call _hUGE_dosound
 .end:
     ret

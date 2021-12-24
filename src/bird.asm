@@ -15,6 +15,8 @@ BIRD_VERTICAL_SPEED EQU 1
 BIRD_FLAP_UP_SPEED EQU 5
 
 ; Some changes made on 2021-12-23 causes the birds head to fall off and instantly kill player...
+; SAME ISSUE BEFORE THAT DATE AND WITH COLLISIONS OFF...
+; new theory is request oam and that the player updates happen too late
 
 SECTION "bird vars", WRAM0
     wBirdOAM:: DB
