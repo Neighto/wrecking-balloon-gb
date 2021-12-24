@@ -8,7 +8,6 @@ Start::
 	ld sp, $FFFE
 	call SetBaseInterrupts
 	call WaitVBlank
-	; call AUDIO_OFF
 	call LCD_OFF
 	call ClearMap
 	call ClearOAM
@@ -24,13 +23,13 @@ Start::
 	call SpawnMenuCursor
 	call LCD_ON_BG_ONLY
 	; Comment out MenuLoop to skip menu
-MenuLoop:
-	call WaitVBlank
-	call OAMDMA
-	call _hUGE_dosound
-	call UpdateMenu
-	call UpdateGlobalTimer
-	jp MenuLoop
+; MenuLoop:
+; 	call WaitVBlank
+; 	call OAMDMA
+; 	call _hUGE_dosound
+; 	call UpdateMenu
+; 	call UpdateGlobalTimer
+; 	jp MenuLoop
 
 StartClassic::
 	call ParkEnteredClassic
@@ -48,7 +47,7 @@ StartClassic::
 	call SpawnHandWave
 	call SetupWindow
 	call InitializeScore
-	call LoadGameData
+	call LoadClassicGameData
 	call InitializePlayer
 	call InitializePointBalloon
 	call InitializeEnemy
@@ -60,12 +59,12 @@ StartClassic::
 	call RefreshLives
 	call LCD_ON_BG_ONLY
 	; Comment out ParkLoop to skip park cutscene
-ParkLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdatePark
-	call UpdateGlobalTimer
-	jp ParkLoop
+; ParkLoop:
+; 	call WaitVBlank
+; 	call OAMDMA
+; 	call UpdatePark
+; 	call UpdateGlobalTimer
+; 	jp ParkLoop
 
 PreGameLoop::
 	call StartedClassic

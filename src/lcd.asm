@@ -1,5 +1,6 @@
 INCLUDE "hardware.inc"
-INCLUDE "constants.inc"
+
+ENABLE_LCD_SETTINGS EQU LCDCF_ON | LCDCF_BGON | LCDCF_OBJON | LCDCF_OBJ16 | LCDCF_WINON | LCDCF_WIN9C00
 
 SECTION "lcd", ROMX
 
@@ -12,7 +13,7 @@ LCD_OFF::
 
 LCD_ON::
     push af
-    ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJON | LCDCF_OBJ16 | LCDCF_WINON | LCDCF_WIN9C00
+    ld a, ENABLE_LCD_SETTINGS
     ldh [rLCDC], a
     pop af
     ret
@@ -40,24 +41,4 @@ SetupWindow::
 	ld [rWY], a
 	ld a, 7
 	ld [rWX], a
-    ret
-
-SECTION "scroll", ROM0
-
-HorizontalScroll::
-    push af
-    ld a, [global_timer]
-    and	BACKGROUND_HSCROLL_SPEED
-    jr nz, .end
-    ldh a, [rSCX]
-    inc a
-    ldh [rSCX], a
-.end:
-    pop af
-    ret
-
-ResetScroll::
-    xor a ; ld a, 0
-    ldh [rSCX], a
-    ldh [rSCY], a
     ret

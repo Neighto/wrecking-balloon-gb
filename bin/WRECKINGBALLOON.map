@@ -158,98 +158,74 @@ ROM0 bank #0:
            $1115 = _update_current_order
            $111c = _noreset
            $1121 = note_table
-  SECTION: $11b1-$141e ($026e bytes) ["graphics"]
-           $11b1 = LoadGameData
-           $1212 = ReplaceTilemapHorizontal
-           $123b = ReplaceTilemapHorizontal.handleZero
-           $123d = ReplaceTilemapHorizontal.handleZeroEnd
-           $1249 = ReplaceTilemapHorizontal.loop
-           $1267 = ReplaceTilemapHorizontal.end
-           $126c = MoveToNextTilemap
-           $127e = MoveToNextTilemap.canUpdateTilemap
-           $1295 = MoveToNextTilemap.clouds1
-           $12aa = MoveToNextTilemap.clouds2
-           $12bd = MoveToNextTilemap.end
-           $12c0 = LoadMenuData
-           $12e5 = SetupPalettes
-           $12f6 = SetupParkPalettes
-           $1305 = FadeOutPalettes
-           $130d = FadeOutPalettes.fadeOut
-           $1321 = FadeOutPalettes.fade1
-           $1325 = FadeOutPalettes.fade2
-           $1329 = FadeOutPalettes.fade3
-           $132d = FadeOutPalettes.fade4
-           $132f = FadeOutPalettes.end
-           $133f = FadeInPalettes
-           $1347 = FadeInPalettes.fadeIn
-           $135b = FadeInPalettes.fade1
-           $135f = FadeInPalettes.fade2
-           $1363 = FadeInPalettes.fade3
-           $1367 = FadeInPalettes.fade4
-           $1369 = FadeInPalettes.end
-           $1379 = HasFadedOut
-           $137f = HasFadedOut.false
-           $1381 = HasFadedOut.true
-           $1384 = HasFadedIn
-           $138a = HasFadedIn.false
-           $138c = HasFadedIn.true
-           $138f = RefreshScore
-           $13cd = RefreshLives
-           $13d8 = ClearAllTiles
-           $13df = ClearAllTiles.loop_u1
-           $13ee = ClearAllTiles.loop_u2
-           $13fd = ClearAllTiles.loop_u3
-           $1406 = ClearMap
-           $140d = ClearMap.clear_map_loop
-  SECTION: $141f-$163d ($021f bytes) ["collision"]
-           $141f = CollisionCheck
-           $142c = CollisionCheck.tryOtherY
-           $1434 = CollisionCheck.skip8x8Adjustment
-           $1440 = CollisionCheck.checkX
-           $144d = CollisionCheck.tryOtherX
-           $145a = CollisionCheck.collision
-           $145e = CollisionCheck.end
-           $1462 = CollisionUpdate
-           $149c = CollisionUpdate.endPointBalloon
-           $14c8 = CollisionUpdate.checkEnemyHitPlayer
-           $14eb = CollisionUpdate.endEnemy
-           $1517 = CollisionUpdate.checkEnemy2HitPlayer
-           $153a = CollisionUpdate.endEnemy2
-           $1567 = CollisionUpdate.endBomb
-           $1592 = CollisionUpdate.endBird
-           $15c4 = CollisionUpdate.endCactusHitBird
-           $15f6 = CollisionUpdate.endCactus2HitBird
-           $15f7 = CollisionUpdate.collisionWithPlayer
-           $1601 = CollisionUpdate.end
-           $1601 = CollisionUpdate.endEnemyHitPlayer
-           $1602 = OffScreenXEnemies
-           $1613 = OffScreenXEnemies.end
-           $1615 = OffScreenYEnemies
-           $1626 = OffScreenYEnemies.end
-           $1628 = OffScreenX
-           $1630 = OffScreenX.end
-           $1632 = OffScreenY
-           $163c = OffScreenY.end
-  SECTION: $163e-$171f ($00e2 bytes) ["rom"]
-           $163e = Start
-           $1672 = MenuLoop
-           $1684 = StartClassic
-           $16d2 = ParkLoop
-           $16e1 = PreGameLoop
-           $1702 = GameLoopCountdown
-           $1711 = GameLoop
-  SECTION: $1720-$1792 ($0073 bytes) ["joypad"]
-           $1720 = ReadInput
-           $1750 = JOY_RIGHT
-           $1758 = JOY_LEFT
-           $1760 = JOY_UP
-           $1768 = JOY_DOWN
-           $1770 = JOY_A
-           $1778 = JOY_B
-           $1780 = JOY_SELECT
-           $1788 = JOY_START
-           $1790 = JOY_FALSE
-    SLACK: $28a5 bytes
+  SECTION: $11b1-$13cf ($021f bytes) ["collision"]
+           $11b1 = CollisionCheck
+           $11be = CollisionCheck.tryOtherY
+           $11c6 = CollisionCheck.skip8x8Adjustment
+           $11d2 = CollisionCheck.checkX
+           $11df = CollisionCheck.tryOtherX
+           $11ec = CollisionCheck.collision
+           $11f0 = CollisionCheck.end
+           $11f4 = CollisionUpdate
+           $122e = CollisionUpdate.endPointBalloon
+           $125a = CollisionUpdate.checkEnemyHitPlayer
+           $127d = CollisionUpdate.endEnemy
+           $12a9 = CollisionUpdate.checkEnemy2HitPlayer
+           $12cc = CollisionUpdate.endEnemy2
+           $12f9 = CollisionUpdate.endBomb
+           $1324 = CollisionUpdate.endBird
+           $1356 = CollisionUpdate.endCactusHitBird
+           $1388 = CollisionUpdate.endCactus2HitBird
+           $1389 = CollisionUpdate.collisionWithPlayer
+           $1393 = CollisionUpdate.end
+           $1393 = CollisionUpdate.endEnemyHitPlayer
+           $1394 = OffScreenXEnemies
+           $13a5 = OffScreenXEnemies.end
+           $13a7 = OffScreenYEnemies
+           $13b8 = OffScreenYEnemies.end
+           $13ba = OffScreenX
+           $13c2 = OffScreenX.end
+           $13c4 = OffScreenY
+           $13ce = OffScreenY.end
+  SECTION: $13d0-$159e ($01cf bytes) ["graphics"]
+           $13d0 = LoadClassicGameData
+           $1437 = LoadMenuData
+           $1462 = RefreshScore
+           $14a0 = RefreshLives
+           $14ab = ClearAllTiles
+           $14b4 = ClearAllTiles.loop_u1
+           $14c3 = ClearAllTiles.loop_u2
+           $14d2 = ClearAllTiles.loop_u3
+           $14dd = ClearMap
+           $14e6 = ClearMap.loop_u4
+           $14f1 = ReplaceTilemapHorizontal
+           $151a = ReplaceTilemapHorizontal.handleZero
+           $151c = ReplaceTilemapHorizontal.handleZeroEnd
+           $1528 = ReplaceTilemapHorizontal.loop
+           $1546 = ReplaceTilemapHorizontal.end
+           $154b = MoveToNextTilemap
+           $155d = MoveToNextTilemap.canUpdateTilemap
+           $1574 = MoveToNextTilemap.clouds1
+           $1589 = MoveToNextTilemap.clouds2
+           $159c = MoveToNextTilemap.end
+  SECTION: $159f-$165f ($00c1 bytes) ["rom"]
+           $159f = Start
+           $15d3 = StartClassic
+           $1621 = PreGameLoop
+           $1642 = GameLoopCountdown
+           $1651 = GameLoop
+  SECTION: $1660-$16d2 ($0073 bytes) ["joypad"]
+           $1660 = ReadInput
+           $1690 = JOY_RIGHT
+           $1698 = JOY_LEFT
+           $16a0 = JOY_UP
+           $16a8 = JOY_DOWN
+           $16b0 = JOY_A
+           $16b8 = JOY_B
+           $16c0 = JOY_SELECT
+           $16c8 = JOY_START
+           $16d0 = JOY_FALSE
+    SLACK: $2965 bytes
 
 ROMX bank #1:
   SECTION: $4000-$4b3d ($0b3e bytes) ["Song Data2"]
@@ -797,70 +773,93 @@ ROMX bank #1:
            $759a = UpdateMenu
            $75a8 = UpdateMenu.fadeOut
            $75b3 = UpdateMenu.hasFadedOut
-  SECTION: $75b7-$7654 ($009e bytes) ["sound"]
-           $75b7 = AUDIO_OFF
-           $75bb = AUDIO_ON
-           $75c0 = PopSound
-           $75d3 = ExplosionSound
-           $75e6 = FallingSound
-           $75fb = StopFallingSound
-           $7600 = CollectSound
-           $7615 = WrongAnswerSound
-           $762c = PercussionSound
-           $7639 = BassSound
-           $764a = ClearSound
-  SECTION: $7655-$76c0 ($006c bytes) ["memory"]
-           $7655 = MEMCPY.memcpy_loop
-           $7655 = MEMCPY
-           $7659 = MEMCPY.memcpy_check_limit
-           $765f = ClearOAM
-           $7666 = ClearOAM.loop_u1
-           $766f = ClearRAM
-           $7676 = ClearRAM.loop_u2
-           $767f = RequestOAMSpace
-           $7686 = RequestOAMSpace.loop
-           $76a8 = RequestOAMSpace.isNotZero4
-           $76a9 = RequestOAMSpace.isNotZero3
-           $76aa = RequestOAMSpace.isNotZero2
-           $76ab = RequestOAMSpace.isNotZero1
-           $76ad = RequestOAMSpace.notEnoughSprites
-           $76b7 = RequestOAMSpaceOffset
-  SECTION: $76c1-$7710 ($0050 bytes) ["menu tiles"]
-           $76c1 = MenuTiles
-           $7711 = MenuTilesEnd
-  SECTION: $7711-$7759 ($0049 bytes) ["math"]
-           $7711 = MODULO
-           $7713 = MODULO.loop
-           $7718 = RANDOM
-           $7721 = DIVISION
-           $7727 = DIVISION.loop
-           $772c = DIVISION.end
-           $772f = ToBCD
-           $7746 = ToBCD.end
-           $7749 = MULTIPLY
-           $774c = MULTIPLY.loop
-           $7757 = MULTIPLY.end
-  SECTION: $775a-$7789 ($0030 bytes) ["score"]
-           $775a = InitializeScore
-           $7762 = IncreaseDifficulty
-           $7769 = IncreaseDifficulty.scoreMid
-           $7769 = IncreaseDifficulty.scoreLow
-           $7769 = IncreaseDifficulty.scoreHigh
-           $776a = AddPoints
-           $777d = AddPoints.carry
-           $7787 = AddPoints.end
-  SECTION: $778a-$77b9 ($0030 bytes) ["general initialization"]
-           $778a = InitializeGameVars
-  SECTION: $77ba-$77e3 ($002a bytes) ["lcd"]
-           $77ba = LCD_OFF
-           $77c1 = LCD_ON
-           $77c8 = LCD_ON_BG_ONLY
-           $77cd = WaitVBlank
-           $77d2 = WaitVBlank.loop
-           $77db = SetupWindow
-  SECTION: $77e4-$77eb ($0008 bytes) ["timer"]
-           $77e4 = UpdateGlobalTimer
-    SLACK: $0814 bytes
+  SECTION: $75b7-$7660 ($00aa bytes) ["palettes"]
+           $75b7 = SetupPalettes
+           $75c8 = SetupParkPalettes
+           $75d7 = FadeOutPalettes
+           $75df = FadeOutPalettes.fadeOut
+           $75f3 = FadeOutPalettes.fade1
+           $75f7 = FadeOutPalettes.fade2
+           $75fb = FadeOutPalettes.fade3
+           $75ff = FadeOutPalettes.fade4
+           $7601 = FadeOutPalettes.end
+           $7611 = FadeInPalettes
+           $7619 = FadeInPalettes.fadeIn
+           $762d = FadeInPalettes.fade1
+           $7631 = FadeInPalettes.fade2
+           $7635 = FadeInPalettes.fade3
+           $7639 = FadeInPalettes.fade4
+           $763b = FadeInPalettes.end
+           $764b = HasFadedOut
+           $7651 = HasFadedOut.false
+           $7653 = HasFadedOut.true
+           $7656 = HasFadedIn
+           $765c = HasFadedIn.false
+           $765e = HasFadedIn.true
+  SECTION: $7661-$76fe ($009e bytes) ["sound"]
+           $7661 = AUDIO_OFF
+           $7665 = AUDIO_ON
+           $766a = PopSound
+           $767d = ExplosionSound
+           $7690 = FallingSound
+           $76a5 = StopFallingSound
+           $76aa = CollectSound
+           $76bf = WrongAnswerSound
+           $76d6 = PercussionSound
+           $76e3 = BassSound
+           $76f4 = ClearSound
+  SECTION: $76ff-$776a ($006c bytes) ["memory"]
+           $76ff = MEMCPY.memcpy_loop
+           $76ff = MEMCPY
+           $7703 = MEMCPY.memcpy_check_limit
+           $7709 = ClearOAM
+           $7710 = ClearOAM.loop_u1
+           $7719 = ClearRAM
+           $7720 = ClearRAM.loop_u2
+           $7729 = RequestOAMSpace
+           $7730 = RequestOAMSpace.loop
+           $7752 = RequestOAMSpace.isNotZero4
+           $7753 = RequestOAMSpace.isNotZero3
+           $7754 = RequestOAMSpace.isNotZero2
+           $7755 = RequestOAMSpace.isNotZero1
+           $7757 = RequestOAMSpace.notEnoughSprites
+           $7761 = RequestOAMSpaceOffset
+  SECTION: $776b-$77ba ($0050 bytes) ["menu tiles"]
+           $776b = MenuTiles
+           $77bb = MenuTilesEnd
+  SECTION: $77bb-$7803 ($0049 bytes) ["math"]
+           $77bb = MODULO
+           $77bd = MODULO.loop
+           $77c2 = RANDOM
+           $77cb = DIVISION
+           $77d1 = DIVISION.loop
+           $77d6 = DIVISION.end
+           $77d9 = ToBCD
+           $77f0 = ToBCD.end
+           $77f3 = MULTIPLY
+           $77f6 = MULTIPLY.loop
+           $7801 = MULTIPLY.end
+  SECTION: $7804-$7833 ($0030 bytes) ["score"]
+           $7804 = InitializeScore
+           $780c = IncreaseDifficulty
+           $7813 = IncreaseDifficulty.scoreMid
+           $7813 = IncreaseDifficulty.scoreLow
+           $7813 = IncreaseDifficulty.scoreHigh
+           $7814 = AddPoints
+           $7827 = AddPoints.carry
+           $7831 = AddPoints.end
+  SECTION: $7834-$7863 ($0030 bytes) ["general initialization"]
+           $7834 = InitializeGameVars
+  SECTION: $7864-$788d ($002a bytes) ["lcd"]
+           $7864 = LCD_OFF
+           $786b = LCD_ON
+           $7872 = LCD_ON_BG_ONLY
+           $7877 = WaitVBlank
+           $787c = WaitVBlank.loop
+           $7885 = SetupWindow
+  SECTION: $788e-$7895 ($0008 bytes) ["timer"]
+           $788e = UpdateGlobalTimer
+    SLACK: $076a bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c063 ($0064 bytes) ["RAM vars"]
@@ -1040,7 +1039,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $175b bytes in 1 bank
-    ROMX: $37ec bytes in 1 bank
+    ROM0: $169b bytes in 1 bank
+    ROMX: $3896 bytes in 1 bank
     WRAM0: $0152 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
