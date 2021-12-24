@@ -6,7 +6,7 @@ INCLUDE "macro.inc"
 PROPELLER_START_X EQU 105
 PROPELLER_START_Y EQU 55
 
-SECTION "propellerCactusVars", WRAM0
+SECTION "propellerCactus vars", WRAM0
     wPropellerCactus:: DB
     wPropeller_x: DB
     wPropeller_y: DB

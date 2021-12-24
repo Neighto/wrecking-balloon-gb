@@ -155,7 +155,7 @@ ReplaceTilemapHorizontal::
 	push de
 	push bc
 	; Can we update tilemap
-	ld a, [wCanUpdateTilemap]
+	ld a, [wUpdateTilemapIndex]
 	cp a, 0
 	jr z, .end
 	; Check if we have already checked this SCX value
@@ -239,18 +239,18 @@ MoveToNextTilemap::
 	cp a, 2*BITS_IN_BYTE-1
 	jr nc, .end
 	xor a ; ld a, 0 
-	ld [alreadyReadThis], a
+	ld [wHasUpdatedNextTilemapAddress], a
 	jr .end
 .canUpdateTilemap:
 	; Have we already read this
-	ld a, [alreadyReadThis]
+	ld a, [wHasUpdatedNextTilemapAddress]
 	cp a, 0
 	jr nz, .end
 	; We have read this
 	ld a, 1
-	ld [alreadyReadThis], a
+	ld [wHasUpdatedNextTilemapAddress], a
 	; Set the tilemap address to update
-	ld a, [wCanUpdateTilemap]
+	ld a, [wHasUpdatedNextTilemapAddress]
 	cp a, 0
 	jr z, .clouds2
 	cp a, 1
@@ -265,7 +265,7 @@ MoveToNextTilemap::
 	ld a, $0
 	ld [wUpdateTilemapOffset], a
 	ld a, 1
-	ld [wCanUpdateTilemap], a
+	ld [wUpdateTilemapIndex], a
 	jr .end
 .clouds2:
 	ld hl, wUpdateTilemapAddress
@@ -276,7 +276,7 @@ MoveToNextTilemap::
 	ld a, $37
 	ld [wUpdateTilemapOffset], a
 	ld a, 2
-	ld [wCanUpdateTilemap], a
+	ld [wUpdateTilemapIndex], a
 .end:
 	pop af
 	pop hl

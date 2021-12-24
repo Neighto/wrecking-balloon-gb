@@ -1,5 +1,10 @@
 INCLUDE "hardware.inc"
 
+SECTION "OAM vars", WRAM0[$C100]
+OAMVars::
+	wOAM:: DS 4*40 ; 40 sprites with 4 bytes each of attributes
+OAMVarsEnd::
+
 SECTION "OAM DMA routine", ROM0
 
 ; Move DMA routine to HRAM
