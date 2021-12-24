@@ -67,7 +67,7 @@ ParkLoop:
 	call UpdateGlobalTimer
 	jp ParkLoop
 
-PregameLoop::
+PreGameLoop::
 	call StartedClassic
 	call SetClassicInterrupts
 	call ResetScroll
@@ -79,10 +79,15 @@ PregameLoop::
 	call SpawnCountdown
 	call SetupPalettes
 	call LCD_ON
-GameLoop:
+GameLoopCountdown:
+	call WaitVBlank
+	call OAMDMA
+	call UpdateClassicCountdown
+	call UpdateGlobalTimer
+	jp GameLoopCountdown
+GameLoop::
 	call WaitVBlank
 	call OAMDMA
 	call UpdateClassic
 	call UpdateGlobalTimer
-.end:
 	jp GameLoop
