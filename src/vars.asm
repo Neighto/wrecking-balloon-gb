@@ -1,4 +1,4 @@
-SECTION "RAM vars", WRAM0[$C000]
+SECTION "general RAM vars", WRAM0[$C000]
 	vblank_flag:: DB
 	score:: DS 3
 	global_timer:: DB
