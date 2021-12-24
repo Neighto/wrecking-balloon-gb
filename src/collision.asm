@@ -2,9 +2,10 @@ INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 INCLUDE "macro.inc"
 
-SECTION "collision", ROM0
-
+COLLISION_UPDATE_TIME EQU %00000011
 OFF_SCREEN_ENEMY_BUFFER EQU 16
+
+SECTION "collision", ROM0
 
 CollisionCheck:
     ; bc = argument for target colliding with player cactus
@@ -86,7 +87,7 @@ CollisionCheck:
 ; TODO: Separate collision checks, or check if spawned before checking
 CollisionUpdate::
     ld a, [global_timer]
-	and	%00000011
+	and	COLLISION_UPDATE_TIME
     jp nz, .end
 
     ; Check if alive

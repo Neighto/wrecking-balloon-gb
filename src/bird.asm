@@ -14,6 +14,8 @@ BIRD_HORIZONTAL_SPEED EQU 2
 BIRD_VERTICAL_SPEED EQU 1
 BIRD_FLAP_UP_SPEED EQU 5
 
+; Some changes made on 2021-12-23 causes the birds head to fall off and instantly kill player...
+
 SECTION "bird vars", WRAM0
     wBirdOAM:: DB
     bird_x:: DB
@@ -354,13 +356,11 @@ DeathOfBird::
     ld [bird_alive], a
     ld a, 1
     ld [bird_falling], a
-    ; Sound
-    call ExplosionSound
     ; Screaming bird
     ld a, [bird_spawn_right]
     cp a, 0
     jr z, .facingRight
-.facingLeft:
+; .facingLeft:
     SET_HL_TO_ADDRESS wOAM+2, wBirdOAM
     ld [hl], $A6
     SET_HL_TO_ADDRESS wOAM+6, wBirdOAM
@@ -376,4 +376,6 @@ DeathOfBird::
     SET_HL_TO_ADDRESS wOAM+10, wBirdOAM
     ld [hl], $A6
 .end:
+    ; Sound
+    call ExplosionSound
     ret
