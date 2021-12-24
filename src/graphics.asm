@@ -173,16 +173,25 @@ ReplaceTilemapHorizontal::
 	ret
 
 MoveToNextTilemap::
+	; Only set the next tilemap to load if we are between the 0th and 1st tile
 	push hl
 	push af
 	; Should we update tilemap
 	ldh a, [rSCX]
-	cp a, 5
+	cp a, BITS_IN_BYTE-1
+	jr c, .canUpdateTilemap
+	; Should we reset update
+	ldh a, [rSCX]
+	cp a, 10
 	jr nc, .end
+	ld a, 0 
+	ld [alreadyReadThis], a
+	jr .end
+.canUpdateTilemap:
 	; Have we already read this
 	ld a, [alreadyReadThis]
 	cp a, 0
-	jr nz, .end2
+	jr nz, .end
 	; We have read this
 	ld a, 1
 	ld [alreadyReadThis], a
@@ -203,7 +212,7 @@ MoveToNextTilemap::
 	ld [wUpdateTilemapOffset], a
 	ld a, 1
 	ld [wCanUpdateTilemap], a
-	jr .end2
+	jr .end
 .clouds2:
 	ld hl, wUpdateTilemapAddress
 	ld a, LOW(World2Map)
@@ -214,15 +223,7 @@ MoveToNextTilemap::
 	ld [wUpdateTilemapOffset], a
 	ld a, 2
 	ld [wCanUpdateTilemap], a
-	jr .end2
 .end:
-	; Should we reset update
-	ldh a, [rSCX]
-	cp a, 10
-	jr nc, .end2
-	ld a, 0 
-	ld [alreadyReadThis], a
-.end2:
 	call ReplaceTilemapHorizontal
 	pop af
 	pop hl
