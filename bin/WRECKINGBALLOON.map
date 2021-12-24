@@ -12,12 +12,18 @@ ROM0 bank #0:
            $002d = ResetScroll
   SECTION: $0040-$0042 ($0003 bytes) ["vblank IRQ"]
   SECTION: $0048-$004a ($0003 bytes) ["LCD IRQ"]
-  SECTION: $004b-$00fc ($00b2 bytes) ["rom"]
-           $004b = Start
-           $007f = StartClassic
-           $00cd = PregameLoop
-           $00ee = GameLoop
-           $00fa = GameLoop.end
+  SECTION: $004b-$00d9 ($008f bytes) ["interrupts"]
+           $004b = VBlankInterrupt
+           $005b = LCDInterrupt
+           $0065 = LCDInterruptEnd
+           $0069 = SetBaseInterrupts
+           $007b = ParkLCDInterrupt
+           $0087 = ParkLCDInterrupt.clouds
+           $0095 = ParkLCDInterrupt.ground
+           $009a = ParkLCDInterrupt.end
+           $009d = SetParkInterrupts
+           $00aa = ClassicLCDInterrupt
+           $00cc = SetClassicInterrupts
   SECTION: $0100-$014f ($0050 bytes) ["header"]
   SECTION: $0150-$0a0f ($08c0 bytes) ["tilemaps"]
            $0150 = BackgroundMap
@@ -160,10 +166,10 @@ ROM0 bank #0:
            $1249 = ReplaceTilemapHorizontal.loop
            $1267 = ReplaceTilemapHorizontal.end
            $126c = MoveToNextTilemap
-           $128b = MoveToNextTilemap.clouds1
-           $12a0 = MoveToNextTilemap.clouds2
-           $12b5 = MoveToNextTilemap.end
-           $12c0 = MoveToNextTilemap.end2
+           $1281 = MoveToNextTilemap.canUpdateTilemap
+           $1298 = MoveToNextTilemap.clouds1
+           $12ad = MoveToNextTilemap.clouds2
+           $12c0 = MoveToNextTilemap.end
            $12c6 = LoadMenuData
            $12eb = SetupPalettes
            $12fc = SetupParkPalettes
@@ -224,30 +230,26 @@ ROM0 bank #0:
            $1636 = OffScreenX.end
            $1638 = OffScreenY
            $1642 = OffScreenY.end
-  SECTION: $1644-$16d2 ($008f bytes) ["interrupts"]
-           $1644 = VBlankInterrupt
-           $1654 = LCDInterrupt
-           $165e = LCDInterruptEnd
-           $1662 = SetBaseInterrupts
-           $1674 = ParkLCDInterrupt
-           $1680 = ParkLCDInterrupt.clouds
-           $168e = ParkLCDInterrupt.ground
-           $1693 = ParkLCDInterrupt.end
-           $1696 = SetParkInterrupts
-           $16a3 = ClassicLCDInterrupt
-           $16c5 = SetClassicInterrupts
-  SECTION: $16d3-$1745 ($0073 bytes) ["joypad"]
-           $16d3 = ReadInput
-           $1703 = JOY_RIGHT
-           $170b = JOY_LEFT
-           $1713 = JOY_UP
-           $171b = JOY_DOWN
-           $1723 = JOY_A
-           $172b = JOY_B
-           $1733 = JOY_SELECT
-           $173b = JOY_START
-           $1743 = JOY_FALSE
-    SLACK: $28cf bytes
+  SECTION: $1644-$1716 ($00d3 bytes) ["rom"]
+           $1644 = Start
+           $1678 = MenuLoop
+           $168a = StartClassic
+           $16d8 = ParkLoop
+           $16e7 = PregameLoop
+           $1708 = GameLoop
+           $1714 = GameLoop.end
+  SECTION: $1717-$1789 ($0073 bytes) ["joypad"]
+           $1717 = ReadInput
+           $1747 = JOY_RIGHT
+           $174f = JOY_LEFT
+           $1757 = JOY_UP
+           $175f = JOY_DOWN
+           $1767 = JOY_A
+           $176f = JOY_B
+           $1777 = JOY_SELECT
+           $177f = JOY_START
+           $1787 = JOY_FALSE
+    SLACK: $28ae bytes
 
 ROMX bank #1:
   SECTION: $4000-$4b3d ($0b3e bytes) ["Song Data2"]
@@ -1039,7 +1041,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $1731 bytes in 1 bank
+    ROM0: $1752 bytes in 1 bank
     ROMX: $37e5 bytes in 1 bank
     WRAM0: $0152 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
