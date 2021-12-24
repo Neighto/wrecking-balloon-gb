@@ -39,7 +39,7 @@ ParkFadeOut:
 	call FadeOutPalettes
 	ret
 .hasFadedOut:
-	call PregameLoop
+	call PreGameLoop
     ret
 
 UpdatePark::
@@ -299,28 +299,30 @@ ClassicGameManager:
     pop af
     ret
 
-UpdateClassic::
+UpdateClassicCountdown::
     ld a, [countdown_frame]
     cp a, 7 ; TODO dont hardcode in case we change it in CountdownAnimation
-    jr c, .countdownProgress
-.countdownComplete:
+    jp nc, GameLoop
+    call CountdownAnimation
+    call HorizontalScroll
+    call MoveToNextTilemap
+    call ReplaceTilemapHorizontal
+	call ClassicGameManager
+	call RefreshScore
+    ret
+
+UpdateClassic::
 	call TryToUnpause
 	ld a, [paused_game]
 	cp a, 1
 	jr z, .end
     call HorizontalScroll
     call MoveToNextTilemap
+    call ReplaceTilemapHorizontal
 	call CollisionUpdate
     call PlayerUpdate
     call ClassicGameManager
 	call RefreshScore
     call _hUGE_dosound
-    ret
-.countdownProgress:
-    call CountdownAnimation
-    call HorizontalScroll
-    call MoveToNextTilemap
-	call ClassicGameManager
-	call RefreshScore ; Might want to move somewhere to call less frequently
 .end:
     ret

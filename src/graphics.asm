@@ -181,10 +181,9 @@ MoveToNextTilemap::
 	cp a, BITS_IN_BYTE-1
 	jr c, .canUpdateTilemap
 	; Should we reset update
-	ldh a, [rSCX]
-	cp a, 10
+	cp a, 2*BITS_IN_BYTE-1
 	jr nc, .end
-	ld a, 0 
+	xor a ; ld a, 0 
 	ld [alreadyReadThis], a
 	jr .end
 .canUpdateTilemap:
@@ -224,7 +223,6 @@ MoveToNextTilemap::
 	ld a, 2
 	ld [wCanUpdateTilemap], a
 .end:
-	call ReplaceTilemapHorizontal
 	pop af
 	pop hl
 	ret
