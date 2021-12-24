@@ -3,9 +3,6 @@ INCLUDE "balloonCactusConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
-SECTION "point balloon", ROMX
-
-; Balloons will spawn and fly upward AND can be popped
 POINT_BALLOON_START_X EQU 120
 POINT_BALLOON_START_Y EQU 156
 POINT_BALLOON_SPAWN_A EQU 32
@@ -15,8 +12,19 @@ POINT_BALLOON_SPAWN_D EQU 128
 
 PB_SPRITE_MOVE_WAIT_TIME EQU %00000001
 
+SECTION "point balloon vars", WRAM0
+    wPointBalloonOAM:: DB
+    point_balloon_x:: DB
+    point_balloon_y:: DB
+    point_balloon_alive:: DB
+    point_balloon_popping:: DB
+    point_balloon_popping_frame:: DB
+    point_balloon_pop_timer:: DB
+    point_balloon_respawn_timer:: DB
+
+SECTION "point balloon", ROMX
+
 UpdateBalloonPosition:
-    
     SET_HL_TO_ADDRESS wOAM, wPointBalloonOAM
     ; Update Y
     ld a, [point_balloon_y]

@@ -2,8 +2,6 @@ INCLUDE "hardware.inc"
 INCLUDE "balloonCactusConstants.inc"
 INCLUDE "macro.inc"
 
-SECTION "player", ROMX
-
 PLAYER_START_X EQU 80
 PLAYER_START_Y EQU 100
 PLAYER_BALLOON_START_Y EQU (PLAYER_START_Y-16)
@@ -17,6 +15,29 @@ INVINCIBLE_RESPAWN_TIME EQU 170
 INVINCIBLE_BLINK_FASTER_TIME EQU 50
 INVINCIBLE_BLINK_NORMAL_SPEED EQU %00001000
 INVINCIBLE_BLINK_FAST_SPEED EQU %00000100
+
+SECTION "player vars", WRAM0
+  wPlayerCactusOAM:: DB
+  wPlayerBalloonOAM:: DB
+  player_x:: DB
+  player_y:: DB
+  player_cactus_x:: DB 
+  player_cactus_y:: DB
+  player_alive:: DB
+  player_popping:: DB
+  player_popping_frame:: DB
+  player_falling:: DB
+  player_fall_speed:: DB
+  player_falling_timer:: DB
+  player_pop_timer:: DB
+  player_delay_falling_timer:: DB
+  player_respawn_timer:: DB
+  player_speed:: DB
+  player_lives:: DB
+  player_invincible:: DB ; Operates like a timer, when set, invincible immediately
+  player_cant_move:: DB
+
+SECTION "player", ROM0
 
 UpdateBalloonPosition:
   SET_HL_TO_ADDRESS wOAM, wPlayerBalloonOAM

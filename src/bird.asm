@@ -2,8 +2,6 @@ INCLUDE "points.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
-SECTION "bird", ROMX
-
 BIRD_SPRITE_MOVE_WAIT_TIME EQU %00000011
 BIRD_SPRITE_FALLING_TIME EQU %00001111
 BIRD_START_LEFT_X EQU 0
@@ -15,6 +13,19 @@ BIRD_SPAWN_D EQU 110
 BIRD_HORIZONTAL_SPEED EQU 2
 BIRD_VERTICAL_SPEED EQU 1
 BIRD_FLAP_UP_SPEED EQU 5
+
+SECTION "bird vars", WRAM0
+    wBirdOAM:: DB
+    bird_x:: DB
+    bird_y:: DB
+    bird_flapping_frame:: DB
+    bird_respawn_timer:: DB
+    bird_falling:: DB
+    bird_alive:: DB
+    bird_spawn_right:: DB
+    bird_speed:: DB
+
+SECTION "bird", ROMX
 
 UpdateBirdPosition:
     push hl

@@ -3,8 +3,6 @@ INCLUDE "balloonCactusConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
-SECTION "bomb", ROMX
-
 BOMB_START_Y EQU 150
 BOMB_SPAWN_A EQU 40
 BOMB_SPAWN_B EQU 60
@@ -13,6 +11,19 @@ BOMB_SPAWN_D EQU 110
 BOMB_DEFAULT_SPEED EQU 1
 
 BOMB_SPRITE_MOVE_WAIT_TIME EQU %00000001
+
+SECTION "bomb vars", WRAM0
+    wBombOAM:: DB
+    bomb_x:: DB
+    bomb_y:: DB
+    bomb_respawn_timer:: DB
+    bomb_alive:: DB
+    bomb_speed:: DB
+    bomb_popping:: DB
+    bomb_popping_frame:: DB
+    bomb_pop_timer:: DB
+
+SECTION "bomb", ROMX
 
 UpdateBombPosition:
     push hl

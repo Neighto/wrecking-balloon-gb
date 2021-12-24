@@ -3,8 +3,6 @@ INCLUDE "balloonCactusConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
-SECTION "enemy 2", ROMX
-
 ENEMY2_START_X EQU 160
 ENEMY2_START_Y EQU 55
 ENEMY2_BALLOON_START_Y EQU (ENEMY2_START_Y-16)
@@ -12,6 +10,25 @@ ENEMY2_SPAWN_A EQU 41
 ENEMY2_SPAWN_B EQU 59
 ENEMY2_SPAWN_C EQU 77
 ENEMY2_SPAWN_D EQU 95
+
+SECTION "enemy 2 vars", WRAM0
+    wEnemy2CactusOAM:: DB
+    wEnemy2BalloonOAM:: DB
+    enemy2_balloon_x:: DB
+    enemy2_balloon_y:: DB
+    enemy2_cactus_x:: DB 
+    enemy2_cactus_y:: DB
+    enemy2_alive:: DB
+    enemy2_popping:: DB
+    enemy2_popping_frame:: DB
+    enemy2_falling:: DB
+    enemy2_fall_speed:: DB
+    enemy2_falling_timer:: DB
+    enemy2_pop_timer:: DB
+    enemy2_delay_falling_timer:: DB
+    enemy2_respawn_timer:: DB
+
+SECTION "enemy 2", ROMX
 
 UpdateBalloonPosition:
     SET_HL_TO_ADDRESS wOAM, wEnemy2BalloonOAM
