@@ -39,9 +39,9 @@ ExplosionSound::
   ld a, %10000000
   ld [rNR44], a
   ; Master volume
-  ld  a,%11111111
-  ld  [rNR50],a
-  ld  [rNR51],a
+  ld a, %11111111
+  ld [rNR50],a
+  ld [rNR51],a
   ret
 
 FallingSound::
