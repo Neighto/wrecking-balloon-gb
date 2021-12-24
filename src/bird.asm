@@ -354,13 +354,26 @@ DeathOfBird::
     ld [bird_alive], a
     ld a, 1
     ld [bird_falling], a
+    ; Sound
+    call ExplosionSound
     ; Screaming bird
+    ld a, [bird_spawn_right]
+    cp a, 0
+    jr z, .facingRight
+.facingLeft:
     SET_HL_TO_ADDRESS wOAM+2, wBirdOAM
     ld [hl], $A6
     SET_HL_TO_ADDRESS wOAM+6, wBirdOAM
     ld [hl], $A8
     SET_HL_TO_ADDRESS wOAM+10, wBirdOAM
     ld [hl], $AA
-    ; Sound
-    call ExplosionSound
+    jr .end
+.facingRight:
+    SET_HL_TO_ADDRESS wOAM+2, wBirdOAM
+    ld [hl], $AA
+    SET_HL_TO_ADDRESS wOAM+6, wBirdOAM
+    ld [hl], $A8
+    SET_HL_TO_ADDRESS wOAM+10, wBirdOAM
+    ld [hl], $A6
+.end:
     ret
