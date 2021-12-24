@@ -84,159 +84,160 @@ CollisionCheck:
     pop de
     ret
 
-; TODO: Separate collision checks, or check if spawned before checking
-CollisionUpdate::
-    ld a, [global_timer]
-	and	COLLISION_UPDATE_TIME
-    jp nz, .end
+CollisionWithPlayer:
+    push af
+    ; Check if player is invincible
+    ld a, [player_invincible]
+    cp a, 0
+    call z, DeathOfPlayer
+    pop af
+    ret
 
-    ; Check if alive
-    ld a, [player_alive]
-    and 1
-    jp z, .end
-
-    ; Point balloon
+CollisionPointBalloon:
     ; Check if alive
     ld a, [point_balloon_alive]
-    and 1
-    jr z, .endPointBalloon
+    cp a, 0
+    jr z, .end
     ; Check collision
     SET_HL_TO_ADDRESS wOAM, wPointBalloonOAM
     LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
     xor a ; ld a, 0
     call CollisionCheck
-    and 1
-    jr z, .endPointBalloon
-    ; Collided
-    call DeathOfPointBalloon
-.endPointBalloon:
-    ; Enemy
+    cp a, 0
+    call nz, DeathOfPointBalloon
+.end:
+    ret
+
+CollisionEnemy:
     ; Check if alive
     ld a, [enemy_alive]
-    and 1
-    jr z, .endEnemy
+    cp a, 0
+    jr z, .birdCollision
     ; Check collision
     SET_HL_TO_ADDRESS wOAM, wEnemyBalloonOAM
     LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
     xor a ; ld a, 0
     call CollisionCheck
-    and 1
-    jr z, .checkEnemyHitPlayer
-    call DeathOfEnemy
-    jr .endEnemy
-.checkEnemyHitPlayer:
+    cp a, 0
+    call nz, DeathOfEnemy
+    ; Check hit player
     SET_HL_TO_ADDRESS wOAM, wPlayerBalloonOAM
     LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
     xor a ; ld a, 0
     call CollisionCheck
-    and 1
-    jr z, .endEnemy
-    jp .collisionWithPlayer
-.endEnemy:
-    ; Enemy 2
+    cp a, 0
+    jr z, .birdCollision
+    call nz, CollisionWithPlayer
+.birdCollision:
+    ; Check if alive
+    ld a, [bird_alive]
+    cp a, 0
+    jr z, .end
+    ; Check if falling
+    ld a, [enemy_falling]
+    cp a, 0
+    jr z, .end
+    SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
+    LD_BC_HL
+    SET_HL_TO_ADDRESS wOAM, wBirdOAM
+    ld a, 1
+    call CollisionCheck
+    cp a, 0
+    call nz, DeathOfBird
+.end:
+    ret
+
+CollisionEnemy2:
     ; Check if alive
     ld a, [enemy2_alive]
-    and 1
-    jr z, .endEnemy2
+    cp a, 0
+    jr z, .birdCollision
     ; Check collision
     SET_HL_TO_ADDRESS wOAM, wEnemy2BalloonOAM
     LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
     xor a ; ld a, 0
     call CollisionCheck
-    and 1
-    jr z, .checkEnemy2HitPlayer
-    ; Collided
-    call DeathOfEnemy2
-    jr .endEnemy2
-.checkEnemy2HitPlayer:
+    cp a, 0
+    call nz, DeathOfEnemy2
+    ; Check hit player
     SET_HL_TO_ADDRESS wOAM, wPlayerBalloonOAM
     LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, wEnemy2CactusOAM
     xor a ; ld a, 0
     call CollisionCheck
-    and 1
-    jr z, .endEnemy2
-    jp .collisionWithPlayer
-.endEnemy2:
-    ; BOMB
+    cp a, 0
+    jr z, .birdCollision
+    call nz, CollisionWithPlayer
+.birdCollision:
+    ; Check if alive
+    ld a, [bird_alive]
+    cp a, 0
+    jr z, .end
+    ; Check if falling
+    ld a, [enemy2_falling]
+    cp a, 0
+    jr z, .end
+    SET_HL_TO_ADDRESS wOAM, wEnemy2CactusOAM
+    LD_BC_HL
+    SET_HL_TO_ADDRESS wOAM, wBirdOAM
+    ld a, 1
+    call CollisionCheck
+    cp a, 0
+    call nz, DeathOfBird
+.end
+    ret
+
+CollisionBomb:
     ; Check if alive
     ld a, [bomb_alive]
-    and 1
-    jr z, .endBomb
+    cp a, 0
+    jr z, .end
     ; Check collision
     SET_HL_TO_ADDRESS wOAM, wBombOAM
     LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
     xor a ; ld a, 0
     call CollisionCheck
-    and 1
-    jr z, .endBomb
-    call DeathOfBomb
-    jp .collisionWithPlayer
-.endBomb:
-    ; Bird
+    cp a, 0
+    call nz, CollisionWithPlayer
+    call nz, DeathOfBomb
+.end:
+    ret
+
+CollisionBird:
     ; Check if alive
     ld a, [bird_alive]
-    and 1
-    jr z, .endBird
-    ; Check collision bird
+    cp a, 0
+    jr z, .end
+    ; Check collision
     SET_HL_TO_ADDRESS wOAM, wPlayerBalloonOAM
     LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, wBirdOAM
     ld a, 1
     call CollisionCheck
-    and 1
-    jr z, .endBird
-    jp .collisionWithPlayer
-.endBird:
-    ; Enemy cactus hit bird
-    ; Check if alive
-    ld a, [bird_alive]
     cp a, 0
-    jr z, .endCactusHitBird
-    ; Check if falling
-    ld a, [enemy_falling]
-    cp a, 0
-    jr z, .endCactusHitBird
-    SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
-    LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, wBirdOAM
-    ld a, 1
-    call CollisionCheck
-    and 1
-    jr z, .endCactusHitBird
-    call DeathOfBird
-.endCactusHitBird
-    ; Enemy cactus 2 hit bird
-    ; Check if alive
-    ld a, [bird_alive]
-    cp a, 0
-    jr z, .endCactus2HitBird
-    ; Check if falling
-    ld a, [enemy2_falling]
-    cp a, 0
-    jr z, .endCactus2HitBird
-    SET_HL_TO_ADDRESS wOAM, wEnemy2CactusOAM
-    LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, wBirdOAM
-    ld a, 1
-    call CollisionCheck
-    and 1
-    jr z, .endCactus2HitBird
-    call DeathOfBird
-.endCactus2HitBird
+    call nz, CollisionWithPlayer
+.end:
     ret
-.collisionWithPlayer:
-    ; Check if player is invincible
-    ld a, [player_invincible]
+
+CollisionUpdate::
+    ld a, [global_timer]
+	and	COLLISION_UPDATE_TIME
+    jp nz, .end
+    ; Check if alive
+    ld a, [player_alive]
     cp a, 0
-    jr nz, .endEnemyHitPlayer
-    call DeathOfPlayer
-.endEnemyHitPlayer:
+    jp z, .end
+    ; Collisions
+    call CollisionPointBalloon
+    call CollisionEnemy
+    call CollisionEnemy2
+    call CollisionBomb
+    call CollisionBird
 .end:
     ret
 
