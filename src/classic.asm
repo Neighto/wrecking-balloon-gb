@@ -292,7 +292,7 @@ ClassicGameManager:
 .levelThree:
     call BombUpdate
 .levelTwo:
-    call BirdUpdate
+    ; call BirdUpdate
 .levelOne:
 	call EnemyUpdate
 .end:

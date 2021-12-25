@@ -159,12 +159,12 @@ ReplaceTilemapHorizontal::
 	cp a, 0
 	jr z, .end
 	; Check if we have already checked this SCX value
-	; ld a, [wLastUpdatedSCX]
-	; ld b, a
-	; ldh a, [rSCX]
-	; cp a, b
-	; jr z, .end
-	; ld [wLastUpdatedSCX], a
+	ld a, [wLastUpdatedSCX]
+	ld b, a
+	ldh a, [rSCX]
+	cp a, b
+	jr z, .end
+	ld [wLastUpdatedSCX], a
 	; Todo currently we check rSCX multiple times for the same column (but that helps reduce errors)
 	; Get target tilemap
 	ld hl, wUpdateTilemapAddress

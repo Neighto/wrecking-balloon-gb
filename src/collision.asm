@@ -237,7 +237,7 @@ CollisionUpdate::
     call CollisionEnemy
     call CollisionEnemy2
     call CollisionBomb
-    call CollisionBird
+    ; call CollisionBird
 .end:
     ret
 
