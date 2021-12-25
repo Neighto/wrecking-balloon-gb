@@ -611,7 +611,6 @@ DeathOfPlayer::
   ; Remove life
   ld hl, player_lives
   dec [hl]
-  call RefreshLives
   ; Animation trigger
   ld a, 1
   ld hl, player_popping

@@ -5,6 +5,7 @@ INCLUDE "macro.inc"
 NUMBERS_TILE_OFFSET EQU $E9
 SCORE_INDEX_ONE_ADDRESS EQU $9C2C
 LIVES_ADDRESS EQU $9C32
+REFRESH_WINDOW_WAIT_TIME EQU %00000111
 
 ; For updating tileset and tilemap
 
@@ -80,7 +81,7 @@ LoadMenuData::
 	pop hl
 	ret
 
-RefreshScore::
+RefreshScore:
 	push af
 	push hl
 	ld hl, SCORE_INDEX_ONE_ADDRESS
@@ -121,12 +122,21 @@ RefreshScore::
 	pop hl
 	ret
 
-RefreshLives::
+RefreshLives:
 	push af
 	ld a, [player_lives]
 	add NUMBERS_TILE_OFFSET
 	ld [LIVES_ADDRESS], a
 	pop af
+	ret
+
+RefreshWindow::
+	ld a, [global_timer]
+	and REFRESH_WINDOW_WAIT_TIME
+	jr nz, .end
+	call RefreshScore
+	call RefreshLives
+.end:
 	ret
 
 ClearAllTiles::

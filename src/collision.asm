@@ -113,7 +113,7 @@ CollisionEnemy:
     ; Check if alive
     ld a, [enemy_alive]
     cp a, 0
-    jr z, .birdCollision
+    jr z, .end
     ; Check collision
     SET_HL_TO_ADDRESS wOAM, wEnemyBalloonOAM
     LD_BC_HL
@@ -129,17 +129,21 @@ CollisionEnemy:
     xor a ; ld a, 0
     call CollisionCheck
     cp a, 0
-    jr z, .birdCollision
-    call nz, CollisionWithPlayer
-.birdCollision:
-    ; Check if alive
-    ld a, [bird_alive]
-    cp a, 0
     jr z, .end
+    call nz, CollisionWithPlayer
+.end:
+    ret
+
+CollisionFallingEnemy:
     ; Check if falling
     ld a, [enemy_falling]
     cp a, 0
     jr z, .end
+.birdCollision:
+    ; Check if alive
+    ld a, [bird_alive]
+    cp a, 0
+    jr z, .pointBalloonCollision
     SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
     LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, wBirdOAM
@@ -147,7 +151,21 @@ CollisionEnemy:
     call CollisionCheck
     cp a, 0
     call nz, DeathOfBird
-.end:
+.pointBalloonCollision:
+    ; Check if alive
+    ld a, [point_balloon_alive]
+    cp a, 0
+    jr z, .bombCollision
+    SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
+    LD_BC_HL
+    SET_HL_TO_ADDRESS wOAM, wPointBalloonOAM
+    xor a ;ld a, 0
+    call CollisionCheck
+    cp a, 0
+    call nz, DeathOfPointBalloon
+.bombCollision:
+.enemy2Collision:
+.end
     ret
 
 CollisionEnemy2:
@@ -188,6 +206,40 @@ CollisionEnemy2:
     call CollisionCheck
     cp a, 0
     call nz, DeathOfBird
+.end
+    ret
+
+CollisionFallingEnemy2:
+    ; Check if falling
+    ld a, [enemy2_falling]
+    cp a, 0
+    jr z, .end
+.birdCollision:
+    ; Check if alive
+    ld a, [bird_alive]
+    cp a, 0
+    jr z, .pointBalloonCollision
+    SET_HL_TO_ADDRESS wOAM, wEnemy2CactusOAM
+    LD_BC_HL
+    SET_HL_TO_ADDRESS wOAM, wBirdOAM
+    ld a, 1
+    call CollisionCheck
+    cp a, 0
+    call nz, DeathOfBird
+.pointBalloonCollision:
+    ; Check if alive
+    ld a, [point_balloon_alive]
+    cp a, 0
+    jr z, .bombCollision
+    SET_HL_TO_ADDRESS wOAM, wEnemy2CactusOAM
+    LD_BC_HL
+    SET_HL_TO_ADDRESS wOAM, wPointBalloonOAM
+    xor a ;ld a, 0
+    call CollisionCheck
+    cp a, 0
+    call nz, DeathOfPointBalloon
+.bombCollision:
+.enemy2Collision:
 .end
     ret
 
@@ -237,7 +289,9 @@ CollisionUpdate::
     call CollisionEnemy
     call CollisionEnemy2
     call CollisionBomb
-    ; call CollisionBird
+    call CollisionBird
+    call CollisionFallingEnemy
+    call CollisionFallingEnemy2
 .end:
     ret
 

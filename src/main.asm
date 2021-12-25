@@ -56,7 +56,6 @@ StartClassic::
 	call InitializeBird
 	call InitializeBomb
 	call InitializeClassicVars
-	call RefreshLives
 	call LCD_ON_BG_ONLY
 	; Comment out ParkLoop to skip park cutscene
 ; ParkLoop:
