@@ -3,7 +3,8 @@ INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
 BIRD_SPRITE_MOVE_WAIT_TIME EQU %00000011
-BIRD_SPRITE_FALLING_TIME EQU %00001111
+BIRD_SPRITE_DESCENDING_TIME EQU %00001111
+BIRD_FALLING_WAIT_TIME EQU %00000001
 BIRD_START_LEFT_X EQU 0
 BIRD_START_RIGHT_X EQU 160
 BIRD_SPAWN_A EQU 20
@@ -13,10 +14,7 @@ BIRD_SPAWN_D EQU 110
 BIRD_HORIZONTAL_SPEED EQU 2
 BIRD_VERTICAL_SPEED EQU 1
 BIRD_FLAP_UP_SPEED EQU 5
-
-; Some changes made on 2021-12-23 causes the birds head to fall off and instantly kill player...
-; SAME ISSUE BEFORE THAT DATE AND WITH COLLISIONS OFF...
-; new theory is request oam and that the player updates happen too late
+BIRD_RESPAWN_TIME EQU 80
 
 SECTION "bird vars", WRAM0
     wBirdOAM:: DB
@@ -289,20 +287,12 @@ ClearBird:
     ld [hl], a
     ret
 
-BirdUpdate::
-    push hl
-    push bc
-    push af
-    ; Check if alive
-    ld a, [bird_alive]
-    and 1
-    jr z, .isDead
-    ; Check if we can move
+BirdMovement:
     ld a, [global_timer]
     and	BIRD_SPRITE_MOVE_WAIT_TIME
-    jp nz, .end
+    jr nz, .end
     ld a, [bird_spawn_right]
-    and 1
+    cp a, 0
     jr z, .moveRight
 .moveLeft:
     DECREMENT_POS bird_x, [bird_speed]
@@ -311,40 +301,66 @@ BirdUpdate::
     INCREMENT_POS bird_x, [bird_speed]
 .moveDown:
     ld a, [global_timer]
-    and BIRD_SPRITE_FALLING_TIME
+    and BIRD_SPRITE_DESCENDING_TIME
     jr nz, .moveEnd
     INCREMENT_POS bird_y, BIRD_VERTICAL_SPEED
 .moveEnd:
     call BirdAnimate
     call UpdateBirdPosition
-.checkOffscreen:
-    ld a, [bird_x]
-    ; TODO: Might want to adjust x for if facing left / right
-    ld b, a
-    call OffScreenXEnemies
-    and 1
-    jr z, .end
-.offscreen:
-    xor a ; ld a, 0
-    ld [bird_alive], a
-.isDead:
-    ; Fall
+.end:
+    ret
+
+BirdFalling:
     ld a, [bird_falling]
     cp a, 0
-    jr z, .respawning
+    jr z, .end
     ld a, [global_timer]
-    and	%00000001
-    jr nz, .respawning
+    and BIRD_FALLING_WAIT_TIME
+    jr nz, .end
     INCREMENT_POS bird_y, 2
     call UpdateBirdPosition
+.checkOffscreenY:
+    ld a, [bird_y]
+    ld b, a
+    call OffScreenYEnemies
+    cp a, 0
+    jr z, .end
+    xor a ; ld a, 0
+    ld [bird_falling], a
+    call ClearBird
+.end:
+    ret
+
+BirdUpdate:: ; I wonder if these updates should all have a timer cooldown?
+    push hl
+    push bc
+    push af
+.checkAlive:
+    ld a, [bird_alive]
+    cp a, 0
+    jr z, .isDead
+    call BirdMovement
+.checkOffscreenX:
+    ld a, [bird_x]
+    ld b, a
+    call OffScreenXEnemies
+    cp a, 0
+    jr z, .end
+    call ClearBird
+    xor a ; ld a, 0
+    ld [bird_alive], a
+    jr .end
+.isDead:
+    call BirdFalling
 .respawning:
-    ; Can we respawn
+    ld a, [bird_falling]
+    cp a, 0
+    jr nz, .end
     ld a, [bird_respawn_timer]
     inc a
     ld [bird_respawn_timer], a
-    cp a, 120
+    cp a, BIRD_RESPAWN_TIME
     jr nz, .end
-    call ClearBird
     call SpawnBird
 .end:
     pop af
@@ -358,11 +374,13 @@ DeathOfBird::
     ld [bird_alive], a
     ld a, 1
     ld [bird_falling], a
+    ; Sound
+    call ExplosionSound
     ; Screaming bird
     ld a, [bird_spawn_right]
     cp a, 0
     jr z, .facingRight
-; .facingLeft:
+.facingLeft:
     SET_HL_TO_ADDRESS wOAM+2, wBirdOAM
     ld [hl], $A6
     SET_HL_TO_ADDRESS wOAM+6, wBirdOAM
@@ -378,6 +396,4 @@ DeathOfBird::
     SET_HL_TO_ADDRESS wOAM+10, wBirdOAM
     ld [hl], $A6
 .end:
-    ; Sound
-    call ExplosionSound
     ret

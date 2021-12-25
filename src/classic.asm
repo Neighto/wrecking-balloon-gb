@@ -292,7 +292,7 @@ ClassicGameManager:
 .levelThree:
     call BombUpdate
 .levelTwo:
-    ; call BirdUpdate
+    call BirdUpdate
 .levelOne:
 	call EnemyUpdate
 .end:
@@ -305,7 +305,7 @@ UpdateClassicCountdown::
     jp nc, GameLoop
     call CountdownAnimation
 	call ClassicGameManager
-    call RefreshScore
+    call RefreshWindow
     call HorizontalScroll
     call MoveToNextTilemap
     call ReplaceTilemapHorizontal
@@ -321,7 +321,7 @@ UpdateClassic::
     call PlayerUpdate
     call ClassicGameManager
     call CollisionUpdate
-    call RefreshScore
+    call RefreshWindow
     call HorizontalScroll
     call _hUGE_dosound
 .end:
