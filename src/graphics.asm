@@ -159,12 +159,12 @@ ReplaceTilemapHorizontal::
 	cp a, 0
 	jr z, .end
 	; Check if we have already checked this SCX value
-	ld a, [wLastUpdatedSCX]
-	ld b, a
-	ldh a, [rSCX]
-	cp a, b
-	jr z, .end
-	ld [wLastUpdatedSCX], a
+	; ld a, [wLastUpdatedSCX]
+	; ld b, a
+	; ldh a, [rSCX]
+	; cp a, b
+	; jr z, .end
+	; ld [wLastUpdatedSCX], a
 	; Todo currently we check rSCX multiple times for the same column (but that helps reduce errors)
 	; Get target tilemap
 	ld hl, wUpdateTilemapAddress
@@ -232,25 +232,25 @@ MoveToNextTilemap::
 	push hl
 	push af
 	; Should we update tilemap
+	ld hl, wHasUpdatedNextTilemapAddress
 	ldh a, [rSCX]
 	cp a, BITS_IN_BYTE-1
 	jr c, .canUpdateTilemap
-	; Should we reset update
+	; Should we reset tilemap address
 	cp a, 2*BITS_IN_BYTE-1
 	jr nc, .end
 	xor a ; ld a, 0 
-	ld [wHasUpdatedNextTilemapAddress], a
+	ld [hl], a
 	jr .end
 .canUpdateTilemap:
-	; Have we already read this
-	ld a, [wHasUpdatedNextTilemapAddress]
+	; Have we already updated tilemap address
+	ld a, [hl]
 	cp a, 0
 	jr nz, .end
-	; We have read this
+	; Update tilemap address
 	ld a, 1
-	ld [wHasUpdatedNextTilemapAddress], a
-	; Set the tilemap address to update
-	ld a, [wHasUpdatedNextTilemapAddress]
+	ld [hl], a
+	ld a, [wUpdateTilemapIndex]
 	cp a, 0
 	jr z, .clouds2
 	cp a, 1
