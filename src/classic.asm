@@ -316,13 +316,13 @@ UpdateClassic::
 	ld a, [paused_game]
 	cp a, 1
 	jr z, .end
-	call CollisionUpdate
+    call MoveToNextTilemap
+    call ReplaceTilemapHorizontal
     call PlayerUpdate
     call ClassicGameManager
-	call RefreshScore
-    call HorizontalScroll           ; issue: 
-    call MoveToNextTilemap          ; these rarely get reached and do not finish
-    call ReplaceTilemapHorizontal   ; if brought before, messes up OAM requesting...
+    call CollisionUpdate
+    call RefreshScore
+    call HorizontalScroll
     call _hUGE_dosound
 .end:
     ret
