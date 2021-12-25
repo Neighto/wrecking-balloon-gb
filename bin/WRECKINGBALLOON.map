@@ -258,7 +258,7 @@ ROM0 bank #0:
            $1874 = OffScreenX.end
            $1876 = OffScreenY
            $1880 = OffScreenY.end
-  SECTION: $1882-$1a50 ($01cf bytes) ["graphics"]
+  SECTION: $1882-$1a41 ($01c0 bytes) ["graphics"]
            $1882 = LoadClassicGameData
            $18e9 = LoadMenuData
            $1914 = RefreshScore
@@ -270,33 +270,33 @@ ROM0 bank #0:
            $198f = ClearMap
            $1998 = ClearMap.loop_u4
            $19a3 = ReplaceTilemapHorizontal
-           $19cc = ReplaceTilemapHorizontal.handleZero
-           $19ce = ReplaceTilemapHorizontal.handleZeroEnd
-           $19da = ReplaceTilemapHorizontal.loop
-           $19f8 = ReplaceTilemapHorizontal.end
-           $19fd = MoveToNextTilemap
-           $1a0f = MoveToNextTilemap.canUpdateTilemap
-           $1a26 = MoveToNextTilemap.clouds1
-           $1a3b = MoveToNextTilemap.clouds2
-           $1a4e = MoveToNextTilemap.end
-  SECTION: $1a51-$1b11 ($00c1 bytes) ["rom"]
-           $1a51 = Start
-           $1a85 = StartClassic
-           $1ad3 = PreGameLoop
-           $1af4 = GameLoopCountdown
-           $1b03 = GameLoop
-  SECTION: $1b12-$1b84 ($0073 bytes) ["joypad"]
-           $1b12 = ReadInput
-           $1b42 = JOY_RIGHT
-           $1b4a = JOY_LEFT
-           $1b52 = JOY_UP
-           $1b5a = JOY_DOWN
-           $1b62 = JOY_A
-           $1b6a = JOY_B
-           $1b72 = JOY_SELECT
-           $1b7a = JOY_START
-           $1b82 = JOY_FALSE
-    SLACK: $24b3 bytes
+           $19c0 = ReplaceTilemapHorizontal.handleZero
+           $19c2 = ReplaceTilemapHorizontal.handleZeroEnd
+           $19ce = ReplaceTilemapHorizontal.loop
+           $19ec = ReplaceTilemapHorizontal.end
+           $19f1 = MoveToNextTilemap
+           $1a04 = MoveToNextTilemap.canUpdateTilemap
+           $1a17 = MoveToNextTilemap.clouds1
+           $1a2c = MoveToNextTilemap.clouds2
+           $1a3f = MoveToNextTilemap.end
+  SECTION: $1a42-$1b02 ($00c1 bytes) ["rom"]
+           $1a42 = Start
+           $1a76 = StartClassic
+           $1ac4 = PreGameLoop
+           $1ae5 = GameLoopCountdown
+           $1af4 = GameLoop
+  SECTION: $1b03-$1b75 ($0073 bytes) ["joypad"]
+           $1b03 = ReadInput
+           $1b33 = JOY_RIGHT
+           $1b3b = JOY_LEFT
+           $1b43 = JOY_UP
+           $1b4b = JOY_DOWN
+           $1b53 = JOY_A
+           $1b5b = JOY_B
+           $1b63 = JOY_SELECT
+           $1b6b = JOY_START
+           $1b73 = JOY_FALSE
+    SLACK: $24c2 bytes
 
 ROMX bank #1:
   SECTION: $4000-$4b3d ($0b3e bytes) ["Song Data2"]
@@ -679,10 +679,10 @@ ROMX bank #1:
            $6b5c = IncrementScrollOffset.end
            $6b5d = SetClassicMapStartPoint
            $6b62 = ClassicGameManager
-           $6b86 = ClassicGameManager.levelSeven
-           $6b8b = ClassicGameManager.levelSix
-           $6b90 = ClassicGameManager.levelFive
-           $6b93 = ClassicGameManager.levelThree
+           $6b83 = ClassicGameManager.levelSeven
+           $6b88 = ClassicGameManager.levelSix
+           $6b8d = ClassicGameManager.levelFive
+           $6b90 = ClassicGameManager.levelThree
            $6b93 = ClassicGameManager.levelTwo
            $6b96 = ClassicGameManager.levelOne
            $6b99 = ClassicGameManager.end
@@ -1049,7 +1049,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $1b4d bytes in 1 bank
+    ROM0: $1b3e bytes in 1 bank
     ROMX: $341e bytes in 1 bank
     WRAM0: $0152 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
