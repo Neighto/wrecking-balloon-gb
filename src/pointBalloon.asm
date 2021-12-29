@@ -3,13 +3,6 @@ INCLUDE "balloonCactusConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
-POINT_BALLOON_START_X EQU 120
-POINT_BALLOON_START_Y EQU 156
-POINT_BALLOON_SPAWN_A EQU 32
-POINT_BALLOON_SPAWN_B EQU 64
-POINT_BALLOON_SPAWN_C EQU 96
-POINT_BALLOON_SPAWN_D EQU 128
-
 PB_SPRITE_MOVE_WAIT_TIME EQU %00000001
 
 SECTION "point balloon vars", WRAM0
@@ -20,7 +13,6 @@ SECTION "point balloon vars", WRAM0
     point_balloon_popping:: DB
     point_balloon_popping_frame:: DB
     point_balloon_pop_timer:: DB
-    point_balloon_respawn_timer:: DB
 
 SECTION "point balloon", ROMX
 
@@ -44,56 +36,37 @@ UpdateBalloonPosition:
     ret
 
 InitializePointBalloon::
-    ; Initialize variables
     xor a ; ld a, 0
     ld hl, point_balloon_alive
     ld [hl], a
     ld hl, point_balloon_popping
     ld [hl], a
     ld hl, point_balloon_y
-    ld [hl], POINT_BALLOON_START_Y
+    ld [hl], a
     ld hl, point_balloon_x
-    ld [hl], POINT_BALLOON_START_X
+    ld [hl], a
     ld hl, point_balloon_popping_frame
     ld [hl], a
     ld hl, point_balloon_pop_timer
     ld [hl], a
-    ld [point_balloon_respawn_timer], a
-    
-    ; Randomize spawn
-.nextSpawnPoint:
-    ld hl, point_balloon_x
-    ld a, 4
-    call RANDOM
-    cp a, 0
-    jp z, .spawnA
-    cp a, 1
-    jp z, .spawnB
-    cp a, 2
-    jp z, .spawnC
-    cp a, 3
-    jp z, .spawnD
-.spawnA:
-    ld [hl], POINT_BALLOON_SPAWN_A
-    jr .endNextSpawnPoint
-.spawnB:
-    ld [hl], POINT_BALLOON_SPAWN_B
-    jr .endNextSpawnPoint
-.spawnC:
-    ld [hl], POINT_BALLOON_SPAWN_C
-    jr .endNextSpawnPoint
-.spawnD:
-    ld [hl], POINT_BALLOON_SPAWN_D
-.endNextSpawnPoint:
     ret
 
-SpawnPointBalloon:
+    ; TODO might want to check if we ARE alive still... skip
+SpawnPointBalloon::
+    ; argument b = Y spawn
+    ; argument c = X spawn
     push af
+    push hl
     xor a ; ld a, 0
-    ld [point_balloon_respawn_timer], a
     call InitializePointBalloon
     ld a, 1
     ld [point_balloon_alive], a
+
+    ; Set Coordinates
+    ld a, b
+    ld [point_balloon_y], a
+    ld a, c
+    ld [point_balloon_x], a
 
     ; Request OAM
     ld b, 2
@@ -122,6 +95,7 @@ SpawnPointBalloon:
     inc l
     ld [hl], OAMF_PAL1 | OAMF_XFLIP
 .end:
+    pop hl
     pop af
     ret
 
@@ -206,7 +180,7 @@ PopBalloonAnimation:
 PointBalloonUpdate::
     ; Check if alive
     ld a, [point_balloon_alive]
-    and 1
+    cp a, 0
     jr z, .popped
     ; Check if we can move
     ld a, [global_timer]
@@ -215,17 +189,9 @@ PointBalloonUpdate::
     call FloatPointBalloonUp
     ret
 .popped:
-    ; Can we respawn
-    ld a, [point_balloon_respawn_timer]
-    inc a
-    ld [point_balloon_respawn_timer], a
-    cp a, 150
-    jr nz, .respawnSkip
-    call SpawnPointBalloon
-.respawnSkip:
     ; Check if we need to play popping animation
     ld a, [point_balloon_popping]
-    and 1
+    cp a, 0
     jr z, .end
     call PopBalloonAnimation
 .end:
