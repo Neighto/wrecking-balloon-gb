@@ -95,11 +95,11 @@ CollisionWithPlayer:
 
 CollisionPointBalloon:
     ; Check if alive
-    ld a, [point_balloon_alive]
+    ld a, [pointBalloon+3] ; Alive
     cp a, 0
     jr z, .end
     ; Check collision
-    SET_HL_TO_ADDRESS wOAM, wPointBalloonOAM
+    SET_HL_TO_ADDRESS wOAM, pointBalloon+2
     LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
     xor a ; ld a, 0
@@ -153,12 +153,12 @@ CollisionFallingEnemy:
     call nz, DeathOfBird
 .pointBalloonCollision:
     ; Check if alive
-    ld a, [point_balloon_alive]
+    ld a, [pointBalloon+3] ; Alive
     cp a, 0
     jr z, .bombCollision
     SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
     LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, wPointBalloonOAM
+    SET_HL_TO_ADDRESS wOAM, pointBalloon+2
     xor a ;ld a, 0
     call CollisionCheck
     cp a, 0
@@ -228,12 +228,12 @@ CollisionFallingEnemy2:
     call nz, DeathOfBird
 .pointBalloonCollision:
     ; Check if alive
-    ld a, [point_balloon_alive]
+    ld a, [pointBalloon+3] ; Alive
     cp a, 0
     jr z, .bombCollision
     SET_HL_TO_ADDRESS wOAM, wEnemy2CactusOAM
     LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, wPointBalloonOAM
+    SET_HL_TO_ADDRESS wOAM, pointBalloon+2
     xor a ;ld a, 0
     call CollisionCheck
     cp a, 0

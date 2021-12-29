@@ -83,8 +83,12 @@ RequestOAMSpace:
 RequestOAMSpaceOffset::
     ; b = sprite space needed
     ; returns a as start sprite offset in wOAM
+    push hl
+    push de
     call RequestOAMSpace
     ld b, a
     ld c, 4
     call MULTIPLY
+    pop de
+    pop hl
     ret
