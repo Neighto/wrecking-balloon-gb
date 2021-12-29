@@ -264,38 +264,39 @@ SetClassicMapStartPoint::
 
 ClassicGameManager:
     push af
-    call PointBalloonUpdate
-    ; call PropellerCactusUpdate
 
-    ld a, [difficulty_level]
-    cp a, 70
-    jr nc, .levelSeven
-    cp a, 40
-    jr nc, .levelSix
-    cp a, 25
-    jr nc, .levelFive
-    cp a, 12
-    jr nc, .levelThree
-    cp a, 6
-    jr nc, .levelTwo
-    cp a, 1
-    jr nc, .levelOne
-    jr .end
-.levelSeven:
-    ld a, 2
-    ld [bomb_speed], a
-.levelSix:
-    ld a, 4
-    ld [bird_speed], a
-.levelFive:
-    call Enemy2Update
-.levelThree:
-    call BombUpdate
-.levelTwo:
-    call BirdUpdate
-.levelOne:
-	call EnemyUpdate
-.end:
+    call PointBalloonUpdate
+;     ; call PropellerCactusUpdate
+
+;     ld a, [difficulty_level]
+;     cp a, 70
+;     jr nc, .levelSeven
+;     cp a, 40
+;     jr nc, .levelSix
+;     cp a, 25
+;     jr nc, .levelFive
+;     cp a, 12
+;     jr nc, .levelThree
+;     cp a, 6
+;     jr nc, .levelTwo
+;     cp a, 1
+;     jr nc, .levelOne
+;     jr .end
+; .levelSeven:
+;     ld a, 2
+;     ld [bomb_speed], a
+; .levelSix:
+;     ld a, 4
+;     ld [bird_speed], a
+; .levelFive:
+;     call Enemy2Update
+; .levelThree:
+;     call BombUpdate
+; .levelTwo:
+;     call BirdUpdate
+; .levelOne:
+; 	call EnemyUpdate
+; .end:
     pop af
     ret
 
@@ -304,7 +305,6 @@ UpdateClassicCountdown::
     cp a, 7 ; TODO dont hardcode in case we change it in CountdownAnimation
     jp nc, GameLoop
     call CountdownAnimation
-	call ClassicGameManager
     call RefreshWindow
     call HorizontalScroll
     call MoveToNextTilemap
@@ -320,6 +320,7 @@ UpdateClassic::
     call ReplaceTilemapHorizontal
     call PlayerUpdate
     call ClassicGameManager
+    call LevelDataManager
     call CollisionUpdate
     call RefreshWindow
     call HorizontalScroll

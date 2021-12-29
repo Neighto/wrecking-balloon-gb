@@ -48,6 +48,8 @@ StartClassic::
 	call SetupWindow
 	call InitializeScore
 	call LoadClassicGameData
+	call InitializeLevelVars
+
 	call InitializePlayer
 	call InitializePointBalloon
 	call InitializeEnemy
