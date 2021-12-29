@@ -3,82 +3,75 @@ INCLUDE "balloonCactusConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
-PB_SPRITE_MOVE_WAIT_TIME EQU %00000001
+POINT_BALLOON_STRUCT_SIZE EQU 7
+POINT_BALLOON_SPRITE_MOVE_WAIT_TIME EQU %00000001
 
 SECTION "point balloon vars", WRAM0
-    wPointBalloonOAM:: DB
-    point_balloon_x:: DB
-    point_balloon_y:: DB
-    point_balloon_alive:: DB
-    point_balloon_popping:: DB
-    point_balloon_popping_frame:: DB
-    point_balloon_pop_timer:: DB
+PointBalloonStart:
+    pointBalloon:: DS POINT_BALLOON_STRUCT_SIZE*3
+PointBalloonEnd:
 
 SECTION "point balloon", ROMX
 
 UpdateBalloonPosition:
-    SET_HL_TO_ADDRESS wOAM, wPointBalloonOAM
+    SET_HL_TO_ADDRESS wOAM, pointBalloon+2
     ; Update Y
-    ld a, [point_balloon_y]
+    ld a, [pointBalloon]
     ld [hli], a
     ; Update X
-    ld a, [point_balloon_x]
+    ld a, [pointBalloon+1]
     ld [hl], a
   
-    SET_HL_TO_ADDRESS wOAM+4, wPointBalloonOAM
+    SET_HL_TO_ADDRESS wOAM+4, pointBalloon+2
     ; Update Y
-    ld a, [point_balloon_y]
+    ld a, [pointBalloon]
     ld [hli], a
     ; Update X
-    ld a, [point_balloon_x]
+    ld a, [pointBalloon+1]
     add 8
     ld [hl], a
     ret
 
 InitializePointBalloon::
-    xor a ; ld a, 0
-    ld hl, point_balloon_alive
-    ld [hl], a
-    ld hl, point_balloon_popping
-    ld [hl], a
-    ld hl, point_balloon_y
-    ld [hl], a
-    ld hl, point_balloon_x
-    ld [hl], a
-    ld hl, point_balloon_popping_frame
-    ld [hl], a
-    ld hl, point_balloon_pop_timer
-    ld [hl], a
+    push bc
+    push hl
+    RESET_IN_RANGE pointBalloon, PointBalloonEnd - PointBalloonStart
+    pop hl
+    pop bc
     ret
 
-    ; TODO might want to check if we ARE alive still... skip
 SpawnPointBalloon::
     ; argument b = Y spawn
     ; argument c = X spawn
     push af
     push hl
-    xor a ; ld a, 0
+    ; Skip if alive
+    ld hl, pointBalloon+3
+    ld a, [hl] ; Alive
+    cp a, 0
+    jr nz, .end
     call InitializePointBalloon
-    ld a, 1
-    ld [point_balloon_alive], a
+    ; Set Alive
+    ld [hl], 1
 
     ; Set Coordinates
+    ld hl, pointBalloon
     ld a, b
-    ld [point_balloon_y], a
+    ld [hli], a
     ld a, c
-    ld [point_balloon_x], a
+    ld [hli], a
 
     ; Request OAM
     ld b, 2
 	call RequestOAMSpaceOffset
-	ld [wPointBalloonOAM], a
+	ld [hli], a
 
 .balloonLeft:
     ; Balloon left
-    SET_HL_TO_ADDRESS wOAM, wPointBalloonOAM
-    ld a, [point_balloon_y]
+    SET_HL_TO_ADDRESS wOAM, pointBalloon+2
+    ld a, [pointBalloon]
     ld [hli], a
-    ld a, [point_balloon_x]
+    ld a, [pointBalloon+1]
     ld [hli], a
     ld [hl], ENEMY_BALLOON_TILE
     inc l
@@ -86,9 +79,9 @@ SpawnPointBalloon::
 .balloonRight:
     ; Balloon right
     inc l
-    ld a, [point_balloon_y]
+    ld a, [pointBalloon]
     ld [hli], a
-    ld a, [point_balloon_x]
+    ld a, [pointBalloon+1]
     add 8
     ld [hli], a
     ld [hl], ENEMY_BALLOON_TILE
@@ -100,7 +93,7 @@ SpawnPointBalloon::
     ret
 
 FloatPointBalloonUp:
-    ld hl, point_balloon_y
+    ld hl, pointBalloon
     ld a, [hl]
     dec a
     ld [hl], a
@@ -109,18 +102,18 @@ FloatPointBalloonUp:
 
 PopBalloonAnimation:
     ; Check what frame we are on
-    ld a, [point_balloon_popping_frame]
+    ld a, [pointBalloon+5] ; Frame
     cp a, 0
     jr z, .frame0
 
-    ld a, [point_balloon_pop_timer]
+    ld a, [pointBalloon+6] ; Timer
 	inc	a
-	ld [point_balloon_pop_timer], a
+	ld [pointBalloon+6], a ; Timer
     and POPPING_BALLOON_ANIMATION_SPEED
     jp nz, .end
     ; Can do next frame
     ; Check what frame we are on
-    ld a, [point_balloon_popping_frame]
+    ld a, [pointBalloon+5] ; Frame
     cp a, 1
     jp z, .frame1
     cp a, 2
@@ -129,36 +122,36 @@ PopBalloonAnimation:
 
 .frame0:
     ; Popped left - frame 0
-    SET_HL_TO_ADDRESS wOAM+2, wPointBalloonOAM
+    SET_HL_TO_ADDRESS wOAM+2, pointBalloon+2
     ld [hl], $88
     inc l
     ld [hl], %00000000
     ; Popped right - frame 0
-    SET_HL_TO_ADDRESS wOAM+6, wPointBalloonOAM
+    SET_HL_TO_ADDRESS wOAM+6, pointBalloon+2
     ld [hl], $88
     inc l
     ld [hl], OAMF_XFLIP
-    ld hl, point_balloon_popping_frame
+    ld hl, pointBalloon+5 ; Frame
     ld [hl], 1
     ret
 .frame1:
     ; Popped left - frame 1
-    SET_HL_TO_ADDRESS wOAM+2, wPointBalloonOAM
+    SET_HL_TO_ADDRESS wOAM+2, pointBalloon+2
     ld [hl], $8A
     inc l
     ld [hl], %00000000
     ; Popped right - frame 1
-    SET_HL_TO_ADDRESS wOAM+6, wPointBalloonOAM
+    SET_HL_TO_ADDRESS wOAM+6, pointBalloon+2
     ld [hl], $8A
     inc l
     ld [hl], OAMF_XFLIP
-    ld hl, point_balloon_popping_frame
+    ld hl, pointBalloon+5 ; Frame
     ld [hl], 2
     ret
 .clear:
     ; Remove sprites
     xor a ; ld a, 0
-    SET_HL_TO_ADDRESS wOAM, wPointBalloonOAM
+    SET_HL_TO_ADDRESS wOAM, pointBalloon+2
     ld [hli], a
     ld [hli], a
     ld [hli], a
@@ -168,29 +161,29 @@ PopBalloonAnimation:
     ld [hli], a
     ld [hl], a
     ; Reset variables
-    ld hl, point_balloon_popping
+    ld hl, pointBalloon+4 ; Popping
     ld [hl], a
-    ld hl, point_balloon_pop_timer
+    ld hl, pointBalloon+6 ; Timer
     ld [hl], a
-    ld hl, point_balloon_popping_frame
+    ld hl, pointBalloon+5 ; Frame
     ld [hl], a
 .end:
     ret
 
 PointBalloonUpdate::
     ; Check if alive
-    ld a, [point_balloon_alive]
+    ld a, [pointBalloon+3] ; Alive
     cp a, 0
     jr z, .popped
     ; Check if we can move
     ld a, [global_timer]
-    and	PB_SPRITE_MOVE_WAIT_TIME
+    and	POINT_BALLOON_SPRITE_MOVE_WAIT_TIME
     jr nz, .end
     call FloatPointBalloonUp
-    ret
+    jr .end
 .popped:
     ; Check if we need to play popping animation
-    ld a, [point_balloon_popping]
+    ld a, [pointBalloon+4] ; Popping
     cp a, 0
     jr z, .end
     call PopBalloonAnimation
@@ -199,14 +192,13 @@ PointBalloonUpdate::
 
 DeathOfPointBalloon::
     ; Death
-    xor a ; ld a, 0
-    ld hl, point_balloon_alive
-    ld [hl], a
+    ld hl, pointBalloon+3 ; Alive
+    ld [hl], 0
     ; Points
     ld d, POINT_BALLOON_POINTS
     call AddPoints
     ; Animation trigger
-    ld hl, point_balloon_popping
+    ld hl, pointBalloon+4 ; Popping
     ld [hl], 1
     ; Sound
     call PopSound

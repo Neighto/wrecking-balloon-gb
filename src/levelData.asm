@@ -68,7 +68,6 @@ LevelDataHandler:
     jr z, .bomb 
     jr .end
 .pointBalloon:
-    ; need to also read the next 2 after here for Y, X cords
     ; Y
     inc hl
     ld b, [hl]
