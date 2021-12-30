@@ -120,7 +120,7 @@ SetBalloonCactusStruct:
     ld [hli], a
     ld a, [wEnemyFalling]
     ld [hli], a
-    ld a, [wEnemyFallingSpeed] ; should be set to 1
+    ld a, [wEnemyFallingSpeed]
     ld [hli], a
     ld a, [wEnemyFallingTimer]
     ld [hli], a
@@ -162,7 +162,7 @@ SpawnBalloonCactus::
     ld [wEnemyX], a
     ld [wEnemyX2], a
 .balloonLeft:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS_WITH_BC wOAM, wEnemyOAM ; DONT FORGET WITH BC
     ld a, [wEnemyY]
     ld [hli], a
     ld a, [wEnemyX]
@@ -208,7 +208,7 @@ SpawnBalloonCactus::
     pop af
     ret
 
-ClearEnemyCactus:
+ClearCactus:
     xor a ; ld a, 0
     SET_HL_TO_ADDRESS wOAM+8, wEnemyOAM
     ld [hli], a
@@ -221,7 +221,7 @@ ClearEnemyCactus:
     ld [hl], a
     ret 
 
-ClearEnemyBalloon:
+ClearBalloon:
     xor a ; ld a, 0
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     ld [hli], a
@@ -232,6 +232,27 @@ ClearEnemyBalloon:
     ld [hli], a
     ld [hli], a
     ld [hl], a
+    ret
+
+ClearBalloonCactus:
+    ; Remove sprites
+    call ClearCactus
+    call ClearBalloon
+    ; Reset variables
+    ld [wEnemyActive], a
+    ld [wEnemyY], a
+    ld [wEnemyX], a
+    ld [wEnemyOAM], a
+    ld [wEnemyAlive], a
+    ld [wEnemyPopping], a
+    ld [wEnemyPoppingFrame], a 
+    ld [wEnemyPoppingTimer], a 
+    ld [wEnemyY2], a
+    ld [wEnemyX2], a
+    ld [wEnemyFalling], a 
+    ld [wEnemyFallingSpeed], a 
+    ld [wEnemyFallingTimer], a
+    ld [wEnemyDelayFallingTimer], a
     ret
 
 FallCactusDown:
@@ -300,7 +321,7 @@ PopBalloonAnimation:
     ret
 .clear:
     ; Remove sprites
-    call ClearEnemyBalloon
+    call ClearBalloon
     ; Reset variables
     ld hl, wEnemyPopping
     ld [hl], a
@@ -319,17 +340,14 @@ CactusFalling:
     jr nz, .end
     ; Can we move cactus down
     ld a, 160
-    ld hl, wEnemyY ;+ 8
+    ld hl, wEnemyY2
     cp a, [hl]
     jr c, .offScreen
     call FallCactusDown
     call UpdateCactusPosition
     ret
 .offScreen:
-    ; Reset variables
-    ld hl, wEnemyFalling
-    ld [hl], 0
-    call ClearEnemyCactus
+    call ClearBalloonCactus
 .end
     ret
 
@@ -408,27 +426,30 @@ DeathOfBalloonCactus:
     ret
     
 CollisionBalloonCactus:
-    ; Check if alive
-    ld a, [wEnemyAlive]
-    cp a, 0
-    jr z, .end
-    ; Check collision
+    push bc
+    push hl
+    push af
+.checkHit:
+    ld bc, wPlayerCactusOAM
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    LD_BC_HL
-    ld hl, wPlayerCactusOAM
     xor a ; ld a, 0
     call CollisionCheck
     cp a, 0
     call nz, DeathOfBalloonCactus
-    ; Check hit player
+.checkHitPlayer:
+    ld a, [player_alive]
+    cp a, 0
+    jr z, .end
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM+8, wEnemyOAM
     xor a ; ld a, 0
     call CollisionCheck
     cp a, 0
-    jr z, .end
     call nz, CollisionWithPlayer
 .end:
+    pop af
+    pop hl
+    pop bc
     ret
 
 BalloonCactusUpdate::
@@ -440,7 +461,6 @@ BalloonCactusUpdate::
 .loop:
     SET_HL_TO_ADDRESS balloonCactus, wEnemyOffset
     call GetBalloonCactusStruct
-    
 
     ; Check active
     ld a, [wEnemyActive]
@@ -456,7 +476,7 @@ BalloonCactusUpdate::
     and	ENEMY_SPRITE_MOVE_WAIT_TIME
     jr nz, .checkLoop
     call MoveBalloonCactus
-    ; call CollisionBalloonCactus
+    call CollisionBalloonCactus
     ; Check offscreen TODO
     jr z, .checkLoop
 .popped:
@@ -464,13 +484,13 @@ BalloonCactusUpdate::
     ld a, [wEnemyPopping]
     cp a, 0
     jr z, .notPopping
-    ; call PopBalloonAnimation
+    call PopBalloonAnimation
 .notPopping:
     ; Check if we need to drop the cactus
     ld a, [wEnemyFalling]
     cp a, 0
     jr z, .checkLoop
-    ; call CactusFalling
+    call CactusFalling
 .checkLoop:
     SET_HL_TO_ADDRESS balloonCactus, wEnemyOffset
     call SetBalloonCactusStruct
