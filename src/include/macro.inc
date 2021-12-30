@@ -57,3 +57,18 @@ MACRO SET_HL_TO_ADDRESS
     ld l, a
     pop af
 ENDM
+
+; ; Use with caution: Overwrites hl and de
+; MACRO SET_HL_TO_ADDRESS_REG_OFFSET
+;     ; argument 1 is starting address
+;     ; argument 2 is offset from register
+;     ld hl, \1
+;     ld d, HIGH(\2)
+;     ld e, LOW(\2)
+;     push af
+;     ld a, [de]
+;     add a, l ; might cause issues if no carry to h?
+;     ld l, a
+;     pop af
+;     ; OR maybe a macro that combines this with the above one...
+; ENDM
