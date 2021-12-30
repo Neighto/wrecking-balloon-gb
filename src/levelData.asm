@@ -33,7 +33,7 @@ W1L1::
 W1L1End::
 
 W1L2:
-    DB POINT_BALLOON, 140, 40
+    ; DB POINT_BALLOON, 140, 40
 W1L2End:
 
 ; World 2
