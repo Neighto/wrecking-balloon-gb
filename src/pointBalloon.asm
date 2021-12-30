@@ -8,7 +8,7 @@ POINT_BALLOON_SPRITE_MOVE_WAIT_TIME EQU %00000001
 
 SECTION "point balloon vars", WRAM0
 PointBalloonStart:
-    pointBalloon:: DS POINT_BALLOON_STRUCT_SIZE*3
+    pointBalloon:: DS POINT_BALLOON_STRUCT_SIZE*4
 PointBalloonEnd:
 
     wPointBalloonOffset:: DB
@@ -77,7 +77,7 @@ RequestPointBalloonSpace:
     or a, c
     jr nz, .loop
     ; All active
-    ld a, 0
+    xor a ; ld a, 0
 .end:
     pop bc
     ret
@@ -206,6 +206,11 @@ PopBalloonAnimation:
     ld [hl], 2
     ret
 .clear:
+    call ClearEnemy
+.end:
+    ret
+
+ClearEnemy:
     ; Remove sprites
     xor a ; ld a, 0
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
@@ -218,11 +223,10 @@ PopBalloonAnimation:
     ld [hli], a
     ld [hl], a
     ; Reset variables
+    ld [wEnemyActive], a
     ld [wEnemyPopping], a
     ld [wEnemyPoppingFrame], a 
     ld [wEnemyPoppingTimer], a 
-    ld [wEnemyActive], a
-.end:
     ret
 
 GetEnemyStruct:
@@ -282,19 +286,28 @@ PointBalloonUpdate::
     ; Check active
     ld a, [wEnemyActive]
     cp a, 0
-    jr z, .end
+    jr z, .checkLoop
     ; Check alive
     ld a, [wEnemyAlive]
     cp a, 0
     jr z, .popped
 .isAlive:
-    ; Check if we can move
+    ; Check if we can move and collide
     ld a, [global_timer]
     and	POINT_BALLOON_SPRITE_MOVE_WAIT_TIME
     jr nz, .checkLoop
     call FloatPointBalloonUp
-    ; Check collision
-    call CollisionPointBalloon ; TODO maybe its own timer
+    call CollisionPointBalloon
+    ; Check offscreen
+    push bc
+    ld a, [wEnemyY]
+    ld b, a
+    call OffScreenYEnemies
+    pop bc
+    cp a, 0
+    jr z, .checkLoop
+.offScreen:
+    call ClearEnemy
     jr .checkLoop
 .popped:
     ; Check if we need to play popping animation
@@ -302,7 +315,6 @@ PointBalloonUpdate::
     cp a, 0
     jr z, .checkLoop
     call PopBalloonAnimation
-
 .checkLoop:
     SET_HL_TO_ADDRESS pointBalloon, wPointBalloonOffset
     call SetEnemyStruct
@@ -322,7 +334,7 @@ PointBalloonUpdate::
     pop bc
     ret
 
-DeathOfPointBalloon::
+DeathOfPointBalloon:
     ; Death
     xor a ; ld a, 0
     ld [wEnemyAlive], a ; WARNING MIGHT NOT BE SET TO CORRECT BALLOON
