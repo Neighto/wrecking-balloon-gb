@@ -1,4 +1,4 @@
-LEVEL_UPDATE_REFRESH_TIME EQU %00000011
+LEVEL_UPDATE_REFRESH_TIME EQU %00001111
 
 ; Enemy Legend (Get Enemy_Number Here)
 EMPTY EQU 0
@@ -22,18 +22,35 @@ SECTION "level vars", WRAM0
 SECTION "level data", ROM0
 
 ; Template Format
-;   Label: WXLY (W:World, L:Level)
+;   Label: WXLYWZ (W:World, L:Level, W:Wave)
 ;   Enemy_Number, Spawn_Location_Y, Spawn_Location_X
 
 ; World 1
 
-W1L1::
+W1L1W1::
     DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, POINT_BALLOON_SPAWN_C
     DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y+2, POINT_BALLOON_SPAWN_C-30
     DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y-4, POINT_BALLOON_SPAWN_C-50
     DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y-8, POINT_BALLOON_SPAWN_C+18
-    ; DB BALLOON_CACTUS, 60, 0
-W1L1End::
+W1L1W1End::
+
+W1L1W2::
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, POINT_BALLOON_SPAWN_C
+W1L1W2End::
+
+W1L1W3::
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, POINT_BALLOON_SPAWN_C
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y+2, POINT_BALLOON_SPAWN_C-30
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y-4, POINT_BALLOON_SPAWN_C-50
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y-8, POINT_BALLOON_SPAWN_C+18
+W1L1W3End::
+
+W1L1W4::
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, POINT_BALLOON_SPAWN_C
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y+2, POINT_BALLOON_SPAWN_C-30
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y-4, POINT_BALLOON_SPAWN_C-50
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y-8, POINT_BALLOON_SPAWN_C+18
+W1L1W4End::
 
 W1L2:
     ; DB POINT_BALLOON, 140, 40
@@ -100,7 +117,7 @@ LevelDataHandler:
 LevelDataManager::
     ; Frequency we read 
     ld a, [global_timer]
-    and LEVEL_UPDATE_REFRESH_TIME
+    cp a, 20
     jr nz, .end
 
     ; Find which world, level, wave we are on
@@ -115,27 +132,50 @@ LevelDataManager::
 .w1:
     ld a, [wLevel]
     cp a, 1
-    jr z, .w1l1
+    jr z, .w1_l1
     cp a, 2
-    jr z, .w1l2
+    jr z, .w1_l2
     jr .end
-.w1l1:
-    ld hl, W1L1
-    ld de, W1L1End - W1L1
+.w1_l1:
+    ld a, [wWave]
+    cp a, 1
+    jr z, .w1_l1_w1
+    cp a, 2
+    jr z, .w1_l1_w2
+    cp a, 3
+    jr z, .w1_l1_w3
+    cp a, 4
+    jr z, .w1_l1_w4
+    jr .end
+.w1_l1_w1:
+    ld hl, W1L1W1
+    ld de, W1L1W1End - W1L1W1
     jr .handle
-.w1l2:
-    ; ld hl, W1L2
-    ; ld de, W1L2End - W1L2
-    ; jr .handle
+.w1_l1_w2:
+    ld hl, W1L1W2
+    ld de, W1L1W2End - W1L1W2
+    jr .handle
+.w1_l1_w3:
+    ld hl, W1L1W3
+    ld de, W1L1W3End - W1L1W3
+    jr .handle
+.w1_l1_w4:
+    ld hl, W1L1W4
+    ld de, W1L1W4End - W1L1W4
+    ld a, [wLevel] ; not permanent
+    inc a
+    ld [wLevel], a
+    jr .handle
+.w1_l2:
     jr .end ; temp
 .w2:
     jr .end ; temp
 .w3:
     jr .end ; temp
 .handle:
-    ld a, [wLevel]  ; temp so we only read it once
+    ld a, [wWave]  ; temp so we only read it once
     inc a 
-    ld [wLevel], a
+    ld [wWave], a
     call LevelDataHandler
 .end:
     ; Possibly here too we will increment those vars where needed
