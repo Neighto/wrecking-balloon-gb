@@ -3,16 +3,6 @@ INCLUDE "balloonCactusConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
-    ; POINT BALLOON
-    ; wEnemyActive
-    ; wEnemyY
-    ; wEnemyX
-    ; wEnemyOAM
-    ; wEnemyAlive
-    ; wEnemyPopping
-    ; wEnemyPoppingFrame
-    ; wEnemyPoppingTimer
-
 POINT_BALLOON_STRUCT_SIZE EQU 8
 POINT_BALLOON_SPRITE_MOVE_WAIT_TIME EQU %00000001
 
@@ -31,7 +21,7 @@ InitializePointBalloon::
     pop hl
     ret
 
-RequestPointBalloonSpace:
+RequestRAMSpace:
     ; Returns a as 0 or 1 where 0 is failed and 1 is succeeded
     ; Returns hl as address of free space
     push bc
@@ -56,7 +46,7 @@ RequestPointBalloonSpace:
     pop bc
     ret
 
-GetPointBalloonStruct:
+GetStruct:
     ; Argument hl = start of free enemy struct
     push af
     ld a, [hli]
@@ -78,7 +68,7 @@ GetPointBalloonStruct:
     pop af
     ret
 
-SetPointBalloonStruct:
+SetStruct:
     ; Argument hl = start of free enemy struct
     push af
     ld a, [wEnemyActive]
@@ -106,13 +96,13 @@ SpawnPointBalloon::
     push af
     push hl
     push de
-    call RequestPointBalloonSpace ; Returns HL
+    call RequestRAMSpace ; Returns HL
     LD_DE_HL
     cp a, 0
     jr z, .end
 .availableSpace:
     call InitializeEnemyStructVars
-    call SetPointBalloonStruct
+    call SetStruct
     LD_HL_BC ; Arguments now in HL
     ld b, 2
 	call RequestOAMSpace
@@ -149,7 +139,7 @@ SpawnPointBalloon::
     ld [hl], OAMF_PAL1 | OAMF_XFLIP
 .setStruct:
     LD_HL_DE
-    call SetPointBalloonStruct
+    call SetStruct
 .end:
     pop de
     pop hl
@@ -205,12 +195,11 @@ PopBalloonAnimation:
     ld [hl], 2
     ret
 .clear:
-    call ClearPointBalloon
+    call Clear
 .end:
     ret
 
-ClearPointBalloon:
-    ; Remove sprites
+Clear:
     xor a ; ld a, 0
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     ld [hli], a
@@ -221,15 +210,7 @@ ClearPointBalloon:
     ld [hli], a
     ld [hli], a
     ld [hl], a
-    ; Reset variables
-    ld [wEnemyActive], a
-    ld [wEnemyY], a
-    ld [wEnemyX], a
-    ld [wEnemyOAM], a
-    ld [wEnemyAlive], a
-    ld [wEnemyPopping], a
-    ld [wEnemyPoppingFrame], a 
-    ld [wEnemyPoppingTimer], a 
+    call InitializeEnemyStructVars
     ret
 
 UpdateBalloonPosition:
@@ -251,7 +232,7 @@ UpdateBalloonPosition:
     ld [hl], a
     ret
 
-MovePointBalloon:
+Move:
     ld a, [wEnemyY]
     dec a
     ld [wEnemyY], a
@@ -293,9 +274,11 @@ PointBalloonUpdate::
     push hl
     push af
     ld bc, (PointBalloonEnd - PointBalloonStart) / POINT_BALLOON_STRUCT_SIZE
+    xor a ; ld a, 0
+    ld [wEnemyOffset], a
 .loop:
     SET_HL_TO_ADDRESS pointBalloon, wEnemyOffset
-    call GetPointBalloonStruct
+    call GetStruct
     
     ; Check active
     ld a, [wEnemyActive]
@@ -310,7 +293,7 @@ PointBalloonUpdate::
     ld a, [global_timer]
     and	POINT_BALLOON_SPRITE_MOVE_WAIT_TIME
     jr nz, .checkLoop
-    call MovePointBalloon
+    call Move
     call CollisionPointBalloon
     ; Check offscreen
     push bc
@@ -321,7 +304,7 @@ PointBalloonUpdate::
     cp a, 0
     jr z, .checkLoop
 .offScreen:
-    call ClearPointBalloon
+    call Clear
     jr .checkLoop
 .popped:
     ; Check if we need to play popping animation
@@ -331,7 +314,7 @@ PointBalloonUpdate::
     call PopBalloonAnimation
 .checkLoop:
     SET_HL_TO_ADDRESS pointBalloon, wEnemyOffset
-    call SetPointBalloonStruct
+    call SetStruct
     ld a, [wEnemyOffset]
     add a, POINT_BALLOON_STRUCT_SIZE
     ld [wEnemyOffset], a    

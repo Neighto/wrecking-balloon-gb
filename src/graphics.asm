@@ -137,7 +137,7 @@ RefreshLevel:
 	ld a, [wWorld]
 	add NUMBERS_TILE_OFFSET
 	ld [WORLD_ADDRESS], a
-	ld a, [wWave] ; should be wLevel
+	ld a, [wLevel]
 	add NUMBERS_TILE_OFFSET
 	ld [LEVEL_ADDRESS], a
 	pop af

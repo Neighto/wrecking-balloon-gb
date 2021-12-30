@@ -123,82 +123,7 @@ CollisionFallingEnemy:
 ;     cp a, 0
 ;     ; call nz, DeathOfPointBalloon
 ; .bombCollision:
-; .enemy2Collision:
 ; .end
-    ret
-
-CollisionEnemy2:
-    ; Check if alive
-    ld a, [enemy2_alive]
-    cp a, 0
-    jr z, .birdCollision
-    ; Check collision
-    SET_HL_TO_ADDRESS wOAM, wEnemy2BalloonOAM
-    LD_BC_HL
-    ld hl, wPlayerCactusOAM
-    xor a ; ld a, 0
-    call CollisionCheck
-    cp a, 0
-    call nz, DeathOfEnemy2
-    ; Check hit player
-    ld bc, wPlayerBalloonOAM
-    SET_HL_TO_ADDRESS wOAM, wEnemy2CactusOAM
-    xor a ; ld a, 0
-    call CollisionCheck
-    cp a, 0
-    jr z, .birdCollision
-    call nz, CollisionWithPlayer
-.birdCollision:
-    ; Check if alive
-    ld a, [bird_alive]
-    cp a, 0
-    jr z, .end
-    ; Check if falling
-    ld a, [enemy2_falling]
-    cp a, 0
-    jr z, .end
-    SET_HL_TO_ADDRESS wOAM, wEnemy2CactusOAM
-    LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, wBirdOAM
-    ld a, 1
-    call CollisionCheck
-    cp a, 0
-    call nz, DeathOfBird
-.end
-    ret
-
-CollisionFallingEnemy2:
-    ; Check if falling
-    ld a, [enemy2_falling]
-    cp a, 0
-    jr z, .end
-.birdCollision:
-    ; Check if alive
-    ld a, [bird_alive]
-    cp a, 0
-    jr z, .pointBalloonCollision
-    SET_HL_TO_ADDRESS wOAM, wEnemy2CactusOAM
-    LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, wBirdOAM
-    ld a, 1
-    call CollisionCheck
-    cp a, 0
-    call nz, DeathOfBird
-.pointBalloonCollision:
-    ; Check if alive
-    ld a, [pointBalloon+3] ; Alive
-    cp a, 0
-    jr z, .bombCollision
-    SET_HL_TO_ADDRESS wOAM, wEnemy2CactusOAM
-    LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, pointBalloon+2
-    xor a ;ld a, 0
-    call CollisionCheck
-    cp a, 0
-    ; call nz, DeathOfPointBalloon
-.bombCollision:
-.enemy2Collision:
-.end
     ret
 
 CollisionBomb:
@@ -242,11 +167,9 @@ CollisionUpdate::
     cp a, 0
     jp z, .end
     ; Collisions
-    call CollisionEnemy2
     call CollisionBomb
     call CollisionBird
     call CollisionFallingEnemy
-    call CollisionFallingEnemy2
 .end:
     ret
 

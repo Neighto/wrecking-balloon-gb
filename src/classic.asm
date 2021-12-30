@@ -270,8 +270,8 @@ SetClassicMapStartPoint::
     ldh [rSCY], a
     ret
 
-ClassicGameManager:
-    push af
+UpdateSprites:
+    call PlayerUpdate
     call PointBalloonUpdate
     call BalloonCactusUpdate
 ;   call PropellerCactusUpdate
@@ -279,10 +279,8 @@ ClassicGameManager:
 ;   ld [bomb_speed], a
 ;   ld a, 4
 ;   ld [bird_speed], a
-;   call Enemy2Update
 ;   call BombUpdate
 ;   call BirdUpdate
-    pop af
     ret
 
 UpdateClassicCountdown::
@@ -303,8 +301,7 @@ UpdateClassic::
 	jr z, .end
     call MoveToNextTilemap
     call ReplaceTilemapHorizontal
-    call PlayerUpdate
-    call ClassicGameManager
+    call UpdateSprites
     call LevelDataManager
     call CollisionUpdate
     call RefreshWindow

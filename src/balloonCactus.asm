@@ -3,23 +3,7 @@ INCLUDE "balloonCactusConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
-    ; BALLOON CACTUS
-    ; wEnemyActive
-    ; wEnemyY
-    ; wEnemyX
-    ; wEnemyOAM
-    ; wEnemyAlive
-    ; wEnemyPopping
-    ; wEnemyPoppingFrame
-    ; wEnemyPoppingTimer
-    ; wEnemyY2
-    ; wEnemyX2
-    ; wEnemyFalling
-    ; wEnemyFallingSpeed
-    ; wEnemyFallingTimer
-    ; wEnemyDelayFallingTimer
-
-BALLOON_CACTUS_STRUCT_SIZE EQU 14
+BALLOON_CACTUS_STRUCT_SIZE EQU 15
 
 SECTION "balloon cactus vars", WRAM0
 BalloonCactusStart:
@@ -36,7 +20,7 @@ InitializeBalloonCactus::
     pop hl
     ret
 
-RequestBalloonCactusSpace:
+RequestRAMSpace:
     ; Returns a as 0 or 1 where 0 is failed and 1 is succeeded
     ; Returns hl as address of free space
     push bc
@@ -61,7 +45,7 @@ RequestBalloonCactusSpace:
     pop bc
     ret
 
-GetBalloonCactusStruct:
+GetStruct:
     ; Argument hl = start of free enemy struct
     push af
     ld a, [hli]
@@ -81,6 +65,8 @@ GetBalloonCactusStruct:
     ld a, [hli]
     ld [wEnemyPoppingTimer], a
     ld a, [hli]
+    ld [wEnemyRightside], a
+    ld a, [hli]
     ld [wEnemyY2], a
     ld a, [hli]
     ld [wEnemyX2], a
@@ -95,7 +81,7 @@ GetBalloonCactusStruct:
     pop af
     ret
 
-SetBalloonCactusStruct:
+SetStruct:
     ; Argument hl = start of free enemy struct
     push af
     ld a, [wEnemyActive]
@@ -113,6 +99,8 @@ SetBalloonCactusStruct:
     ld a, [wEnemyPoppingFrame]
     ld [hli], a
     ld a, [wEnemyPoppingTimer]
+    ld [hli], a
+    ld a, [wEnemyRightside]
     ld [hli], a
     ld a, [wEnemyY2]
     ld [hli], a
@@ -135,13 +123,13 @@ SpawnBalloonCactus::
     push af
     push hl
     push de
-    call RequestBalloonCactusSpace ; Returns HL
+    call RequestRAMSpace ; Returns HL
     LD_DE_HL
     cp a, 0
     jp z, .end
 .availableSpace:
     call InitializeEnemyStructVars
-    call SetBalloonCactusStruct
+    call SetStruct
     LD_HL_BC ; Arguments now in HL
     ld b, 4
 	call RequestOAMSpace
@@ -161,6 +149,10 @@ SpawnBalloonCactus::
     ld a, l
     ld [wEnemyX], a
     ld [wEnemyX2], a
+    cp a, SCRN_X / 2
+    jr c, .isLeftside
+    ld [wEnemyRightside], a
+.isLeftside:
 .balloonLeft:
     SET_HL_TO_ADDRESS_WITH_BC wOAM, wEnemyOAM ; DONT FORGET WITH BC
     ld a, [wEnemyY]
@@ -201,7 +193,7 @@ SpawnBalloonCactus::
     ld [hl], OAMF_XFLIP
 .setStruct:
     LD_HL_DE
-    call SetBalloonCactusStruct
+    call SetStruct
 .end:
     pop de
     pop hl
@@ -234,25 +226,10 @@ ClearBalloon:
     ld [hl], a
     ret
 
-ClearBalloonCactus:
-    ; Remove sprites
+Clear:
     call ClearCactus
     call ClearBalloon
-    ; Reset variables
-    ld [wEnemyActive], a
-    ld [wEnemyY], a
-    ld [wEnemyX], a
-    ld [wEnemyOAM], a
-    ld [wEnemyAlive], a
-    ld [wEnemyPopping], a
-    ld [wEnemyPoppingFrame], a 
-    ld [wEnemyPoppingTimer], a 
-    ld [wEnemyY2], a
-    ld [wEnemyX2], a
-    ld [wEnemyFalling], a 
-    ld [wEnemyFallingSpeed], a 
-    ld [wEnemyFallingTimer], a
-    ld [wEnemyDelayFallingTimer], a
+    call InitializeEnemyStructVars
     ret
 
 FallCactusDown:
@@ -347,7 +324,7 @@ CactusFalling:
     call UpdateCactusPosition
     ret
 .offScreen:
-    call ClearBalloonCactus
+    call Clear
 .end
     ret
 
@@ -388,19 +365,18 @@ UpdateCactusPosition:
     add 8
     ld [hl], a
     ret
-  
-MoveBalloonDown:
-    INCREMENT_POS wEnemyY, 1
-    ret
 
-MoveDown:
-    INCREMENT_POS wEnemyY, 1
-    INCREMENT_POS wEnemyY2, 1
-    ret
-
-MoveBalloonCactus:
+Move:
+    ld a, [wEnemyRightside]
+    cp a, 0
+    jr z, .isLeftside
+    DECREMENT_POS wEnemyX, 1
+    DECREMENT_POS wEnemyX2, 1
+    jr .updatePosition
+.isLeftside:
     INCREMENT_POS wEnemyX, 1
     INCREMENT_POS wEnemyX2, 1
+.updatePosition:
     call UpdateBalloonPosition
     call UpdateCactusPosition
     ret
@@ -458,9 +434,11 @@ BalloonCactusUpdate::
     push hl
     push af
     ld bc, (BalloonCactusEnd - BalloonCactusStart) / BALLOON_CACTUS_STRUCT_SIZE
+    xor a ; ld a, 0
+    ld [wEnemyOffset], a ; TODO, we can remove enemy offset this if we optimize this code
 .loop:
     SET_HL_TO_ADDRESS balloonCactus, wEnemyOffset
-    call GetBalloonCactusStruct
+    call GetStruct
 
     ; Check active
     ld a, [wEnemyActive]
@@ -475,9 +453,18 @@ BalloonCactusUpdate::
     ld a, [global_timer]
     and	ENEMY_SPRITE_MOVE_WAIT_TIME
     jr nz, .checkLoop
-    call MoveBalloonCactus
+    call Move
     call CollisionBalloonCactus
-    ; Check offscreen TODO
+    ; Check offscreen
+    push bc
+    ld a, [wEnemyX]
+    ld b, a
+    call OffScreenXEnemies
+    pop bc
+    cp a, 0
+    jr z, .checkLoop
+.offScreen:
+    call Clear
     jr z, .checkLoop
 .popped:
     ; Check if we need to play popping animation
@@ -493,7 +480,7 @@ BalloonCactusUpdate::
     call CactusFalling
 .checkLoop:
     SET_HL_TO_ADDRESS balloonCactus, wEnemyOffset
-    call SetBalloonCactusStruct
+    call SetStruct
     ld a, [wEnemyOffset]
     add a, BALLOON_CACTUS_STRUCT_SIZE
     ld [wEnemyOffset], a    

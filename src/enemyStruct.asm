@@ -16,6 +16,9 @@ SECTION "enemy struct vars", WRAM0
     wEnemyPoppingFrame:: DB
     wEnemyPoppingTimer:: DB
 
+    ; Direction
+    wEnemyRightside:: DB
+
     ; Cactus enemies
     wEnemyY2:: DB
     wEnemyX2:: DB
@@ -29,7 +32,6 @@ SECTION "enemy struct", ROM0
 InitializeEnemyStructVars::
     push af
     xor a ; ld a, 0
-    ld [wEnemyOffset], a
     ld [wEnemyActive], a
     ld [wEnemyY], a
     ld [wEnemyX], a
@@ -38,6 +40,7 @@ InitializeEnemyStructVars::
     ld [wEnemyPopping], a
     ld [wEnemyPoppingFrame], a
     ld [wEnemyPoppingTimer], a
+    ld [wEnemyRightside], a
     ld [wEnemyY2], a
     ld [wEnemyX2], a
     ld [wEnemyFalling], a 
@@ -49,12 +52,12 @@ InitializeEnemyStructVars::
 
 ; Functions every enemy should have (where Enemy is name of enemy)
 ; InitializeEnemy
-; RequestEnemySpace
-; GetEnemyStruct
-; SetEnemyStruct
+; RequestRAMSpace
+; GetStruct
+; SetStruct
 ; SpawnEnemy
-; ClearEnemy
-; MoveEnemy
+; Clear
+; Move
 ; DeathOfEnemy
 ; CollisionEnemy
 ; EnemyUpdate
