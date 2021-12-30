@@ -45,6 +45,28 @@ MACRO LD_DE_HL
     ld e, l
 ENDM
 
+MACRO LD_HL_BC
+    ld h, b 
+    ld l, c
+ENDM
+
+MACRO LD_HL_DE
+    ld h, d
+    ld l, e
+ENDM
+
+MACRO ADD_TO_HL
+    ; argument 1 is value to add to HL
+    push af
+    ld a, l
+    add a, \1
+    ld l, a
+    ld a, h
+    adc a, 0
+    ld h, a
+    pop af
+ENDM
+
 ; Use with caution: Overwrites hl and de
 MACRO SET_HL_TO_ADDRESS
     ; argument 1 is starting address
@@ -58,17 +80,15 @@ MACRO SET_HL_TO_ADDRESS
     pop af
 ENDM
 
-; ; Use with caution: Overwrites hl and de
-; MACRO SET_HL_TO_ADDRESS_REG_OFFSET
-;     ; argument 1 is starting address
-;     ; argument 2 is offset from register
-;     ld hl, \1
-;     ld d, HIGH(\2)
-;     ld e, LOW(\2)
-;     push af
-;     ld a, [de]
-;     add a, l ; might cause issues if no carry to h?
-;     ld l, a
-;     pop af
-;     ; OR maybe a macro that combines this with the above one...
-; ENDM
+; Use with caution: Overwrites hl and bc
+MACRO SET_HL_TO_ADDRESS_WITH_BC
+    ; argument 1 is starting address
+    ; argument 2 is offset
+    ld hl, \1
+    ld bc, \2
+    push af
+    ld a, [bc]
+    add a, l ; might cause issues if no carry to h?
+    ld l, a
+    pop af
+ENDM

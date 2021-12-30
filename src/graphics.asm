@@ -215,7 +215,7 @@ ReplaceTilemapHorizontal::
 	add a, $20
 	ld c, a
 	ld a, b
-	adc a, 0
+	adc a, 0 ; TODO use ADD_TO_HL
 	ld b, a
 	ld a, [bc]
 	; Jump to next row
