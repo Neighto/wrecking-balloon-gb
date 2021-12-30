@@ -49,7 +49,7 @@ StartClassic::
 	call InitializeScore
 	call LoadClassicGameData
 	call InitializeLevelVars
-
+	call InitializeEnemyStructVars
 	call InitializePlayer
 	call InitializePointBalloon
 	call InitializeEnemy

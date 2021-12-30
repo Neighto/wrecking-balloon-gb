@@ -264,39 +264,16 @@ SetClassicMapStartPoint::
 
 ClassicGameManager:
     push af
-
     call PointBalloonUpdate
-;     ; call PropellerCactusUpdate
-
-;     ld a, [difficulty_level]
-;     cp a, 70
-;     jr nc, .levelSeven
-;     cp a, 40
-;     jr nc, .levelSix
-;     cp a, 25
-;     jr nc, .levelFive
-;     cp a, 12
-;     jr nc, .levelThree
-;     cp a, 6
-;     jr nc, .levelTwo
-;     cp a, 1
-;     jr nc, .levelOne
-;     jr .end
-; .levelSeven:
-;     ld a, 2
-;     ld [bomb_speed], a
-; .levelSix:
-;     ld a, 4
-;     ld [bird_speed], a
-; .levelFive:
-;     call Enemy2Update
-; .levelThree:
-;     call BombUpdate
-; .levelTwo:
-;     call BirdUpdate
-; .levelOne:
+;   call PropellerCactusUpdate
+;   ld a, 2
+;   ld [bomb_speed], a
+;   ld a, 4
+;   ld [bird_speed], a
+;   call Enemy2Update
+;   call BombUpdate
+;   call BirdUpdate
 ; 	call EnemyUpdate
-; .end:
     pop af
     ret
 
