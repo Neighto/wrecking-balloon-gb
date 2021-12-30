@@ -282,63 +282,63 @@ ROM0 bank #0:
            $192f = OffScreenX.end
            $1931 = OffScreenY
            $193b = OffScreenY.end
-  SECTION: $193d-$1a00 ($00c4 bytes) ["rom"]
-           $193d = Start
-           $1971 = StartClassic
-           $19c2 = PreGameLoop
-           $19e3 = GameLoopCountdown
-           $19f2 = GameLoop
-  SECTION: $1a01-$1abb ($00bb bytes) ["level data"]
-           $1a01 = W1L1W1
-           $1a04 = W1L1W2
-           $1a04 = W1L1W3
-           $1a04 = W1L1W4
-           $1a04 = W1L1W2End
-           $1a04 = W1L2
-           $1a04 = W1L1W3End
-           $1a04 = W1L2End
-           $1a04 = W2L1
-           $1a04 = W1L1W4End
-           $1a04 = W1L1W1End
-           $1a08 = W2L1End
-           $1a08 = InitializeLevelVars
-           $1a14 = LevelDataHandler
-           $1a14 = LevelDataHandler.loop
-           $1a2b = LevelDataHandler.pointBalloon
-           $1a34 = LevelDataHandler.balloonCactus
-           $1a3d = LevelDataHandler.bird
-           $1a3f = LevelDataHandler.bomb
-           $1a41 = LevelDataHandler.empty
-           $1a43 = LevelDataHandler.loopCheck
-           $1a49 = LevelDataHandler.end
-           $1a4a = LevelDataManager
-           $1a62 = LevelDataManager.w1
-           $1a6f = LevelDataManager.w1_l1
-           $1a84 = LevelDataManager.w1_l1_w1
-           $1a8c = LevelDataManager.w1_l1_w2
-           $1a94 = LevelDataManager.w1_l1_w3
-           $1a9c = LevelDataManager.w1_l1_w4
-           $1aab = LevelDataManager.w1_l2
-           $1aad = LevelDataManager.w2
-           $1aaf = LevelDataManager.w3
-           $1ab1 = LevelDataManager.handle
-           $1abb = LevelDataManager.end
-  SECTION: $1abc-$1b2e ($0073 bytes) ["joypad"]
-           $1abc = ReadInput
-           $1aec = JOY_RIGHT
-           $1af4 = JOY_LEFT
-           $1afc = JOY_UP
-           $1b04 = JOY_DOWN
-           $1b0c = JOY_A
-           $1b14 = JOY_B
-           $1b1c = JOY_SELECT
-           $1b24 = JOY_START
-           $1b2c = JOY_FALSE
-  SECTION: $1b2f-$1b43 ($0015 bytes) ["scroll"]
-           $1b2f = HorizontalScroll
-           $1b3c = HorizontalScroll.end
-           $1b3e = ResetScroll
-    SLACK: $24d8 bytes
+  SECTION: $193d-$1a02 ($00c6 bytes) ["level data"]
+           $193d = W1L1W1
+           $1940 = W1L1W2
+           $1940 = W1L1W1End
+           $1946 = W1L1W3
+           $1946 = W1L1W2End
+           $194f = W1L1W4
+           $194f = W1L1W3End
+           $1952 = W1L2
+           $1952 = W1L2End
+           $1952 = W2L1
+           $1952 = W1L1W4End
+           $1956 = W2L1End
+           $1956 = InitializeLevelVars
+           $1962 = LevelDataHandler
+           $1962 = LevelDataHandler.loop
+           $1979 = LevelDataHandler.pointBalloon
+           $1982 = LevelDataHandler.balloonCactus
+           $198b = LevelDataHandler.bird
+           $198d = LevelDataHandler.bomb
+           $198f = LevelDataHandler.empty
+           $1991 = LevelDataHandler.loopCheck
+           $1997 = LevelDataHandler.end
+           $1998 = LevelDataManager
+           $19b0 = LevelDataManager.w1
+           $19bd = LevelDataManager.w1_l1
+           $19d2 = LevelDataManager.w1_l1_w1
+           $19da = LevelDataManager.w1_l1_w2
+           $19e2 = LevelDataManager.w1_l1_w3
+           $19ea = LevelDataManager.w1_l1_w4
+           $19f2 = LevelDataManager.w1_l2
+           $19f4 = LevelDataManager.w2
+           $19f6 = LevelDataManager.w3
+           $19f8 = LevelDataManager.handle
+           $1a02 = LevelDataManager.end
+  SECTION: $1a03-$1ac6 ($00c4 bytes) ["rom"]
+           $1a03 = Start
+           $1a37 = StartClassic
+           $1a88 = PreGameLoop
+           $1aa9 = GameLoopCountdown
+           $1ab8 = GameLoop
+  SECTION: $1ac7-$1b39 ($0073 bytes) ["joypad"]
+           $1ac7 = ReadInput
+           $1af7 = JOY_RIGHT
+           $1aff = JOY_LEFT
+           $1b07 = JOY_UP
+           $1b0f = JOY_DOWN
+           $1b17 = JOY_A
+           $1b1f = JOY_B
+           $1b27 = JOY_SELECT
+           $1b2f = JOY_START
+           $1b37 = JOY_FALSE
+  SECTION: $1b3a-$1b4e ($0015 bytes) ["scroll"]
+           $1b3a = HorizontalScroll
+           $1b47 = HorizontalScroll.end
+           $1b49 = ResetScroll
+    SLACK: $24cd bytes
 
 ROMX bank #1:
   SECTION: $4000-$4b3d ($0b3e bytes) ["Song Data2"]
@@ -1119,7 +1119,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $1b28 bytes in 1 bank
+    ROM0: $1b33 bytes in 1 bank
     ROMX: $35b2 bytes in 1 bank
     WRAM0: $0186 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
