@@ -84,7 +84,7 @@ CollisionCheck::
     pop de
     ret
 
-CollisionWithPlayer:
+CollisionWithPlayer::
     push af
     ; Check if player is invincible
     ld a, [player_invincible]
@@ -93,62 +93,38 @@ CollisionWithPlayer:
     pop af
     ret
 
-CollisionEnemy:
-    ; Check if alive
-    ld a, [enemy_alive]
-    cp a, 0
-    jr z, .end
-    ; Check collision
-    SET_HL_TO_ADDRESS wOAM, wEnemyBalloonOAM
-    LD_BC_HL
-    ld hl, wPlayerCactusOAM
-    xor a ; ld a, 0
-    call CollisionCheck
-    cp a, 0
-    call nz, DeathOfEnemy
-    ; Check hit player
-    ld bc, wPlayerBalloonOAM
-    SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
-    xor a ; ld a, 0
-    call CollisionCheck
-    cp a, 0
-    jr z, .end
-    call nz, CollisionWithPlayer
-.end:
-    ret
-
 CollisionFallingEnemy:
-    ; Check if falling
-    ld a, [enemy_falling]
-    cp a, 0
-    jr z, .end
-.birdCollision:
-    ; Check if alive
-    ld a, [bird_alive]
-    cp a, 0
-    jr z, .pointBalloonCollision
-    SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
-    LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, wBirdOAM
-    ld a, 1
-    call CollisionCheck
-    cp a, 0
-    call nz, DeathOfBird
-.pointBalloonCollision:
-    ; Check if alive
-    ld a, [pointBalloon+3] ; Alive
-    cp a, 0
-    jr z, .bombCollision
-    SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
-    LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, pointBalloon+2
-    xor a ;ld a, 0
-    call CollisionCheck
-    cp a, 0
-    ; call nz, DeathOfPointBalloon
-.bombCollision:
-.enemy2Collision:
-.end
+;     ; Check if falling
+;     ld a, [enemy_falling]
+;     cp a, 0
+;     jr z, .end
+; .birdCollision:
+;     ; Check if alive
+;     ld a, [bird_alive]
+;     cp a, 0
+;     jr z, .pointBalloonCollision
+;     SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
+;     LD_BC_HL
+;     SET_HL_TO_ADDRESS wOAM, wBirdOAM
+;     ld a, 1
+;     call CollisionCheck
+;     cp a, 0
+;     call nz, DeathOfBird
+; .pointBalloonCollision:
+;     ; Check if alive
+;     ld a, [pointBalloon+3] ; Alive
+;     cp a, 0
+;     jr z, .bombCollision
+;     SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
+;     LD_BC_HL
+;     SET_HL_TO_ADDRESS wOAM, pointBalloon+2
+;     xor a ;ld a, 0
+;     call CollisionCheck
+;     cp a, 0
+;     ; call nz, DeathOfPointBalloon
+; .bombCollision:
+; .enemy2Collision:
+; .end
     ret
 
 CollisionEnemy2:
@@ -266,8 +242,6 @@ CollisionUpdate::
     cp a, 0
     jp z, .end
     ; Collisions
-    ; call CollisionPointBalloon
-    call CollisionEnemy
     call CollisionEnemy2
     call CollisionBomb
     call CollisionBird

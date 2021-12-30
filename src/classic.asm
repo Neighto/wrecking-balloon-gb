@@ -273,6 +273,7 @@ SetClassicMapStartPoint::
 ClassicGameManager:
     push af
     call PointBalloonUpdate
+    call BalloonCactusUpdate
 ;   call PropellerCactusUpdate
 ;   ld a, 2
 ;   ld [bomb_speed], a
@@ -281,7 +282,6 @@ ClassicGameManager:
 ;   call Enemy2Update
 ;   call BombUpdate
 ;   call BirdUpdate
-; 	call EnemyUpdate
     pop af
     ret
 
