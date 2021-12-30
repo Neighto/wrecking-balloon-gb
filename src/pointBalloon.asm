@@ -46,10 +46,53 @@ UpdateBalloonPosition:
     ret
 
 InitializePointBalloon::
-    push bc
     push hl
+    push bc
     push af
     RESET_IN_RANGE pointBalloon, PointBalloonEnd - PointBalloonStart
+    xor a ; ld a, 0
+    ld [wPointBalloonOffset], a
+    pop af
+    pop bc
+    pop hl
+    ret
+
+RequestPointBalloonSpace:
+    ; Returns a as 0 or 1 where 0 is failed and 1 is succeeded
+    ; Returns hl as address of free space
+    push bc
+    ld hl, pointBalloon
+    ld bc, (PointBalloonEnd - PointBalloonStart) / POINT_BALLOON_STRUCT_SIZE
+.loop:
+    ld a, [hl] ; Active
+    cp a, 0
+    jr nz, .checkLoop
+    ; Inactive and free
+    ld a, 1
+    jr .end
+.checkLoop:
+    ADD_TO_HL POINT_BALLOON_STRUCT_SIZE
+    dec bc
+    ld a, b 
+    or a, c
+    jr nz, .loop
+    ; All active
+    ld a, 0
+.end:
+    pop bc
+    ret
+
+SpawnPointBalloon::
+    ; argument b = Y spawn
+    ; argument c = X spawn
+    push af
+    push hl
+    push de
+    call RequestPointBalloonSpace
+    LD_DE_HL
+    cp a, 0
+    jr z, .end
+.availableSpace:
     xor a ; ld a, 0
     ld [wPointBalloonOffset], a
     ld [wEnemyActive], a
@@ -60,52 +103,8 @@ InitializePointBalloon::
     ld [wEnemyPopping], a
     ld [wEnemyPoppingFrame], a
     ld [wEnemyPoppingTimer], a
-    pop af
-    pop hl
-    pop bc
-    ret
-
-RequestPointBalloonSpace:
-    ; Returns a as 0 or 1 where 0 is failed and 1 is succeeded
-    ; Returns hl as address of free space
-;     push bc
-;     ld hl, pointBalloon
-;     ld bc, (PointBalloonEnd - PointBalloonStart) / POINT_BALLOON_STRUCT_SIZE
-; .loop:
-;     ld a, [hl] ; Active
-;     cp a, 0
-;     jr nz, .checkLoop
-;     ; Inactive and free
-;     ld a, 1
-;     jr .end
-; .checkLoop:
-;     ADD_TO_HL POINT_BALLOON_STRUCT_SIZE
-;     dec bc
-;     ld a, b 
-;     or a, c
-;     jr nz, .loop
-;     ; All active
-;     ld a, 0
-; .end:
-;     pop bc
-    ld hl, pointBalloon
-    ret
-
-SpawnPointBalloon::
-    ; argument b = Y spawn
-    ; argument c = X spawn
-    push af
-    push hl
-    push de
-    ; TODO we will also need something to make sure we only read this once at a time
-    call RequestPointBalloonSpace
-    LD_DE_HL
-    cp a, 0
-    jr z, .end
-.availableSpace:
-    call InitializePointBalloon
-    ; ld hl, pointBalloon
-    call GetEnemyStruct
+    call SetEnemyStruct
+    ; call GetEnemyStruct ; Don't have to call get because it will be zero regardless
 
     ; Set Active and Alive
     ld a, 1
@@ -124,8 +123,6 @@ SpawnPointBalloon::
 	ld [wEnemyOAM], a
 
 .balloonLeft:
-    ; ld hl, wOAM
-    ; ADD_TO_HL wEnemyOAM
     SET_HL_TO_ADDRESS_WITH_BC wOAM, wEnemyOAM
     ld a, [wEnemyY]
     ld [hli], a
@@ -145,7 +142,6 @@ SpawnPointBalloon::
     inc l
     ld [hl], OAMF_PAL1 | OAMF_XFLIP
 .setStruct:
-    ; ld hl, pointBalloon
     LD_HL_DE
     call SetEnemyStruct
 .end:
