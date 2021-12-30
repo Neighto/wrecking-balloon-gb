@@ -7,7 +7,7 @@ OFF_SCREEN_ENEMY_BUFFER EQU 16
 
 SECTION "collision", ROM0
 
-CollisionCheck:
+CollisionCheck::
     ; bc = argument for target colliding with player cactus
     ; hl = argument for collider
     ; a = argument for 8x16 tile check (a = 0) or 8x8 tile check (a = 1) on hl
@@ -91,22 +91,6 @@ CollisionWithPlayer:
     cp a, 0
     call z, DeathOfPlayer
     pop af
-    ret
-
-CollisionPointBalloon:
-    ; Check if alive
-    ld a, [pointBalloon+3] ; Alive
-    cp a, 0
-    jr z, .end
-    ; Check collision
-    SET_HL_TO_ADDRESS wOAM, pointBalloon+2
-    LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
-    xor a ; ld a, 0
-    call CollisionCheck
-    cp a, 0
-    call nz, DeathOfPointBalloon
-.end:
     ret
 
 CollisionEnemy:
@@ -285,7 +269,7 @@ CollisionUpdate::
     cp a, 0
     jp z, .end
     ; Collisions
-    call CollisionPointBalloon
+    ; call CollisionPointBalloon
     call CollisionEnemy
     call CollisionEnemy2
     call CollisionBomb
