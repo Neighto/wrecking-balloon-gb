@@ -91,8 +91,11 @@ StartedClassic::
     ret
 
 SpawnHandWave::
-	ld b, 1 ; need 1 sprite for cursor
-	call RequestOAMSpaceOffset
+	ld b, 1
+	call RequestOAMSpace
+    cp a, 0
+    jr z, .end
+    ld a, b
 	ld [wOAMGeneral1], a
 	SET_HL_TO_ADDRESS wOAM, wOAMGeneral1
     ld a, HAND_WAVE_START_Y
@@ -102,6 +105,7 @@ SpawnHandWave::
     ld [hl], $B0
     inc l
     ld [hl], OAMF_PAL1
+.end:
 	ret
 
 ; NOTE if ram becomes a problem I could probably use modulo off global timer for frames
@@ -131,7 +135,10 @@ HandWaveAnimation::
 
 SpawnCountdown::
 	ld b, 2
-	call RequestOAMSpaceOffset
+	call RequestOAMSpace
+    cp a, 0
+    jr z, .end
+    ld a, b
 	ld [wOAMGeneral1], a
 	SET_HL_TO_ADDRESS wOAM, wOAMGeneral1
     ld a, COUNTDOWN_START_Y
@@ -143,6 +150,7 @@ SpawnCountdown::
     ld [hli], a
     ld a, COUNTDOWN_START_X+8
     ld [hli], a
+.end:
 	ret
 
 CountdownAnimation::

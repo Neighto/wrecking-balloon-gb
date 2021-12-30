@@ -173,7 +173,7 @@ SpawnEnemy:
 
     ; Request OAM
     ld b, 2
-    call RequestOAMSpaceOffset
+    call RequestOAMSpace
     ld [wEnemy2BalloonOAM], a
 
     ; Balloon left
@@ -202,7 +202,7 @@ SpawnEnemy:
 
     ; Request OAM
     ld b, 2
-    call RequestOAMSpaceOffset
+    call RequestOAMSpace
     ld [wEnemy2CactusOAM], a
 
     ; Cactus left
