@@ -26,9 +26,13 @@ ClearRAM::
     RESET_IN_RANGE $C100, $A0 ; should probably be at C000
     ret
 
-RequestOAMSpace:
-    ; b = sprite space needed
-    ; returns a as start sprite # in wOAM
+RequestOAMSpace::
+    push hl
+    push de
+    ; Argument b = sprite space needed (4 bytes each)
+    ; Returns a as 0 or 1 where 0 is failed and 1 is succeeded
+    ; Returns b as start sprite # in wOAM
+
     ld c, 0 ; c = how many sprites we've found free so far
     ld hl, wOAM
     ld d, OAMVarsEnd - OAMVars
@@ -48,18 +52,23 @@ RequestOAMSpace:
     ld a, [hl]
     cp a, 0
     jr nz, .isNotZero1
-    ; FREE TO USE
+.availableSpace:
     inc c
     ; DO WE HAVE ENOUGH SPACE
     ld a, b
     cp a, c
     jr nz, .notEnoughSprites
-    ; YES WE DO WE ARE DONE
+.sufficientSpace:
     ld a, OAMVarsEnd - OAMVars
     sub a, d
     sub a, c
     inc a
-    ret
+    ld b, a
+    ld c, 4
+    call MULTIPLY
+    ld b, a
+    ld a, 1
+    jr .end
 .isNotZero4:
     inc l
 .isNotZero3:
@@ -76,19 +85,9 @@ RequestOAMSpace:
     ld a, d
 	cp a, 0
     jr nz, .loop
-    ; RETURN -1
-    ld a, -1
-    ret
-
-RequestOAMSpaceOffset::
-    ; b = sprite space needed
-    ; returns a as start sprite offset in wOAM
-    push hl
-    push de
-    call RequestOAMSpace
-    ld b, a
-    ld c, 4
-    call MULTIPLY
+    ; No space
+    xor a ; ld a, 0
+.end:
     pop de
     pop hl
     ret

@@ -17,8 +17,6 @@ INVINCIBLE_BLINK_NORMAL_SPEED EQU %00001000
 INVINCIBLE_BLINK_FAST_SPEED EQU %00000100
 
 SECTION "player vars", WRAM0
-  wPlayerCactusOAM:: DB
-  wPlayerBalloonOAM:: DB
   player_x:: DB
   player_y:: DB
   player_cactus_x:: DB 
@@ -40,7 +38,7 @@ SECTION "player vars", WRAM0
 SECTION "player", ROM0
 
 UpdateBalloonPosition:
-  SET_HL_TO_ADDRESS wOAM, wPlayerBalloonOAM
+  ld hl, wPlayerBalloonOAM
   ; Update Y
   ld a, [player_y]
   ld [hli], a
@@ -48,7 +46,7 @@ UpdateBalloonPosition:
   ld a, [player_x]
   ld [hl], a
 
-  SET_HL_TO_ADDRESS wOAM+4, wPlayerBalloonOAM
+  ld hl, wPlayerBalloonOAM+4
   ; Update Y
   ld a, [player_y]
   ld [hli], a
@@ -59,7 +57,7 @@ UpdateBalloonPosition:
   ret
 
 UpdateCactusPosition:
-  SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
+  ld hl, wPlayerCactusOAM
   ; Update Y
   ld a, [player_cactus_y]
   ld [hli], a
@@ -67,7 +65,7 @@ UpdateCactusPosition:
   ld a, [player_cactus_x]
   ld [hl], a
 
-  SET_HL_TO_ADDRESS wOAM+4, wPlayerCactusOAM
+  ld hl, wPlayerCactusOAM+4
   ; Update Y
   ld a, [player_cactus_y]
   ld [hli], a
@@ -109,13 +107,8 @@ InitializePlayer::
   ld hl, player_speed
   ld [hl], 2
 
-  ; CLEAN (like only do this once... not each init)
-  ld b, 2 ; need 2 sprites for player cactus
-  call RequestOAMSpaceOffset
-  ld [wPlayerCactusOAM], a
-
   ; Cactus left
-  SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
+  ld hl, wPlayerCactusOAM
   ld a, [player_cactus_y]
   ld [hli], a
   ld a, [player_cactus_x]
@@ -134,16 +127,8 @@ InitializePlayer::
   inc l
   ld [hl], OAMF_PAL0 | OAMF_XFLIP
 
-  ; CLEAN
-  ld b, 2 ; need 2 sprites for player balloon
-  call RequestOAMSpaceOffset
-  ld [wPlayerBalloonOAM], a
-
-  ; TODO: Something weird happens if something spawns before the player does
-  ; When player dies and something else is spawning in too...
-
   ; Balloon left
-  SET_HL_TO_ADDRESS wOAM, wPlayerBalloonOAM
+  ld hl, wPlayerBalloonOAM
   ld a, [player_y]
   ld [hli], a
   ld a, [player_x]
@@ -165,7 +150,7 @@ InitializePlayer::
 
 ClearPlayerCactus:
   xor a ; ld a, 0
-  SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
+  ld hl, wPlayerCactusOAM
   ld [hli], a
   ld [hli], a
   ld [hli], a
@@ -178,7 +163,7 @@ ClearPlayerCactus:
 
 ClearPlayerBalloon:
   xor a ; ld a, 0
-  SET_HL_TO_ADDRESS wOAM, wPlayerBalloonOAM
+  ld hl, wPlayerBalloonOAM
   ld [hli], a
   ld [hli], a
   ld [hli], a
@@ -492,12 +477,12 @@ PopBalloonAnimation:
 
 .frame0:
   ; Popped left - frame 0
-  SET_HL_TO_ADDRESS wOAM+2, wPlayerBalloonOAM
+  ld hl, wPlayerBalloonOAM+2
   ld [hl], $88
   inc l
   ld [hl], %00000000
   ; Popped right - frame 0
-  SET_HL_TO_ADDRESS wOAM+6, wPlayerBalloonOAM
+  ld hl, wPlayerBalloonOAM+6
   ld [hl], $88
   inc l
   ld [hl], OAMF_XFLIP
@@ -506,12 +491,12 @@ PopBalloonAnimation:
   ret
 .frame1:
   ; Popped left - frame 1
-  SET_HL_TO_ADDRESS wOAM+2, wPlayerBalloonOAM
+  ld hl, wPlayerBalloonOAM+2
   ld [hl], $8A
   inc l
   ld [hl], %00000000
   ; Popped right - frame 1
-  SET_HL_TO_ADDRESS wOAM+6, wPlayerBalloonOAM
+  ld hl, wPlayerBalloonOAM+6
   ld [hl], $8A
   inc l
   ld [hl], OAMF_XFLIP
@@ -618,9 +603,9 @@ DeathOfPlayer::
   ld hl, player_falling
   ld [hl], a
   ; Screaming cactus
-  SET_HL_TO_ADDRESS wOAM+2, wPlayerCactusOAM
+  ld hl, wPlayerCactusOAM+2
   ld [hl], $90
-  SET_HL_TO_ADDRESS wOAM+6, wPlayerCactusOAM
+  ld hl, wPlayerCactusOAM+6
   ld [hl], $90
   ; Sound
   call PopSound ; Conflicts with explosion sound
@@ -650,23 +635,23 @@ InvincibleBlink::
 	and INVINCIBLE_BLINK_FAST_SPEED
   jp z, .defaultPalette
 .blinkEnd:
-  SET_HL_TO_ADDRESS wOAM+2, wPlayerBalloonOAM
+  ld hl, wPlayerBalloonOAM+2
   ld [hl], $A2
-  SET_HL_TO_ADDRESS wOAM+6, wPlayerBalloonOAM
+  ld hl, wPlayerBalloonOAM+6
   ld [hl], $A2
-  SET_HL_TO_ADDRESS wOAM+2, wPlayerCactusOAM
+  ld hl, wPlayerCactusOAM+2
   ld [hl], $A4
-  SET_HL_TO_ADDRESS wOAM+6, wPlayerCactusOAM
+  ld hl, wPlayerCactusOAM+6
   ld [hl], $A4
   ret
 .defaultPalette:
-  SET_HL_TO_ADDRESS wOAM+2, wPlayerBalloonOAM
+  ld hl, wPlayerBalloonOAM+2
   ld [hl], $80
-  SET_HL_TO_ADDRESS wOAM+6, wPlayerBalloonOAM
+  ld hl, wPlayerBalloonOAM+6
   ld [hl], $80
-  SET_HL_TO_ADDRESS wOAM+2, wPlayerCactusOAM
+  ld hl, wPlayerCactusOAM+2
   ld [hl], $82
-  SET_HL_TO_ADDRESS wOAM+6, wPlayerCactusOAM
+  ld hl, wPlayerCactusOAM+6
   ld [hl], $82
 .end:
   ret

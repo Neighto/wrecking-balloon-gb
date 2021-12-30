@@ -113,7 +113,7 @@ SpawnBomb:
 
     ; Request OAM
     ld b, 3
-    call RequestOAMSpaceOffset
+    call RequestOAMSpace
     ld [wBombOAM], a
 
 .balloonLeft:

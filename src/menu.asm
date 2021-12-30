@@ -7,7 +7,7 @@ MENU_MODES EQU 2
 
 SpawnMenuCursor::
 	ld b, 1 ; need 1 sprite for cursor
-	call RequestOAMSpaceOffset
+	call RequestOAMSpace
 	ld [wOAMGeneral1], a
 	SET_HL_TO_ADDRESS wOAM, wOAMGeneral1
 	ld a, 104 ; y

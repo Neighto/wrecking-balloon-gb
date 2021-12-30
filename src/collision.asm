@@ -101,14 +101,13 @@ CollisionEnemy:
     ; Check collision
     SET_HL_TO_ADDRESS wOAM, wEnemyBalloonOAM
     LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
+    ld hl, wPlayerCactusOAM
     xor a ; ld a, 0
     call CollisionCheck
     cp a, 0
     call nz, DeathOfEnemy
     ; Check hit player
-    SET_HL_TO_ADDRESS wOAM, wPlayerBalloonOAM
-    LD_BC_HL
+    ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
     xor a ; ld a, 0
     call CollisionCheck
@@ -160,14 +159,13 @@ CollisionEnemy2:
     ; Check collision
     SET_HL_TO_ADDRESS wOAM, wEnemy2BalloonOAM
     LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
+    ld hl, wPlayerCactusOAM
     xor a ; ld a, 0
     call CollisionCheck
     cp a, 0
     call nz, DeathOfEnemy2
     ; Check hit player
-    SET_HL_TO_ADDRESS wOAM, wPlayerBalloonOAM
-    LD_BC_HL
+    ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, wEnemy2CactusOAM
     xor a ; ld a, 0
     call CollisionCheck
@@ -235,7 +233,7 @@ CollisionBomb:
     ; Check collision
     SET_HL_TO_ADDRESS wOAM, wBombOAM
     LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
+    ld hl, wPlayerCactusOAM
     xor a ; ld a, 0
     call CollisionCheck
     cp a, 0
@@ -250,8 +248,7 @@ CollisionBird:
     cp a, 0
     jr z, .end
     ; Check collision
-    SET_HL_TO_ADDRESS wOAM, wPlayerBalloonOAM
-    LD_BC_HL
+    ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, wBirdOAM
     ld a, 1
     call CollisionCheck

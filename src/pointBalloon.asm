@@ -60,7 +60,7 @@ RequestPointBalloonSpace:
     ld a, [hl] ; Active
     cp a, 0
     jr nz, .checkLoop
-    ; Inactive and free
+.availableSpace:
     ld a, 1
     jr .end
 .checkLoop:
@@ -69,7 +69,7 @@ RequestPointBalloonSpace:
     ld a, b 
     or a, c
     jr nz, .loop
-    ; All active
+.noFreeSpace:
     xor a ; ld a, 0
 .end:
     pop bc
@@ -88,23 +88,21 @@ SpawnPointBalloon::
 .availableSpace:
     call InitializeEnemyStructVars
     call SetPointBalloonEnemyStruct
-
-    ; Set Active and Alive
+    LD_HL_BC ; arguments now in HL
+    ld b, 2
+	call RequestOAMSpace
+    cp a, 0
+    jr z, .end
+.availableOAMSpace:
+    ld a, b
+    ld [wEnemyOAM], a
     ld a, 1
     ld [wEnemyActive], a
     ld [wEnemyAlive], a
-
-    ; Set Coordinates
-    ld a, b
+    ld a, h
     ld [wEnemyY], a
-    ld a, c
+    ld a, l
     ld [wEnemyX], a
-
-    ; Request OAM
-    ld b, 2
-	call RequestOAMSpaceOffset
-	ld [wEnemyOAM], a
-
 .balloonLeft:
     SET_HL_TO_ADDRESS_WITH_BC wOAM, wEnemyOAM
     ld a, [wEnemyY]
@@ -335,9 +333,8 @@ CollisionPointBalloon:
     push bc
     push hl
     push af
+    ld bc, wPlayerCactusOAM
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, wPlayerCactusOAM
     xor a ; ld a, 0
     call CollisionCheck
     cp a, 0

@@ -122,7 +122,7 @@ SpawnBirdRight:
 
     ; Request OAM
     ld b, 3
-    call RequestOAMSpaceOffset
+    call RequestOAMSpace
     ld [wBirdOAM], a
 
     ; Bird left
@@ -174,7 +174,7 @@ SpawnBirdLeft:
 
     ; Request OAM
     ld b, 3
-    call RequestOAMSpaceOffset
+    call RequestOAMSpace
     ld [wBirdOAM], a
 
     ; Bird left
