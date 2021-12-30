@@ -146,7 +146,7 @@ CollisionFallingEnemy:
     xor a ;ld a, 0
     call CollisionCheck
     cp a, 0
-    call nz, DeathOfPointBalloon
+    ; call nz, DeathOfPointBalloon
 .bombCollision:
 .enemy2Collision:
 .end
@@ -221,7 +221,7 @@ CollisionFallingEnemy2:
     xor a ;ld a, 0
     call CollisionCheck
     cp a, 0
-    call nz, DeathOfPointBalloon
+    ; call nz, DeathOfPointBalloon
 .bombCollision:
 .enemy2Collision:
 .end
