@@ -10,9 +10,19 @@ SECTION "enemy struct vars", WRAM0
     wEnemyX:: DB
     wEnemyOAM:: DB
     wEnemyAlive:: DB
+
+    ; Balloon enemies
     wEnemyPopping:: DB
     wEnemyPoppingFrame:: DB
     wEnemyPoppingTimer:: DB
+
+    ; Cactus enemies
+    wEnemyY2:: DB
+    wEnemyX2:: DB
+    wEnemyFalling:: DB
+    wEnemyFallingSpeed:: DB
+    wEnemyFallingTimer:: DB
+    wEnemyDelayFallingTimer:: DB
 
 SECTION "enemy struct", ROM0
 
@@ -28,5 +38,23 @@ InitializeEnemyStructVars::
     ld [wEnemyPopping], a
     ld [wEnemyPoppingFrame], a
     ld [wEnemyPoppingTimer], a
+    ld [wEnemyY2], a
+    ld [wEnemyX2], a
+    ld [wEnemyFalling], a 
+    ld [wEnemyFallingSpeed], a 
+    ld [wEnemyFallingTimer], a
+    ld [wEnemyDelayFallingTimer], a
     pop af
     ret
+
+; Functions every enemy should have (where Enemy is name of enemy)
+; InitializeEnemy
+; RequestEnemySpace
+; GetEnemyStruct
+; SetEnemyStruct
+; SpawnEnemy
+; ClearEnemy
+; MoveEnemy
+; DeathOfEnemy
+; CollisionEnemy
+; EnemyUpdate

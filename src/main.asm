@@ -52,7 +52,7 @@ StartClassic::
 	call InitializeEnemyStructVars
 	call InitializePlayer
 	call InitializePointBalloon
-	call InitializeEnemy
+	call InitializeBalloonCactus
 	call InitializeEnemy2
 	call InitializePropellerCactus
 	call InitializeBird
