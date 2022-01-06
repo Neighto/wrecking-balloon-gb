@@ -4,46 +4,21 @@ INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
 POINT_BALLOON_STRUCT_SIZE EQU 8
+POINT_BALLOON_STRUCT_AMOUNT EQU 4
+POINT_BALLOON_DATA_SIZE EQU POINT_BALLOON_STRUCT_SIZE * POINT_BALLOON_STRUCT_AMOUNT
 POINT_BALLOON_SPRITE_MOVE_WAIT_TIME EQU %00000001
 
 SECTION "point balloon vars", WRAM0
-PointBalloonStart:
-    pointBalloon:: DS POINT_BALLOON_STRUCT_SIZE*4
-PointBalloonEnd:
+    pointBalloon:: DS POINT_BALLOON_DATA_SIZE
 
 SECTION "point balloon", ROMX
 
 InitializePointBalloon::
     push hl
     push bc
-    RESET_IN_RANGE pointBalloon, PointBalloonEnd - PointBalloonStart
+    RESET_IN_RANGE pointBalloon, POINT_BALLOON_DATA_SIZE
     pop bc
     pop hl
-    ret
-
-RequestRAMSpace:
-    ; Returns a as 0 or 1 where 0 is failed and 1 is succeeded
-    ; Returns hl as address of free space
-    push bc
-    ld hl, pointBalloon
-    ld bc, (PointBalloonEnd - PointBalloonStart) / POINT_BALLOON_STRUCT_SIZE
-.loop:
-    ld a, [hl] ; Active
-    cp a, 0
-    jr nz, .checkLoop
-.availableSpace:
-    ld a, 1
-    jr .end
-.checkLoop:
-    ADD_TO_HL POINT_BALLOON_STRUCT_SIZE
-    dec bc
-    ld a, b 
-    or a, c
-    jr nz, .loop
-.noFreeSpace:
-    xor a ; ld a, 0
-.end:
-    pop bc
     ret
 
 GetStruct:
@@ -96,6 +71,9 @@ SpawnPointBalloon::
     push af
     push hl
     push de
+    ld hl, pointBalloon
+    ld d, POINT_BALLOON_STRUCT_AMOUNT
+    ld e, POINT_BALLOON_STRUCT_SIZE
     call RequestRAMSpace ; Returns HL
     LD_DE_HL
     cp a, 0
@@ -273,7 +251,7 @@ PointBalloonUpdate::
     push de
     push hl
     push af
-    ld bc, (PointBalloonEnd - PointBalloonStart) / POINT_BALLOON_STRUCT_SIZE
+    ld bc, POINT_BALLOON_STRUCT_AMOUNT
     xor a ; ld a, 0
     ld [wEnemyOffset], a
 .loop:

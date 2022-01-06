@@ -126,23 +126,6 @@ CollisionFallingEnemy:
 ; .end
     ret
 
-CollisionBomb:
-    ; Check if alive
-    ld a, [bomb_alive]
-    cp a, 0
-    jr z, .end
-    ; Check collision
-    SET_HL_TO_ADDRESS wOAM, wBombOAM
-    LD_BC_HL
-    ld hl, wPlayerCactusOAM
-    xor a ; ld a, 0
-    call CollisionCheck
-    cp a, 0
-    call nz, CollisionWithPlayer
-    call nz, DeathOfBomb
-.end:
-    ret
-
 CollisionBird:
     ; Check if alive
     ld a, [bird_alive]
@@ -167,9 +150,9 @@ CollisionUpdate::
     cp a, 0
     jp z, .end
     ; Collisions
-    call CollisionBomb
-    call CollisionBird
-    call CollisionFallingEnemy
+    ; call CollisionBomb
+    ; call CollisionBird
+    ; call CollisionFallingEnemy
 .end:
     ret
 

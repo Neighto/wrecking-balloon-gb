@@ -274,12 +274,10 @@ UpdateSprites:
     call PlayerUpdate
     call PointBalloonUpdate
     call BalloonCactusUpdate
+    call BombUpdate
 ;   call PropellerCactusUpdate
-;   ld a, 2
-;   ld [bomb_speed], a
 ;   ld a, 4
 ;   ld [bird_speed], a
-;   call BombUpdate
 ;   call BirdUpdate
     ret
 

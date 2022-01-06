@@ -4,45 +4,20 @@ INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
 BALLOON_CACTUS_STRUCT_SIZE EQU 15
+BALLOON_CACTUS_STRUCT_AMOUNT EQU 2
+BALLOON_CACTUS_DATA_SIZE EQU BALLOON_CACTUS_STRUCT_SIZE * BALLOON_CACTUS_STRUCT_AMOUNT
 
 SECTION "balloon cactus vars", WRAM0
-BalloonCactusStart:
-    balloonCactus:: DS BALLOON_CACTUS_STRUCT_SIZE*2
-BalloonCactusEnd:
+    balloonCactus:: DS BALLOON_CACTUS_DATA_SIZE
 
 SECTION "balloon cactus", ROMX
 
 InitializeBalloonCactus::
     push hl
     push bc
-    RESET_IN_RANGE balloonCactus, BalloonCactusEnd - BalloonCactusStart
+    RESET_IN_RANGE balloonCactus, BALLOON_CACTUS_DATA_SIZE
     pop bc
     pop hl
-    ret
-
-RequestRAMSpace:
-    ; Returns a as 0 or 1 where 0 is failed and 1 is succeeded
-    ; Returns hl as address of free space
-    push bc
-    ld hl, balloonCactus
-    ld bc, (BalloonCactusEnd - BalloonCactusStart) / BALLOON_CACTUS_STRUCT_SIZE
-.loop:
-    ld a, [hl] ; Active
-    cp a, 0
-    jr nz, .checkLoop
-.availableSpace:
-    ld a, 1
-    jr .end
-.checkLoop:
-    ADD_TO_HL BALLOON_CACTUS_STRUCT_SIZE
-    dec bc
-    ld a, b 
-    or a, c
-    jr nz, .loop
-.noFreeSpace:
-    xor a ; ld a, 0
-.end:
-    pop bc
     ret
 
 GetStruct:
@@ -123,6 +98,9 @@ SpawnBalloonCactus::
     push af
     push hl
     push de
+    ld hl, balloonCactus
+    ld d, BALLOON_CACTUS_STRUCT_AMOUNT
+    ld e, BALLOON_CACTUS_STRUCT_SIZE
     call RequestRAMSpace ; Returns HL
     LD_DE_HL
     cp a, 0
@@ -433,7 +411,7 @@ BalloonCactusUpdate::
     push de
     push hl
     push af
-    ld bc, (BalloonCactusEnd - BalloonCactusStart) / BALLOON_CACTUS_STRUCT_SIZE
+    ld bc, BALLOON_CACTUS_STRUCT_AMOUNT
     xor a ; ld a, 0
     ld [wEnemyOffset], a ; TODO, we can remove enemy offset this if we optimize this code
 .loop:

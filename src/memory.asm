@@ -91,3 +91,27 @@ RequestOAMSpace::
     pop de
     pop hl
     ret
+
+RequestRAMSpace::
+    ; Argument hl as data address
+    ; Argument d as struct amount
+    ; Argument e as struct size
+    ; Returns a as 0 or 1 where 0 is failed and 1 is succeeded
+    ; Returns hl as address of free space
+.loop:
+    ld a, [hl] ; Active
+    cp a, 0
+    jr nz, .checkLoop
+.availableSpace:
+    ld a, 1
+    jr .end
+.checkLoop:
+    ADD_TO_HL e
+    dec d
+    ld a, d 
+    cp a, 0
+    jr nz, .loop
+.noFreeSpace:
+    xor a ; ld a, 0
+.end:
+    ret
