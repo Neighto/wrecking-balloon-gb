@@ -52,7 +52,6 @@ InitializeEnemyStructVars::
 
 ; Functions every enemy should have (where Enemy is name of enemy)
 ; InitializeEnemy
-; RequestRAMSpace
 ; GetStruct
 ; SetStruct
 ; SpawnEnemy
