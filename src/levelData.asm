@@ -55,14 +55,33 @@ W1L1W4:
     DB BOMB, OFFSCREEN_BOTTOM_Y, SPAWN_X_D
 W1L1W4End:
 
-W1L2:
-    ; DB POINT_BALLOON, 140, 40
-W1L2End:
+W1L2W1:
+    DB BALLOON_CACTUS, SPAWN_Y_A, 0
+    DB BIRD, SPAWN_Y_C, SCRN_X
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B
+W1L2W1End:
+
+W1L2W2:
+    DB BOMB, OFFSCREEN_BOTTOM_Y, SPAWN_X_B
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_D
+W1L2W2End:
+
+W1L2W3:
+    DB BIRD, SPAWN_Y_A, 0
+    DB BALLOON_CACTUS, SPAWN_Y_B, 0
+W1L2W3End:
+
+W1L2W4:
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y-2, SPAWN_X_A
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y-6, SPAWN_X_B
+    DB BOMB, OFFSCREEN_BOTTOM_Y, SPAWN_X_C
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y-4, SPAWN_X_D
+W1L2W4End:
 
 ; World 2
 
 W2L1:
-    DB BIRD, 80, 150, 0
+    DB BIRD, 80, 150
 W2L1End:
 
 ; Handler and Initializer
@@ -142,24 +161,24 @@ LevelDataManager::
     ; Frequency we read 
     ld a, [global_timer]
     cp a, 50
-    jr nz, .end
+    jp nz, .end
 
     ; Find which world, level, wave we are on
     ld a, [wWorld]
     cp a, 1
-    jr z, .w1 
+    jp z, .w1 
     cp a, 2
-    jr z, .w2 
+    jp z, .w2 
     cp a, 3
-    jr z, .w3
-    jr .end
+    jp z, .w3
+    jp .end
 .w1:
     ld a, [wLevel]
     cp a, 1
     jr z, .w1_l1
     cp a, 2
     jr z, .w1_l2
-    jr .end
+    jp .end
     ; LEVEL 1 *******************************
 .w1_l1:
     ld a, [wWave]
@@ -171,7 +190,7 @@ LevelDataManager::
     jr z, .w1_l1_w3
     cp a, 4
     jr z, .w1_l1_w4
-    jr .end
+    jp .end
 .w1_l1_w1:
     ld hl, W1L1W1
     ld de, (W1L1W1End - W1L1W1) / LEVEL_DATA_FIELDS
@@ -185,15 +204,42 @@ LevelDataManager::
     ld de, (W1L1W3End - W1L1W3) / LEVEL_DATA_FIELDS
     jr .handle
 .w1_l1_w4:
+    xor a ; ld a, 0
+    ld [wWave], a ; set to 0 about to increment to 1
+    ld a, [wLevel]
+    inc a
+    ld [wLevel], a
     ld hl, W1L1W4
     ld de, (W1L1W4End - W1L1W4) / LEVEL_DATA_FIELDS
-    ; ld a, [wLevel] ; not permanent
-    ; inc a
-    ; ld [wLevel], a
     jr .handle
     ; LEVEL 2 *******************************
 .w1_l2:
-    jr .end ; temp
+    ld a, [wWave]
+    cp a, 1
+    jr z, .w1_l2_w1
+    cp a, 2
+    jr z, .w1_l2_w2
+    cp a, 3
+    jr z, .w1_l2_w3
+    cp a, 4
+    jr z, .w1_l2_w4
+    jr .end
+.w1_l2_w1:
+    ld hl, W1L2W1
+    ld de, (W1L2W1End - W1L2W1) / LEVEL_DATA_FIELDS
+    jr .handle
+.w1_l2_w2:
+    ld hl, W1L2W2
+    ld de, (W1L2W2End - W1L2W2) / LEVEL_DATA_FIELDS
+    jr .handle
+.w1_l2_w3:
+    ld hl, W1L2W3
+    ld de, (W1L2W3End - W1L2W3) / LEVEL_DATA_FIELDS
+    jr .handle
+.w1_l2_w4:
+    ld hl, W1L2W4
+    ld de, (W1L2W4End - W1L2W4) / LEVEL_DATA_FIELDS
+    jr .handle
 .w2:
     jr .end ; temp
 .w3:
