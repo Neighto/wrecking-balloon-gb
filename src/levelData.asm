@@ -13,14 +13,14 @@ BOMB EQU 4
 
 ; Common Spawning Coordinates
 OFFSCREEN_BOTTOM_Y EQU 156
-SPAWN_X_A EQU 32
-SPAWN_X_B EQU 64
-SPAWN_X_C EQU 96
-SPAWN_X_D EQU 128
 SPAWN_Y_A EQU 28
 SPAWN_Y_B EQU 56
 SPAWN_Y_C EQU 84
 SPAWN_Y_D EQU 112
+SPAWN_X_A EQU 32
+SPAWN_X_B EQU 64
+SPAWN_X_C EQU 96
+SPAWN_X_D EQU 128
 
 SECTION "level vars", WRAM0
     wWorld:: DB
@@ -109,6 +109,13 @@ LevelDataHandler:
     call SpawnBalloonCactus
     jr .loopCheck
 .bird:
+    ; Y
+    inc hl
+    ld b, [hl]
+    ; X
+    inc hl
+    ld c, [hl]
+    call SpawnBird
     jr .loopCheck
 .bomb:
     ; Y

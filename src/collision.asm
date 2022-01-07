@@ -126,35 +126,20 @@ CollisionFallingEnemy:
 ; .end
     ret
 
-CollisionBird:
-    ; Check if alive
-    ld a, [bird_alive]
-    cp a, 0
-    jr z, .end
-    ; Check collision
-    ld bc, wPlayerBalloonOAM
-    SET_HL_TO_ADDRESS wOAM, wBirdOAM
-    ld a, 1
-    call CollisionCheck
-    cp a, 0
-    call nz, CollisionWithPlayer
-.end:
-    ret
-
-CollisionUpdate::
-    ld a, [global_timer]
-	and	COLLISION_UPDATE_TIME
-    jp nz, .end
-    ; Check if alive
-    ld a, [player_alive]
-    cp a, 0
-    jp z, .end
-    ; Collisions
-    ; call CollisionBomb
-    ; call CollisionBird
-    ; call CollisionFallingEnemy
-.end:
-    ret
+; CollisionBird:
+;     ; Check if alive
+;     ld a, [bird_alive]
+;     cp a, 0
+;     jr z, .end
+;     ; Check collision
+;     ld bc, wPlayerBalloonOAM
+;     SET_HL_TO_ADDRESS wOAM, wBirdOAM
+;     ld a, 1
+;     call CollisionCheck
+;     cp a, 0
+;     call nz, CollisionWithPlayer
+; .end:
+;     ret
 
 OffScreenXEnemies::
     ; b = x value to check

@@ -13,7 +13,7 @@ SECTION "enemy struct vars", WRAM0
 
     ; Balloon enemies
     wEnemyPopping:: DB
-    wEnemyPoppingFrame:: DB
+    wEnemyPoppingFrame:: DB ; rename to general anims
     wEnemyPoppingTimer:: DB
 
     ; Direction
