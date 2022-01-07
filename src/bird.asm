@@ -2,277 +2,230 @@ INCLUDE "points.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
+BIRD_STRUCT_SIZE EQU 8
+BIRD_STRUCT_AMOUNT EQU 2
+BIRD_DATA_SIZE EQU BIRD_STRUCT_SIZE * BIRD_STRUCT_AMOUNT
+
 BIRD_SPRITE_MOVE_WAIT_TIME EQU %00000011
 BIRD_SPRITE_DESCENDING_TIME EQU %00001111
 BIRD_FALLING_WAIT_TIME EQU %00000001
-BIRD_START_LEFT_X EQU 0
-BIRD_START_RIGHT_X EQU 160
-BIRD_SPAWN_A EQU 20
-BIRD_SPAWN_B EQU 50
-BIRD_SPAWN_C EQU 80
-BIRD_SPAWN_D EQU 110
 BIRD_HORIZONTAL_SPEED EQU 2
 BIRD_VERTICAL_SPEED EQU 1
 BIRD_FLAP_UP_SPEED EQU 5
 BIRD_RESPAWN_TIME EQU 80
 
 SECTION "bird vars", WRAM0
-    wBirdOAM:: DB
-    bird_x:: DB
-    bird_y:: DB
-    bird_flapping_frame:: DB
-    bird_respawn_timer:: DB
-    bird_falling:: DB
-    bird_alive:: DB
-    bird_spawn_right:: DB
-    bird_speed:: DB
+    bird:: DS BIRD_DATA_SIZE
 
 SECTION "bird", ROMX
 
-UpdateBirdPosition:
-    push hl
-    push af
-    SET_HL_TO_ADDRESS wOAM, wBirdOAM
-    ; Update Y
-    ld a, [bird_y]
-    ld [hli], a
-    ; Update X
-    ld a, [bird_x]
-    ld [hl], a
-  
-    SET_HL_TO_ADDRESS wOAM+4, wBirdOAM
-    ; Update Y
-    ld a, [bird_y]
-    ld [hli], a
-    ; Update X
-    ld a, [bird_x]
-    add 8
-    ld [hl], a
-
-    SET_HL_TO_ADDRESS wOAM+8, wBirdOAM
-    ; Update Y
-    ld a, [bird_y]
-    ld [hli], a
-    ; Update X
-    ld a, [bird_x]
-    add 16
-    ld [hl], a
-    pop af
-    pop hl
-    ret
-
-SetSpawnPoint:
-    push hl
-    push af
-    ld hl, bird_y
-    ld a, 4
-    call RANDOM
-    cp a, 0
-    jr z, .spawnA
-    cp a, 1
-    jr z, .spawnB
-    cp a, 2
-    jr z, .spawnC
-    cp a, 3
-    jr z, .spawnD
-.spawnA:
-    ld [hl], BIRD_SPAWN_A
-    jr .end
-.spawnB:
-    ld [hl], BIRD_SPAWN_B
-    jr .end
-.spawnC:
-    ld [hl], BIRD_SPAWN_C
-    jr .end
-.spawnD:
-    ld [hl], BIRD_SPAWN_D
-.end:
-    pop af
-    pop hl
-    ret
-
 InitializeBird::
-    push af
-    xor a ; ld a, 0
-    ld [bird_flapping_frame], a
-    ld [bird_alive], a
-    ld [bird_respawn_timer], a
-    ld [bird_falling], a
-    ld [bird_spawn_right], a
-    ld [bird_x], a
-    ld [bird_y], a
-    ld a, BIRD_HORIZONTAL_SPEED
-    ld [bird_speed], a
-    pop af
-    ret
-
-SpawnBirdRight:
     push hl
-    push af
-    ld hl, bird_x
-    ld [hl], BIRD_START_RIGHT_X
-    call SetSpawnPoint
-    xor a ; ld a, 0
-    ld [bird_flapping_frame], a
-    ld [bird_respawn_timer], a
-    ld [bird_falling], a
-    ld a, 1
-    ld [bird_alive], a
-    ld [bird_spawn_right], a
-
-    ; Request OAM
-    ld b, 3
-    call RequestOAMSpace
-    ld [wBirdOAM], a
-
-    ; Bird left
-    SET_HL_TO_ADDRESS wOAM, wBirdOAM
-    ld a, [bird_y]
-    ld [hli], a
-    ld a, [bird_x]
-    ld [hli], a
-    ld [hl], $92
-    inc l
-    ld [hl], %00000000
-    ; Bird middle
-    inc l
-    ld a, [bird_y]
-    ld [hli], a
-    ld a, [bird_x]
-    add 8
-    ld [hli], a
-    ld [hl], $98
-    inc l
-    ld [hl], %00000000
-    ; Bird right
-    inc l
-    ld a, [bird_y]
-    ld [hli], a
-    ld a, [bird_x]
-    add 16
-    ld [hli], a
-    ld [hl], $9A
-    inc l
-    ld [hl], %00000000
-    pop af
+    push bc
+    RESET_IN_RANGE bird, BIRD_DATA_SIZE
+    pop bc
     pop hl
     ret
 
-SpawnBirdLeft:
-    push hl
+GetStruct:
+    ; Argument hl = start of free enemy struct
     push af
-    ld hl, bird_x
-    ld [hl], BIRD_START_LEFT_X
-    call SetSpawnPoint
-    xor a ; ld a, 0
-    ld [bird_flapping_frame], a
-    ld [bird_respawn_timer], a
-    ld [bird_falling], a
-    ld [bird_spawn_right], a
-    ld a, 1
-    ld [bird_alive], a
-
-    ; Request OAM
-    ld b, 3
-    call RequestOAMSpace
-    ld [wBirdOAM], a
-
-    ; Bird left
-    SET_HL_TO_ADDRESS wOAM, wBirdOAM
-    ld a, [bird_y]
-    ld [hli], a
-    ld a, [bird_x]
-    ld [hli], a
-    ld [hl], $9A
-    inc l
-    ld [hl], OAMF_XFLIP
-    ; Bird middle
-    inc l
-    ld a, [bird_y]
-    ld [hli], a
-    ld a, [bird_x]
-    add 8
-    ld [hli], a
-    ld [hl], $98
-    inc l
-    ld [hl], OAMF_XFLIP
-    ; Bird right
-    inc l
-    ld a, [bird_y]
-    ld [hli], a
-    ld a, [bird_x]
-    add 16
-    ld [hli], a
-    ld [hl], $92
-    inc l
-    ld [hl], OAMF_XFLIP
+    ld a, [hli]
+    ld [wEnemyActive], a
+    ld a, [hli]
+    ld [wEnemyY], a
+    ld a, [hli]
+    ld [wEnemyX], a
+    ld a, [hli]
+    ld [wEnemyOAM], a
+    ld a, [hli]
+    ld [wEnemyAlive], a
+    ld a, [hli]
+    ld [wEnemyRightside], a
+    ld a, [hli]
+    ld [wEnemyFalling], a
+    ld a, [hl]
+    ld [wEnemyPoppingFrame], a ; flapping frame
     pop af
-    pop hl
     ret
 
-SpawnBird:
-    ; TODO: Would be funny if it came from one side then the other - clearly just one bird
+SetStruct:
+    ; Argument hl = start of free enemy struct
     push af
-    ld a, 2
-    call RANDOM
+    ld a, [wEnemyActive]
+    ld [hli], a
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    ld [hli], a
+    ld a, [wEnemyOAM]
+    ld [hli], a
+    ld a, [wEnemyAlive]
+    ld [hli], a
+    ld a, [wEnemyRightside]
+    ld [hli], a
+    ld a, [wEnemyFalling]
+    ld [hli], a
+    ld a, [wEnemyPoppingFrame]
+    ld [hl], a
+    pop af
+    ret
+
+SpawnBird::
+    ; Argument b = Y spawn
+    ; Argument c = X spawn
+    push af
+    push hl
+    push de
+    ld hl, bird
+    ld d, BIRD_STRUCT_AMOUNT
+    ld e, BIRD_STRUCT_SIZE
+    call RequestRAMSpace ; Returns HL
+    LD_DE_HL
     cp a, 0
-    call z, SpawnBirdLeft
-    cp a, 1
-    call z, SpawnBirdRight
+    jp z, .end
+.availableSpace:
+    call InitializeEnemyStructVars
+    call SetStruct
+    LD_HL_BC ; Arguments now in HL
+    ld b, 3
+	call RequestOAMSpace
+    cp a, 0
+    jp z, .end
+.availableOAMSpace:
+    ld a, b
+    ld [wEnemyOAM], a
+    ld a, 1
+    ld [wEnemyActive], a
+    ld [wEnemyAlive], a
+    ld a, h
+    ld [wEnemyY], a
+    ld a, l
+    ld [wEnemyX], a
+    cp a, SCRN_X / 2
+    jr c, .isLeftside
+.isRightside:
+    ld a, 1
+    ld [wEnemyRightside], a ; TODO needs to influence direction
+    ; Bird left
+    SET_HL_TO_ADDRESS_WITH_BC wOAM, wEnemyOAM
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    ld [hli], a
+    ld [hl], $92
+    inc l
+    ld [hl], %00000000
+    ; Bird middle
+    inc l
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    add 8
+    ld [hli], a
+    ld [hl], $98
+    inc l
+    ld [hl], %00000000
+    ; Bird right
+    inc l
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    add 16
+    ld [hli], a
+    ld [hl], $9A
+    inc l
+    ld [hl], %00000000
+    jr .setStruct
+.isLeftside:
+    ; Bird left
+    SET_HL_TO_ADDRESS_WITH_BC wOAM, wEnemyOAM
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    ld [hli], a
+    ld [hl], $9A
+    inc l
+    ld [hl], OAMF_XFLIP
+    ; Bird middle
+    inc l
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    add 8
+    ld [hli], a
+    ld [hl], $98
+    inc l
+    ld [hl], OAMF_XFLIP
+    ; Bird right
+    inc l
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    add 16
+    ld [hli], a
+    ld [hl], $92
+    inc l
+    ld [hl], OAMF_XFLIP
+.setStruct:
+    LD_HL_DE
+    call SetStruct
+.end:
+    pop de
+    pop hl
     pop af
     ret
 
 BirdAnimate:
     push hl
     push af
-    ld a, [bird_flapping_frame]
+    ld a, [wEnemyPoppingFrame]
     cp a, 0
     jr nz, .frame1
 .frame0:
     ld a, [global_timer]
     and 7 ; bird_flapping_speed
     jp nz, .end
-    SET_HL_TO_ADDRESS wOAM+6, wBirdOAM
+    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
     ld [hl], $98
-    ld a, [bird_spawn_right]
+    ld a, [wEnemyRightside]
     cp a, 0
     jr nz, .frame0FacingLeft
-    SET_HL_TO_ADDRESS wOAM+2, wBirdOAM
+    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
     jr .frame0FacingEnd
 .frame0FacingLeft:
-    SET_HL_TO_ADDRESS wOAM+10, wBirdOAM
+    SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
 .frame0FacingEnd:
     ld [hl], $9A
-    ld hl, bird_flapping_frame
+    ld hl, wEnemyPoppingFrame
     ld [hl], 1
     jr .end
 .frame1:
     ld a, [global_timer]
     and %00111111 ; bird_flapping_speed
     jp nz, .end
-    SET_HL_TO_ADDRESS wOAM+6, wBirdOAM
+    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
     ld [hl], $94
-    ld a, [bird_spawn_right]
+    ld a, [wEnemyRightside]
     cp a, 0
     jr nz, .frame1FacingLeft
-    SET_HL_TO_ADDRESS wOAM+2, wBirdOAM
+    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
     jr .frame1FacingEnd
 .frame1FacingLeft:
-    SET_HL_TO_ADDRESS wOAM+10, wBirdOAM
+    SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
 .frame1FacingEnd:
     ld [hl], $96
-    ld hl, bird_flapping_frame
+    ld hl, wEnemyPoppingFrame
     ld [hl], 0
-    DECREMENT_POS bird_y, BIRD_FLAP_UP_SPEED
+    DECREMENT_POS wEnemyY, BIRD_FLAP_UP_SPEED
 .end:
     pop af
     pop hl
     ret
 
-ClearBird:
-    ; todo make a clear function or macro
+Clear:
     xor a ; ld a, 0
-    SET_HL_TO_ADDRESS wOAM, wBirdOAM
+    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     ld [hli], a
     ld [hli], a
     ld [hli], a
@@ -285,115 +238,199 @@ ClearBird:
     ld [hli], a
     ld [hli], a
     ld [hl], a
+    call InitializeEnemyStructVars
     ret
 
-BirdMovement:
-    ld a, [global_timer]
-    and	BIRD_SPRITE_MOVE_WAIT_TIME
-    jr nz, .end
-    ld a, [bird_spawn_right]
+UpdateBirdPosition:
+    push hl
+    push af
+    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    ; Update Y
+    ld a, [wEnemyY]
+    ld [hli], a
+    ; Update X
+    ld a, [wEnemyX]
+    ld [hl], a
+  
+    SET_HL_TO_ADDRESS wOAM+4, wEnemyOAM
+    ; Update Y
+    ld a, [wEnemyY]
+    ld [hli], a
+    ; Update X
+    ld a, [wEnemyX]
+    add 8
+    ld [hl], a
+
+    SET_HL_TO_ADDRESS wOAM+8, wEnemyOAM
+    ; Update Y
+    ld a, [wEnemyY]
+    ld [hli], a
+    ; Update X
+    ld a, [wEnemyX]
+    add 16
+    ld [hl], a
+    pop af
+    pop hl
+    ret
+
+Move:
+    push hl
+    push af
+    ld a, [wEnemyRightside]
     cp a, 0
     jr z, .moveRight
 .moveLeft:
-    DECREMENT_POS bird_x, [bird_speed]
+    DECREMENT_POS wEnemyX, BIRD_HORIZONTAL_SPEED
     jr .moveDown
 .moveRight:
-    INCREMENT_POS bird_x, [bird_speed]
+    INCREMENT_POS wEnemyX, BIRD_HORIZONTAL_SPEED
 .moveDown:
     ld a, [global_timer]
     and BIRD_SPRITE_DESCENDING_TIME
     jr nz, .moveEnd
-    INCREMENT_POS bird_y, BIRD_VERTICAL_SPEED
+    INCREMENT_POS wEnemyY, BIRD_VERTICAL_SPEED
 .moveEnd:
     call BirdAnimate
     call UpdateBirdPosition
 .end:
+    pop af
+    pop hl
     ret
 
-BirdFalling:
-    ld a, [bird_falling]
-    cp a, 0
-    jr z, .end
-    ld a, [global_timer]
-    and BIRD_FALLING_WAIT_TIME
-    jr nz, .end
-    INCREMENT_POS bird_y, 2
+BirdFall:
+    push hl
+    push af
+    INCREMENT_POS wEnemyY, 2
     call UpdateBirdPosition
 .checkOffscreenY:
-    ld a, [bird_y]
+    ld a, [wEnemyY]
     ld b, a
     call OffScreenYEnemies
     cp a, 0
     jr z, .end
     xor a ; ld a, 0
-    ld [bird_falling], a
-    call ClearBird
-.end:
-    ret
-
-BirdUpdate:: ; I wonder if these updates should all have a timer cooldown?
-    push hl
-    push bc
-    push af
-.checkAlive:
-    ld a, [bird_alive]
-    cp a, 0
-    jr z, .isDead
-    call BirdMovement
-.checkOffscreenX:
-    ld a, [bird_x]
-    ld b, a
-    call OffScreenXEnemies
-    cp a, 0
-    jr z, .end
-    call ClearBird
-    xor a ; ld a, 0
-    ld [bird_alive], a
-    jr .end
-.isDead:
-    call BirdFalling
-.respawning:
-    ld a, [bird_falling]
-    cp a, 0
-    jr nz, .end
-    ld a, [bird_respawn_timer]
-    inc a
-    ld [bird_respawn_timer], a
-    cp a, BIRD_RESPAWN_TIME
-    jr nz, .end
-    call SpawnBird
+    ld [wEnemyFalling], a
+    call Clear
 .end:
     pop af
-    pop bc
     pop hl
     ret
 
 DeathOfBird::
     ; Death
     xor a ; ld a, 0
-    ld [bird_alive], a
+    ld [wEnemyAlive], a
+    ; Points
+    ld d, BIRD_POINTS
+    call AddPoints
+    ; Animation trigger
     ld a, 1
-    ld [bird_falling], a
+    ld [wEnemyFalling], a
     ; Sound
     call ExplosionSound
     ; Screaming bird
-    ld a, [bird_spawn_right]
+    ld a, [wEnemyRightside]
     cp a, 0
     jr z, .facingRight
 .facingLeft:
-    SET_HL_TO_ADDRESS wOAM+2, wBirdOAM
+    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
     ld [hl], $A6
-    SET_HL_TO_ADDRESS wOAM+6, wBirdOAM
+    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
     ld [hl], $A8
-    SET_HL_TO_ADDRESS wOAM+10, wBirdOAM
+    SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
     ld [hl], $AA
-    jr .end
+    ret
 .facingRight:
-    SET_HL_TO_ADDRESS wOAM+2, wBirdOAM
+    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
     ld [hl], $AA
-    SET_HL_TO_ADDRESS wOAM+6, wBirdOAM
+    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
     ld [hl], $A8
-    SET_HL_TO_ADDRESS wOAM+10, wBirdOAM
+    SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
     ld [hl], $A6
+    ret
+
+CollisionBird:
+    push bc
+    push hl
+    push af
+.checkHitPlayer
+    ld a, [player_alive]
+    cp a, 0
+    jr z, .end
+    ld bc, wPlayerBalloonOAM
+    SET_HL_TO_ADDRESS wOAM+4, wEnemyOAM
+    ld a, 1
+    call CollisionCheck
+    cp a, 0
+    call nz, CollisionWithPlayer
 .end:
+    pop af
+    pop hl
+    pop bc
+    ret
+
+BirdUpdate:: ; I wonder if these updates should all have a timer cooldown?
+    push hl
+    push bc
+    push af
+    push de
+    ld bc, BIRD_STRUCT_AMOUNT
+    xor a ; ld a, 0
+    ld [wEnemyOffset], a ; TODO, we can remove enemy offset this if we optimize this code
+.loop:
+    SET_HL_TO_ADDRESS bird, wEnemyOffset
+    call GetStruct
+
+    ; Check active
+    ld a, [wEnemyActive]
+    cp a, 0
+    jr z, .checkLoop
+    ; Check if alive
+    ld a, [wEnemyAlive]
+    cp a, 0
+    jr z, .isDead
+.isAlive:
+    ; Check if we can move and collide
+    ld a, [global_timer]
+    and	BIRD_SPRITE_MOVE_WAIT_TIME
+    jr nz, .checkLoop
+    call Move
+    call CollisionBird
+    ; Check offscreen
+    push bc
+    ld a, [wEnemyX]
+    ld b, a
+    call OffScreenXEnemies
+    pop bc
+    cp a, 0
+    jr z, .checkLoop
+.offScreen:
+    call Clear
+    jr z, .checkLoop
+.isDead:
+    ; Check if we need to play falling
+    ld a, [wEnemyFalling]
+    cp a, 0
+    jr z, .checkLoop
+    ld a, [global_timer]
+    and BIRD_FALLING_WAIT_TIME
+    jr nz, .checkLoop
+    call BirdFall
+.checkLoop:
+    SET_HL_TO_ADDRESS bird, wEnemyOffset
+    call SetStruct
+    ld a, [wEnemyOffset]
+    add a, BIRD_STRUCT_SIZE
+    ld [wEnemyOffset], a    
+    dec bc
+    ld a, b
+    or a, c
+    jr nz, .loop
+.end:
+    xor a ; ld a, 0
+    ld [wEnemyOffset], a
+    pop de
+    pop af
+    pop bc
+    pop hl
     ret

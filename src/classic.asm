@@ -275,10 +275,8 @@ UpdateSprites:
     call PointBalloonUpdate
     call BalloonCactusUpdate
     call BombUpdate
+    call BirdUpdate
 ;   call PropellerCactusUpdate
-;   ld a, 4
-;   ld [bird_speed], a
-;   call BirdUpdate
     ret
 
 UpdateClassicCountdown::
@@ -301,7 +299,6 @@ UpdateClassic::
     call ReplaceTilemapHorizontal
     call UpdateSprites
     call LevelDataManager
-    call CollisionUpdate
     call RefreshWindow
     call HorizontalScroll
     call _hUGE_dosound
