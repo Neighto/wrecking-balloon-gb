@@ -192,7 +192,6 @@ ClearCactus:
     ret 
 
 ClearBalloon:
-    xor a ; ld a, 0
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     ld [hli], a
     ld [hli], a
@@ -205,6 +204,23 @@ ClearBalloon:
     ret
 
 Clear:
+    ; xor a ; ld a, 0
+    ; ld [hli], a
+    ; ld [hli], a
+    ; ld [hli], a
+    ; ld [hli], a
+    ; ld [hli], a
+    ; ld [hli], a
+    ; ld [hli], a
+    ; ld [hli], a
+    ; ld [hli], a
+    ; ld [hli], a
+    ; ld [hli], a
+    ; ld [hli], a
+    ; ld [hli], a
+    ; ld [hli], a
+    ; ld [hli], a
+    ; ld [hl], a
     call ClearCactus
     call ClearBalloon
     call InitializeEnemyStructVars
@@ -276,7 +292,10 @@ PopBalloonAnimation:
     ret
 .clear:
     ; Remove sprites
-    call ClearBalloon
+    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
+    ld [hl], $00
+    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
+    ld [hl], $00
     ; Reset variables
     ld hl, wEnemyPopping
     ld [hl], a
