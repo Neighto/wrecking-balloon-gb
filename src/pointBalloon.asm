@@ -6,6 +6,8 @@ INCLUDE "macro.inc"
 POINT_BALLOON_STRUCT_SIZE EQU 8
 POINT_BALLOON_STRUCT_AMOUNT EQU 4
 POINT_BALLOON_DATA_SIZE EQU POINT_BALLOON_STRUCT_SIZE * POINT_BALLOON_STRUCT_AMOUNT
+POINT_BALLOON_OAM_SPRITES EQU 2
+POINT_BALLOON_OAM_BYTES EQU POINT_BALLOON_OAM_SPRITES * 4
 POINT_BALLOON_SPRITE_MOVE_WAIT_TIME EQU %00000001
 
 SECTION "point balloon vars", WRAM0
@@ -66,38 +68,33 @@ SetStruct:
     ret
 
 SpawnPointBalloon::
-    ; Argument b = Y spawn
-    ; Argument c = X spawn
     push af
     push hl
     push de
+    push bc
     ld hl, pointBalloon
     ld d, POINT_BALLOON_STRUCT_AMOUNT
     ld e, POINT_BALLOON_STRUCT_SIZE
-    call RequestRAMSpace ; Returns HL
-    LD_DE_HL
+    call RequestRAMSpace ; hl now contains free RAM space address
     cp a, 0
     jr z, .end
 .availableSpace:
-    call InitializeEnemyStructVars
-    call SetStruct
-    LD_HL_BC ; Arguments now in HL
-    ld b, 2
-	call RequestOAMSpace
+    ld b, POINT_BALLOON_OAM_SPRITES
+	call RequestOAMSpace ; b now contains OAM address
     cp a, 0
     jr z, .end
 .availableOAMSpace:
+    LD_DE_HL
+    call InitializeEnemyStructVars
+    call SetStruct
     ld a, b
     ld [wEnemyOAM], a
+    LD_BC_DE
     ld a, 1
     ld [wEnemyActive], a
     ld [wEnemyAlive], a
-    ld a, h
-    ld [wEnemyY], a
-    ld a, l
-    ld [wEnemyX], a
 .balloonLeft:
-    SET_HL_TO_ADDRESS_WITH_BC wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     ld a, [wEnemyY]
     ld [hli], a
     ld a, [wEnemyX]
@@ -116,34 +113,31 @@ SpawnPointBalloon::
     inc l
     ld [hl], OAMF_PAL1 | OAMF_XFLIP
 .setStruct:
-    LD_HL_DE
+    LD_HL_BC
     call SetStruct
 .end:
+    pop bc
     pop de
     pop hl
     pop af
     ret
 
 PopBalloonAnimation:
-    ; Check what frame we are on
     ld a, [wEnemyPoppingFrame]
     cp a, 0
     jr z, .frame0
-
     ld a, [wEnemyPoppingTimer]
 	inc	a
 	ld [wEnemyPoppingTimer], a
     and POPPING_BALLOON_ANIMATION_SPEED
-    jp nz, .end
-    ; Can do next frame
-    ; Check what frame we are on
+    ret nz
+.canSwitchFrames:
     ld a, [wEnemyPoppingFrame]
     cp a, 1
-    jp z, .frame1
+    jr z, .frame1
     cp a, 2
-    jp z, .clear
+    jr z, .clear
     ret
-
 .frame0:
     ; Popped left - frame 0
     SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
@@ -155,9 +149,7 @@ PopBalloonAnimation:
     ld [hl], $88
     inc l
     ld [hl], OAMF_XFLIP
-    ld hl, wEnemyPoppingFrame
-    ld [hl], 1
-    ret
+    jr .endFrame
 .frame1:
     ; Popped left - frame 1
     SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
@@ -169,17 +161,19 @@ PopBalloonAnimation:
     ld [hl], $8A
     inc l
     ld [hl], OAMF_XFLIP
-    ld hl, wEnemyPoppingFrame
-    ld [hl], 2
-    ret
+    jr .endFrame
 .clear:
     call Clear
+.endFrame:
+    inc a 
+    ld [wEnemyPoppingFrame], a
 .end:
     ret
 
 Clear:
-    xor a ; ld a, 0
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    call InitializeEnemyStructVars
+    xor a ; ld a, 0
     ld [hli], a
     ld [hli], a
     ld [hli], a
@@ -188,39 +182,33 @@ Clear:
     ld [hli], a
     ld [hli], a
     ld [hl], a
-    call InitializeEnemyStructVars
     ret
 
-UpdateBalloonPosition:
+Move:
+    ; Move up
+    ld a, [wEnemyY]
+    dec a
+    ld [wEnemyY], a
+.balloonLeft:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ; Update Y
     ld a, [wEnemyY]
     ld [hli], a
-    ; Update X
     ld a, [wEnemyX]
-    ld [hl], a
-  
-    SET_HL_TO_ADDRESS wOAM+4, wEnemyOAM
-    ; Update Y
+    ld [hli], a
+    inc l
+    inc l
+.balloonRight:
     ld a, [wEnemyY]
     ld [hli], a
-    ; Update X
     ld a, [wEnemyX]
     add 8
     ld [hl], a
     ret
 
-Move:
-    ld a, [wEnemyY]
-    dec a
-    ld [wEnemyY], a
-    call UpdateBalloonPosition
-    ret
-
 DeathOfPointBalloon:
     ; Death
     xor a ; ld a, 0
-    ld [wEnemyAlive], a ; WARNING MIGHT NOT BE SET TO CORRECT BALLOON
+    ld [wEnemyAlive], a
     ; Points
     ld d, POINT_BALLOON_POINTS
     call AddPoints

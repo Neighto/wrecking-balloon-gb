@@ -55,6 +55,11 @@ MACRO LD_HL_DE
     ld l, e
 ENDM
 
+MACRO LD_BC_DE
+    ld b, d
+    ld c, e
+ENDM
+
 MACRO ADD_TO_HL
     ; argument 1 is value to add to HL
     push af

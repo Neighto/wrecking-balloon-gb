@@ -112,10 +112,12 @@ LevelDataHandler:
 .pointBalloon:
     ; Y
     inc hl
-    ld b, [hl]
+    ld a, [hl]
+    ld [wEnemyY], a
     ; X
     inc hl
-    ld c, [hl]
+    ld a, [hl]
+    ld [wEnemyX], a
     call SpawnPointBalloon
     jr .loopCheck
 .balloonCactus:
