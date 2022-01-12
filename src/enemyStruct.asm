@@ -4,10 +4,12 @@ SECTION "enemy struct vars", WRAM0
     ; Offset for looping through enemy data
     wEnemyOffset:: DB
 
-    ; Vars shared by enemies
-    wEnemyActive:: DB
+    ; Vars set by data
     wEnemyY:: DB
     wEnemyX:: DB
+
+    ; Vars shared by all enemies
+    wEnemyActive:: DB
     wEnemyOAM:: DB
     wEnemyAlive:: DB
 
@@ -33,8 +35,6 @@ InitializeEnemyStructVars::
     push af
     xor a ; ld a, 0
     ld [wEnemyActive], a
-    ld [wEnemyY], a
-    ld [wEnemyX], a
     ld [wEnemyOAM], a
     ld [wEnemyAlive], a
     ld [wEnemyPopping], a
