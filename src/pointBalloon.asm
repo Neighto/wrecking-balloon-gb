@@ -8,7 +8,7 @@ POINT_BALLOON_STRUCT_AMOUNT EQU 4
 POINT_BALLOON_DATA_SIZE EQU POINT_BALLOON_STRUCT_SIZE * POINT_BALLOON_STRUCT_AMOUNT
 POINT_BALLOON_OAM_SPRITES EQU 2
 POINT_BALLOON_OAM_BYTES EQU POINT_BALLOON_OAM_SPRITES * 4
-POINT_BALLOON_SPRITE_MOVE_WAIT_TIME EQU %00000001
+POINT_BALLOON_UPDATE_TIME EQU %00000001
 
 SECTION "point balloon vars", WRAM0
     pointBalloon:: DS POINT_BALLOON_DATA_SIZE
@@ -143,27 +143,28 @@ PopBalloonAnimation:
     SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
     ld [hl], $88
     inc l
-    ld [hl], %00000000
+    ld [hl], OAMF_PAL0
     ; Popped right - frame 0
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
     ld [hl], $88
     inc l
-    ld [hl], OAMF_XFLIP
+    ld [hl], OAMF_PAL0 | OAMF_XFLIP
     jr .endFrame
 .frame1:
     ; Popped left - frame 1
     SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
     ld [hl], $8A
     inc l
-    ld [hl], %00000000
+    ld [hl], OAMF_PAL0
     ; Popped right - frame 1
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
     ld [hl], $8A
     inc l
-    ld [hl], OAMF_XFLIP
+    ld [hl], OAMF_PAL0 | OAMF_XFLIP
     jr .endFrame
 .clear:
     call Clear
+    ret
 .endFrame:
     inc a 
     ld [wEnemyPoppingFrame], a
@@ -172,7 +173,6 @@ PopBalloonAnimation:
 
 Clear:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    call InitializeEnemyStructVars
     xor a ; ld a, 0
     ld [hli], a
     ld [hli], a
@@ -182,6 +182,7 @@ Clear:
     ld [hli], a
     ld [hli], a
     ld [hl], a
+    call InitializeEnemyStructVars
     ret
 
 Move:
@@ -220,25 +221,15 @@ DeathOfPointBalloon:
     ret
 
 CollisionPointBalloon:
-    push bc
-    push hl
-    push af
     ld bc, wPlayerCactusOAM
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     xor a ; ld a, 0
     call CollisionCheck
     cp a, 0
     call nz, DeathOfPointBalloon
-    pop af
-    pop hl
-    pop bc
     ret
 
 PointBalloonUpdate::
-    push bc
-    push de
-    push hl
-    push af
     ld bc, POINT_BALLOON_STRUCT_AMOUNT
     xor a ; ld a, 0
     ld [wEnemyOffset], a
@@ -257,12 +248,12 @@ PointBalloonUpdate::
 .isAlive:
     ; Check if we can move and collide
     ld a, [global_timer]
-    and	POINT_BALLOON_SPRITE_MOVE_WAIT_TIME
+    and	POINT_BALLOON_UPDATE_TIME
     jr nz, .checkLoop
     call Move
+    push bc
     call CollisionPointBalloon
     ; Check offscreen
-    push bc
     ld a, [wEnemyY]
     ld b, a
     call OffScreenYEnemies
@@ -291,8 +282,4 @@ PointBalloonUpdate::
 .end:
     xor a ; ld a, 0
     ld [wEnemyOffset], a
-    pop af
-    pop hl
-    pop de
-    pop bc
     ret
