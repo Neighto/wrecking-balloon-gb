@@ -8,7 +8,8 @@ POINT_BALLOON_STRUCT_AMOUNT EQU 4
 POINT_BALLOON_DATA_SIZE EQU POINT_BALLOON_STRUCT_SIZE * POINT_BALLOON_STRUCT_AMOUNT
 POINT_BALLOON_OAM_SPRITES EQU 2
 POINT_BALLOON_OAM_BYTES EQU POINT_BALLOON_OAM_SPRITES * 4
-POINT_BALLOON_UPDATE_TIME EQU %00000001
+POINT_BALLOON_MOVE_TIME EQU %00000001
+POINT_BALLOON_COLLISION_TIME EQU %00001000
 
 SECTION "point balloon vars", WRAM0
     pointBalloon:: DS POINT_BALLOON_DATA_SIZE
@@ -248,11 +249,13 @@ PointBalloonUpdate::
 .isAlive:
     ; Check if we can move and collide
     ld a, [global_timer]
-    and	POINT_BALLOON_UPDATE_TIME
-    jr nz, .checkLoop
-    call Move
+    and	POINT_BALLOON_MOVE_TIME
+    call z, Move
+    ; Check if we can collide
+    ld a, [global_timer]
+    and	POINT_BALLOON_COLLISION_TIME
     push bc
-    call CollisionPointBalloon
+    call z, CollisionPointBalloon
     ; Check offscreen
     ld a, [wEnemyY]
     ld b, a

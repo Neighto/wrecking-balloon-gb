@@ -8,7 +8,8 @@ BALLOON_CACTUS_STRUCT_AMOUNT EQU 2
 BALLOON_CACTUS_DATA_SIZE EQU BALLOON_CACTUS_STRUCT_SIZE * BALLOON_CACTUS_STRUCT_AMOUNT
 BALLOON_CACTUS_OAM_SPRITES EQU 4
 BALLOON_CACTUS_OAM_BYTES EQU BALLOON_CACTUS_OAM_SPRITES * 4
-BALLOON_CACTUS_UPDATE_TIME EQU %00000011
+BALLOON_CACTUS_MOVE_TIME EQU %00000011
+BALLOON_CACTUS_COLLISION_TIME EQU %00001000
 
 SECTION "balloon cactus vars", WRAM0
     balloonCactus:: DS BALLOON_CACTUS_DATA_SIZE
@@ -403,13 +404,15 @@ BalloonCactusUpdate::
     cp a, 0
     jr z, .popped
 .isAlive:
-    ; Check if we can move and collide
+    ; Check if we can move
     ld a, [global_timer]
-    and	BALLOON_CACTUS_UPDATE_TIME
-    jr nz, .checkLoop
-    call Move
+    and	BALLOON_CACTUS_MOVE_TIME
+    call z, Move
+    ; Check if we can collide
+    ld a, [global_timer]
+    and	BALLOON_CACTUS_COLLISION_TIME
     push bc
-    call CollisionBalloonCactus
+    call z, CollisionBalloonCactus
     ; Check offscreen
     ld a, [wEnemyX]
     ld b, a

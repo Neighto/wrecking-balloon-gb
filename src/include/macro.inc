@@ -76,13 +76,13 @@ ENDM
 MACRO SET_HL_TO_ADDRESS
     ; argument 1 is starting address
     ; argument 2 is offset
-    ld hl, \1
-    ld de, \2
-    push af
-    ld a, [de]
-    add a, l ; might cause issues if no carry to h?
-    ld l, a
-    pop af
+    ld hl, \1 ; 3 cycles
+    ld de, \2 ; 3 cycles
+    push af ; 4 cycles
+    ld a, [de] ; 2 cycles
+    add a, l ; 1 cycle
+    ld l, a ; 1 cycle
+    pop af ; 3 cycles
 ENDM
 
 ; Use with caution: Overwrites hl and bc
