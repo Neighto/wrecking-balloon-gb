@@ -376,7 +376,7 @@ CollisionBalloonCactus:
     cp a, 0
     call nz, DeathOfBalloonCactus
 .checkHitPlayer:
-    ld a, [player_alive]
+    ld a, [wPlayerAlive]
     cp a, 0
     ret z
     ld bc, wPlayerBalloonOAM

@@ -13,7 +13,7 @@ AddPoints::
     ; uses 'af' 'hl' as holder
     push af
     push hl
-    ld a, [player_alive]
+    ld a, [wPlayerAlive]
     and 1
     jr z, .end
     ; Alive so we can add points

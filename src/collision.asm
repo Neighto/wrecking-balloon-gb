@@ -87,7 +87,7 @@ CollisionCheck::
 CollisionWithPlayer::
     push af
     ; Check if player is invincible
-    ld a, [player_invincible]
+    ld a, [wPlayerInvincible]
     cp a, 0
     call z, DeathOfPlayer
     pop af

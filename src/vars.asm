@@ -46,5 +46,5 @@ InitializeGameVars::
 	ld [wLastUpdatedSCX], a
 
 	ld a, 2
-	ld [player_lives], a
+	ld [wPlayerLives], a
 	ret
