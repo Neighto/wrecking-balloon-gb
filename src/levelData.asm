@@ -10,6 +10,7 @@ POINT_BALLOON EQU 1
 BALLOON_CACTUS EQU 2
 BIRD EQU 3
 BOMB EQU 4
+PORCUPINE EQU 5
 
 ; Common Spawning Coordinates
 OFFSCREEN_BOTTOM_Y EQU 156
@@ -37,6 +38,7 @@ SECTION "level data", ROM0
 
 W1L1W1:
     DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B
+    ; DB PORCUPINE, 50, 20
 W1L1W1End:
 
 W1L1W2:
@@ -107,7 +109,9 @@ LevelDataHandler:
     cp a, BIRD
     jr z, .bird 
     cp a, BOMB
-    jr z, .bomb 
+    jr z, .bomb
+    cp a, PORCUPINE
+    jr z, .porcupine
     jr .end
 .pointBalloon:
     ; Y
@@ -148,6 +152,17 @@ LevelDataHandler:
     inc hl
     ld c, [hl]
     call SpawnBomb
+    jr .loopCheck
+.porcupine:
+    ; Y
+    inc hl
+    ld a, [hl]
+    ld [wEnemyY], a
+    ; X
+    inc hl
+    ld a, [hl]
+    ld [wEnemyX], a
+    call SpawnPorcupine
     jr .loopCheck
 .empty:
     inc hl
