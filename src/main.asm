@@ -53,7 +53,7 @@ StartClassic::
 	call InitializePlayer
 	call InitializePointBalloon
 	call InitializeBalloonCactus
-	call InitializePropellerCactus
+	call InitializePorcupine
 	call InitializeBird
 	call InitializeBomb
 	call InitializeClassicVars

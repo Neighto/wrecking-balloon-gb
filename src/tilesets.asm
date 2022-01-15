@@ -17,7 +17,8 @@ CactusTiles::
 CactusTilesEnd::
 
 PropellerCactusTiles::
-    INCBIN "incbin/sprite/PropellerCactus.2bpp"
+    ; INCBIN "incbin/sprite/PropellerCactus.2bpp"
+    INCBIN "incbin/sprite/porcu.2bpp"
 PropellerCactusTilesEnd::
 
 BackgroundTiles::
