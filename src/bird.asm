@@ -354,7 +354,7 @@ CollisionBird:
     push hl
     push af
 .checkHitPlayer
-    ld a, [player_alive]
+    ld a, [wPlayerAlive]
     cp a, 0
     jr z, .end
     ld bc, wPlayerBalloonOAM

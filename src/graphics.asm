@@ -126,7 +126,7 @@ RefreshScore:
 
 RefreshLives:
 	push af
-	ld a, [player_lives]
+	ld a, [wPlayerLives]
 	add NUMBERS_TILE_OFFSET
 	ld [LIVES_ADDRESS], a
 	pop af

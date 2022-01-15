@@ -22,7 +22,7 @@ ParkFadeOut:
 	cp a, STAGE_CLASSIC_STARTING
 	jr z, .fadeOut
     ; Can we start fading out (are we offscreen)
-    ld a, [player_y]
+    ld a, [wPlayerY]
     add 4 ; Buffer for extra time before screen switch
     ld b, a
     call OffScreenYEnemies
@@ -47,7 +47,7 @@ UpdatePark::
     call HandWaveAnimation
     call IncrementScrollOffset
 .moveUp:
-    ld a, [player_y]
+    ld a, [wPlayerY]
     add 16
     cp a, 80
     jr c, .flyUpFast

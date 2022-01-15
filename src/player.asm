@@ -17,41 +17,40 @@ INVINCIBLE_BLINK_NORMAL_SPEED EQU %00001000
 INVINCIBLE_BLINK_FAST_SPEED EQU %00000100
 
 SECTION "player vars", WRAM0
-  player_x:: DB
-  player_y:: DB
-  player_cactus_x:: DB 
-  player_cactus_y:: DB
-  player_alive:: DB
-  player_popping:: DB
-  player_popping_frame:: DB
-  player_falling:: DB
-  player_fall_speed:: DB
-  player_falling_timer:: DB
-  player_pop_timer:: DB
-  player_delay_falling_timer:: DB
-  player_respawn_timer:: DB
-  player_speed:: DB
-  player_lives:: DB
-  player_invincible:: DB ; Operates like a timer, when set, invincible immediately
-  player_cant_move:: DB
+  wPlayerY:: DB
+  wPlayerX:: DB
+  wPlayerY2:: DB
+  wPlayerX2:: DB
+  wPlayerAlive:: DB
+  wPlayerPopping:: DB
+  wPlayerPoppingFrame:: DB
+  wPlayerPoppingTimer:: DB
+  wPlayerFalling:: DB
+  wPlayerFallSpeed:: DB
+  wPlayerFallingTimer:: DB
+  wPlayerDelayFallingTimer:: DB
+  wPlayerRespawnTimer:: DB
+  wPlayerSpeed:: DB
+  wPlayerLives:: DB
+  wPlayerInvincible:: DB ; Operates like a timer, when set, invincible immediately
 
 SECTION "player", ROM0
 
 UpdateBalloonPosition:
   ld hl, wPlayerBalloonOAM
   ; Update Y
-  ld a, [player_y]
+  ld a, [wPlayerY]
   ld [hli], a
   ; Update X
-  ld a, [player_x]
+  ld a, [wPlayerX]
   ld [hl], a
 
   ld hl, wPlayerBalloonOAM+4
   ; Update Y
-  ld a, [player_y]
+  ld a, [wPlayerY]
   ld [hli], a
   ; Update X
-  ld a, [player_x]
+  ld a, [wPlayerX]
   add 8
   ld [hl], a
   ret
@@ -59,18 +58,18 @@ UpdateBalloonPosition:
 UpdateCactusPosition:
   ld hl, wPlayerCactusOAM
   ; Update Y
-  ld a, [player_cactus_y]
+  ld a, [wPlayerY2]
   ld [hli], a
   ; Update X
-  ld a, [player_cactus_x]
+  ld a, [wPlayerX2]
   ld [hl], a
 
   ld hl, wPlayerCactusOAM+4
   ; Update Y
-  ld a, [player_cactus_y]
+  ld a, [wPlayerY2]
   ld [hli], a
   ; Update X
-  ld a, [player_cactus_x]
+  ld a, [wPlayerX2]
   add 8
   ld [hl], a
   ret
@@ -83,44 +82,43 @@ UpdatePlayerPosition:
 InitializePlayer::
   ; Set variables
   xor a ; ld a, 0
-  ld [player_popping], a
-  ld [player_popping_frame], a
-  ld [player_pop_timer], a
-  ld [player_falling], a
-  ld [player_delay_falling_timer], a
-  ld [player_falling_timer], a
-  ld [player_respawn_timer], a
-  ld [player_invincible], a
-  ld [player_cant_move], a
+  ld [wPlayerPopping], a
+  ld [wPlayerPoppingFrame], a
+  ld [wPlayerPoppingTimer], a
+  ld [wPlayerFalling], a
+  ld [wPlayerDelayFallingTimer], a
+  ld [wPlayerFallingTimer], a
+  ld [wPlayerRespawnTimer], a
+  ld [wPlayerInvincible], a
   ld a, 1
-  ld [player_alive], a
-  ld [player_fall_speed], a
+  ld [wPlayerAlive], a
+  ld [wPlayerFallSpeed], a
 
-  ld hl, player_x
+  ld hl, wPlayerX
   ld [hl], PLAYER_START_X
-  ld hl, player_y
+  ld hl, wPlayerY
   ld [hl], PLAYER_BALLOON_START_Y
-  ld hl, player_cactus_x
+  ld hl, wPlayerX2
   ld [hl], PLAYER_START_X
-  ld hl, player_cactus_y
+  ld hl, wPlayerY2
   ld [hl], PLAYER_START_Y
-  ld hl, player_speed
+  ld hl, wPlayerSpeed
   ld [hl], 2
 
   ; Cactus left
   ld hl, wPlayerCactusOAM
-  ld a, [player_cactus_y]
+  ld a, [wPlayerY2]
   ld [hli], a
-  ld a, [player_cactus_x]
+  ld a, [wPlayerX2]
   ld [hli], a
   ld [hl], $82
   inc l
   ld [hl], OAMF_PAL0
   ; Cactus right
   inc l
-  ld a, [player_cactus_y]
+  ld a, [wPlayerY2]
   ld [hli], a
-  ld a, [player_cactus_x]
+  ld a, [wPlayerX2]
   add 8
   ld [hli], a
   ld [hl], $82
@@ -129,18 +127,18 @@ InitializePlayer::
 
   ; Balloon left
   ld hl, wPlayerBalloonOAM
-  ld a, [player_y]
+  ld a, [wPlayerY]
   ld [hli], a
-  ld a, [player_x]
+  ld a, [wPlayerX]
   ld [hli], a
   ld [hl], $80
   inc l
   ld [hl], OAMF_PAL1
   ; Balloon right
   inc l
-  ld a, [player_y]
+  ld a, [wPlayerY]
   ld [hli], a
-  ld a, [player_x]
+  ld a, [wPlayerX]
   add 8
   ld [hli], a
   ld [hl], $80
@@ -177,11 +175,11 @@ ClearPlayerBalloon:
 SpawnPlayer:
   ; Probably temporary
   xor a ; ld a, 0
-  ld [player_respawn_timer], a
+  ld [wPlayerRespawnTimer], a
   call InitializePlayer
   
   ld a, INVINCIBLE_RESPAWN_TIME
-  ld [player_invincible], a
+  ld [wPlayerInvincible], a
   call StopFallingSound
   ret
 
@@ -190,11 +188,11 @@ MoveCactusDriftLeft:
   ld a, [global_timer]
   and	%00000001
   jr nz, .end
-  ld hl, player_x
+  ld hl, wPlayerX
   ld a, PLAYER_MAX_DRIFT_X
   cpl
   add [hl]
-  ld hl, player_cactus_x
+  ld hl, wPlayerX2
   cp a, [hl]
   jr nc, .end
   dec [hl]
@@ -207,10 +205,10 @@ MoveCactusDriftRight:
   ld a, [global_timer]
   and	%00000001
   jr nz, .end
-  ld hl, player_x
+  ld hl, wPlayerX
   ld a, PLAYER_MAX_DRIFT_X
   add [hl]
-  ld hl, player_cactus_x
+  ld hl, wPlayerX2
   cp a, [hl]
   jr c, .end
   inc [hl]
@@ -222,8 +220,8 @@ MoveCactusDriftCenterX:
   ld a, [global_timer]
   and	%00000001
   jr nz, .end
-  ld a, [player_x]
-  ld hl, player_cactus_x
+  ld a, [wPlayerX]
+  ld hl, wPlayerX2
   cp a, [hl]
   jr z, .end
   jr c, .moveLeft
@@ -240,11 +238,11 @@ MoveCactusDriftUp:
   ld a, [global_timer]
   and	%00000001
   jr nz, .end
-  ld hl, player_y
+  ld hl, wPlayerY
   ld a, PLAYER_MAX_DRIFT_Y-16
   cpl
   add [hl]
-  ld hl, player_cactus_y
+  ld hl, wPlayerY2
   cp a, [hl]
   jr nc, .end
   dec [hl]
@@ -256,11 +254,11 @@ MoveCactusDriftCenterY:
   ld a, [global_timer]
   and	%00000001
   jr nz, .end
-  ; In what direction is cactus_y off from player_y
-  ld hl, player_y
+  ; In what direction is cactus_y off from wPlayerY
+  ld hl, wPlayerY
   ld a, 16
   add [hl]
-  ld hl, player_cactus_y
+  ld hl, wPlayerY2
   cp a, [hl]
   jr z, .end
   jr nc, .moveDown
@@ -273,35 +271,35 @@ MoveCactusDriftCenterY:
   ret
 
 MoveRight:
-  INCREMENT_POS player_x, [player_speed]
-  INCREMENT_POS player_cactus_x, [player_speed]
+  INCREMENT_POS wPlayerX, [wPlayerSpeed]
+  INCREMENT_POS wPlayerX2, [wPlayerSpeed]
   call MoveCactusDriftLeft
   ret
 
 MoveLeft:
-  DECREMENT_POS player_x, [player_speed]
-  DECREMENT_POS player_cactus_x, [player_speed]
+  DECREMENT_POS wPlayerX, [wPlayerSpeed]
+  DECREMENT_POS wPlayerX2, [wPlayerSpeed]
   call MoveCactusDriftRight
   ret
 
 MoveDown:
-  INCREMENT_POS player_y, [player_speed]
-  INCREMENT_POS player_cactus_y, [player_speed]
+  INCREMENT_POS wPlayerY, [wPlayerSpeed]
+  INCREMENT_POS wPlayerY2, [wPlayerSpeed]
   call MoveCactusDriftUp
   ret
 
 MoveUp:
-  DECREMENT_POS player_y, [player_speed]
-  DECREMENT_POS player_cactus_y, [player_speed]
+  DECREMENT_POS wPlayerY, [wPlayerSpeed]
+  DECREMENT_POS wPlayerY2, [wPlayerSpeed]
   ret
 
 SpeedUp:
-  ld hl, player_speed
+  ld hl, wPlayerSpeed
   ld [hl], 1
   ret
 
 ResetSpeedUp:
-  ld hl, player_speed
+  ld hl, wPlayerSpeed
   ld [hl], 2
   ret
 
@@ -315,7 +313,7 @@ PlayerControls:
 	call JOY_RIGHT
 	jr z, .endRight
   ; Right - are we offscreen?
-  ld a, [player_x]
+  ld a, [wPlayerX]
   add 8
   ld b, a
   call OffScreenX
@@ -328,7 +326,7 @@ PlayerControls:
 	call JOY_LEFT
 	jr z, .endLeft
   ; Left - are we offscreen?
-  ld a, [player_x]
+  ld a, [wPlayerX]
   sub 8
   ld b, a
   call OffScreenX
@@ -341,7 +339,7 @@ PlayerControls:
 	call JOY_UP
 	jr z, .endUp
   ; Up - are we offscreen?
-  ld a, [player_y]
+  ld a, [wPlayerY]
   sub 16 ; unusual I have to do this??
   ld b, a
   call OffScreenY
@@ -354,7 +352,7 @@ PlayerControls:
 	call JOY_DOWN
 	jr z, .endDown
   ; Down - are we offscreen?
-  ld a, [player_y]
+  ld a, [wPlayerY]
   add 16
   ld b, a
   call OffScreenY
@@ -420,7 +418,7 @@ MovePlayer:
 MovePlayerAutoMiddle::
   ld d, 0
   ld e, 0
-  ld a, [player_x]
+  ld a, [wPlayerX]
   cp a, SCRN_X/2
   jr z, .end
   jr nc, .moveLeft
@@ -434,41 +432,41 @@ MovePlayerAutoMiddle::
   ret
 
 MovePlayerAutoFlyUp::
-  DECREMENT_POS player_y, 1
-  DECREMENT_POS player_cactus_y, 1
+  DECREMENT_POS wPlayerY, 1
+  DECREMENT_POS wPlayerY2, 1
   call UpdatePlayerPosition
   ret
 
 FallCactusDown:
-  ld hl, player_fall_speed
-  ld a, [player_delay_falling_timer]
+  ld hl, wPlayerFallSpeed
+  ld a, [wPlayerDelayFallingTimer]
   inc a
-  ld [player_delay_falling_timer], a
+  ld [wPlayerDelayFallingTimer], a
   cp a, CACTUS_DELAY_FALLING_TIME
   jr c, .skipAcceleration
   xor a ; ld a, 0
-  ld [player_delay_falling_timer], a
+  ld [wPlayerDelayFallingTimer], a
   ld a, [hl]
   add a, a
   ld [hl], a
 .skipAcceleration
-  INCREMENT_POS player_cactus_y, [player_fall_speed]
+  INCREMENT_POS wPlayerY2, [wPlayerFallSpeed]
   ret
 
 PopBalloonAnimation:
   ; Check what frame we are on
-  ld a, [player_popping_frame]
+  ld a, [wPlayerPoppingFrame]
   cp a, 0
   jr z, .frame0
 
-  ld a, [player_pop_timer]
+  ld a, [wPlayerPoppingTimer]
   inc	a
-  ld [player_pop_timer], a
+  ld [wPlayerPoppingTimer], a
   and POPPING_BALLOON_ANIMATION_SPEED
   jp nz, .end
   ; Can do next frame
   ; Check what frame we are on
-  ld a, [player_popping_frame]
+  ld a, [wPlayerPoppingFrame]
   cp a, 1
   jp z, .frame1
   cp a, 2
@@ -486,7 +484,7 @@ PopBalloonAnimation:
   ld [hl], $88
   inc l
   ld [hl], OAMF_XFLIP
-  ld hl, player_popping_frame
+  ld hl, wPlayerPoppingFrame
   ld [hl], 1
   ret
 .frame1:
@@ -500,31 +498,31 @@ PopBalloonAnimation:
   ld [hl], $8A
   inc l
   ld [hl], OAMF_XFLIP
-  ld hl, player_popping_frame
+  ld hl, wPlayerPoppingFrame
   ld [hl], 2
   ret
 .clear:
   ; Remove sprites
   call ClearPlayerBalloon
   ; Reset variables
-  ld hl, player_popping
+  ld hl, wPlayerPopping
   ld [hl], a
-  ld hl, player_pop_timer
+  ld hl, wPlayerPoppingTimer
   ld [hl], a
-  ld hl, player_popping_frame
+  ld hl, wPlayerPoppingFrame
   ld [hl], a
 .end:
   ret
 
 CactusFalling:
-  ld a, [player_falling_timer]
+  ld a, [wPlayerFallingTimer]
   inc a
-  ld [player_falling_timer], a
+  ld [wPlayerFallingTimer], a
   and CACTUS_FALLING_TIME
   jr nz, .end
   ; Can we move cactus down
   ld a, 160
-  ld hl, player_cactus_y
+  ld hl, wPlayerY2
   cp a, [hl]
   jr c, .offScreen
   call FallCactusDown
@@ -532,7 +530,7 @@ CactusFalling:
   ret
 .offScreen:
   ; Reset variables
-  ld hl, player_falling
+  ld hl, wPlayerFalling
   ld [hl], 0
   call ClearPlayerCactus
 .end
@@ -546,28 +544,25 @@ NoMoreLives:
 
 PlayerUpdate::
   ; Check if alive
-  ld a, [player_alive]
+  ld a, [wPlayerAlive]
   and 1
   jr z, .popped
   ; Check if invincible (like when respawning)
   call InvincibleBlink
   ; Get movement
-  ld a, [player_cant_move]
-  cp a, 0
-  jp nz, .end
   ld a, [global_timer]
 	and	PLAYER_SPRITE_MOVE_WAIT_TIME
 	call z, MovePlayer
   ret
 .popped:
   ; Can we respawn
-  ld a, [player_respawn_timer]
+  ld a, [wPlayerRespawnTimer]
   inc a
-  ld [player_respawn_timer], a
+  ld [wPlayerRespawnTimer], a
   cp a, PLAYER_RESPAWN_TIME
   jr nz, .respawnSkip
   ; And do we have enough lives to respawn
-  ld a, [player_lives]
+  ld a, [wPlayerLives]
   or a, 0
   jr nz, .respawn
   call NoMoreLives
@@ -575,13 +570,13 @@ PlayerUpdate::
   call SpawnPlayer
 .respawnSkip:
   ; Check if we need to play popping animation
-  ld a, [player_popping]
+  ld a, [wPlayerPopping]
   and 1
   jr z, .notPopping
   call PopBalloonAnimation
 .notPopping:
   ; Check if we need to drop the cactus
-  ld a, [player_falling]
+  ld a, [wPlayerFalling]
   and 1
   jr z, .end
   call CactusFalling
@@ -591,16 +586,16 @@ PlayerUpdate::
 DeathOfPlayer::
   ; Death
   xor a ; ld a, 0
-  ld hl, player_alive
+  ld hl, wPlayerAlive
   ld [hl], a
   ; Remove life
-  ld hl, player_lives
+  ld hl, wPlayerLives
   dec [hl]
   ; Animation trigger
   ld a, 1
-  ld hl, player_popping
+  ld hl, wPlayerPopping
   ld [hl], a
-  ld hl, player_falling
+  ld hl, wPlayerFalling
   ld [hl], a
   ; Screaming cactus
   ld hl, wPlayerCactusOAM+2
@@ -614,11 +609,11 @@ DeathOfPlayer::
 
 InvincibleBlink::
   ; Check if invincible (like when respawning)
-  ld a, [player_invincible] ; This acts more as a countdown timer
+  ld a, [wPlayerInvincible]
   cp a, 0
   jp z, .end
   dec a
-  ld [player_invincible], a
+  ld [wPlayerInvincible], a
   ; At the end make sure we stop on default tileset
   cp a, 3
   jp c, .defaultPalette
