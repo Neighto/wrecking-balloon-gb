@@ -20,16 +20,17 @@ Start::
 	call SetupPalettes
 	call CopyDMARoutine
 	call InitializeGameVars
+	call InitializeMenu
 	call SpawnMenuCursor
-	call LCD_ON_BG_ONLY
+	call LCD_ON_NO_WINDOW_NO_SPRITE
 	; Comment out MenuLoop to skip menu
-; MenuLoop:
-; 	call WaitVBlank
-; 	call OAMDMA
-; 	call _hUGE_dosound
-; 	call UpdateMenu
-; 	call UpdateGlobalTimer
-; 	jp MenuLoop
+MenuLoop:
+	call WaitVBlank
+	call OAMDMA
+	call _hUGE_dosound
+	call UpdateMenu
+	call UpdateGlobalTimer
+	jp MenuLoop
 
 StartClassic::
 	call ParkEnteredClassic
@@ -57,14 +58,14 @@ StartClassic::
 	call InitializeBird
 	call InitializeBomb
 	call InitializeClassicVars
-	call LCD_ON_BG_ONLY
+	call LCD_ON_NO_WINDOW
 	; Comment out ParkLoop to skip park cutscene
-; ParkLoop:
-; 	call WaitVBlank
-; 	call OAMDMA
-; 	call UpdatePark
-; 	call UpdateGlobalTimer
-; 	jp ParkLoop
+ParkLoop:
+	call WaitVBlank
+	call OAMDMA
+	call UpdatePark
+	call UpdateGlobalTimer
+	jp ParkLoop
 
 PreGameLoop::
 	call StartedClassic

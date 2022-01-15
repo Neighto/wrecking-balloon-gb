@@ -6,7 +6,7 @@ INCLUDE "macro.inc"
 BOMB_STRUCT_SIZE EQU 8
 BOMB_STRUCT_AMOUNT EQU 2
 BOMB_DATA_SIZE EQU BOMB_STRUCT_SIZE * BOMB_STRUCT_AMOUNT
-BOMB_SPRITE_MOVE_WAIT_TIME EQU %00000001
+BOMB_SPRITE_MOVE_TIME EQU %00000001
 BOMB_DEFAULT_SPEED EQU 1
 
 SECTION "bomb vars", WRAM0
@@ -344,7 +344,7 @@ BombUpdate::
 .isAlive:
     ; Check if we can move and collide
     ld a, [global_timer]
-    and	BOMB_SPRITE_MOVE_WAIT_TIME
+    and	BOMB_SPRITE_MOVE_TIME
     jr nz, .checkLoop
     call Move
     call CollisionBomb

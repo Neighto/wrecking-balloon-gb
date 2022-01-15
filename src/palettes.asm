@@ -35,8 +35,7 @@ SetupParkPalettes::
 FadeOutPalettes::
 	ld a, [global_timer]
 	and FADE_SPEED
-	jr z, .fadeOut
-	ret
+	ret nz
 .fadeOut:
 	ld a, [fade_frame]
 	cp a, 0
@@ -72,17 +71,16 @@ FadeOutPalettes::
 FadeInPalettes::
 	ld a, [global_timer]
 	and FADE_SPEED
-	jr z, .fadeIn
-	ret
+	ret nz
 .fadeIn:
 	ld a, [fade_frame]
-	cp a, 0
+	cp a, 4
 	jr z, .fade1
-	cp a, 1
+	cp a, 3
 	jr z, .fade2
 	cp a, 2
 	jr z, .fade3
-	cp a, 3
+	cp a, 1
 	jr z, .fade4
 	ret
 .fade1:
@@ -102,7 +100,7 @@ FadeInPalettes::
 	ldh [rOBP1], a
 	ldh [rOBP0], a
 	ld a, [fade_frame]
-	inc a
+	dec a
 	ld [fade_frame], a
 	ret
 
