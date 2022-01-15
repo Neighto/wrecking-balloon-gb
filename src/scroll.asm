@@ -15,6 +15,18 @@ HorizontalScroll::
     pop af
     ret
 
+VerticalScroll::
+    push af
+    ld a, [global_timer]
+    and	BACKGROUND_VSCROLL_SPEED
+    jr nz, .end
+    ldh a, [rSCY]
+    inc a
+    ldh [rSCY], a
+.end:
+    pop af
+    ret
+
 ResetScroll::
     xor a ; ld a, 0
     ldh [rSCX], a

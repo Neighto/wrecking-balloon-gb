@@ -1,31 +1,32 @@
 ROM0 bank #0:
   SECTION: $0000-$002a ($002b bytes) ["enemy struct"]
            $0000 = InitializeEnemyStructVars
-  SECTION: $002b-$003f ($0015 bytes) ["scroll"]
-           $002b = HorizontalScroll
-           $0038 = HorizontalScroll.end
-           $003a = ResetScroll
   SECTION: $0040-$0042 ($0003 bytes) ["vblank IRQ"]
   SECTION: $0048-$004a ($0003 bytes) ["LCD IRQ"]
-  SECTION: $004b-$00d9 ($008f bytes) ["interrupts"]
-           $004b = VBlankInterrupt
-           $005b = LCDInterrupt
-           $0065 = LCDInterruptEnd
-           $0069 = SetBaseInterrupts
-           $007b = ParkLCDInterrupt
-           $0087 = ParkLCDInterrupt.clouds
-           $0095 = ParkLCDInterrupt.ground
-           $009a = ParkLCDInterrupt.end
-           $009d = SetParkInterrupts
-           $00aa = ClassicLCDInterrupt
-           $00cc = SetClassicInterrupts
-  SECTION: $00da-$00f7 ($001e bytes) ["OAM DMA routine"]
-           $00da = CopyDMARoutine
-           $00e1 = CopyDMARoutine.copy
-           $00e8 = DMARoutine
-           $00ec = DMARoutine.wait
-           $00f0 = DMARoutineEnd
-           $00f0 = OAMDMA
+  SECTION: $004b-$00d5 ($008b bytes) ["collision"]
+           $004b = CollisionCheck
+           $0058 = CollisionCheck.tryOtherY
+           $0060 = CollisionCheck.skip8x8Adjustment
+           $006c = CollisionCheck.checkX
+           $0079 = CollisionCheck.tryOtherX
+           $0086 = CollisionCheck.collision
+           $008a = CollisionCheck.end
+           $008e = CollisionWithPlayer
+           $0099 = CollisionFallingEnemy
+           $009a = OffScreenXEnemies
+           $00ab = OffScreenXEnemies.end
+           $00ad = OffScreenYEnemies
+           $00be = OffScreenYEnemies.end
+           $00c0 = OffScreenX
+           $00c8 = OffScreenX.end
+           $00ca = OffScreenY
+           $00d4 = OffScreenY.end
+  SECTION: $00d6-$00f9 ($0024 bytes) ["scroll"]
+           $00d6 = HorizontalScroll
+           $00e3 = HorizontalScroll.end
+           $00e5 = VerticalScroll
+           $00f2 = VerticalScroll.end
+           $00f4 = ResetScroll
   SECTION: $0100-$014f ($0050 bytes) ["header"]
   SECTION: $0150-$0a0f ($08c0 bytes) ["tilemaps"]
            $0150 = BackgroundMap
@@ -299,42 +300,45 @@ ROM0 bank #0:
            $18d1 = LevelDataManager.w3
            $18d3 = LevelDataManager.handle
            $18dd = LevelDataManager.end
-  SECTION: $18de-$199e ($00c1 bytes) ["rom"]
+  SECTION: $18de-$19c2 ($00e5 bytes) ["rom"]
            $18de = Start
-           $1912 = StartClassic
-           $1960 = PreGameLoop
-           $1981 = GameLoopCountdown
-           $1990 = GameLoop
-  SECTION: $199f-$1a29 ($008b bytes) ["collision"]
-           $199f = CollisionCheck
-           $19ac = CollisionCheck.tryOtherY
-           $19b4 = CollisionCheck.skip8x8Adjustment
-           $19c0 = CollisionCheck.checkX
-           $19cd = CollisionCheck.tryOtherX
-           $19da = CollisionCheck.collision
-           $19de = CollisionCheck.end
-           $19e2 = CollisionWithPlayer
-           $19ed = CollisionFallingEnemy
-           $19ee = OffScreenXEnemies
-           $19ff = OffScreenXEnemies.end
-           $1a01 = OffScreenYEnemies
-           $1a12 = OffScreenYEnemies.end
-           $1a14 = OffScreenX
-           $1a1c = OffScreenX.end
-           $1a1e = OffScreenY
-           $1a28 = OffScreenY.end
-  SECTION: $1a2a-$1a9c ($0073 bytes) ["joypad"]
-           $1a2a = ReadInput
-           $1a5a = JOY_RIGHT
-           $1a62 = JOY_LEFT
-           $1a6a = JOY_UP
-           $1a72 = JOY_DOWN
-           $1a7a = JOY_A
-           $1a82 = JOY_B
-           $1a8a = JOY_SELECT
-           $1a92 = JOY_START
-           $1a9a = JOY_FALSE
-    SLACK: $2570 bytes
+           $1915 = MenuLoop
+           $1927 = StartClassic
+           $1975 = ParkLoop
+           $1984 = PreGameLoop
+           $19a5 = GameLoopCountdown
+           $19b4 = GameLoop
+  SECTION: $19c3-$1a4b ($0089 bytes) ["interrupts"]
+           $19c3 = VBlankInterrupt
+           $19cd = LCDInterrupt
+           $19d7 = LCDInterruptEnd
+           $19db = SetBaseInterrupts
+           $19ed = ParkLCDInterrupt
+           $19f9 = ParkLCDInterrupt.clouds
+           $1a07 = ParkLCDInterrupt.ground
+           $1a0c = ParkLCDInterrupt.end
+           $1a0f = SetParkInterrupts
+           $1a1c = ClassicLCDInterrupt
+           $1a3e = SetClassicInterrupts
+  SECTION: $1a4c-$1abe ($0073 bytes) ["joypad"]
+           $1a4c = ReadInput
+           $1a7c = JOY_RIGHT
+           $1a84 = JOY_LEFT
+           $1a8c = JOY_UP
+           $1a94 = JOY_DOWN
+           $1a9c = JOY_A
+           $1aa4 = JOY_B
+           $1aac = JOY_SELECT
+           $1ab4 = JOY_START
+           $1abc = JOY_FALSE
+  SECTION: $1abf-$1adc ($001e bytes) ["OAM DMA routine"]
+           $1abf = CopyDMARoutine
+           $1ac6 = CopyDMARoutine.copy
+           $1acd = DMARoutine
+           $1ad1 = DMARoutine.wait
+           $1ad5 = DMARoutineEnd
+           $1ad5 = OAMDMA
+    SLACK: $2543 bytes
 
 ROMX bank #1:
   SECTION: $4000-$4b3d ($0b3e bytes) ["Song Data2"]
@@ -457,7 +461,9 @@ ROMX bank #1:
   SECTION: $4b3e-$558d ($0a50 bytes) ["tilesets"]
            $4b3e = CactusTiles
            $4dfe = CactusTilesEnd
-           $4dfe = PropellerCactusTiles
+           $4dfe = PorcupineTiles
+           $4ede = PorcupineTilesEnd
+           $4ede = PropellerCactusTiles
            $4ede = PropellerCactusTilesEnd
            $4ede = BackgroundTiles
            $531e = BackgroundTilesEnd
@@ -706,7 +712,7 @@ ROMX bank #1:
            $6a1a = BombUpdate.popped
            $6a24 = BombUpdate.checkLoop
            $6a3f = BombUpdate.end
-  SECTION: $6a48-$6cd2 ($028b bytes) ["classic"]
+  SECTION: $6a48-$6ccf ($0288 bytes) ["classic"]
            $6a48 = InitializeClassicVars
            $6a4d = ParkFadeOut
            $6a60 = ParkFadeOut.startFadeOut
@@ -745,176 +751,185 @@ ROMX bank #1:
            $6c82 = IncrementScrollOffset.end
            $6c83 = SetClassicMapStartPoint
            $6c88 = UpdateSprites
-           $6c9b = UpdateClassicCountdown
-           $6cb3 = UpdateClassic
-           $6cd2 = UpdateClassic.end
-  SECTION: $6cd3-$6ed1 ($01ff bytes) ["point balloon"]
-           $6cd3 = InitializePointBalloon
-           $6cdc = InitializePointBalloon.loop_u1
-           $6ce7 = GetStruct
-           $6d0a = SetStruct
-           $6d2d = SpawnPointBalloon
-           $6d3f = SpawnPointBalloon.availableSpace
-           $6d48 = SpawnPointBalloon.availableOAMSpace
-           $6d5e = SpawnPointBalloon.balloonLeft
-           $6d76 = SpawnPointBalloon.balloonRight
-           $6d86 = SpawnPointBalloon.setStruct
-           $6d8b = SpawnPointBalloon.end
-           $6d90 = PopBalloonAnimation
-           $6da1 = PopBalloonAnimation.canSwitchFrames
-           $6dad = PopBalloonAnimation.frame0
-           $6dcf = PopBalloonAnimation.frame1
-           $6df1 = PopBalloonAnimation.clear
-           $6df5 = PopBalloonAnimation.endFrame
-           $6df9 = PopBalloonAnimation.end
-           $6dfa = Clear
-           $6e12 = Move
-           $6e19 = Move.balloonLeft
-           $6e2e = Move.balloonRight
-           $6e39 = DeathOfPointBalloon
-           $6e4b = CollisionPointBalloon
-           $6e63 = PointBalloonUpdate
-           $6e6a = PointBalloonUpdate.loop
-           $6e86 = PointBalloonUpdate.isAlive
-           $6ea3 = PointBalloonUpdate.offScreen
-           $6ea8 = PointBalloonUpdate.popped
-           $6eb2 = PointBalloonUpdate.checkLoop
-           $6ecd = PointBalloonUpdate.end
-  SECTION: $6ed2-$7024 ($0153 bytes) ["porcupine"]
-           $6ed2 = InitializePorcupine
-           $6edb = InitializePorcupine.loop_u1
-           $6ee6 = GetStruct
-           $6efe = SetStruct
-           $6f15 = SpawnPorcupine
-           $6f28 = SpawnPorcupine.availableSpace
-           $6f32 = SpawnPorcupine.availableOAMSpace
-           $6f48 = SpawnPorcupine.topLeft
-           $6f60 = SpawnPorcupine.topMiddle
-           $6f70 = SpawnPorcupine.topMiddle2
-           $6f80 = SpawnPorcupine.topRight
-           $6f90 = SpawnPorcupine.bottomLeft
-           $6fa0 = SpawnPorcupine.bottomMiddle
-           $6fb2 = SpawnPorcupine.bottomMiddle2
-           $6fc4 = SpawnPorcupine.bottomRight
-           $6fd6 = SpawnPorcupine.setStruct
-           $6fdb = SpawnPorcupine.end
-           $6fe0 = PorcupineUpdate
-           $6fe7 = PorcupineUpdate.loop
-           $7003 = PorcupineUpdate.offScreen
-           $7003 = PorcupineUpdate.isAlive
-           $7005 = PorcupineUpdate.checkLoop
-           $7005 = PorcupineUpdate.isDead
-           $7020 = PorcupineUpdate.end
-  SECTION: $7025-$70d3 ($00af bytes) ["menu"]
-           $7025 = SpawnMenuCursor
-           $7044 = BlinkMenuCursor
-           $704c = BlinkMenuCursor.blink
-           $705c = BlinkMenuCursor.show
-           $7060 = BlinkMenuCursor.empty
-           $7064 = MoveCursor
-           $7074 = MoveCursor.classicMode
-           $7083 = MoveCursor.storyMode
-           $7092 = SelectMode
-           $7099 = SelectMode.classicMode
-           $70a2 = SelectMode.storyMode
-           $70a3 = MenuInput
-           $70ad = MenuInput.selectMode
-           $70ad = MenuInput.moveSelected
-           $70b6 = MenuInput.end
-           $70b7 = UpdateMenu
-           $70c5 = UpdateMenu.fadeOut
-           $70d0 = UpdateMenu.hasFadedOut
-  SECTION: $70d4-$717d ($00aa bytes) ["palettes"]
-           $70d4 = SetupPalettes
-           $70e5 = SetupParkPalettes
-           $70f4 = FadeOutPalettes
-           $70fc = FadeOutPalettes.fadeOut
-           $7110 = FadeOutPalettes.fade1
-           $7114 = FadeOutPalettes.fade2
-           $7118 = FadeOutPalettes.fade3
-           $711c = FadeOutPalettes.fade4
-           $711e = FadeOutPalettes.end
-           $712e = FadeInPalettes
-           $7136 = FadeInPalettes.fadeIn
-           $714a = FadeInPalettes.fade1
-           $714e = FadeInPalettes.fade2
-           $7152 = FadeInPalettes.fade3
-           $7156 = FadeInPalettes.fade4
-           $7158 = FadeInPalettes.end
-           $7168 = HasFadedOut
-           $716e = HasFadedOut.false
-           $7170 = HasFadedOut.true
-           $7173 = HasFadedIn
-           $7179 = HasFadedIn.false
-           $717b = HasFadedIn.true
-  SECTION: $717e-$721b ($009e bytes) ["sound"]
-           $717e = AUDIO_OFF
-           $7182 = AUDIO_ON
-           $7187 = PopSound
-           $719a = ExplosionSound
-           $71ad = FallingSound
-           $71c2 = StopFallingSound
-           $71c7 = CollectSound
-           $71dc = WrongAnswerSound
-           $71f3 = PercussionSound
-           $7200 = BassSound
-           $7211 = ClearSound
-  SECTION: $721c-$72a4 ($0089 bytes) ["memory"]
-           $721c = MEMCPY.memcpy_loop
-           $721c = MEMCPY
-           $7220 = MEMCPY.memcpy_check_limit
-           $7226 = ClearOAM
-           $722d = ClearOAM.loop_u1
-           $7236 = ClearRAM
-           $723d = ClearRAM.loop_u2
-           $7246 = RequestOAMSpace
-           $724f = RequestOAMSpace.loop
-           $7266 = RequestOAMSpace.availableSpace
-           $726b = RequestOAMSpace.sufficientSpace
-           $727b = RequestOAMSpace.isNotZero4
-           $727c = RequestOAMSpace.isNotZero3
-           $727d = RequestOAMSpace.isNotZero2
-           $727e = RequestOAMSpace.isNotZero1
-           $7280 = RequestOAMSpace.notEnoughSprites
-           $7288 = RequestOAMSpace.end
-           $728b = RequestRAMSpace
-           $728b = RequestRAMSpace.loop
-           $7290 = RequestRAMSpace.availableSpace
-           $7294 = RequestRAMSpace.checkLoop
-           $72a3 = RequestRAMSpace.noFreeSpace
-           $72a4 = RequestRAMSpace.end
-  SECTION: $72a5-$72f4 ($0050 bytes) ["menu tiles"]
-           $72a5 = MenuTiles
-           $72f5 = MenuTilesEnd
-  SECTION: $72f5-$733d ($0049 bytes) ["math"]
-           $72f5 = MODULO
-           $72f7 = MODULO.loop
-           $72fc = RANDOM
-           $7305 = DIVISION
-           $730b = DIVISION.loop
-           $7310 = DIVISION.end
-           $7313 = ToBCD
-           $732a = ToBCD.end
-           $732d = MULTIPLY
-           $7330 = MULTIPLY.loop
-           $733b = MULTIPLY.end
-  SECTION: $733e-$736f ($0032 bytes) ["lcd"]
-           $733e = LCD_OFF
-           $7345 = LCD_ON
-           $734c = LCD_ON_BG_ONLY
-           $7353 = WaitVBlank
-           $735a = WaitVBlank.loop
-           $7365 = SetupWindow
-  SECTION: $7370-$739c ($002d bytes) ["general initialization"]
-           $7370 = InitializeGameVars
-  SECTION: $739d-$73c1 ($0025 bytes) ["score"]
-           $739d = InitializeScore
-           $73a5 = AddPoints
-           $73b5 = AddPoints.carry
-           $73bf = AddPoints.end
-  SECTION: $73c2-$73c9 ($0008 bytes) ["timer"]
-           $73c2 = UpdateGlobalTimer
-    SLACK: $0c36 bytes
+           $6c98 = UpdateClassicCountdown
+           $6cb0 = UpdateClassic
+           $6ccf = UpdateClassic.end
+  SECTION: $6cd0-$6ece ($01ff bytes) ["point balloon"]
+           $6cd0 = InitializePointBalloon
+           $6cd9 = InitializePointBalloon.loop_u1
+           $6ce4 = GetStruct
+           $6d07 = SetStruct
+           $6d2a = SpawnPointBalloon
+           $6d3c = SpawnPointBalloon.availableSpace
+           $6d45 = SpawnPointBalloon.availableOAMSpace
+           $6d5b = SpawnPointBalloon.balloonLeft
+           $6d73 = SpawnPointBalloon.balloonRight
+           $6d83 = SpawnPointBalloon.setStruct
+           $6d88 = SpawnPointBalloon.end
+           $6d8d = PopBalloonAnimation
+           $6d9e = PopBalloonAnimation.canSwitchFrames
+           $6daa = PopBalloonAnimation.frame0
+           $6dcc = PopBalloonAnimation.frame1
+           $6dee = PopBalloonAnimation.clear
+           $6df2 = PopBalloonAnimation.endFrame
+           $6df6 = PopBalloonAnimation.end
+           $6df7 = Clear
+           $6e0f = Move
+           $6e16 = Move.balloonLeft
+           $6e2b = Move.balloonRight
+           $6e36 = DeathOfPointBalloon
+           $6e48 = CollisionPointBalloon
+           $6e60 = PointBalloonUpdate
+           $6e67 = PointBalloonUpdate.loop
+           $6e83 = PointBalloonUpdate.isAlive
+           $6ea0 = PointBalloonUpdate.offScreen
+           $6ea5 = PointBalloonUpdate.popped
+           $6eaf = PointBalloonUpdate.checkLoop
+           $6eca = PointBalloonUpdate.end
+  SECTION: $6ecf-$7021 ($0153 bytes) ["porcupine"]
+           $6ecf = InitializePorcupine
+           $6ed8 = InitializePorcupine.loop_u1
+           $6ee3 = GetStruct
+           $6efb = SetStruct
+           $6f12 = SpawnPorcupine
+           $6f25 = SpawnPorcupine.availableSpace
+           $6f2f = SpawnPorcupine.availableOAMSpace
+           $6f45 = SpawnPorcupine.topLeft
+           $6f5d = SpawnPorcupine.topMiddle
+           $6f6d = SpawnPorcupine.topMiddle2
+           $6f7d = SpawnPorcupine.topRight
+           $6f8d = SpawnPorcupine.bottomLeft
+           $6f9d = SpawnPorcupine.bottomMiddle
+           $6faf = SpawnPorcupine.bottomMiddle2
+           $6fc1 = SpawnPorcupine.bottomRight
+           $6fd3 = SpawnPorcupine.setStruct
+           $6fd8 = SpawnPorcupine.end
+           $6fdd = PorcupineUpdate
+           $6fe4 = PorcupineUpdate.loop
+           $7000 = PorcupineUpdate.offScreen
+           $7000 = PorcupineUpdate.isAlive
+           $7002 = PorcupineUpdate.checkLoop
+           $7002 = PorcupineUpdate.isDead
+           $701d = PorcupineUpdate.end
+  SECTION: $7022-$710d ($00ec bytes) ["menu"]
+           $7022 = InitializeMenu
+           $702b = SpawnMenuCursor
+           $7034 = SpawnMenuCursor.availableSpace
+           $704e = SpawnMenuCursor.end
+           $704f = BlinkMenuCursor
+           $7057 = BlinkMenuCursor.blink
+           $7067 = BlinkMenuCursor.show
+           $706b = BlinkMenuCursor.empty
+           $706f = MoveCursor
+           $7070 = SelectMode
+           $7077 = SelectMode.classicMode
+           $7080 = SelectMode.storyMode
+           $7081 = MenuInput
+           $708b = MenuInput.moveSelected
+           $7094 = MenuInput.selectMode
+           $709d = MenuInput.end
+           $709e = ScrollTitleUp
+           $70af = ScrollTitleUp.scrollUpTitle
+           $70ba = ScrollTitleUp.fadeOut
+           $70c6 = ScrollTitleUp.loadFullMenu
+           $70da = ScrollTitleUp.fadeIn
+           $70e6 = ScrollTitleUp.endFrame
+           $70ed = ScrollTitleUp.end
+           $70ee = UpdateMenu
+           $70ff = UpdateMenu.fadeOut
+           $710a = UpdateMenu.hasFadedOut
+  SECTION: $710e-$71b3 ($00a6 bytes) ["palettes"]
+           $710e = SetupPalettes
+           $711f = SetupParkPalettes
+           $712e = FadeOutPalettes
+           $7134 = FadeOutPalettes.fadeOut
+           $7148 = FadeOutPalettes.fade1
+           $714c = FadeOutPalettes.fade2
+           $7150 = FadeOutPalettes.fade3
+           $7154 = FadeOutPalettes.fade4
+           $7156 = FadeOutPalettes.end
+           $7166 = FadeInPalettes
+           $716c = FadeInPalettes.fadeIn
+           $7180 = FadeInPalettes.fade1
+           $7184 = FadeInPalettes.fade2
+           $7188 = FadeInPalettes.fade3
+           $718c = FadeInPalettes.fade4
+           $718e = FadeInPalettes.end
+           $719e = HasFadedOut
+           $71a4 = HasFadedOut.false
+           $71a6 = HasFadedOut.true
+           $71a9 = HasFadedIn
+           $71af = HasFadedIn.false
+           $71b1 = HasFadedIn.true
+  SECTION: $71b4-$7251 ($009e bytes) ["sound"]
+           $71b4 = AUDIO_OFF
+           $71b8 = AUDIO_ON
+           $71bd = PopSound
+           $71d0 = ExplosionSound
+           $71e3 = FallingSound
+           $71f8 = StopFallingSound
+           $71fd = CollectSound
+           $7212 = WrongAnswerSound
+           $7229 = PercussionSound
+           $7236 = BassSound
+           $7247 = ClearSound
+  SECTION: $7252-$72da ($0089 bytes) ["memory"]
+           $7252 = MEMCPY.memcpy_loop
+           $7252 = MEMCPY
+           $7256 = MEMCPY.memcpy_check_limit
+           $725c = ClearOAM
+           $7263 = ClearOAM.loop_u1
+           $726c = ClearRAM
+           $7273 = ClearRAM.loop_u2
+           $727c = RequestOAMSpace
+           $7285 = RequestOAMSpace.loop
+           $729c = RequestOAMSpace.availableSpace
+           $72a1 = RequestOAMSpace.sufficientSpace
+           $72b1 = RequestOAMSpace.isNotZero4
+           $72b2 = RequestOAMSpace.isNotZero3
+           $72b3 = RequestOAMSpace.isNotZero2
+           $72b4 = RequestOAMSpace.isNotZero1
+           $72b6 = RequestOAMSpace.notEnoughSprites
+           $72be = RequestOAMSpace.end
+           $72c1 = RequestRAMSpace
+           $72c1 = RequestRAMSpace.loop
+           $72c6 = RequestRAMSpace.availableSpace
+           $72ca = RequestRAMSpace.checkLoop
+           $72d9 = RequestRAMSpace.noFreeSpace
+           $72da = RequestRAMSpace.end
+  SECTION: $72db-$732a ($0050 bytes) ["menu tiles"]
+           $72db = MenuTiles
+           $732b = MenuTilesEnd
+  SECTION: $732b-$7373 ($0049 bytes) ["math"]
+           $732b = MODULO
+           $732d = MODULO.loop
+           $7332 = RANDOM
+           $733b = DIVISION
+           $7341 = DIVISION.loop
+           $7346 = DIVISION.end
+           $7349 = ToBCD
+           $7360 = ToBCD.end
+           $7363 = MULTIPLY
+           $7366 = MULTIPLY.loop
+           $7371 = MULTIPLY.end
+  SECTION: $7374-$73ac ($0039 bytes) ["lcd"]
+           $7374 = LCD_OFF
+           $737b = LCD_ON
+           $7382 = LCD_ON_NO_WINDOW
+           $7389 = LCD_ON_NO_WINDOW_NO_SPRITE
+           $7390 = WaitVBlank
+           $7397 = WaitVBlank.loop
+           $73a2 = SetupWindow
+  SECTION: $73ad-$73d9 ($002d bytes) ["general initialization"]
+           $73ad = InitializeGameVars
+  SECTION: $73da-$73fe ($0025 bytes) ["score"]
+           $73da = InitializeScore
+           $73e2 = AddPoints
+           $73f2 = AddPoints.carry
+           $73fc = AddPoints.end
+  SECTION: $73ff-$7406 ($0008 bytes) ["timer"]
+           $73ff = UpdateGlobalTimer
+    SLACK: $0bf9 bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c017 ($0018 bytes) ["general RAM vars"]
@@ -1045,13 +1060,15 @@ WRAM0 bank #0:
            $c0e1 = wWorld
            $c0e2 = wLevel
            $c0e3 = wWave
+  SECTION: $c0e4-$c0e4 ($0001 byte) ["menu vars"]
+           $c0e4 = wMenuFrame
   SECTION: $c100-$c19f ($00a0 bytes) ["OAM vars"]
            $c100 = wPlayerCactusOAM
            $c108 = wPlayerBalloonOAM
            $c110 = OAMVars
            $c110 = wOAM
            $c1a0 = OAMVarsEnd
-    SLACK: $0e7c bytes
+    SLACK: $0e7b bytes
 
 HRAM bank #0:
   SECTION: $ff80-$ff87 ($0008 bytes) ["OAM DMA"]
@@ -1059,7 +1076,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $1a90 bytes in 1 bank
-    ROMX: $33ca bytes in 1 bank
-    WRAM0: $0184 bytes in 1 bank
+    ROM0: $1abd bytes in 1 bank
+    ROMX: $3407 bytes in 1 bank
+    WRAM0: $0185 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

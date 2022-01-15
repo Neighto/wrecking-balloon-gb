@@ -16,13 +16,17 @@ CactusTiles::
     INCBIN "incbin/sprite/Bird3.2bpp"
 CactusTilesEnd::
 
+PorcupineTiles::
+    INCBIN "incbin/sprite/porcu.2bpp"
+PorcupineTilesEnd::
+
 PropellerCactusTiles::
     ; INCBIN "incbin/sprite/PropellerCactus.2bpp"
-    INCBIN "incbin/sprite/porcu.2bpp"
 PropellerCactusTilesEnd::
 
 BackgroundTiles::
     INCBIN "incbin/background/Classic_Map.2bpp"
+    ; INCBIN "incbin/background/Sunset.2bpp"
     INCBIN "incbin/background/World2.2bpp"
 BackgroundTilesEnd::
 

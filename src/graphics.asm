@@ -38,9 +38,9 @@ LoadClassicGameData::
 	ld de, CountdownTilesEnd - CountdownTiles
 	call MEMCPY
 	; Copy the boss tiles
-	ld bc, PropellerCactusTiles
+	ld bc, PorcupineTiles
 	ld hl, _VRAM8800+$500
-	ld de, PropellerCactusTilesEnd - PropellerCactusTiles
+	ld de, PorcupineTilesEnd - PorcupineTiles
 	call MEMCPY
 	; Copy the window tiles
 	ld bc, WindowTiles
@@ -74,10 +74,19 @@ LoadMenuData::
 	ld hl, _VRAM8800
 	ld de, MenuTilesEnd - MenuTiles
 	call MEMCPY
-	ld bc, MenuMap
-	ld hl, _SCRN0
-	ld de, MenuMapEnd - MenuMap
+	; ld bc, MenuMap
+	; ld hl, _SCRN0
+	; ld de, MenuMapEnd - MenuMap
+	; call MEMCPY
+	ld bc, MenuMap+$80
+	ld hl, _SCRN0+$80
+	ld de, $A0
 	call MEMCPY
+
+	;; test clearing all but title
+	; RESET_IN_RANGE _SCRN0, $80
+	; RESET_IN_RANGE _SCRN0+$80+$A0, $80
+
 	pop de
 	pop bc
 	pop hl
