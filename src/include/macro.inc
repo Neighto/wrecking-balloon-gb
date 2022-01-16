@@ -35,6 +35,25 @@ MACRO RESET_IN_RANGE
     pop af
 ENDM
 
+; Use with caution: Overwrites hl and bc, and d
+MACRO SET_IN_RANGE
+    ; argument 1 is starting address
+    ; argument 2 is distance
+    ; argument 3 is value
+    ld hl, \1
+    ld bc, \2
+    ld d, \3
+    push af
+.loop\@:
+    ld a, d
+    ld [hli], a
+    dec bc
+    ld a, b
+    or c
+    jr nz, .loop\@
+    pop af
+ENDM
+
 MACRO LD_BC_HL
     ld b, h
     ld c, l
