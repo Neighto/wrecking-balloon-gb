@@ -71,8 +71,12 @@ LoadMenuData::
 	ld de, MenuTitleTilesEnd - MenuTitleTiles
 	call MEMCPY
 	ld bc, MenuTiles
-	ld hl, _VRAM8800
+	ld hl, _VRAM8000
 	ld de, MenuTilesEnd - MenuTiles
+	call MEMCPY
+	ld bc, CactusTiles
+	ld hl, _VRAM8800
+	ld de, CactusTilesEnd - CactusTiles
 	call MEMCPY
 	; ld bc, MenuMap
 	; ld hl, _SCRN0
@@ -82,11 +86,6 @@ LoadMenuData::
 	ld hl, _SCRN0+$80
 	ld de, $A0
 	call MEMCPY
-
-	;; test clearing all but title
-	; RESET_IN_RANGE _SCRN0, $80
-	; RESET_IN_RANGE _SCRN0+$80+$A0, $80
-
 	pop de
 	pop bc
 	pop hl

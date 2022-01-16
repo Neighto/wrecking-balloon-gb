@@ -12,7 +12,7 @@ SECTION "menu", ROMX
 InitializeMenu::
 	xor a ; ld a, 0
 	ld [wMenuFrame], a
-	ld a, 120
+	ld a, 140
 	ld [rSCY], a
 	ret
 
@@ -29,7 +29,7 @@ SpawnMenuCursor::
 	ld [hli], a
 	ld a, 56 ; x
 	ld [hli], a
-	ld [hl], $80
+	ld [hl], $00
 	inc l
 	ld [hl], %00000000
 .end:
@@ -48,7 +48,7 @@ BlinkMenuCursor::
 	cp a, $00
 	jr nz, .empty
 .show:
-	ld a, $80
+	ld a, $02
 	ld [hl], a
 	ret
 .empty:
@@ -106,29 +106,63 @@ MenuInput:
 .end:
 	ret
 
-ScrollTitleUp:
+UpdateMenuOpening::
 	ld a, [wMenuFrame]
 	cp a, 0
-	jr z, .scrollUpTitle
+	jr z, .startSound
 	cp a, 1
-	jr z, .fadeOut
+	jr z, .scrollUpTitle
 	cp a, 2
+	jr z, .endSound
+	cp a, 3
+	jr z, .scrollDownTitle
+	cp a, 4
+	jr z, .scrollUpTitle2
+	cp a, 5
+	jr z, .fadeOut
+	cp a, 6
 	jr z, .fadeIn
-	jr .end
+	ret
+.startSound:
+	call RisingSound
+	jr .endFrame
 .scrollUpTitle:
 	ld a, [rSCY]
 	cp a, 0
 	jr z, .endFrame
-	call VerticalScroll
-	jr .end
+	ldh a, [rSCY]
+    inc a
+    ldh [rSCY], a
+	ret
+.endSound:
+	call StopSweepSound
+	jr .endFrame
+.scrollDownTitle:
+	ld a, [rSCY]
+	cp a, 252
+	jr z, .endFrame
+	ldh a, [rSCY]
+	dec a
+    ldh [rSCY], a
+	ret
+.scrollUpTitle2:
+	ld a, [rSCY]
+	cp a, 0
+	jr z, .endFrame
+	ldh a, [rSCY]
+    inc a
+    ldh [rSCY], a
+	ret
 .fadeOut:
 	call HasFadedOut
 	cp a, 0
 	jr nz, .loadFullMenu
 	call FadeOutPalettes
-	jr .end
+	ret
 .loadFullMenu:
+	call WaveSound
 	call LCD_OFF
+	call SpawnMenuCursor
 	ld bc, MenuMap
 	ld hl, _SCRN0
 	ld de, MenuMapEnd - MenuMap
@@ -138,9 +172,9 @@ ScrollTitleUp:
 .fadeIn:
 	call HasFadedIn
 	cp a, 0
-	jr nz, .endFrame
+	jp nz, MenuLoop
 	call FadeInPalettes
-	jr .end
+	ret
 .endFrame:
 	ld a, [wMenuFrame]
 	inc a 
@@ -154,7 +188,6 @@ UpdateMenu::
 	cp a, STAGE_CLASSIC_SELECTED
 	jr z, .fadeOut
 	call MenuInput
-	call ScrollTitleUp
 	ret
 .fadeOut:
 	call HasFadedOut

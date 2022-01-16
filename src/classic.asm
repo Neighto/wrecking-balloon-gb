@@ -276,7 +276,7 @@ UpdateSprites:
     call BalloonCactusUpdate
     call BombUpdate
     call BirdUpdate
-    ; call PorcupineUpdate
+    call PorcupineUpdate
     ret
 
 UpdateClassicCountdown::

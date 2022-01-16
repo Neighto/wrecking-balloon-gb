@@ -46,3 +46,14 @@ WindowTiles::
     INCBIN "incbin/window/Window.2bpp"
     INCBIN "incbin/window/WindowNumbers.2bpp"
 WindowTilesEnd::
+
+MenuTiles::
+    DB $BD,$3C,$7E,$42,$FF,$A5,$FF,$99
+    DB $7E,$42,$FF,$FF,$FF,$FF,$7E,$7E
+    DB $00,$00,$00,$00,$00,$00,$00,$00
+    DB $00,$00,$00,$00,$00,$00,$00,$00
+MenuTilesEnd::
+
+MenuTitleTiles::
+    INCBIN "incbin/background/WB.2bpp"
+MenuTitleTilesEnd::
