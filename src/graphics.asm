@@ -66,18 +66,22 @@ LoadMenuData::
 	push hl
 	push bc
 	push de
-	ld bc, MenuTitleTiles
-	ld hl, _VRAM9000
-	ld de, MenuTitleTilesEnd - MenuTitleTiles
-	call MEMCPY
 	ld bc, MenuTiles
 	ld hl, _VRAM8000
 	ld de, MenuTilesEnd - MenuTiles
 	call MEMCPY
-	ld bc, CactusTiles
-	ld hl, _VRAM8800
-	ld de, CactusTilesEnd - CactusTiles
+	ld bc, MenuTitleTiles
+	ld hl, _VRAM9000
+	ld de, _SCRN0 - _VRAM9000;MenuTitleTilesEnd - MenuTitleTiles
 	call MEMCPY
+	ld bc, MenuTitleTiles + (_SCRN0 - _VRAM9000)
+	ld hl, _VRAM8800
+	ld de, $8FF0 - $8800;MenuTitleTilesEnd - MenuTitleTiles
+	call MEMCPY
+
+	; Load Empty
+	SET_IN_RANGE _SCRN0, _SCRN1 - _SCRN0, $0E ; Set whole screen to empty tile
+
 	; ld bc, MenuMap
 	; ld hl, _SCRN0
 	; ld de, MenuMapEnd - MenuMap
