@@ -180,7 +180,7 @@ SpawnPlayer:
   
   ld a, INVINCIBLE_RESPAWN_TIME
   ld [wPlayerInvincible], a
-  call StopFallingSound
+  call StopSweepSound
   ret
 
 MoveCactusDriftLeft:
@@ -537,7 +537,8 @@ CactusFalling:
   ret
 
 NoMoreLives:
-  call StopFallingSound
+  call ClearSound
+  call StopSweepSound
   ; Back to menu
   call Start ; change this so it leads to intermediate screen to say GAME OVER, maybe play small jingle + start to continue
   ret

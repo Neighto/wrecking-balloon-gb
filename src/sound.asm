@@ -38,10 +38,18 @@ ExplosionSound::
   ; Counter/consecutive initial
   ld a, %10000000
   ld [rNR44], a
-  ; Master volume
-  ld a, %11111111
-  ld [rNR50],a
-  ld [rNR51],a
+  ret
+
+WaveSound::
+  ; Volume envelope
+  ld a, %10110111
+  ld [rNR42], a
+  ; Polynomial counter
+  ld a, %01110000
+  ld [rNR43], a
+  ; Counter/consecutive initial
+  ld a, %10000000
+  ld [rNR44], a
   ret
 
 FallingSound::
@@ -62,7 +70,25 @@ FallingSound::
   ld [rNR14], a
   ret
 
-StopFallingSound::
+RisingSound::
+  ; Sweep register
+  ld a, %01110111
+  ld [rNR10], a
+  ; Sound length / wave pattern duty
+  ld a, %11000000
+  ld [rNR11], a
+  ; Volume envelope
+  ld a, %11111000
+  ld [rNR12], a
+  ; Frequency lo
+  ld a,%10111111
+  ld [rNR13], a
+  ; Frequency hi
+  ld a,%10001100
+  ld [rNR14], a
+  ret
+
+StopSweepSound::
   ld a, %00000000
   ld [rNR12], a
   ret
