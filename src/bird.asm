@@ -10,6 +10,8 @@ BIRD_OAM_BYTES EQU BIRD_OAM_SPRITES * 4
 BIRD_MOVE_TIME EQU %00000011
 BIRD_COLLISION_TIME EQU %00001000
 
+BIRD_SOARING_TIME EQU %00000111
+BIRD_FLAPPING_TIME EQU %00111111
 BIRD_SPRITE_DESCENDING_TIME EQU %00001111
 BIRD_FALLING_WAIT_TIME EQU %00000001
 BIRD_HORIZONTAL_SPEED EQU 2
@@ -175,47 +177,60 @@ SpawnBird::
     pop af
     ret
 
-BirdAnimate:
+BirdRightsideFlap:
     ld a, [wEnemyPoppingFrame]
     cp a, 0
-    jr nz, .frame1
-.frame0:
+    jr nz, .flapping
+.soaring:
     ld a, [global_timer]
-    and 7 ; bird_flapping_speed
-    jp nz, .end
+    and BIRD_SOARING_TIME
+    ret nz
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
     ld [hl], $98
-    ld a, [wEnemyRightside]
-    cp a, 0
-    jr nz, .frame0FacingLeft
-    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
-    jr .frame0FacingEnd
-.frame0FacingLeft:
     SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
-.frame0FacingEnd:
     ld [hl], $9A
     ld hl, wEnemyPoppingFrame
     ld [hl], 1
-    jr .end
-.frame1:
+    ret
+.flapping:
     ld a, [global_timer]
-    and %00111111 ; bird_flapping_speed
-    jp nz, .end
+    and BIRD_FLAPPING_TIME
+    ret nz
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
     ld [hl], $94
-    ld a, [wEnemyRightside]
-    cp a, 0
-    jr nz, .frame1FacingLeft
-    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
-    jr .frame1FacingEnd
-.frame1FacingLeft:
     SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
-.frame1FacingEnd:
     ld [hl], $96
     ld hl, wEnemyPoppingFrame
     ld [hl], 0
     DECREMENT_POS wEnemyY, BIRD_FLAP_UP_SPEED
-.end:
+    ret
+
+BirdLeftsideFlap:
+    ld a, [wEnemyPoppingFrame]
+    cp a, 0
+    jr nz, .flapping
+.soaring:
+    ld a, [global_timer]
+    and BIRD_SOARING_TIME
+    ret nz
+    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
+    ld [hl], $98
+    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
+    ld [hl], $9A
+    ld hl, wEnemyPoppingFrame
+    ld [hl], 1
+    ret
+.flapping:
+    ld a, [global_timer]
+    and BIRD_FLAPPING_TIME
+    ret nz
+    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
+    ld [hl], $94
+    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
+    ld [hl], $96
+    ld hl, wEnemyPoppingFrame
+    ld [hl], 0
+    DECREMENT_POS wEnemyY, BIRD_FLAP_UP_SPEED
     ret
 
 Clear:
@@ -267,16 +282,17 @@ Move:
     jr z, .isLeftside
 .isRightside:
     DECREMENT_POS wEnemyX, BIRD_HORIZONTAL_SPEED
+    call BirdRightsideFlap
     jr .moveDown
 .isLeftside:
     INCREMENT_POS wEnemyX, BIRD_HORIZONTAL_SPEED
+    call BirdLeftsideFlap
 .moveDown:
     ld a, [global_timer]
     and BIRD_SPRITE_DESCENDING_TIME
     jr nz, .moveEnd
     INCREMENT_POS wEnemyY, BIRD_VERTICAL_SPEED
 .moveEnd:
-    call BirdAnimate
     call UpdateBirdPosition
     ret
 
