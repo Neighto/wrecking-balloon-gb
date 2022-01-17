@@ -247,7 +247,7 @@ PointBalloonUpdate::
     cp a, 0
     jr z, .popped
 .isAlive:
-    ; Check if we can move and collide
+    ; Check if we can move
     ld a, [global_timer]
     and	POINT_BALLOON_MOVE_TIME
     call z, Move

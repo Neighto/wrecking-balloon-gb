@@ -6,8 +6,11 @@ INCLUDE "macro.inc"
 BOMB_STRUCT_SIZE EQU 8
 BOMB_STRUCT_AMOUNT EQU 2
 BOMB_DATA_SIZE EQU BOMB_STRUCT_SIZE * BOMB_STRUCT_AMOUNT
-BOMB_SPRITE_MOVE_TIME EQU %00000001
 BOMB_DEFAULT_SPEED EQU 1
+BOMB_OAM_SPRITES EQU 3
+BOMB_OAM_BYTES EQU BOMB_OAM_SPRITES * 4
+BOMB_SPRITE_MOVE_TIME EQU %00000001
+BOMB_COLLISION_TIME EQU %00001000
 
 SECTION "bomb vars", WRAM0
     bomb:: DS BOMB_DATA_SIZE
@@ -72,34 +75,30 @@ SpawnBomb::
     push af
     push hl
     push de
+    push bc
     ld hl, bomb
     ld d, BOMB_STRUCT_AMOUNT
     ld e, BOMB_STRUCT_SIZE
-    call RequestRAMSpace ; Returns HL
-    LD_DE_HL
+    call RequestRAMSpace ; hl now contains free RAM space address
     cp a, 0
     jr z, .end
 .availableSpace:
-    call InitializeEnemyStructVars
-    call SetStruct
-    LD_HL_BC ; Arguments now in HL
-    ld b, 3
-	call RequestOAMSpace
+    ld b, BOMB_OAM_SPRITES
+	call RequestOAMSpace ; b now contains OAM address
     cp a, 0
     jr z, .end
 .availableOAMSpace:
+    LD_DE_HL
+    call InitializeEnemyStructVars
+    call SetStruct
     ld a, b
     ld [wEnemyOAM], a
+    LD_BC_DE
     ld a, 1
     ld [wEnemyActive], a
     ld [wEnemyAlive], a
-    ld a, h
-    ld [wEnemyY], a
-    ld a, l
-    ld [wEnemyX], a
 .balloonLeft:
-    ; Balloon left
-    SET_HL_TO_ADDRESS_WITH_BC wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     ld a, [wEnemyY]
     ld [hli], a
     ld a, [wEnemyX]
@@ -107,9 +106,8 @@ SpawnBomb::
     ld a, $9C
     ld [hl], a
     inc l
-    ld [hl], %00000000
+    ld [hl], OAMF_PAL0
 .balloonRight:
-    ; Balloon right
     inc l
     ld a, [wEnemyY]
     ld [hli], a
@@ -119,9 +117,8 @@ SpawnBomb::
     ld a, $9C
     ld [hl], a
     inc l
-    ld [hl], OAMF_XFLIP
+    ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .bombSpace:
-    ; Keep out of sight
     inc l
     ld a, 1
     ld [hli], a
@@ -129,11 +126,12 @@ SpawnBomb::
     ld a, $00
     ld [hl], a
     inc l
-    ld [hl], %00000000
+    ld [hl], OAMF_PAL0
 .setStruct:
-    LD_HL_DE
+    LD_HL_BC
     call SetStruct
 .end:
+    pop bc
     pop de
     pop hl
     pop af
@@ -160,22 +158,9 @@ Clear:
 UpdateBombPosition:
     push hl
     push af
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ; Update Y
-    ld a, [wEnemyY]
-    ld [hli], a
-    ; Update X
-    ld a, [wEnemyX]
-    ld [hl], a
+
   
-    SET_HL_TO_ADDRESS wOAM+4, wEnemyOAM
-    ; Update Y
-    ld a, [wEnemyY]
-    ld [hli], a
-    ; Update X
-    ld a, [wEnemyX]
-    add 8
-    ld [hl], a
+
 
     SET_HL_TO_ADDRESS wOAM+8, wEnemyOAM
     ; Update Y
@@ -190,12 +175,34 @@ UpdateBombPosition:
     ret
 
 Move:
+    ; Move up
     ld hl, wEnemyY
     ld a, BOMB_DEFAULT_SPEED
     cpl
     add [hl]
     ld [hl], a
-    call UpdateBombPosition
+.balloonLeft:
+    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    ld [hli], a
+    inc l
+    inc l
+.balloonRight:
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    add 8
+    ld [hli], a
+    inc l
+    inc l
+.bombSpace:
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    add 16
+    ld [hl], a
     ret
 
 DeathOfBomb::
@@ -210,35 +217,25 @@ DeathOfBomb::
     ret
 
 CollisionBomb::
-    push bc
-    push hl
-    push af
+    ld bc, wPlayerCactusOAM
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    LD_BC_HL
-    ld hl, wPlayerCactusOAM
     xor a ; ld a, 0
     call CollisionCheck
     cp a, 0
     call nz, CollisionWithPlayer
     call nz, DeathOfBomb
-    pop af
-    pop hl
-    pop bc
     ret
 
 ExplosionAnimation:
-    ; Check what frame we are on
     ld a, [wEnemyPoppingFrame]
     cp a, 0
     jr z, .frame0
-
     ld a, [wEnemyPoppingTimer]
 	inc	a
 	ld [wEnemyPoppingTimer], a
     and POPPING_BALLOON_ANIMATION_SPEED
-    jp nz, .end
-    ; Can do next frame
-    ; Check what frame we are on
+    ret nz
+.canSwitchFrames:
     ld a, [wEnemyPoppingFrame]
     cp a, 1
     jp z, .frame1
@@ -249,7 +246,6 @@ ExplosionAnimation:
     cp a, 4
     jp z, .clear
     ret
-
 .frame0:
     ; Popped left - frame 0
     SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
@@ -260,40 +256,32 @@ ExplosionAnimation:
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
     ld [hl], $88
     inc l
-    ld [hl], OAMF_XFLIP
-    ld hl, wEnemyPoppingFrame
-    ld [hl], 1
-    ret
+    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+    jp .endFrame
 .frame1:
     ; Explosion left
     SET_HL_TO_ADDRESS wOAM+1, wEnemyOAM
     ld a, [wEnemyX]
     sub 4
-    ld [hl], a
-    inc l
+    ld [hli], a
     ld a, $9E
     ld [hl], a
     ; Explosion middle
     SET_HL_TO_ADDRESS wOAM+5, wEnemyOAM
     ld a, [wEnemyX]
     add 4
-    ld [hl], a
-    inc l
+    ld [hli], a
     ld a, $A0
     ld [hl], a
     ; Explosion right
     SET_HL_TO_ADDRESS wOAM+9, wEnemyOAM
     ld a, [wEnemyX]
     add 12
-    ld [hl], a
-    inc l
+    ld [hli], a
     ld a, $9E
-    ld [hl], a
-    inc l
-    ld [hl], OAMF_XFLIP
-    ld hl, wEnemyPoppingFrame
-    ld [hl], 2
-    ret
+    ld [hli], a
+    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+    jr .endFrame
 .frame2:
     ; Flip palette
     SET_HL_TO_ADDRESS wOAM+3, wEnemyOAM
@@ -302,9 +290,7 @@ ExplosionAnimation:
     ld [hl], OAMF_PAL1
     SET_HL_TO_ADDRESS wOAM+11, wEnemyOAM
     ld [hl], OAMF_PAL1 | OAMF_XFLIP
-    ld hl, wEnemyPoppingFrame
-    ld [hl], 3
-    ret
+    jr .endFrame
 .frame3:
     ; Flip palette
     SET_HL_TO_ADDRESS wOAM+3, wEnemyOAM
@@ -313,19 +299,18 @@ ExplosionAnimation:
     ld [hl], OAMF_PAL0
     SET_HL_TO_ADDRESS wOAM+11, wEnemyOAM
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
-    ld hl, wEnemyPoppingFrame
-    ld [hl], 4
-    ret
+    jr .endFrame
 .clear:
     call Clear
+    ret 
+.endFrame:
+    ld a, [wEnemyPoppingFrame]
+    inc a 
+    ld [wEnemyPoppingFrame], a
 .end:
     ret
 
 BombUpdate::
-    push bc
-    push de
-    push hl
-    push af
     ld bc, BOMB_STRUCT_AMOUNT
     xor a ; ld a, 0
     ld [wEnemyOffset], a
@@ -345,11 +330,13 @@ BombUpdate::
     ; Check if we can move and collide
     ld a, [global_timer]
     and	BOMB_SPRITE_MOVE_TIME
-    jr nz, .checkLoop
-    call Move
-    call CollisionBomb
-    ; Check offscreen
+    call z, Move
+    ; Check if we can collide
+    ld a, [global_timer]
+    and	BOMB_COLLISION_TIME
     push bc
+    call z, CollisionBomb
+    ; Check offscreen
     ld a, [wEnemyY]
     ld b, a
     call OffScreenYEnemies
@@ -378,8 +365,4 @@ BombUpdate::
 .end:
     xor a ; ld a, 0
     ld [wEnemyOffset], a
-    pop af
-    pop hl
-    pop de
-    pop bc
     ret
