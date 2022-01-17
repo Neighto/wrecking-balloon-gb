@@ -9,7 +9,7 @@ BOMB_DATA_SIZE EQU BOMB_STRUCT_SIZE * BOMB_STRUCT_AMOUNT
 BOMB_DEFAULT_SPEED EQU 1
 BOMB_OAM_SPRITES EQU 3
 BOMB_OAM_BYTES EQU BOMB_OAM_SPRITES * 4
-BOMB_SPRITE_MOVE_TIME EQU %00000001
+BOMB_MOVE_TIME EQU %00000001
 BOMB_COLLISION_TIME EQU %00001000
 
 SECTION "bomb vars", WRAM0
@@ -153,25 +153,6 @@ Clear:
     ld [hli], a
     ld [hl], a
     call InitializeEnemyStructVars
-    ret
-
-UpdateBombPosition:
-    push hl
-    push af
-
-  
-
-
-    SET_HL_TO_ADDRESS wOAM+8, wEnemyOAM
-    ; Update Y
-    ld a, [wEnemyY]
-    ld [hli], a
-    ; Update X
-    ld a, [wEnemyX]
-    add 16
-    ld [hl], a
-    pop af
-    pop hl
     ret
 
 Move:
@@ -329,7 +310,7 @@ BombUpdate::
 .isAlive:
     ; Check if we can move and collide
     ld a, [global_timer]
-    and	BOMB_SPRITE_MOVE_TIME
+    and	BOMB_MOVE_TIME
     call z, Move
     ; Check if we can collide
     ld a, [global_timer]

@@ -5,14 +5,16 @@ INCLUDE "macro.inc"
 BIRD_STRUCT_SIZE EQU 8
 BIRD_STRUCT_AMOUNT EQU 2
 BIRD_DATA_SIZE EQU BIRD_STRUCT_SIZE * BIRD_STRUCT_AMOUNT
+BIRD_OAM_SPRITES EQU 3
+BIRD_OAM_BYTES EQU BIRD_OAM_SPRITES * 4
+BIRD_MOVE_TIME EQU %00000011
+BIRD_COLLISION_TIME EQU %00001000
 
-BIRD_SPRITE_MOVE_WAIT_TIME EQU %00000011
 BIRD_SPRITE_DESCENDING_TIME EQU %00001111
 BIRD_FALLING_WAIT_TIME EQU %00000001
 BIRD_HORIZONTAL_SPEED EQU 2
 BIRD_VERTICAL_SPEED EQU 1
 BIRD_FLAP_UP_SPEED EQU 5
-BIRD_RESPAWN_TIME EQU 80
 
 SECTION "bird vars", WRAM0
     bird:: DS BIRD_DATA_SIZE
@@ -72,51 +74,47 @@ SetStruct:
     ret
 
 SpawnBird::
-    ; Argument b = Y spawn
-    ; Argument c = X spawn
     push af
     push hl
     push de
+    push bc
     ld hl, bird
     ld d, BIRD_STRUCT_AMOUNT
     ld e, BIRD_STRUCT_SIZE
-    call RequestRAMSpace ; Returns HL
-    LD_DE_HL
+    call RequestRAMSpace ; hl now contains free RAM space address
     cp a, 0
     jp z, .end
 .availableSpace:
-    call InitializeEnemyStructVars
-    call SetStruct
-    LD_HL_BC ; Arguments now in HL
-    ld b, 3
-	call RequestOAMSpace
+    ld b, BIRD_OAM_BYTES
+	call RequestOAMSpace ; b now contains OAM address
     cp a, 0
     jp z, .end
 .availableOAMSpace:
+    LD_DE_HL
+    call InitializeEnemyStructVars
+    call SetStruct
     ld a, b
     ld [wEnemyOAM], a
+    LD_BC_DE
     ld a, 1
     ld [wEnemyActive], a
     ld [wEnemyAlive], a
-    ld a, h
-    ld [wEnemyY], a
-    ld a, l
-    ld [wEnemyX], a
+    ld a, [wEnemyX]
     cp a, SCRN_X / 2
     jr c, .isLeftside
 .isRightside:
     ld a, 1
-    ld [wEnemyRightside], a ; TODO needs to influence direction
-    ; Bird left
-    SET_HL_TO_ADDRESS_WITH_BC wOAM, wEnemyOAM
+    ld [wEnemyRightside], a
+.birdLeft:
+    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     ld a, [wEnemyY]
     ld [hli], a
     ld a, [wEnemyX]
     ld [hli], a
     ld [hl], $92
     inc l
-    ld [hl], %00000000
-    ; Bird middle
+    ld [hl], OAMF_PAL0
+.birdMiddle:
     inc l
     ld a, [wEnemyY]
     ld [hli], a
@@ -125,8 +123,8 @@ SpawnBird::
     ld [hli], a
     ld [hl], $98
     inc l
-    ld [hl], %00000000
-    ; Bird right
+    ld [hl], OAMF_PAL0
+.birdRight:
     inc l
     ld a, [wEnemyY]
     ld [hli], a
@@ -135,19 +133,19 @@ SpawnBird::
     ld [hli], a
     ld [hl], $9A
     inc l
-    ld [hl], %00000000
+    ld [hl], OAMF_PAL0
     jr .setStruct
 .isLeftside:
-    ; Bird left
-    SET_HL_TO_ADDRESS_WITH_BC wOAM, wEnemyOAM
+.leftBirdLeft:
+    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     ld a, [wEnemyY]
     ld [hli], a
     ld a, [wEnemyX]
     ld [hli], a
     ld [hl], $9A
     inc l
-    ld [hl], OAMF_XFLIP
-    ; Bird middle
+    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+.leftBirdMiddle:
     inc l
     ld a, [wEnemyY]
     ld [hli], a
@@ -156,8 +154,8 @@ SpawnBird::
     ld [hli], a
     ld [hl], $98
     inc l
-    ld [hl], OAMF_XFLIP
-    ; Bird right
+    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+.leftBirdRight:
     inc l
     ld a, [wEnemyY]
     ld [hli], a
@@ -166,19 +164,18 @@ SpawnBird::
     ld [hli], a
     ld [hl], $92
     inc l
-    ld [hl], OAMF_XFLIP
+    ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .setStruct:
-    LD_HL_DE
+    LD_HL_BC
     call SetStruct
 .end:
+    pop bc
     pop de
     pop hl
     pop af
     ret
 
 BirdAnimate:
-    push hl
-    push af
     ld a, [wEnemyPoppingFrame]
     cp a, 0
     jr nz, .frame1
@@ -219,8 +216,6 @@ BirdAnimate:
     ld [hl], 0
     DECREMENT_POS wEnemyY, BIRD_FLAP_UP_SPEED
 .end:
-    pop af
-    pop hl
     ret
 
 Clear:
@@ -242,47 +237,38 @@ Clear:
     ret
 
 UpdateBirdPosition:
-    push hl
-    push af
+.birdLeft:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ; Update Y
     ld a, [wEnemyY]
     ld [hli], a
-    ; Update X
     ld a, [wEnemyX]
-    ld [hl], a
-  
-    SET_HL_TO_ADDRESS wOAM+4, wEnemyOAM
-    ; Update Y
+    ld [hli], a
+    inc l
+    inc l
+.birdMiddle:
     ld a, [wEnemyY]
     ld [hli], a
-    ; Update X
     ld a, [wEnemyX]
     add 8
-    ld [hl], a
-
-    SET_HL_TO_ADDRESS wOAM+8, wEnemyOAM
-    ; Update Y
+    ld [hli], a
+    inc l
+    inc l
+.birdRight:
     ld a, [wEnemyY]
     ld [hli], a
-    ; Update X
     ld a, [wEnemyX]
     add 16
     ld [hl], a
-    pop af
-    pop hl
     ret
 
 Move:
-    push hl
-    push af
     ld a, [wEnemyRightside]
     cp a, 0
-    jr z, .moveRight
-.moveLeft:
+    jr z, .isLeftside
+.isRightside:
     DECREMENT_POS wEnemyX, BIRD_HORIZONTAL_SPEED
     jr .moveDown
-.moveRight:
+.isLeftside:
     INCREMENT_POS wEnemyX, BIRD_HORIZONTAL_SPEED
 .moveDown:
     ld a, [global_timer]
@@ -292,9 +278,6 @@ Move:
 .moveEnd:
     call BirdAnimate
     call UpdateBirdPosition
-.end:
-    pop af
-    pop hl
     ret
 
 BirdFall:
@@ -350,30 +333,19 @@ DeathOfBird::
     ret
 
 CollisionBird:
-    push bc
-    push hl
-    push af
 .checkHitPlayer
     ld a, [wPlayerAlive]
     cp a, 0
-    jr z, .end
+    ret z
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM+4, wEnemyOAM
     ld a, 1
     call CollisionCheck
     cp a, 0
     call nz, CollisionWithPlayer
-.end:
-    pop af
-    pop hl
-    pop bc
     ret
 
-BirdUpdate:: ; I wonder if these updates should all have a timer cooldown?
-    push hl
-    push bc
-    push af
-    push de
+BirdUpdate::
     ld bc, BIRD_STRUCT_AMOUNT
     xor a ; ld a, 0
     ld [wEnemyOffset], a ; TODO, we can remove enemy offset this if we optimize this code
@@ -390,14 +362,16 @@ BirdUpdate:: ; I wonder if these updates should all have a timer cooldown?
     cp a, 0
     jr z, .isDead
 .isAlive:
-    ; Check if we can move and collide
+    ; Check if we can move
     ld a, [global_timer]
-    and	BIRD_SPRITE_MOVE_WAIT_TIME
-    jr nz, .checkLoop
-    call Move
-    call CollisionBird
-    ; Check offscreen
+    and	BIRD_MOVE_TIME
+    call z, Move
+    ; Check if we can collide
+    ld a, [global_timer]
+    and	BIRD_COLLISION_TIME
     push bc
+    call z, CollisionBird
+    ; Check offscreen
     ld a, [wEnemyX]
     ld b, a
     call OffScreenXEnemies
@@ -429,8 +403,4 @@ BirdUpdate:: ; I wonder if these updates should all have a timer cooldown?
 .end:
     xor a ; ld a, 0
     ld [wEnemyOffset], a
-    pop de
-    pop af
-    pop bc
-    pop hl
     ret
