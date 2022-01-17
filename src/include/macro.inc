@@ -117,16 +117,3 @@ MACRO SET_HL_TO_ADDRESS
     ld l, a ; 1 cycle
     pop af ; 3 cycles
 ENDM
-
-; Use with caution: Overwrites hl and bc
-MACRO SET_HL_TO_ADDRESS_WITH_BC
-    ; argument 1 is starting address
-    ; argument 2 is offset
-    ld hl, \1
-    ld bc, \2
-    push af
-    ld a, [bc]
-    add a, l ; might cause issues if no carry to h?
-    ld l, a
-    pop af
-ENDM
