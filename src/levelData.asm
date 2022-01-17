@@ -39,6 +39,8 @@ SECTION "level data", ROM0
 W1L1W1:
     DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B
     ; DB PORCUPINE, 50, 50
+    DB BOMB, OFFSCREEN_BOTTOM_Y, SPAWN_X_D
+
 W1L1W1End:
 
 W1L1W2:
@@ -147,10 +149,12 @@ LevelDataHandler:
 .bomb:
     ; Y
     inc hl
-    ld b, [hl]
+    ld a, [hl]
+    ld [wEnemyY], a
     ; X
     inc hl
-    ld c, [hl]
+    ld a, [hl]
+    ld [wEnemyX], a
     call SpawnBomb
     jr .loopCheck
 .porcupine:
