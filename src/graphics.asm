@@ -8,10 +8,42 @@ LIVES_ADDRESS EQU $9C32
 WORLD_ADDRESS EQU $9C01
 LEVEL_ADDRESS EQU $9C03
 REFRESH_WINDOW_WAIT_TIME EQU %00000100
+TITLE_ADDRESS EQU $9880
+TITLE_ADDRESS_OFFSET EQU TITLE_ADDRESS - _SCRN0
+TITLE_SIZE EQU $9920 - TITLE_ADDRESS
 
 ; For updating tileset and tilemap
 
 SECTION "graphics", ROM0
+
+AddBGTiles8800Method:
+	; bc = source tile address
+	; de = size of source
+	push hl
+	push af
+	ld hl, _VRAM9000
+
+	; Does size exceed block size
+	ld a, LOW(de)
+	cp a, LOW(TILE_BLOCK_SIZE)
+	jr nc, .tilesExceedBlock
+.tilesFitBlock:
+	call MEMCPY
+	jr .end
+.tilesExceedBlock:
+	push de
+	ld de, TILE_BLOCK_SIZE
+	call MEMCPY ; bc has now moved de from MEMCPY
+	pop de
+	LD_HL_DE
+	SUB_FROM_HL_16 TILE_BLOCK_SIZE
+	LD_DE_HL
+	ld hl, _VRAM8800
+	call MEMCPY
+.end:
+	pop af
+	pop hl
+	ret
 
 LoadClassicGameData::
 	push hl
@@ -71,23 +103,11 @@ LoadMenuData::
 	ld de, MenuTilesEnd - MenuTiles
 	call MEMCPY
 	ld bc, MenuTitleTiles
-	ld hl, _VRAM9000
-	ld de, _SCRN0 - _VRAM9000;MenuTitleTilesEnd - MenuTitleTiles
-	call MEMCPY
-	ld bc, MenuTitleTiles + (_SCRN0 - _VRAM9000)
-	ld hl, _VRAM8800
-	ld de, $8FF0 - $8800;MenuTitleTilesEnd - MenuTitleTiles
-	call MEMCPY
-
-	; Load Empty
+	ld de, MenuTitleTilesEnd - MenuTitleTiles
+	call AddBGTiles8800Method
 	SET_IN_RANGE _SCRN0, _SCRN1 - _SCRN0, $0E ; Set whole screen to empty tile
-
-	; ld bc, MenuMap
-	; ld hl, _SCRN0
-	; ld de, MenuMapEnd - MenuMap
-	; call MEMCPY
-	ld bc, MenuMap+$80
-	ld hl, _SCRN0+$80
+	ld bc, MenuMap + TITLE_ADDRESS_OFFSET
+	ld hl, _SCRN0 + TITLE_ADDRESS_OFFSET
 	ld de, $A0
 	call MEMCPY
 	pop de

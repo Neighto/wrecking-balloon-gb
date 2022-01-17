@@ -80,13 +80,27 @@ MACRO LD_BC_DE
 ENDM
 
 MACRO ADD_TO_HL
-    ; argument 1 is value to add to HL
+    ; argument 1 is value to add to HL (8 bit)
     push af
     ld a, l
     add a, \1
     ld l, a
     ld a, h
     adc a, 0
+    ld h, a
+    pop af
+ENDM
+
+; Use with caution: Overwrites de
+MACRO SUB_FROM_HL_16
+    ; argument 1 is value to sub from HL (16 bit)
+    ld de, \1
+    push af
+    ld a, l
+    sub a, e
+    ld l, a
+    ld a, h
+    sbc a, d
     ld h, a
     pop af
 ENDM
