@@ -52,7 +52,7 @@ StartClassic::
 	call SpawnHandWave
 	call SetupWindow
 	call InitializeScore
-	call LoadClassicGameData
+	call LoadClassicData
 	call InitializeLevelVars
 	call InitializeEnemyStructVars
 	call InitializePlayer
