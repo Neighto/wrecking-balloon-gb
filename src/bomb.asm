@@ -1,5 +1,6 @@
 INCLUDE "points.inc"
 INCLUDE "balloonConstants.inc"
+INCLUDE "tileConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
@@ -103,7 +104,7 @@ SpawnBomb::
     ld [hli], a
     ld a, [wEnemyX]
     ld [hli], a
-    ld a, $9C
+    ld a, $1E
     ld [hl], a
     inc l
     ld [hl], OAMF_PAL0
@@ -114,7 +115,7 @@ SpawnBomb::
     ld a, [wEnemyX]
     add 8
     ld [hli], a
-    ld a, $9C
+    ld a, $1E
     ld [hl], a
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
@@ -123,7 +124,7 @@ SpawnBomb::
     ld a, 1
     ld [hli], a
     ld [hli], a
-    ld a, $00
+    ld a, EMPTY_TILE
     ld [hl], a
     inc l
     ld [hl], OAMF_PAL0
@@ -230,12 +231,12 @@ ExplosionAnimation:
 .frame0:
     ; Popped left - frame 0
     SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
-    ld [hl], $88
+    ld [hl], POP_BALLOON_FRAME_0_TILE
     inc l
     ld [hl], %00000000
     ; Popped right - frame 0
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
-    ld [hl], $88
+    ld [hl], POP_BALLOON_FRAME_0_TILE
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
     jp .endFrame
@@ -245,21 +246,21 @@ ExplosionAnimation:
     ld a, [wEnemyX]
     sub 4
     ld [hli], a
-    ld a, $9E
+    ld a, $20
     ld [hl], a
     ; Explosion middle
     SET_HL_TO_ADDRESS wOAM+5, wEnemyOAM
     ld a, [wEnemyX]
     add 4
     ld [hli], a
-    ld a, $A0
+    ld a, $22
     ld [hl], a
     ; Explosion right
     SET_HL_TO_ADDRESS wOAM+9, wEnemyOAM
     ld a, [wEnemyX]
     add 12
     ld [hli], a
-    ld a, $9E
+    ld a, $20
     ld [hli], a
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
     jr .endFrame

@@ -142,24 +142,24 @@ PopBalloonAnimation:
 .frame0:
     ; Popped left - frame 0
     SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
-    ld [hl], $88
+    ld [hl], POP_BALLOON_FRAME_0_TILE
     inc l
     ld [hl], OAMF_PAL0
     ; Popped right - frame 0
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
-    ld [hl], $88
+    ld [hl], POP_BALLOON_FRAME_0_TILE
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
     jr .endFrame
 .frame1:
     ; Popped left - frame 1
     SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
-    ld [hl], $8A
+    ld [hl], POP_BALLOON_FRAME_1_TILE
     inc l
     ld [hl], OAMF_PAL0
     ; Popped right - frame 1
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
-    ld [hl], $8A
+    ld [hl], POP_BALLOON_FRAME_1_TILE
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
     jr .endFrame
