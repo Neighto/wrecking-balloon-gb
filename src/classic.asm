@@ -1,6 +1,7 @@
 INCLUDE "constants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
+INCLUDE "balloonConstants.inc"
 
 HAND_WAVE_START_X EQU 120
 HAND_WAVE_START_Y EQU 112
@@ -8,7 +9,7 @@ HAND_WAVE_START_Y EQU 112
 COUNTDOWN_START_X EQU 80
 COUNTDOWN_START_Y EQU 50
 COUNTDOWN_SPEED EQU %00011111
-COUNTDOWN_BALLOON_POP_SPEED EQU %00000011
+COUNTDOWN_BALLOON_POP_SPEED EQU %00000111
 
 SECTION "classic", ROMX
 
@@ -102,7 +103,7 @@ SpawnHandWave::
     ld [hli], a
     ld a, HAND_WAVE_START_X
     ld [hli], a
-    ld [hl], $B0
+    ld [hl], $3A
     inc l
     ld [hl], OAMF_PAL1
 .end:
@@ -118,7 +119,7 @@ HandWaveAnimation::
     and 15
     jp nz, .end
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], $B2
+    ld [hl], $3C
     ld hl, hand_waving_frame
     ld [hl], 1
     ret
@@ -127,7 +128,7 @@ HandWaveAnimation::
     and 15
     jp nz, .end
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], $B0
+    ld [hl], $3A
     ld hl, hand_waving_frame
     ld [hl], 0
 .end:
@@ -145,11 +146,14 @@ SpawnCountdown::
     ld [hli], a
     ld a, COUNTDOWN_START_X
     ld [hli], a
-    SET_HL_TO_ADDRESS wOAM+4, wOAMGeneral1
+    ld [hl], EMPTY_TILE
+    inc l
+    inc l
     ld a, COUNTDOWN_START_Y
     ld [hli], a
     ld a, COUNTDOWN_START_X+8
     ld [hli], a
+    ld [hl], EMPTY_TILE
 .end:
 	ret
 
@@ -187,36 +191,36 @@ CountdownAnimation::
 .frame0:
     call PercussionSound
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], $C8
+    ld [hl], $32
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
-    ld [hl], $CA
+    ld [hl], $34
     ld hl, countdown_frame
     ld [hl], 1
     ret
 .frame1:
     call PercussionSound
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], $C4
+    ld [hl], $2E
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
-    ld [hl], $C6
+    ld [hl], $30
     ld hl, countdown_frame
     ld [hl], 2
     ret
 .frame2:
     call PercussionSound
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], $C0
+    ld [hl], $2A
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
-    ld [hl], $C2
+    ld [hl], $2C
     ld hl, countdown_frame
     ld [hl], 3
     ret
 .frame3:
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], $CC
+    ld [hl], $36
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
-    ld [hl], $CC
-    inc l
+    ld [hl], $36
+    inc l 
     ld [hl], OAMF_XFLIP
     ld hl, countdown_frame
     ld [hl], 4
@@ -224,17 +228,17 @@ CountdownAnimation::
 .frame4:
     call PopSound
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], $88
+    ld [hl], POP_BALLOON_FRAME_0_TILE
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
-    ld [hl], $88
+    ld [hl], POP_BALLOON_FRAME_0_TILE
     ld hl, countdown_frame
     ld [hl], 5
     ret
 .frame5:
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], $8A
+    ld [hl], POP_BALLOON_FRAME_1_TILE
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
-    ld [hl], $8A
+    ld [hl], POP_BALLOON_FRAME_1_TILE
     ld hl, countdown_frame
     ld [hl], 6
     ret

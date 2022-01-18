@@ -1,6 +1,6 @@
 INCLUDE "points.inc"
 INCLUDE "hardware.inc"
-INCLUDE "balloonCactusConstants.inc"
+INCLUDE "balloonConstants.inc"
 INCLUDE "macro.inc"
 
 PROPELLER_START_X EQU 105

@@ -47,54 +47,65 @@ AddBGTiles8800Method:
 	pop hl
 	ret
 
-LoadClassicGameData::
-	push hl
-	push bc
-	push de
-	; Copy the sprite tiles
-	ld bc, CactusTiles
-	ld hl, _VRAM8800
-	ld de, CactusTilesEnd - CactusTiles
+LoadPlayerTiles:
+	ld bc, PlayerSpriteTiles
+	ld hl, _VRAM8000
+	ld de, PlayerSpriteTilesEnd - PlayerSpriteTiles
 	call MEMCPY
- 	; Copy the background tiles
-	ld bc, BackgroundTiles
-	ld hl, _VRAM9000
-	ld de, BackgroundTilesEnd - BackgroundTiles
-	call MEMCPY
-	; Copy the classic park tiles
-	ld bc, ClassicParkTiles
-	ld hl, _VRAM8800+$300
-	ld de, ClassicParkTilesEnd - ClassicParkTiles
-	call MEMCPY
-	; Copy the countdown tiles
-	ld bc, CountdownTiles
-	ld hl, _VRAM8800+$400
-	ld de, CountdownTilesEnd - CountdownTiles
-	call MEMCPY
-	; Copy the boss tiles
-	ld bc, PorcupineTiles
-	ld hl, _VRAM8800+$500
-	ld de, PorcupineTilesEnd - PorcupineTiles
-	call MEMCPY
-	; Copy the window tiles
+	ret
+
+LoadWindow:
+.loadTiles:
 	ld bc, WindowTiles
 	ld hl, _VRAM8800+$600
 	ld de, WindowTilesEnd - WindowTiles
 	call MEMCPY
-	; Copy the tilemap
-	ld bc, BackgroundMap
-	ld hl, _SCRN0
-	ld de, BackgroundMapEnd - BackgroundMap
-	call MEMCPY
-	; Copy the window
+.loadMap:
 	ld bc, WindowMap
 	ld hl, _SCRN1
 	ld de, WindowMapEnd - WindowMap
 	ld a, $E0
 	call MEMCPY_WITH_OFFSET
-	pop de
-	pop bc
-	pop hl
+	ret
+
+LoadEnemyTiles:
+	ld bc, EnemyTiles
+	ld hl, _VRAM8000 + (PlayerSpriteTilesEnd - PlayerSpriteTiles)
+	ld de, EnemyTilesEnd - EnemyTiles
+	call MEMCPY
+	ld bc, CountdownTiles ; Could erase these countdown tiles after use if needed
+	ld hl, _VRAM8000 + (PlayerSpriteTilesEnd - PlayerSpriteTiles) + (EnemyTilesEnd - EnemyTiles)
+	ld de, CountdownTilesEnd - CountdownTiles
+	call MEMCPY
+	; TODO fix shouldt be here
+	ld bc, ClassicParkTiles
+	ld hl, _VRAM8000 + (PlayerSpriteTilesEnd - PlayerSpriteTiles) + (EnemyTilesEnd - EnemyTiles) + (CountdownTilesEnd - CountdownTiles)
+	ld de, ClassicParkTilesEnd - ClassicParkTiles
+	call MEMCPY
+	; ld bc, PorcupineTiles
+	; ld hl, _VRAM8800+$500
+	; ld de, PorcupineTilesEnd - PorcupineTiles
+	; call MEMCPY
+	ret
+
+LoadWorld1:
+	call LoadEnemyTiles
+
+	; World 1
+	ld bc, BackgroundTiles
+	ld hl, _VRAM9000
+	ld de, BackgroundTilesEnd - BackgroundTiles
+	call MEMCPY
+	ld bc, BackgroundMap
+	ld hl, _SCRN0
+	ld de, BackgroundMapEnd - BackgroundMap
+	call MEMCPY
+	ret
+
+LoadClassicData::
+	call LoadPlayerTiles
+	call LoadWindow
+	call LoadWorld1
 	ret
 
 LoadMenuData::

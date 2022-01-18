@@ -1,5 +1,5 @@
 INCLUDE "hardware.inc"
-INCLUDE "balloonCactusConstants.inc"
+INCLUDE "balloonConstants.inc"
 INCLUDE "macro.inc"
 
 PLAYER_START_X EQU 80
@@ -15,6 +15,12 @@ INVINCIBLE_RESPAWN_TIME EQU 170
 INVINCIBLE_BLINK_FASTER_TIME EQU 50
 INVINCIBLE_BLINK_NORMAL_SPEED EQU %00001000
 INVINCIBLE_BLINK_FAST_SPEED EQU %00000100
+
+PLAYER_BALLOON_TILE EQU $00
+PLAYER_CACTUS_TILE EQU $02
+PLAYER_CACTUS_SCREAMING_TILE EQU $04
+PLAYER_BALLOON_INVINCIBLE_TILE EQU $06
+PLAYER_CACTUS_INVINCIBLE_TILE EQU $08
 
 SECTION "player vars", WRAM0
   wPlayerY:: DB
@@ -111,7 +117,7 @@ InitializePlayer::
   ld [hli], a
   ld a, [wPlayerX2]
   ld [hli], a
-  ld [hl], $82
+  ld [hl], PLAYER_CACTUS_TILE
   inc l
   ld [hl], OAMF_PAL0
   ; Cactus right
@@ -121,7 +127,7 @@ InitializePlayer::
   ld a, [wPlayerX2]
   add 8
   ld [hli], a
-  ld [hl], $82
+  ld [hl], PLAYER_CACTUS_TILE
   inc l
   ld [hl], OAMF_PAL0 | OAMF_XFLIP
 
@@ -131,7 +137,7 @@ InitializePlayer::
   ld [hli], a
   ld a, [wPlayerX]
   ld [hli], a
-  ld [hl], $80
+  ld [hl], PLAYER_BALLOON_TILE
   inc l
   ld [hl], OAMF_PAL1
   ; Balloon right
@@ -141,7 +147,7 @@ InitializePlayer::
   ld a, [wPlayerX]
   add 8
   ld [hli], a
-  ld [hl], $80
+  ld [hl], PLAYER_BALLOON_TILE
   inc l
   ld [hl], OAMF_PAL1 | OAMF_XFLIP
   ret
@@ -476,12 +482,12 @@ PopBalloonAnimation:
 .frame0:
   ; Popped left - frame 0
   ld hl, wPlayerBalloonOAM+2
-  ld [hl], $88
+  ld [hl], POP_BALLOON_FRAME_0_TILE
   inc l
   ld [hl], %00000000
   ; Popped right - frame 0
   ld hl, wPlayerBalloonOAM+6
-  ld [hl], $88
+  ld [hl], POP_BALLOON_FRAME_0_TILE
   inc l
   ld [hl], OAMF_XFLIP
   ld hl, wPlayerPoppingFrame
@@ -490,12 +496,12 @@ PopBalloonAnimation:
 .frame1:
   ; Popped left - frame 1
   ld hl, wPlayerBalloonOAM+2
-  ld [hl], $8A
+  ld [hl], POP_BALLOON_FRAME_1_TILE
   inc l
   ld [hl], %00000000
   ; Popped right - frame 1
   ld hl, wPlayerBalloonOAM+6
-  ld [hl], $8A
+  ld [hl], POP_BALLOON_FRAME_1_TILE
   inc l
   ld [hl], OAMF_XFLIP
   ld hl, wPlayerPoppingFrame
@@ -600,9 +606,9 @@ DeathOfPlayer::
   ld [hl], a
   ; Screaming cactus
   ld hl, wPlayerCactusOAM+2
-  ld [hl], $90
+  ld [hl], PLAYER_CACTUS_SCREAMING_TILE
   ld hl, wPlayerCactusOAM+6
-  ld [hl], $90
+  ld [hl], PLAYER_CACTUS_SCREAMING_TILE
   ; Sound
   call PopSound ; Conflicts with explosion sound
   call FallingSound
@@ -632,22 +638,22 @@ InvincibleBlink::
   jp z, .defaultPalette
 .blinkEnd:
   ld hl, wPlayerBalloonOAM+2
-  ld [hl], $A2
+  ld [hl], PLAYER_BALLOON_INVINCIBLE_TILE
   ld hl, wPlayerBalloonOAM+6
-  ld [hl], $A2
+  ld [hl], PLAYER_BALLOON_INVINCIBLE_TILE
   ld hl, wPlayerCactusOAM+2
-  ld [hl], $A4
+  ld [hl], PLAYER_CACTUS_INVINCIBLE_TILE
   ld hl, wPlayerCactusOAM+6
-  ld [hl], $A4
+  ld [hl], PLAYER_CACTUS_INVINCIBLE_TILE
   ret
 .defaultPalette:
   ld hl, wPlayerBalloonOAM+2
-  ld [hl], $80
+  ld [hl], PLAYER_BALLOON_TILE
   ld hl, wPlayerBalloonOAM+6
-  ld [hl], $80
+  ld [hl], PLAYER_BALLOON_TILE
   ld hl, wPlayerCactusOAM+2
-  ld [hl], $82
+  ld [hl], PLAYER_CACTUS_TILE
   ld hl, wPlayerCactusOAM+6
-  ld [hl], $82
+  ld [hl], PLAYER_CACTUS_TILE
 .end:
   ret
