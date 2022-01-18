@@ -91,17 +91,18 @@ MACRO ADD_TO_HL
     pop af
 ENDM
 
-; Use with caution: Overwrites de
 MACRO SUB_FROM_HL_16
     ; argument 1 is value to sub from HL (16 bit)
-    ld de, \1
     push af
+    push de
+    ld de, \1
     ld a, l
     sub a, e
     ld l, a
     ld a, h
     sbc a, d
     ld h, a
+    pop de
     pop af
 ENDM
 
