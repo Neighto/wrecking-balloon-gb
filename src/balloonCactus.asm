@@ -1,5 +1,6 @@
 INCLUDE "points.inc"
 INCLUDE "balloonConstants.inc"
+INCLUDE "tileConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
@@ -157,7 +158,7 @@ SpawnBalloonCactus::
     ld [hli], a
     ld a, [wEnemyX2]
     ld [hli], a
-    ld [hl], $86
+    ld [hl], $10
     inc l
     ld [hl], OAMF_PAL0
 .cactusRight:
@@ -167,7 +168,7 @@ SpawnBalloonCactus::
     ld a, [wEnemyX2]
     add 8
     ld [hli], a
-    ld [hl], $86
+    ld [hl], $10
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .setStruct:
@@ -230,33 +231,33 @@ PopBalloonAnimation:
 .frame0:
     ; Popped left - frame 0
     SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
-    ld [hl], $88
+    ld [hl], POP_BALLOON_FRAME_0_TILE
     inc l
     ld [hl], OAMF_PAL0
     ; Popped right - frame 0
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
-    ld [hl], $88
+    ld [hl], POP_BALLOON_FRAME_0_TILE
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
     jr .endFrame
 .frame1:
     ; Popped left - frame 1
     SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
-    ld [hl], $8A
+    ld [hl], POP_BALLOON_FRAME_1_TILE
     inc l
     ld [hl], OAMF_PAL0
     ; Popped right - frame 1
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
-    ld [hl], $8A
+    ld [hl], POP_BALLOON_FRAME_1_TILE
     inc l
     ld [hl], OAMF_XFLIP
     jr .endFrame
 .clear:
     ; Remove sprites
     SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
-    ld [hl], $00
+    ld [hl], EMPTY_TILE
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
-    ld [hl], $00
+    ld [hl], EMPTY_TILE
     ; Reset variables
     xor a
     ld [wEnemyPopping], a
@@ -360,9 +361,9 @@ DeathOfBalloonCactus:
     ld [wEnemyFalling], a
     ; Screaming cactus
     SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
-    ld [hl], $8E
+    ld [hl], $12
     SET_HL_TO_ADDRESS wOAM+14, wEnemyOAM
-    ld [hl], $8E
+    ld [hl], $12
     ; Sound
     call PopSound
     ret

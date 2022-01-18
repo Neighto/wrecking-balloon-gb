@@ -1,0 +1,1 @@
+EMPTY_TILE EQU $7F

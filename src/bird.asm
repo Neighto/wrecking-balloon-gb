@@ -113,7 +113,7 @@ SpawnBird::
     ld [hli], a
     ld a, [wEnemyX]
     ld [hli], a
-    ld [hl], $92
+    ld [hl], $14
     inc l
     ld [hl], OAMF_PAL0
 .birdMiddle:
@@ -123,7 +123,7 @@ SpawnBird::
     ld a, [wEnemyX]
     add 8
     ld [hli], a
-    ld [hl], $98
+    ld [hl], $1A
     inc l
     ld [hl], OAMF_PAL0
 .birdRight:
@@ -133,7 +133,7 @@ SpawnBird::
     ld a, [wEnemyX]
     add 16
     ld [hli], a
-    ld [hl], $9A
+    ld [hl], $1C
     inc l
     ld [hl], OAMF_PAL0
     jr .setStruct
@@ -144,7 +144,7 @@ SpawnBird::
     ld [hli], a
     ld a, [wEnemyX]
     ld [hli], a
-    ld [hl], $9A
+    ld [hl], $1C
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .leftBirdMiddle:
@@ -154,7 +154,7 @@ SpawnBird::
     ld a, [wEnemyX]
     add 8
     ld [hli], a
-    ld [hl], $98
+    ld [hl], $1A
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .leftBirdRight:
@@ -164,7 +164,7 @@ SpawnBird::
     ld a, [wEnemyX]
     add 16
     ld [hli], a
-    ld [hl], $92
+    ld [hl], $14
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .setStruct:
@@ -186,9 +186,9 @@ BirdRightsideFlap:
     and BIRD_SOARING_TIME
     ret nz
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
-    ld [hl], $98
+    ld [hl], $1A
     SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
-    ld [hl], $9A
+    ld [hl], $1C
     ld hl, wEnemyPoppingFrame
     ld [hl], 1
     ret
@@ -197,9 +197,9 @@ BirdRightsideFlap:
     and BIRD_FLAPPING_TIME
     ret nz
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
-    ld [hl], $94
+    ld [hl], $16
     SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
-    ld [hl], $96
+    ld [hl], $18
     ld hl, wEnemyPoppingFrame
     ld [hl], 0
     DECREMENT_POS wEnemyY, BIRD_FLAP_UP_SPEED
@@ -214,9 +214,9 @@ BirdLeftsideFlap:
     and BIRD_SOARING_TIME
     ret nz
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
-    ld [hl], $98
+    ld [hl], $1A
     SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
-    ld [hl], $9A
+    ld [hl], $1C
     ld hl, wEnemyPoppingFrame
     ld [hl], 1
     ret
@@ -225,9 +225,9 @@ BirdLeftsideFlap:
     and BIRD_FLAPPING_TIME
     ret nz
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
-    ld [hl], $94
+    ld [hl], $16
     SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
-    ld [hl], $96
+    ld [hl], $18
     ld hl, wEnemyPoppingFrame
     ld [hl], 0
     DECREMENT_POS wEnemyY, BIRD_FLAP_UP_SPEED
@@ -333,19 +333,19 @@ DeathOfBird::
     jr z, .facingRight
 .facingLeft:
     SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
-    ld [hl], $A6
+    ld [hl], $24
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
-    ld [hl], $A8
+    ld [hl], $26
     SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
-    ld [hl], $AA
+    ld [hl], $28
     ret
 .facingRight:
     SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
-    ld [hl], $AA
+    ld [hl], $28
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
-    ld [hl], $A8
+    ld [hl], $26
     SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
-    ld [hl], $A6
+    ld [hl], $24
     ret
 
 CollisionBird:
