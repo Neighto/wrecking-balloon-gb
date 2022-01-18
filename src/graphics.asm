@@ -2,11 +2,13 @@ INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 INCLUDE "macro.inc"
 
-NUMBERS_TILE_OFFSET EQU $E9
-SCORE_INDEX_ONE_ADDRESS EQU $9C2C
-LIVES_ADDRESS EQU $9C32
-WORLD_ADDRESS EQU $9C01
-LEVEL_ADDRESS EQU $9C03
+NUMBERS_TILE_OFFSET EQU $F3
+SCORE_INDEX_ONE_ADDRESS EQU $9C32
+LIVES_ADDRESS EQU $9C0B
+BAR_LEFT_EMPTY EQU $EF
+BAR_LEFT_FULL EQU $F1
+BOOST_BAR_ADDRESS EQU $9C22
+ATTACK_BAR_ADDRESS EQU $9C26
 REFRESH_WINDOW_WAIT_TIME EQU %00000100
 TITLE_ADDRESS EQU $9880
 TITLE_ADDRESS_OFFSET EQU TITLE_ADDRESS - _SCRN0
@@ -84,11 +86,12 @@ LoadClassicGameData::
 	ld hl, _SCRN0
 	ld de, BackgroundMapEnd - BackgroundMap
 	call MEMCPY
-	; ; Copy the window
+	; Copy the window
 	ld bc, WindowMap
 	ld hl, _SCRN1
 	ld de, WindowMapEnd - WindowMap
-	call MEMCPY
+	ld a, $E0
+	call MEMCPY_WITH_OFFSET
 	pop de
 	pop bc
 	pop hl
@@ -116,8 +119,6 @@ LoadMenuData::
 	ret
 
 RefreshScore:
-	push af
-	push hl
 	ld hl, SCORE_INDEX_ONE_ADDRESS
 	; First digit
 	ld a, [score]
@@ -152,27 +153,26 @@ RefreshScore:
     and %00001111
 	add NUMBERS_TILE_OFFSET
 	ld [hl], a
-	pop af
-	pop hl
 	ret
 
 RefreshLives:
-	push af
 	ld a, [wPlayerLives]
 	add NUMBERS_TILE_OFFSET
 	ld [LIVES_ADDRESS], a
-	pop af
 	ret
 
-RefreshLevel:
-	push af
-	ld a, [wWorld]
-	add NUMBERS_TILE_OFFSET
-	ld [WORLD_ADDRESS], a
-	ld a, [wLevel]
-	add NUMBERS_TILE_OFFSET
-	ld [LEVEL_ADDRESS], a
-	pop af
+RefreshBoostBar:
+	ld a, BAR_LEFT_FULL
+	ld [BOOST_BAR_ADDRESS], a
+	inc a
+	ld [BOOST_BAR_ADDRESS+1], a
+	ret 
+
+RefreshAttackBar:
+	ld a, BAR_LEFT_FULL
+	ld [ATTACK_BAR_ADDRESS], a
+	inc a
+	ld [ATTACK_BAR_ADDRESS+1], a
 	ret
 
 RefreshWindow::
@@ -181,7 +181,8 @@ RefreshWindow::
 	jr nz, .end
 	call RefreshScore
 	call RefreshLives
-	call RefreshLevel
+	call RefreshBoostBar
+	call RefreshAttackBar
 .end:
 	ret
 

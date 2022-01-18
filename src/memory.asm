@@ -18,6 +18,32 @@ MEMCPY::
 	jp nz, .memcpy_loop
     ret
 
+MEMCPY_WITH_OFFSET::
+    ; de = block size
+    ; bc = source address
+    ; hl = destination address
+    ; a = offset
+    push af
+.memcpy_loop:
+    pop af
+
+    push de
+    ld d, a
+    ld a, [bc]
+    add a, d
+    ld [hli], a
+    ld a, d
+    pop de
+    push af
+    inc bc
+    dec de
+.memcpy_check_limit:
+	ld a, d
+	or a, e
+	jp nz, .memcpy_loop
+    pop af
+    ret
+
 ClearOAM::
     RESET_IN_RANGE _OAMRAM, $A0
     ret
