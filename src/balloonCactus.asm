@@ -25,45 +25,8 @@ InitializeBalloonCactus::
     pop hl
     ret
 
-GetStruct:
-    ; Argument hl = start of free enemy struct
-    push af
-    ld a, [hli]
-    ld [wEnemyActive], a
-    ld a, [hli]
-    ld [wEnemyY], a
-    ld a, [hli]
-    ld [wEnemyX], a
-    ld a, [hli]
-    ld [wEnemyOAM], a
-    ld a, [hli]
-    ld [wEnemyAlive], a
-    ld a, [hli]
-    ld [wEnemyPopping], a
-    ld a, [hli]
-    ld [wEnemyPoppingFrame], a
-    ld a, [hli]
-    ld [wEnemyPoppingTimer], a
-    ld a, [hli]
-    ld [wEnemyRightside], a
-    ld a, [hli]
-    ld [wEnemyY2], a
-    ld a, [hli]
-    ld [wEnemyX2], a
-    ld a, [hli]
-    ld [wEnemyFalling], a 
-    ld a, [hli]
-    ld [wEnemyFallingSpeed], a 
-    ld a, [hli]
-    ld [wEnemyFallingTimer], a
-    ld a, [hl]
-    ld [wEnemyDelayFallingTimer], a
-    pop af
-    ret
-
 SetStruct:
     ; Argument hl = start of free enemy struct
-    push af
     ld a, [wEnemyActive]
     ld [hli], a
     ld a, [wEnemyY]
@@ -94,7 +57,6 @@ SetStruct:
     ld [hli], a
     ld a, [wEnemyDelayFallingTimer]
     ld [hl], a
-    pop af
     ret
 
 SpawnBalloonCactus::
@@ -391,15 +353,45 @@ CollisionBalloonCactus:
 BalloonCactusUpdate::
     ld bc, BALLOON_CACTUS_STRUCT_AMOUNT
     xor a ; ld a, 0
-    ld [wEnemyOffset], a ; TODO, we can remove enemy offset this if we optimize this code
+    ld [wEnemyOffset], a
 .loop:
+    ; Get active state
     SET_HL_TO_ADDRESS balloonCactus, wEnemyOffset
-    call GetStruct
-
+    ld a, [hli]
+    ld [wEnemyActive], a
     ; Check active
     ld a, [wEnemyActive]
     cp a, 0
-    jr z, .checkLoop
+    jp z, .checkLoopSkipSet
+    ; Get rest of struct
+    ld a, [hli]
+    ld [wEnemyY], a
+    ld a, [hli]
+    ld [wEnemyX], a
+    ld a, [hli]
+    ld [wEnemyOAM], a
+    ld a, [hli]
+    ld [wEnemyAlive], a
+    ld a, [hli]
+    ld [wEnemyPopping], a
+    ld a, [hli]
+    ld [wEnemyPoppingFrame], a
+    ld a, [hli]
+    ld [wEnemyPoppingTimer], a
+    ld a, [hli]
+    ld [wEnemyRightside], a
+    ld a, [hli]
+    ld [wEnemyY2], a
+    ld a, [hli]
+    ld [wEnemyX2], a
+    ld a, [hli]
+    ld [wEnemyFalling], a 
+    ld a, [hli]
+    ld [wEnemyFallingSpeed], a 
+    ld a, [hli]
+    ld [wEnemyFallingTimer], a
+    ld a, [hl]
+    ld [wEnemyDelayFallingTimer], a
     ; Check if alive
     ld a, [wEnemyAlive]
     cp a, 0
@@ -439,14 +431,12 @@ BalloonCactusUpdate::
 .checkLoop:
     SET_HL_TO_ADDRESS balloonCactus, wEnemyOffset
     call SetStruct
+.checkLoopSkipSet:
     ld a, [wEnemyOffset]
     add a, BALLOON_CACTUS_STRUCT_SIZE
     ld [wEnemyOffset], a    
     dec bc
     ld a, b
     or a, c
-    jr nz, .loop
-.end:
-    xor a ; ld a, 0
-    ld [wEnemyOffset], a
+    jp nz, .loop
     ret

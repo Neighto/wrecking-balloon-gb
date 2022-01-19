@@ -23,18 +23,18 @@ Start::
 	call InitializeMenu
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop and MenuLoopOpening to skip menu
-MenuLoopOpening:
-	; call WaitVBlank
-	; call UpdateMenuOpening
-	; call UpdateGlobalTimer
-	; jp MenuLoopOpening
+; MenuLoopOpening:
+; 	call WaitVBlank
+; 	call UpdateMenuOpening
+; 	call UpdateGlobalTimer
+; 	jp MenuLoopOpening
 MenuLoop::
-	; call WaitVBlank
-	; call OAMDMA
-	; call _hUGE_dosound
-	; call UpdateMenu
-	; call UpdateGlobalTimer
-	; jp MenuLoop
+; 	call WaitVBlank
+; 	call OAMDMA
+; 	call _hUGE_dosound
+; 	call UpdateMenu
+; 	call UpdateGlobalTimer
+; 	jp MenuLoop
 
 StartClassic::
 	call ParkEnteredClassic
@@ -64,12 +64,12 @@ StartClassic::
 	call InitializeClassicVars
 	call LCD_ON_NO_WINDOW
 	; Comment out ParkLoop to skip park cutscene
-; ParkLoop:
-; 	call WaitVBlank
-; 	call OAMDMA
-; 	call UpdatePark
-; 	call UpdateGlobalTimer
-; 	jp ParkLoop
+ParkLoop:
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdatePark
+	; call UpdateGlobalTimer
+	; jp ParkLoop
 
 PreGameLoop::
 	call StartedClassic

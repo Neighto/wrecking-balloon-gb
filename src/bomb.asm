@@ -26,31 +26,8 @@ InitializeBomb::
     pop hl
     ret
 
-GetStruct:
-    ; Argument hl = start of free enemy struct
-    push af
-    ld a, [hli]
-    ld [wEnemyActive], a
-    ld a, [hli]
-    ld [wEnemyY], a
-    ld a, [hli]
-    ld [wEnemyX], a
-    ld a, [hli]
-    ld [wEnemyOAM], a
-    ld a, [hli]
-    ld [wEnemyAlive], a
-    ld a, [hli]
-    ld [wEnemyPopping], a
-    ld a, [hli]
-    ld [wEnemyPoppingFrame], a
-    ld a, [hl]
-    ld [wEnemyPoppingTimer], a
-    pop af
-    ret
-
 SetStruct:
     ; Argument hl = start of free enemy struct
-    push af
     ld a, [wEnemyActive]
     ld [hli], a
     ld a, [wEnemyY]
@@ -67,7 +44,6 @@ SetStruct:
     ld [hli], a
     ld a, [wEnemyPoppingTimer]
     ld [hl], a
-    pop af
     ret
 
 SpawnBomb::
@@ -297,13 +273,29 @@ BombUpdate::
     xor a ; ld a, 0
     ld [wEnemyOffset], a
 .loop:
+    ; Get active state
     SET_HL_TO_ADDRESS bomb, wEnemyOffset
-    call GetStruct
-
+    ld a, [hli]
+    ld [wEnemyActive], a
     ; Check active
     ld a, [wEnemyActive]
     cp a, 0
     jr z, .checkLoop
+    ; Get rest of struct
+    ld a, [hli]
+    ld [wEnemyY], a
+    ld a, [hli]
+    ld [wEnemyX], a
+    ld a, [hli]
+    ld [wEnemyOAM], a
+    ld a, [hli]
+    ld [wEnemyAlive], a
+    ld a, [hli]
+    ld [wEnemyPopping], a
+    ld a, [hli]
+    ld [wEnemyPoppingFrame], a
+    ld a, [hl]
+    ld [wEnemyPoppingTimer], a
     ; Check alive
     ld a, [wEnemyAlive]
     cp a, 0
@@ -344,7 +336,4 @@ BombUpdate::
     ld a, b
     or a, c
     jr nz, .loop
-.end:
-    xor a ; ld a, 0
-    ld [wEnemyOffset], a
     ret
