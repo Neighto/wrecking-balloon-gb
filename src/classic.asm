@@ -16,7 +16,7 @@ SECTION "classic", ROMX
 
 InitializeClassicVars::
     xor a ; ld a, 0
-	ld [fade_frame], a
+	ld [wFadeFrame], a
     ret
 
 ParkFadeOut:
@@ -35,10 +35,9 @@ ParkFadeOut:
     ld [hl], STAGE_CLASSIC_STARTING
 	ret
 .fadeOut:
-	call HasFadedOut
+	call FadeOutPalettes
 	cp a, 0
 	jr nz, .hasFadedOut
-	call FadeOutPalettes
 	ret
 .hasFadedOut:
 	call PreGameLoop
@@ -261,7 +260,6 @@ CountdownAnimation::
     ret
 
 IncrementScrollOffset::
-
 .close:
     ld a, [global_timer]
 	and %0000111

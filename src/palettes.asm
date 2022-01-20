@@ -33,11 +33,18 @@ SetupParkPalettes::
     ret
 
 FadeOutPalettes::
+	; Return a for has faded (0 = false, 1 = true)
+	ld a, [rBGP]
+	cp a, FADE_PALETTE_4
+	jr nz, .fadeOut
+.hasFadedOut:
+	ld a, 1
+	ret
+.fadeOut:
 	ld a, [global_timer]
 	and FADE_SPEED
-	ret nz
-.fadeOut:
-	ld a, [fade_frame]
+	jr nz, .end
+	ld a, [wFadeFrame]
 	cp a, 0
 	jr z, .fade1
 	cp a, 1
@@ -46,34 +53,43 @@ FadeOutPalettes::
 	jr z, .fade3
 	cp a, 3
 	jr z, .fade4
-	ret
+	jr .end
 .fade1:
     ld a, FADE_PALETTE_1
-	jr .end
+	jr .fadePalettes
 .fade2:
 	ld a, FADE_PALETTE_2
-	jr .end
+	jr .fadePalettes
 .fade3:
 	ld a, FADE_PALETTE_3
-	jr .end
+	jr .fadePalettes
 .fade4:
 	ld a, FADE_PALETTE_4
-.end:
+.fadePalettes:
 	ldh [rBGP], a
     ldh [rOCPD], a
 	ldh [rOBP1], a
 	ldh [rOBP0], a
-	ld a, [fade_frame]
+	ld a, [wFadeFrame]
 	inc a
-	ld [fade_frame], a
+	ld [wFadeFrame], a
+.end:
+	xor a ; ld a, 0
 	ret
 
 FadeInPalettes::
+	; Return a for has faded (0 = false, 1 = true)
+	ld a, [rBGP]
+	cp a, FADE_PALETTE_1
+	jr nz, .fadeIn
+.hasFadedIn:
+	ld a, 1
+	ret
+.fadeIn:
 	ld a, [global_timer]
 	and FADE_SPEED
-	ret nz
-.fadeIn:
-	ld a, [fade_frame]
+	jr nz, .end
+	ld a, [wFadeFrame]
 	cp a, 4
 	jr z, .fade1
 	cp a, 3
@@ -82,48 +98,26 @@ FadeInPalettes::
 	jr z, .fade3
 	cp a, 1
 	jr z, .fade4
-	ret
+	jr .end
 .fade1:
     ld a, FADE_PALETTE_4
-	jr .end
+	jr .fadePalettes
 .fade2:
 	ld a, FADE_PALETTE_3
-	jr .end
+	jr .fadePalettes
 .fade3:
 	ld a, FADE_PALETTE_2
-	jr .end
+	jr .fadePalettes
 .fade4:
 	ld a, FADE_PALETTE_1
-.end:
+.fadePalettes:
 	ldh [rBGP], a
     ldh [rOCPD], a
 	ldh [rOBP1], a
 	ldh [rOBP0], a
-	ld a, [fade_frame]
+	ld a, [wFadeFrame]
 	dec a
-	ld [fade_frame], a
-	ret
-
-HasFadedOut::
-	; => A as 1 or 0
-	ld a, [rBGP]
-	cp a, FADE_PALETTE_4
-	jr z, .true
-.false:
+	ld [wFadeFrame], a
+.end:
 	xor a ; ld a, 0
-	ret
-.true:
-	ld a, 1
-	ret
-
-HasFadedIn::
-	; => A as 1 or 0
-	ld a, [rBGP]
-	cp a, FADE_PALETTE_1
-	jr z, .true
-.false:
-	xor a ; ld a, 0
-	ret
-.true:
-	ld a, 1
 	ret

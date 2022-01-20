@@ -8,9 +8,10 @@ SECTION "general RAM vars", WRAM0[$C000]
 	selected_mode:: DB
 	hand_waving_frame:: DB
 	countdown_frame:: DB
-	cloud_scroll_offset:: DB
 	classic_mode_stage:: DB
-	fade_frame:: DB
+
+	; Fading
+	wFadeFrame:: DB
 
 	; General-use OAM offset
 	wOAMGeneral1:: DB
@@ -39,11 +40,10 @@ InitializeGameVars::
 	ld [selected_mode], a
 	ld [hand_waving_frame], a
 	ld [countdown_frame], a
-	ld [cloud_scroll_offset], a
 	ld [classic_mode_stage], a
 	ld [wParallaxClose], a
 	ld [wParallaxFar], a
-	ld [fade_frame], a
+	ld [wFadeFrame], a
 	ld [wUpdateTilemapOffset], a
 	ld [wUpdateTilemapIndex], a
 	ld [wHasUpdatedNextTilemapAddress], a

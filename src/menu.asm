@@ -154,10 +154,9 @@ UpdateMenuOpening::
     ldh [rSCY], a
 	ret
 .fadeOut:
-	call HasFadedOut
+	call FadeOutPalettes
 	cp a, 0
 	jr nz, .loadFullMenu
-	call FadeOutPalettes
 	ret
 .loadFullMenu:
 	call WaveSound
@@ -170,10 +169,9 @@ UpdateMenuOpening::
 	call LCD_ON_NO_WINDOW
 	jr .endFrame
 .fadeIn:
-	call HasFadedIn
+	call FadeInPalettes
 	cp a, 0
 	jp nz, StartMenu
-	call FadeInPalettes
 	ret
 .endFrame:
 	ld a, [wMenuFrame]
@@ -191,11 +189,7 @@ UpdateMenu::
 	call IncrementScrollOffset
 	ret
 .fadeOut:
-	call HasFadedOut
-	cp a, 0
-	jr nz, .hasFadedOut
 	call FadeOutPalettes
-	ret
-.hasFadedOut:
-	call StartClassic
+	cp a, 0
+	jp nz, StartClassic
 	ret
