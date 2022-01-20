@@ -120,8 +120,6 @@ UpdateMenuOpening::
 	jr z, .scrollUpTitle2
 	cp a, 5
 	jr z, .fadeOut
-	cp a, 6
-	jr z, .fadeIn
 	ret
 .startSound:
 	call RisingSound
@@ -156,22 +154,10 @@ UpdateMenuOpening::
 .fadeOut:
 	call FadeOutPalettes
 	cp a, 0
-	jr nz, .loadFullMenu
+	jr nz, .next
 	ret
-.loadFullMenu:
-	call WaveSound
-	call LCD_OFF
-	call SpawnMenuCursor
-	ld bc, MenuMap
-	ld hl, _SCRN0
-	ld de, MenuMapEnd - MenuMap
-	call MEMCPY
-	call LCD_ON_NO_WINDOW
-	jr .endFrame
-.fadeIn:
-	call FadeInPalettes
-	cp a, 0
-	jp nz, StartMenu
+.next:
+	jp StartMenu
 	ret
 .endFrame:
 	ld a, [wMenuFrame]
@@ -181,6 +167,11 @@ UpdateMenuOpening::
 	ret
 
 UpdateMenu::
+.fadeIn:
+	call FadeInPalettes
+	cp a, 0
+	ret z
+.hasFadedIn:
 	call BlinkMenuCursor
 	ld a, [classic_mode_stage]
 	cp a, STAGE_CLASSIC_SELECTED

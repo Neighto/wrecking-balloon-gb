@@ -14,7 +14,7 @@ Start::
 	call ClearRAM
 	call ClearAllTiles
 	call ResetScroll
-	call LoadMenuData
+	call LoadMenuOpeningData
 	ld hl, menuTheme
 	call hUGE_init
 	call SetupPalettes
@@ -29,7 +29,14 @@ MenuLoopOpening:
 	call UpdateGlobalTimer
 	jp MenuLoopOpening
 StartMenu::
+	call LCD_OFF
+	call WaveSound
 	call SetMenuInterrupts
+	call SpawnMenuCursor
+	call LoadMenuData
+	call ResetScroll
+	call ResetFading
+	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
 	call WaitVBlank
@@ -64,7 +71,7 @@ StartClassic::
 	call InitializePorcupine
 	call InitializeBird
 	call InitializeBomb
-	call InitializeClassicVars
+	call ResetFading
 	call LCD_ON_NO_WINDOW
 	; Comment out ParkLoop to skip park cutscene
 ParkLoop:

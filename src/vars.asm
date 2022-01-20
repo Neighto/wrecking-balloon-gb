@@ -11,7 +11,8 @@ SECTION "general RAM vars", WRAM0[$C000]
 	classic_mode_stage:: DB
 
 	; Fading
-	wFadeFrame:: DB
+	wFadeInFrame:: DB
+	wFadeOutFrame:: DB
 
 	; General-use OAM offset
 	wOAMGeneral1:: DB
@@ -43,7 +44,8 @@ InitializeGameVars::
 	ld [classic_mode_stage], a
 	ld [wParallaxClose], a
 	ld [wParallaxFar], a
-	ld [wFadeFrame], a
+	ld [wFadeInFrame], a
+	ld [wFadeOutFrame], a
 	ld [wUpdateTilemapOffset], a
 	ld [wUpdateTilemapIndex], a
 	ld [wHasUpdatedNextTilemapAddress], a

@@ -108,14 +108,10 @@ LoadClassicData::
 	call LoadWorld1
 	ret
 
-LoadMenuData::
+LoadMenuOpeningData::
 	push hl
 	push bc
 	push de
-	ld bc, MenuTiles
-	ld hl, _VRAM8000
-	ld de, MenuTilesEnd - MenuTiles
-	call MEMCPY
 	ld bc, MenuTitleTiles
 	ld de, MenuTitleTilesEnd - MenuTitleTiles
 	call AddBGTiles8800Method
@@ -126,6 +122,17 @@ LoadMenuData::
 	pop de
 	pop bc
 	pop hl
+	ret
+
+LoadMenuData::
+	ld bc, MenuTiles
+	ld hl, _VRAM8000
+	ld de, MenuTilesEnd - MenuTiles
+	call MEMCPY
+	ld bc, MenuMap
+	ld hl, _SCRN0
+	ld de, MenuMapEnd - MenuMap
+	call MEMCPY
 	ret
 
 RefreshScore:
