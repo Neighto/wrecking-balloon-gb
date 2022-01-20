@@ -16,6 +16,10 @@ SECTION "general RAM vars", WRAM0[$C000]
 	wOAMGeneral1:: DB
 	wOAMGeneral2:: DB
 
+	; Parallax scroll offset
+	wParallaxClose:: DB
+	wParallaxFar:: DB
+
 	; Set LCD interrupt behavior
 	wLCDInterrupt:: DS 2
 
@@ -37,6 +41,8 @@ InitializeGameVars::
 	ld [countdown_frame], a
 	ld [cloud_scroll_offset], a
 	ld [classic_mode_stage], a
+	ld [wParallaxClose], a
+	ld [wParallaxFar], a
 	ld [fade_frame], a
 	ld [wUpdateTilemapOffset], a
 	ld [wUpdateTilemapIndex], a

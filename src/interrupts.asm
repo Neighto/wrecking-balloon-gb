@@ -1,6 +1,10 @@
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 
+MENU_LCD_SCROLL_RESET EQU 128
+MENU_LCD_SCROLL_FAR EQU 96
+MENU_LCD_SCROLL_CLOSE EQU 113
+
 SECTION "interrupts", ROM0
 
 VBlankInterrupt::
@@ -44,6 +48,50 @@ SetBaseInterrupts::
 	ldh [rSTAT], a
     ret
 
+MenuLCDInterrupt:
+    ld a, [rLYC]
+    cp a, MENU_LCD_SCROLL_RESET
+    jr z, .reset
+	cp a, MENU_LCD_SCROLL_FAR
+    jr z, .far
+    cp a, MENU_LCD_SCROLL_CLOSE
+    jr z, .close
+    jr .end
+.reset:
+    ld a, MENU_LCD_SCROLL_FAR
+	ldh [rLYC], a
+    xor a ; ld a, 0
+    ldh [rSCX], a
+    jr .end
+.far:
+    ld a, MENU_LCD_SCROLL_CLOSE
+    ldh [rLYC], a
+    ldh a, [rSCX]
+    ld hl, wParallaxFar
+    add a, [hl]
+	ldh [rSCX], a
+    jr .end
+.close:
+    ld a, MENU_LCD_SCROLL_RESET
+	ldh [rLYC], a
+    ldh a, [rSCX]
+    ld hl, wParallaxClose
+    add a, [hl]
+	ldh [rSCX], a
+.end:
+    jp LCDInterruptEnd
+
+SetMenuInterrupts::
+    ld a, MENU_LCD_SCROLL_FAR
+	ldh [rLYC], a
+
+    ld hl, wLCDInterrupt
+    ld a, LOW(MenuLCDInterrupt)
+    ld [hli], a
+    ld a, HIGH(MenuLCDInterrupt)
+    ld [hl], a
+    ret 
+
 ParkLCDInterrupt:
     ld a, [rLYC]
 	cp a, 0
@@ -54,8 +102,8 @@ ParkLCDInterrupt:
 .clouds:
     ld a, 72
 	ldh [rLYC], a
-    ld a, [rSCX]
-    ld hl, cloud_scroll_offset
+    ldh a, [rSCX]
+    ld hl, wParallaxClose
     add a, [hl]
 	ldh [rSCX], a
     jr .end

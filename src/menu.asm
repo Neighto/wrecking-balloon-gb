@@ -172,7 +172,7 @@ UpdateMenuOpening::
 .fadeIn:
 	call HasFadedIn
 	cp a, 0
-	jp nz, MenuLoop
+	jp nz, StartMenu
 	call FadeInPalettes
 	ret
 .endFrame:
@@ -188,6 +188,7 @@ UpdateMenu::
 	cp a, STAGE_CLASSIC_SELECTED
 	jr z, .fadeOut
 	call MenuInput
+	call IncrementScrollOffset
 	ret
 .fadeOut:
 	call HasFadedOut
