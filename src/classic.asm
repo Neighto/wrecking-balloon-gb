@@ -261,12 +261,21 @@ CountdownAnimation::
     ret
 
 IncrementScrollOffset::
-	ld a, [global_timer]
+
+.close:
+    ld a, [global_timer]
 	and %0000111
-	jr nz, .end
-	ld a, [cloud_scroll_offset]
+	jr nz, .far
+    ld a, [wParallaxClose]
 	inc a
-	ld [cloud_scroll_offset], a
+	ld [wParallaxClose], a
+.far:
+    ld a, [global_timer]
+	and %0001111
+	jr nz, .end
+    ld a, [wParallaxFar]
+	inc a
+	ld [wParallaxFar], a
 .end:
 	ret
 

@@ -119,7 +119,6 @@ LoadMenuData::
 	ld bc, MenuTitleTiles
 	ld de, MenuTitleTilesEnd - MenuTitleTiles
 	call AddBGTiles8800Method
-	SET_IN_RANGE _SCRN0, _SCRN1 - _SCRN0, $0E ; Set whole screen to empty tile
 	ld bc, MenuMap + TITLE_ADDRESS_OFFSET
 	ld hl, _SCRN0 + TITLE_ADDRESS_OFFSET
 	ld de, $A0
