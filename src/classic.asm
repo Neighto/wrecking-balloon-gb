@@ -14,11 +14,6 @@ COUNTDOWN_BALLOON_POP_SPEED EQU %00000111
 
 SECTION "classic", ROMX
 
-InitializeClassicVars::
-    xor a ; ld a, 0
-	ld [wFadeFrame], a
-    ret
-
 ParkFadeOut:
     ld a, [classic_mode_stage]
 	cp a, STAGE_CLASSIC_STARTING
