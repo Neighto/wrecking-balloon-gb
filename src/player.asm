@@ -3,10 +3,11 @@ INCLUDE "balloonConstants.inc"
 INCLUDE "macro.inc"
 
 PLAYER_START_X EQU 80
-PLAYER_START_Y EQU 100
-PLAYER_BALLOON_START_Y EQU (PLAYER_START_Y-16)
+PLAYER_START_Y EQU 84
 PLAYER_MAX_DRIFT_X EQU 2
 PLAYER_MAX_DRIFT_Y EQU 2
+
+PLAYER_DEFAULT_SPEED EQU 2
 
 PLAYER_SPRITE_MOVE_WAIT_TIME EQU %00000001
 PLAYER_RESPAWN_TIME EQU 150
@@ -43,50 +44,40 @@ SECTION "player vars", WRAM0
 SECTION "player", ROM0
 
 UpdateBalloonPosition:
+.balloonLeft:
   ld hl, wPlayerBalloonOAM
-  ; Update Y
   ld a, [wPlayerY]
   ld [hli], a
-  ; Update X
   ld a, [wPlayerX]
-  ld [hl], a
-
-  ld hl, wPlayerBalloonOAM+4
-  ; Update Y
+  ld [hli], a
+  inc l
+  inc l
+.balloonRight:
   ld a, [wPlayerY]
   ld [hli], a
-  ; Update X
   ld a, [wPlayerX]
   add 8
   ld [hl], a
   ret
 
 UpdateCactusPosition:
+.cactusLeft:
   ld hl, wPlayerCactusOAM
-  ; Update Y
   ld a, [wPlayerY2]
   ld [hli], a
-  ; Update X
   ld a, [wPlayerX2]
-  ld [hl], a
-
-  ld hl, wPlayerCactusOAM+4
-  ; Update Y
+  ld [hli], a
+  inc l
+  inc l
+.cactusRight:
   ld a, [wPlayerY2]
   ld [hli], a
-  ; Update X
   ld a, [wPlayerX2]
   add 8
   ld [hl], a
   ret
 
-UpdatePlayerPosition:
-  call UpdateBalloonPosition
-  call UpdateCactusPosition
-  ret
-
 InitializePlayer::
-  ; Set variables
   xor a ; ld a, 0
   ld [wPlayerPopping], a
   ld [wPlayerPoppingFrame], a
@@ -103,15 +94,19 @@ InitializePlayer::
   ld hl, wPlayerX
   ld [hl], PLAYER_START_X
   ld hl, wPlayerY
-  ld [hl], PLAYER_BALLOON_START_Y
+  ld [hl], PLAYER_START_Y
   ld hl, wPlayerX2
   ld [hl], PLAYER_START_X
   ld hl, wPlayerY2
-  ld [hl], PLAYER_START_Y
+  ld a, PLAYER_START_Y
+  add a, 16
+  ld [hl], a
   ld hl, wPlayerSpeed
-  ld [hl], 2
+  ld [hl], PLAYER_DEFAULT_SPEED
+  ret
 
-  ; Cactus left
+SpawnPlayer::
+.cactusLeft:
   ld hl, wPlayerCactusOAM
   ld a, [wPlayerY2]
   ld [hli], a
@@ -120,7 +115,7 @@ InitializePlayer::
   ld [hl], PLAYER_CACTUS_TILE
   inc l
   ld [hl], OAMF_PAL0
-  ; Cactus right
+.cactusRight:
   inc l
   ld a, [wPlayerY2]
   ld [hli], a
@@ -130,8 +125,7 @@ InitializePlayer::
   ld [hl], PLAYER_CACTUS_TILE
   inc l
   ld [hl], OAMF_PAL0 | OAMF_XFLIP
-
-  ; Balloon left
+.balloonLeft:
   ld hl, wPlayerBalloonOAM
   ld a, [wPlayerY]
   ld [hli], a
@@ -140,7 +134,7 @@ InitializePlayer::
   ld [hl], PLAYER_BALLOON_TILE
   inc l
   ld [hl], OAMF_PAL1
-  ; Balloon right
+.balloonRight:
   inc l
   ld a, [wPlayerY]
   ld [hli], a
@@ -178,95 +172,60 @@ ClearPlayerBalloon:
   ld [hl], a
   ret
 
-SpawnPlayer:
-  ; Probably temporary
+RespawnPlayer:
   xor a ; ld a, 0
   ld [wPlayerRespawnTimer], a
   call InitializePlayer
-  
+  call SpawnPlayer
   ld a, INVINCIBLE_RESPAWN_TIME
   ld [wPlayerInvincible], a
   call StopSweepSound
   ret
 
-MoveCactusDriftLeft:
-  ; Move left until limit is reached
-  ld a, [wGlobalTimer]
-  and	%00000001
-  jr nz, .end
-  ld hl, wPlayerX
-  ld a, PLAYER_MAX_DRIFT_X
-  cpl
-  add [hl]
-  ld hl, wPlayerX2
-  cp a, [hl]
-  jr nc, .end
-  dec [hl]
-.end:
-  ret
-
-; TODO: Add basic deceleration so if you stop it keeps swinging
-MoveCactusDriftRight:
-  ; Move right until limit is reached
-  ld a, [wGlobalTimer]
-  and	%00000001
-  jr nz, .end
-  ld hl, wPlayerX
-  ld a, PLAYER_MAX_DRIFT_X
-  add [hl]
-  ld hl, wPlayerX2
-  cp a, [hl]
-  jr c, .end
-  inc [hl]
-.end:
-  ret
-
 MoveCactusDriftCenterX:
-  ; Move back to center
+.canCactusDriftCenterX:
   ld a, [wGlobalTimer]
   and	%00000001
-  jr nz, .end
+  ret nz
   ld a, [wPlayerX]
   ld hl, wPlayerX2
   cp a, [hl]
-  jr z, .end
+  ret z
   jr c, .moveLeft
 .moveRight:
   inc [hl]
   ret
 .moveLeft:
   dec [hl]
-.end:
   ret
 
 MoveCactusDriftUp:
-  ; Move up until limit is reached
+.canCactusDriftUp:
   ld a, [wGlobalTimer]
   and	%00000001
-  jr nz, .end
-  ld hl, wPlayerY
+  ret nz
+  ld hl, wPlayerY  
   ld a, PLAYER_MAX_DRIFT_Y-16
   cpl
   add [hl]
   ld hl, wPlayerY2
   cp a, [hl]
-  jr nc, .end
+  ret nc
+.cactusDriftUp:
   dec [hl]
-.end:
   ret
 
 MoveCactusDriftCenterY:
-  ; Move back to center
+.canCactusDriftCenterY:
   ld a, [wGlobalTimer]
   and	%00000001
-  jr nz, .end
-  ; In what direction is cactus_y off from wPlayerY
+  ret nz
   ld hl, wPlayerY
   ld a, 16
   add [hl]
   ld hl, wPlayerY2
   cp a, [hl]
-  jr z, .end
+  ret z
   jr nc, .moveDown
 .moveUp:
   dec [hl]
@@ -279,13 +238,36 @@ MoveCactusDriftCenterY:
 MoveRight:
   INCREMENT_POS wPlayerX, [wPlayerSpeed]
   INCREMENT_POS wPlayerX2, [wPlayerSpeed]
-  call MoveCactusDriftLeft
+.canCactusDriftLeft:
+  ld a, [wGlobalTimer]
+  and	%00000001
+  ret nz
+  ld hl, wPlayerX
+  ld a, PLAYER_MAX_DRIFT_X
+  cpl
+  add [hl]
+  ld hl, wPlayerX2
+  cp a, [hl]
+  ret nc
+.cactusDriftLeft:
+  dec [hl]
   ret
 
 MoveLeft:
   DECREMENT_POS wPlayerX, [wPlayerSpeed]
   DECREMENT_POS wPlayerX2, [wPlayerSpeed]
-  call MoveCactusDriftRight
+.canCactusDriftRight:
+  ld a, [wGlobalTimer]
+  and	%00000001
+  ret nz
+  ld hl, wPlayerX
+  ld a, PLAYER_MAX_DRIFT_X
+  add [hl]
+  ld hl, wPlayerX2
+  cp a, [hl]
+  ret c
+.cactusDriftRight:
+  inc [hl]
   ret
 
 MoveDown:
@@ -407,7 +389,8 @@ PlayerControls:
 .endB:
   call ResetSpeedUp
 .end:
-  call UpdatePlayerPosition
+  call UpdateBalloonPosition
+  call UpdateCactusPosition
   pop bc
   pop af
   ret
@@ -440,7 +423,8 @@ MovePlayerAutoMiddle::
 MovePlayerAutoFlyUp::
   DECREMENT_POS wPlayerY, 1
   DECREMENT_POS wPlayerY2, 1
-  call UpdatePlayerPosition
+  call UpdateBalloonPosition
+  call UpdateCactusPosition
   ret
 
 FallCactusDown:
@@ -574,7 +558,7 @@ PlayerUpdate::
   jr nz, .respawn
   call NoMoreLives
 .respawn:
-  call SpawnPlayer
+  call RespawnPlayer
 .respawnSkip:
   ; Check if we need to play popping animation
   ld a, [wPlayerPopping]
