@@ -33,7 +33,7 @@ SpawnMenuCursor::
 	ld [hli], a
 	ld [hl], $00
 	inc l
-	ld [hl], %00000000
+	ld [hl], OAMF_PAL0
 .end:
 	ret
 

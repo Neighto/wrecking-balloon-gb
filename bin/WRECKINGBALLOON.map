@@ -350,51 +350,54 @@ ROM0 bank #0:
            $19ed = LevelDataManager.w3
            $19ef = LevelDataManager.handle
            $19f9 = LevelDataManager.end
-  SECTION: $19fa-$1ac7 ($00ce bytes) ["interrupts"]
-           $19fa = InitializeInterrupts
-           $1a10 = VBlankInterrupt
-           $1a20 = LCDInterrupt
-           $1a2a = LCDInterruptEnd
-           $1a2e = MenuLCDInterrupt
-           $1a3e = MenuLCDInterrupt.reset
-           $1a47 = MenuLCDInterrupt.far
-           $1a55 = MenuLCDInterrupt.close
-           $1a61 = MenuLCDInterrupt.end
-           $1a64 = SetMenuInterrupts
-           $1a72 = ParkLCDInterrupt
-           $1a7e = ParkLCDInterrupt.clouds
-           $1a8c = ParkLCDInterrupt.ground
-           $1a91 = ParkLCDInterrupt.end
-           $1a94 = SetParkInterrupts
-           $1a98 = ClassicLCDInterrupt
-           $1aba = SetClassicInterrupts
-  SECTION: $1ac8-$1b94 ($00cd bytes) ["rom"]
-           $1ac8 = Start
-           $1b02 = StartClassic
-           $1b02 = StartMenu
-           $1b53 = PreGameLoop
-           $1b77 = GameLoopCountdown
-           $1b86 = GameLoop
-  SECTION: $1b95-$1c0c ($0078 bytes) ["controller"]
-           $1b95 = InitializeController
-           $1b9a = ReadInput
-           $1bca = JOY_RIGHT
-           $1bd2 = JOY_LEFT
-           $1bda = JOY_UP
-           $1be2 = JOY_DOWN
-           $1bea = JOY_A
-           $1bf2 = JOY_B
-           $1bfa = JOY_SELECT
-           $1c02 = JOY_START
-           $1c0a = JOY_FALSE
-  SECTION: $1c0d-$1c2a ($001e bytes) ["OAM DMA routine"]
-           $1c0d = CopyDMARoutine
-           $1c14 = CopyDMARoutine.copy
-           $1c1b = DMARoutine
-           $1c1f = DMARoutine.wait
-           $1c23 = DMARoutineEnd
-           $1c23 = OAMDMA
-    SLACK: $23f5 bytes
+  SECTION: $19fa-$1b0b ($0112 bytes) ["rom"]
+           $19fa = Start
+           $1a34 = MenuLoopOpening
+           $1a40 = StartMenu
+           $1a58 = MenuLoop
+           $1a6a = StartClassic
+           $1abb = ParkLoop
+           $1aca = PreGameLoop
+           $1aee = GameLoopCountdown
+           $1afd = GameLoop
+  SECTION: $1b0c-$1bd9 ($00ce bytes) ["interrupts"]
+           $1b0c = InitializeInterrupts
+           $1b22 = VBlankInterrupt
+           $1b32 = LCDInterrupt
+           $1b3c = LCDInterruptEnd
+           $1b40 = MenuLCDInterrupt
+           $1b50 = MenuLCDInterrupt.reset
+           $1b59 = MenuLCDInterrupt.far
+           $1b67 = MenuLCDInterrupt.close
+           $1b73 = MenuLCDInterrupt.end
+           $1b76 = SetMenuInterrupts
+           $1b84 = ParkLCDInterrupt
+           $1b90 = ParkLCDInterrupt.clouds
+           $1b9e = ParkLCDInterrupt.ground
+           $1ba3 = ParkLCDInterrupt.end
+           $1ba6 = SetParkInterrupts
+           $1baa = ClassicLCDInterrupt
+           $1bcc = SetClassicInterrupts
+  SECTION: $1bda-$1c51 ($0078 bytes) ["controller"]
+           $1bda = InitializeController
+           $1bdf = ReadInput
+           $1c0f = JOY_RIGHT
+           $1c17 = JOY_LEFT
+           $1c1f = JOY_UP
+           $1c27 = JOY_DOWN
+           $1c2f = JOY_A
+           $1c37 = JOY_B
+           $1c3f = JOY_SELECT
+           $1c47 = JOY_START
+           $1c4f = JOY_FALSE
+  SECTION: $1c52-$1c6f ($001e bytes) ["OAM DMA routine"]
+           $1c52 = CopyDMARoutine
+           $1c59 = CopyDMARoutine.copy
+           $1c60 = DMARoutine
+           $1c64 = DMARoutine.wait
+           $1c68 = DMARoutineEnd
+           $1c68 = OAMDMA
+    SLACK: $23b0 bytes
 
 ROMX bank #1:
   SECTION: $4000-$539f ($13a0 bytes) ["tilesets"]
@@ -1156,7 +1159,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $1c0b bytes in 1 bank
+    ROM0: $1c50 bytes in 1 bank
     ROMX: $36fc bytes in 1 bank
     WRAM0: $018e bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

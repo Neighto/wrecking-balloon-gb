@@ -48,10 +48,7 @@ WindowTiles::
 WindowTilesEnd::
 
 MenuTiles::
-    DB $BD,$3C,$7E,$42,$FF,$A5,$FF,$99
-    DB $7E,$42,$FF,$FF,$FF,$FF,$7E,$7E
-    DB $00,$00,$00,$00,$00,$00,$00,$00
-    DB $00,$00,$00,$00,$00,$00,$00,$00
+    INCBIN "incbin/sprite/MenuSprite.2bpp"
 MenuTilesEnd::
 
 MenuTitleTiles::
