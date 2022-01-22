@@ -6,11 +6,20 @@ INCLUDE "balloonConstants.inc"
 
 HAND_WAVE_START_X EQU 120
 HAND_WAVE_START_Y EQU 112
+HAND_WAVE_TILE_1 EQU $3C
+HAND_WAVE_TILE_2 EQU $3E
 
 COUNTDOWN_START_X EQU 80
 COUNTDOWN_START_Y EQU 50
 COUNTDOWN_SPEED EQU %00011111
 COUNTDOWN_BALLOON_POP_SPEED EQU %00000111
+COUNTDOWN_3_TILE_1 EQU $34
+COUNTDOWN_3_TILE_2 EQU $36
+COUNTDOWN_2_TILE_1 EQU $30
+COUNTDOWN_2_TILE_2 EQU $32
+COUNTDOWN_1_TILE_1 EQU $2C
+COUNTDOWN_1_TILE_2 EQU $2E
+COUNTDOWN_NEUTRAL_BALLOON_TILE EQU $38
 
 SECTION "game vars", WRAM0
     wHandWavingFrame:: DB
@@ -106,7 +115,7 @@ SpawnHandWave::
     ld [hli], a
     ld a, HAND_WAVE_START_X
     ld [hli], a
-    ld [hl], $3A
+    ld [hl], HAND_WAVE_TILE_1
     inc l
     ld [hl], OAMF_PAL0
 .end:
@@ -122,7 +131,7 @@ HandWaveAnimation::
     and 15
     jp nz, .end
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], $3C
+    ld [hl], HAND_WAVE_TILE_2
     ld hl, wHandWavingFrame
     ld [hl], 1
     ret
@@ -131,7 +140,7 @@ HandWaveAnimation::
     and 15
     jp nz, .end
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], $3A
+    ld [hl], HAND_WAVE_TILE_1
     ld hl, wHandWavingFrame
     ld [hl], 0
 .end:
@@ -194,35 +203,35 @@ CountdownAnimation::
 .frame0:
     call PercussionSound
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], $32
+    ld [hl], COUNTDOWN_3_TILE_1
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
-    ld [hl], $34
+    ld [hl], COUNTDOWN_3_TILE_2
     ld hl, wCountdownFrame
     ld [hl], 1
     ret
 .frame1:
     call PercussionSound
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], $2E
+    ld [hl], COUNTDOWN_2_TILE_1
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
-    ld [hl], $30
+    ld [hl], COUNTDOWN_2_TILE_2
     ld hl, wCountdownFrame
     ld [hl], 2
     ret
 .frame2:
     call PercussionSound
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], $2A
+    ld [hl], COUNTDOWN_1_TILE_1
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
-    ld [hl], $2C
+    ld [hl], COUNTDOWN_1_TILE_2
     ld hl, wCountdownFrame
     ld [hl], 3
     ret
 .frame3:
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], $36
+    ld [hl], COUNTDOWN_NEUTRAL_BALLOON_TILE
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
-    ld [hl], $36
+    ld [hl], COUNTDOWN_NEUTRAL_BALLOON_TILE
     inc l 
     ld [hl], OAMF_XFLIP
     ld hl, wCountdownFrame

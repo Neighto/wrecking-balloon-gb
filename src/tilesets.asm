@@ -7,6 +7,7 @@ PlayerSpriteTiles::
     ; INCBIN "incbin/sprite/PlayerHappy.2bpp"
     INCBIN "incbin/sprite/Pop1.2bpp"
     INCBIN "incbin/sprite/Pop2.2bpp"
+    INCBIN "incbin/sprite/Bullet.2bpp"
 PlayerSpriteTilesEnd::
 
 EnemyTiles::

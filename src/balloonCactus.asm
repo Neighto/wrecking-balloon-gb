@@ -11,6 +11,8 @@ BALLOON_CACTUS_OAM_SPRITES EQU 4
 BALLOON_CACTUS_OAM_BYTES EQU BALLOON_CACTUS_OAM_SPRITES * 4
 BALLOON_CACTUS_MOVE_TIME EQU %00000011
 BALLOON_CACTUS_COLLISION_TIME EQU %00001000
+BALLOON_CACTUS_TILE EQU $12
+BALLOON_CACTUS_SCREAMING_TILE EQU $14
 
 SECTION "balloon cactus vars", WRAM0
     balloonCactus:: DS BALLOON_CACTUS_DATA_SIZE
@@ -120,7 +122,7 @@ SpawnBalloonCactus::
     ld [hli], a
     ld a, [wEnemyX2]
     ld [hli], a
-    ld [hl], $10
+    ld [hl], BALLOON_CACTUS_TILE
     inc l
     ld [hl], OAMF_PAL0
 .cactusRight:
@@ -130,7 +132,7 @@ SpawnBalloonCactus::
     ld a, [wEnemyX2]
     add 8
     ld [hli], a
-    ld [hl], $10
+    ld [hl], BALLOON_CACTUS_TILE
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .setStruct:
@@ -323,9 +325,9 @@ DeathOfBalloonCactus:
     ld [wEnemyFalling], a
     ; Screaming cactus
     SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
-    ld [hl], $12
+    ld [hl], BALLOON_CACTUS_SCREAMING_TILE
     SET_HL_TO_ADDRESS wOAM+14, wEnemyOAM
-    ld [hl], $12
+    ld [hl], BALLOON_CACTUS_SCREAMING_TILE
     ; Sound
     call PopSound
     ret

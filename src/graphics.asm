@@ -206,11 +206,30 @@ RefreshBoostBar:
 	ret 
 
 RefreshAttackBar:
-	ld a, BAR_LEFT_FULL
-	ld [ATTACK_BAR_ADDRESS], a
+	ld hl, ATTACK_BAR_ADDRESS
+	ld a, [wPlayerAttack]
+	cp a, PLAYER_ATTACK_FULL
+	jr z, .isReady
+.isCharging:
+	cp a, PLAYER_ATTACK_HALF_FULL
+	jr c, .isHalfReady
+	ld a, BAR_LEFT_EMPTY
+	ld [hli], a
 	inc a
-	ld [ATTACK_BAR_ADDRESS+1], a
+	ld [hl], a
 	ret
+.isHalfReady:
+	ld a, BAR_LEFT_FULL
+	ld [hli], a
+	ld a, BAR_LEFT_EMPTY+1
+	ld [hl], a
+	ret
+.isReady:
+	ld a, BAR_LEFT_FULL
+	ld [hli], a
+	inc a
+	ld [hl], a
+	ret 
 
 RefreshWindow::
 	ld a, [wGlobalTimer]
