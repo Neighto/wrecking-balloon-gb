@@ -296,6 +296,7 @@ SetGameMapStartPoint::
 
 UpdateSprites:
     call PlayerUpdate
+    call BulletUpdate
     call PointBalloonUpdate
     call BalloonCactusUpdate
     call BombUpdate

@@ -19,6 +19,12 @@ SECTION "player vars", WRAM0
   wPlayerRespawnTimer:: DB
   wPlayerSpeed:: DB
   wPlayerLives:: DB
+  wPlayerRight:: DB
+
+  wPlayerBulletY:: DB
+  wPlayerBulletX:: DB
+  wPlayerBulletAlive:: DB
+  wPlayerBulletRight:: DB
 
   ; Operate like timers
   wPlayerInvincible:: DB
@@ -39,10 +45,15 @@ InitializePlayer::
   ld [wPlayerInvincible], a
   ld [wPlayerBoost], a
   ld [wPlayerAttack], a
+  ld [wPlayerBulletY], a
+  ld [wPlayerBulletX], a
+  ld [wPlayerBulletAlive], a ; TODO probably have bullet have its own file and init so it doesnt disappear on death
 
   ld a, 1
   ld [wPlayerAlive], a
   ld [wPlayerFallSpeed], a
+  ld [wPlayerRight], a
+  ld [wPlayerBulletRight], a
 
   ld hl, wPlayerX
   ld [hl], PLAYER_START_X
@@ -243,17 +254,90 @@ ChargeAttack:
 .isCharging:
   dec a
   ld [wPlayerAttack], a
-  cp a, PLAYER_ATTACK_EFFECT_ENDS
-  ret nc
-.resetAttack:
-  ; if applicable
   ret
 
 SpawnBullet:
+  ld a, 1 
+  ld [wPlayerBulletAlive], a
+  ld a, [wPlayerY2]
+  add 5
+  ld [wPlayerBulletY], a
+  ld hl, wPlayerBulletOAM
+  ld a, [wPlayerRight]
+  ld [wPlayerBulletRight], a
+  cp a, 0
+  jr nz, .spawnFromRight
+.spawnFromLeft:
+  ld a, [wPlayerX2]
+  sub 3
+  ld [wPlayerBulletX], a
+.leftOAM:
+  ld a, [wPlayerBulletY]
+  ld [hli], a
+  ld a, [wPlayerBulletX]
+  ld [hli], a
+  ld [hl], PLAYER_BULLET_TILE
+  inc l
+  ld [hl], OAMF_PAL0 | OAMF_XFLIP
+  ret
+.spawnFromRight:
+  ld a, [wPlayerX2]
+  add 12
+  ld [wPlayerBulletX], a
+.rightOAM:
+  ld a, [wPlayerBulletY]
+  ld [hli], a
+  ld a, [wPlayerBulletX]
+  ld [hli], a
+  ld [hl], PLAYER_BULLET_TILE
+  inc l
+  ld [hl], OAMF_PAL0
+  ret
 
-  ret 
+ClearBullet:
+  xor a ; ld a, 0
+  ld [wPlayerBulletAlive], a
+  ld hl, wPlayerBulletOAM
+  ld [hli], a
+  ld [hli], a
+  ld [hli], a
+  ld [hl], a
+  ret
 
-
+BulletUpdate::
+  ld a, [wPlayerBulletAlive]
+  cp a, 0
+  ret z
+.isAlive:
+  ; Check offscreen
+  ld a, [wPlayerBulletX]
+  ld b, a 
+  call OffScreenXEnemies
+  cp a, 0
+  jr z, .onScreen
+.offScreen:
+  call ClearBullet
+  ret
+.onScreen:
+  ; Check if we can move
+  ld a, [wGlobalTimer]
+  and PLAYER_BULLET_TIME
+  ret nz
+.move:
+  ld a, [wPlayerBulletRight]
+  cp a, 0
+  ld a, [wPlayerBulletX]
+  jr nz, .moveRight
+.moveLeft:
+  sub PLAYER_BULLET_SPEED
+  jr .endMove
+.moveRight:
+  add PLAYER_BULLET_SPEED
+.endMove:
+  ld [wPlayerBulletX], a
+  ld hl, wPlayerBulletOAM+1
+  ld [hl], a
+  ret
 
 PlayerControls:
   ; argument d = input directions down
@@ -271,6 +355,8 @@ PlayerControls:
   jr nz, .endRight
 .moveRight:
 	call MoveRight
+  ld a, 1
+  ld [wPlayerRight], a
 .endRight:
 
 .left:
@@ -284,7 +370,10 @@ PlayerControls:
   call OffScreenX
   cp a, 0
   jr nz, .endLeft
+.moveLeft:
 	call MoveLeft
+  xor a ; ld a, 0
+  ld [wPlayerRight], a
 .endLeft:
 
 .up:
