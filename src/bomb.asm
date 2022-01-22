@@ -12,6 +12,9 @@ BOMB_OAM_SPRITES EQU 3
 BOMB_OAM_BYTES EQU BOMB_OAM_SPRITES * 4
 BOMB_MOVE_TIME EQU %00000001
 BOMB_COLLISION_TIME EQU %00001000
+BOMB_TILE EQU $20
+BOMB_EXPLOSION_TILE_1 EQU $22
+BOMB_EXPLOSION_TILE_2 EQU $24
 
 SECTION "bomb vars", WRAM0
     bomb:: DS BOMB_DATA_SIZE
@@ -80,7 +83,7 @@ SpawnBomb::
     ld [hli], a
     ld a, [wEnemyX]
     ld [hli], a
-    ld a, $1E
+    ld a, BOMB_TILE
     ld [hl], a
     inc l
     ld [hl], OAMF_PAL0
@@ -91,7 +94,7 @@ SpawnBomb::
     ld a, [wEnemyX]
     add 8
     ld [hli], a
-    ld a, $1E
+    ld a, BOMB_TILE
     ld [hl], a
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
@@ -222,21 +225,21 @@ ExplosionAnimation:
     ld a, [wEnemyX]
     sub 4
     ld [hli], a
-    ld a, $20
+    ld a, BOMB_EXPLOSION_TILE_1
     ld [hl], a
     ; Explosion middle
     SET_HL_TO_ADDRESS wOAM+5, wEnemyOAM
     ld a, [wEnemyX]
     add 4
     ld [hli], a
-    ld a, $22
+    ld a, BOMB_EXPLOSION_TILE_2
     ld [hl], a
     ; Explosion right
     SET_HL_TO_ADDRESS wOAM+9, wEnemyOAM
     ld a, [wEnemyX]
     add 12
     ld [hli], a
-    ld a, $20
+    ld a, BOMB_EXPLOSION_TILE_1
     ld [hli], a
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
     jr .endFrame

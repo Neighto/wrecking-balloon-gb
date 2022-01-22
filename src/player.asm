@@ -22,7 +22,7 @@ SECTION "player vars", WRAM0
 
   ; Operate like timers
   wPlayerInvincible:: DB
-  wPlayerBoost:: DB
+  wPlayerBoost:: DB ; TODO it would be a lot more logical to make these increase instead of decrease
   wPlayerAttack:: DB
 
 SECTION "player", ROM0
@@ -236,10 +236,24 @@ ChargeBoost:
   ld [hl], PLAYER_DEFAULT_SPEED
   ret
 
-ActivateAttack:
-  ; Player pressed A
-
+ChargeAttack:
+  ld a, [wPlayerAttack]
+  cp a, PLAYER_ATTACK_FULL
+  ret z
+.isCharging:
+  dec a
+  ld [wPlayerAttack], a
+  cp a, PLAYER_ATTACK_EFFECT_ENDS
+  ret nc
+.resetAttack:
+  ; if applicable
   ret
+
+SpawnBullet:
+
+  ret 
+
+
 
 PlayerControls:
   ; argument d = input directions down
@@ -361,7 +375,13 @@ PlayerControls:
   ld a, d
 	call JOY_A
 	jr z, .endA
-  call ActivateAttack
+  ld a, [wPlayerAttack]
+  cp a, PLAYER_ATTACK_FULL
+  jr nz, .endA
+.activateAttack:
+  ld a, PLAYER_ATTACK_EMPTY
+  ld [wPlayerAttack], a
+  call SpawnBullet
 .endA:
 
 .BButton:
@@ -528,10 +548,14 @@ PlayerUpdate::
   ld a, [wGlobalTimer]
 	and	PLAYER_MOVE_TIME
 	call z, MovePlayer
-  ; Check if we can charge
+  ; Check if we can charge boost
   ld a, [wGlobalTimer]
 	and	PLAYER_BOOST_TIME
   call z, ChargeBoost
+  ; Check if we can charge attack
+  ld a, [wGlobalTimer]
+	and	PLAYER_ATTACK_TIME
+  call z, ChargeAttack
   ret
 .popped:
   ; Can we respawn
