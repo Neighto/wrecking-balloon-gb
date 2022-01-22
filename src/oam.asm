@@ -4,8 +4,9 @@ SECTION "OAM vars", WRAM0[$C100]
 	; Player OAM is separate because we should not have to request it in case there's not enough space to spawn
 	wPlayerCactusOAM:: DS 4*2
 	wPlayerBalloonOAM:: DS 4*2
+	wPlayerBulletOAM:: DS 4*1
 OAMVars::
-	wOAM:: DS 4*36 ; 36 sprites with 4 bytes each of attributes
+	wOAM:: DS 4*35 ; 36 sprites with 4 bytes each of attributes
 OAMVarsEnd::
 
 SECTION "OAM DMA routine", ROM0
