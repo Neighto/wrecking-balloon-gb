@@ -179,6 +179,16 @@ RefreshLives:
 	ret
 
 RefreshBoostBar:
+	ld a, [wPlayerBoost]
+	cp a, 0
+	jr z, .isReady
+.isCharging:
+	ld a, BAR_LEFT_EMPTY
+	ld [BOOST_BAR_ADDRESS], a
+	inc a
+	ld [BOOST_BAR_ADDRESS+1], a
+	ret
+.isReady:
 	ld a, BAR_LEFT_FULL
 	ld [BOOST_BAR_ADDRESS], a
 	inc a
