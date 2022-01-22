@@ -178,12 +178,21 @@ DeathOfBomb::
     ret
 
 CollisionBomb::
+.checkHit:
     ld bc, wPlayerCactusOAM
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     ld e, 16
     call CollisionCheck
     cp a, 0
     call nz, CollisionWithPlayer
+    call nz, DeathOfBomb
+.checkHitByBullet:
+    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    LD_BC_HL
+    ld hl, wPlayerBulletOAM
+    ld e, 4
+    call CollisionCheck
+    cp a, 0
     call nz, DeathOfBomb
     ret
 

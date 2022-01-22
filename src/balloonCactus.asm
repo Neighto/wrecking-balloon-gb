@@ -340,6 +340,14 @@ CollisionBalloonCactus:
     call CollisionCheck
     cp a, 0
     call nz, DeathOfBalloonCactus
+.checkHitByBullet:
+    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    LD_BC_HL
+    ld hl, wPlayerBulletOAM
+    ld e, 4
+    call CollisionCheck
+    cp a, 0
+    call nz, DeathOfBalloonCactus
 .checkHitPlayer:
     ld a, [wPlayerAlive]
     cp a, 0
