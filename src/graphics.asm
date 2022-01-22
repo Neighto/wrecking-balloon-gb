@@ -1,5 +1,6 @@
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
+INCLUDE "playerConstants.inc"
 INCLUDE "macro.inc"
 
 NUMBERS_TILE_OFFSET EQU $F3
@@ -179,20 +180,29 @@ RefreshLives:
 	ret
 
 RefreshBoostBar:
+	ld hl, BOOST_BAR_ADDRESS
 	ld a, [wPlayerBoost]
-	cp a, 0
+	cp a, PLAYER_BOOST_FULL
 	jr z, .isReady
 .isCharging:
+	cp a, PLAYER_BOOST_HALF_FULL
+	jr c, .isHalfReady
 	ld a, BAR_LEFT_EMPTY
-	ld [BOOST_BAR_ADDRESS], a
+	ld [hli], a
 	inc a
-	ld [BOOST_BAR_ADDRESS+1], a
+	ld [hl], a
+	ret
+.isHalfReady:
+	ld a, BAR_LEFT_FULL
+	ld [hli], a
+	ld a, BAR_LEFT_EMPTY+1
+	ld [hl], a
 	ret
 .isReady:
 	ld a, BAR_LEFT_FULL
-	ld [BOOST_BAR_ADDRESS], a
+	ld [hli], a
 	inc a
-	ld [BOOST_BAR_ADDRESS+1], a
+	ld [hl], a
 	ret 
 
 RefreshAttackBar:
