@@ -158,7 +158,7 @@ BirdRightsideFlap:
     cp a, 0
     jr nz, .flapping
 .soaring:
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     and BIRD_SOARING_TIME
     ret nz
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
@@ -169,7 +169,7 @@ BirdRightsideFlap:
     ld [hl], 1
     ret
 .flapping:
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     and BIRD_FLAPPING_TIME
     ret nz
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
@@ -186,7 +186,7 @@ BirdLeftsideFlap:
     cp a, 0
     jr nz, .flapping
 .soaring:
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     and BIRD_SOARING_TIME
     ret nz
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
@@ -197,7 +197,7 @@ BirdLeftsideFlap:
     ld [hl], 1
     ret
 .flapping:
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     and BIRD_FLAPPING_TIME
     ret nz
     SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
@@ -264,7 +264,7 @@ Move:
     INCREMENT_POS wEnemyX, BIRD_HORIZONTAL_SPEED
     call BirdLeftsideFlap
 .moveDown:
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     and BIRD_SPRITE_DESCENDING_TIME
     jr nz, .moveEnd
     INCREMENT_POS wEnemyY, BIRD_VERTICAL_SPEED
@@ -371,11 +371,11 @@ BirdUpdate::
     jr z, .isDead
 .isAlive:
     ; Check if we can move
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     and	BIRD_MOVE_TIME
     call z, Move
     ; Check if we can collide
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     and	BIRD_COLLISION_TIME
     push bc
     call z, CollisionBird
@@ -394,7 +394,7 @@ BirdUpdate::
     ld a, [wEnemyFalling]
     cp a, 0
     jr z, .checkLoop
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     and BIRD_FALLING_WAIT_TIME
     jr nz, .checkLoop
     call BirdFall

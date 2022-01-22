@@ -191,7 +191,7 @@ SpawnPlayer:
 
 MoveCactusDriftLeft:
   ; Move left until limit is reached
-  ld a, [global_timer]
+  ld a, [wGlobalTimer]
   and	%00000001
   jr nz, .end
   ld hl, wPlayerX
@@ -208,7 +208,7 @@ MoveCactusDriftLeft:
 ; TODO: Add basic deceleration so if you stop it keeps swinging
 MoveCactusDriftRight:
   ; Move right until limit is reached
-  ld a, [global_timer]
+  ld a, [wGlobalTimer]
   and	%00000001
   jr nz, .end
   ld hl, wPlayerX
@@ -223,7 +223,7 @@ MoveCactusDriftRight:
 
 MoveCactusDriftCenterX:
   ; Move back to center
-  ld a, [global_timer]
+  ld a, [wGlobalTimer]
   and	%00000001
   jr nz, .end
   ld a, [wPlayerX]
@@ -241,7 +241,7 @@ MoveCactusDriftCenterX:
 
 MoveCactusDriftUp:
   ; Move up until limit is reached
-  ld a, [global_timer]
+  ld a, [wGlobalTimer]
   and	%00000001
   jr nz, .end
   ld hl, wPlayerY
@@ -257,7 +257,7 @@ MoveCactusDriftUp:
 
 MoveCactusDriftCenterY:
   ; Move back to center
-  ld a, [global_timer]
+  ld a, [wGlobalTimer]
   and	%00000001
   jr nz, .end
   ; In what direction is cactus_y off from wPlayerY
@@ -390,7 +390,7 @@ PlayerControls:
   call JOY_START
   jr z, .endStart
   ld a, 1
-  ld [paused_game], a ; pause
+  ld [wPaused], a ; pause
 .endStart:
   ; A
   ld a, d
@@ -414,9 +414,9 @@ PlayerControls:
 
 MovePlayer:
   call ReadInput
-  ld a, [joypad_down]
+  ld a, [wControllerDown]
   ld d, a
-  ld a, [joypad_pressed]
+  ld a, [wControllerPressed]
   ld e, a
   call PlayerControls
   ret
@@ -557,7 +557,7 @@ PlayerUpdate::
   ; Check if invincible (like when respawning)
   call InvincibleBlink
   ; Get movement
-  ld a, [global_timer]
+  ld a, [wGlobalTimer]
 	and	PLAYER_SPRITE_MOVE_WAIT_TIME
 	call z, MovePlayer
   ret
@@ -626,7 +626,7 @@ InvincibleBlink::
   jp c, .defaultPalette
   ; Are we blinking normal or fast (faster at the end)
   cp a, INVINCIBLE_BLINK_FASTER_TIME
-  ld a, [global_timer]
+  ld a, [wGlobalTimer]
   jp c, .blinkFast
 .blinkNormal:
 	and INVINCIBLE_BLINK_NORMAL_SPEED

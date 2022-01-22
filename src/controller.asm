@@ -1,6 +1,16 @@
 INCLUDE "hardware.inc"
 
-SECTION "joypad", ROM0
+SECTION "controller vars", WRAM0
+	wControllerDown:: DB
+	wControllerPressed:: DB
+	wPaused:: DB
+
+SECTION "controller", ROM0
+
+InitializeController::
+	xor a ; ld a, 0
+	ld [wPaused], a
+	ret
 
 ReadInput::
 	; Select DPAD
@@ -30,12 +40,12 @@ ReadInput::
 	or b
 	; Check if input reads the same
 	ld b, a
-	ld a, [joypad_down]
+	ld a, [wControllerDown]
 	cpl
 	and b
-	ld [joypad_pressed], a
+	ld [wControllerPressed], a
 	ld a, b
-	ld [joypad_down], a
+	ld [wControllerDown], a
 	ret
 
 JOY_RIGHT::

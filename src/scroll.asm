@@ -5,7 +5,7 @@ SECTION "scroll", ROM0
 
 HorizontalScroll::
     push af
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     and	BACKGROUND_HSCROLL_SPEED
     jr nz, .end
     ldh a, [rSCX]
@@ -17,7 +17,7 @@ HorizontalScroll::
 
 VerticalScroll::
     push af
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     and	BACKGROUND_VSCROLL_SPEED
     jr nz, .end
     ldh a, [rSCY]

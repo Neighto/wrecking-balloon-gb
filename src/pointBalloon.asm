@@ -240,11 +240,11 @@ PointBalloonUpdate::
     jr z, .popped
 .isAlive:
     ; Check if we can move
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     and	POINT_BALLOON_MOVE_TIME
     call z, Move
     ; Check if we can collide
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     and	POINT_BALLOON_COLLISION_TIME
     push bc
     call z, CollisionPointBalloon

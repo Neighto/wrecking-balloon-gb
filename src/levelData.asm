@@ -182,7 +182,7 @@ LevelDataHandler:
 
 LevelDataManager::
     ; Frequency we read 
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     cp a, 50
     jp nz, .end
 

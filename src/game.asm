@@ -12,59 +12,67 @@ COUNTDOWN_START_Y EQU 50
 COUNTDOWN_SPEED EQU %00011111
 COUNTDOWN_BALLOON_POP_SPEED EQU %00000111
 
-SECTION "classic", ROMX
+SECTION "game vars", WRAM0
+    wHandWavingFrame:: DB
+    wCountdownFrame:: DB
+    wClassicModeStage:: DB ; Todo remove
 
-ParkFadeOut:
-    ld a, [classic_mode_stage]
+SECTION "game", ROMX
+
+InitializeGame::
+	xor a ; ld a, 0
+	ld [wHandWavingFrame], a
+	ld [wCountdownFrame], a
+	ld [wClassicModeStage], a
+    ret
+
+UpdatePark::
+.fadeIn:
+    call FadeInPalettes
+	cp a, 0
+	ret z
+.hasFadedIn:
+
+    ld a, [wClassicModeStage]
 	cp a, STAGE_CLASSIC_STARTING
 	jr z, .fadeOut
-    ; Can we start fading out (are we offscreen)
     ld a, [wPlayerY]
     add 4 ; Buffer for extra time before screen switch
     ld b, a
     call OffScreenYEnemies
-    jr nz, .startFadeOut
-    ret
-.startFadeOut:
-    ld hl, classic_mode_stage
+    jr z, .skipFade
+    ld hl, wClassicModeStage
     ld [hl], STAGE_CLASSIC_STARTING
-	ret
+    jr .skipFade
 .fadeOut:
 	call FadeOutPalettes
 	cp a, 0
-	jr nz, .hasFadedOut
-	ret
-.hasFadedOut:
-	call PreGameLoop
-    ret
-
-UpdatePark::
-    call ParkFadeOut
+	call nz, PreGameLoop
+.skipFade:
     call HandWaveAnimation
-    call IncrementScrollOffset
+    ; call IncrementScrollOffset
 .moveUp:
     ld a, [wPlayerY]
     add 16
     cp a, 80
     jr c, .flyUpFast
 .flyUpNormal:
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     and %00000011
-    jr nz, .end
+    ret nz
 .flyUpFast:
     call MovePlayerAutoFlyUp
-.end:
 	ret
 
 TryToUnpause::
 	xor a ; ld a, 0
-	ld hl, paused_game
+	ld hl, wPaused
 	cp a, [hl]
 	jr z, .end
 	; Is paused
     call ClearSound
 	call ReadInput
-	ld a, [joypad_pressed]
+	ld a, [wControllerPressed]
 	call JOY_START
 	jr z, .end
 	xor a ; ld a, 0
@@ -74,14 +82,14 @@ TryToUnpause::
 
 ParkEnteredClassic::
     push hl
-    ld hl, classic_mode_stage
+    ld hl, wClassicModeStage
 	ld [hl], STAGE_CLASSIC_PARK_ENTERED
     pop hl
     ret
 
 StartedClassic::
     push hl
-    ld hl, classic_mode_stage
+    ld hl, wClassicModeStage
 	ld [hl], STAGE_CLASSIC_STARTED
     pop hl
     ret
@@ -100,31 +108,31 @@ SpawnHandWave::
     ld [hli], a
     ld [hl], $3A
     inc l
-    ld [hl], OAMF_PAL1
+    ld [hl], OAMF_PAL0
 .end:
 	ret
 
 ; NOTE if ram becomes a problem I could probably use modulo off global timer for frames
 HandWaveAnimation::
-    ld a, [hand_waving_frame]
+    ld a, [wHandWavingFrame]
     cp a, 0
     jr nz, .frame1
 .frame0:
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     and 15
     jp nz, .end
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
     ld [hl], $3C
-    ld hl, hand_waving_frame
+    ld hl, wHandWavingFrame
     ld [hl], 1
     ret
 .frame1:
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     and 15
     jp nz, .end
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
     ld [hl], $3A
-    ld hl, hand_waving_frame
+    ld hl, wHandWavingFrame
     ld [hl], 0
 .end:
 	ret
@@ -154,20 +162,20 @@ SpawnCountdown::
 
 CountdownAnimation::
     ; See if we go to faster-frames balloon pop
-    ld a, [countdown_frame]
+    ld a, [wCountdownFrame]
     cp a, 4
     jr nc, .balloonPop
 .countdown:
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     and COUNTDOWN_SPEED
     jp nz, .end
     jr .frames
 .balloonPop:
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     and COUNTDOWN_BALLOON_POP_SPEED
     jp nz, .end
 .frames:
-    ld a, [countdown_frame]
+    ld a, [wCountdownFrame]
     cp a, 0
     jp z, .frame0
     cp a, 1
@@ -189,7 +197,7 @@ CountdownAnimation::
     ld [hl], $32
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
     ld [hl], $34
-    ld hl, countdown_frame
+    ld hl, wCountdownFrame
     ld [hl], 1
     ret
 .frame1:
@@ -198,7 +206,7 @@ CountdownAnimation::
     ld [hl], $2E
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
     ld [hl], $30
-    ld hl, countdown_frame
+    ld hl, wCountdownFrame
     ld [hl], 2
     ret
 .frame2:
@@ -207,7 +215,7 @@ CountdownAnimation::
     ld [hl], $2A
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
     ld [hl], $2C
-    ld hl, countdown_frame
+    ld hl, wCountdownFrame
     ld [hl], 3
     ret
 .frame3:
@@ -217,7 +225,7 @@ CountdownAnimation::
     ld [hl], $36
     inc l 
     ld [hl], OAMF_XFLIP
-    ld hl, countdown_frame
+    ld hl, wCountdownFrame
     ld [hl], 4
     ret
 .frame4:
@@ -226,7 +234,7 @@ CountdownAnimation::
     ld [hl], POP_BALLOON_FRAME_0_TILE
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
     ld [hl], POP_BALLOON_FRAME_0_TILE
-    ld hl, countdown_frame
+    ld hl, wCountdownFrame
     ld [hl], 5
     ret
 .frame5:
@@ -234,7 +242,7 @@ CountdownAnimation::
     ld [hl], POP_BALLOON_FRAME_1_TILE
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
     ld [hl], POP_BALLOON_FRAME_1_TILE
-    ld hl, countdown_frame
+    ld hl, wCountdownFrame
     ld [hl], 6
     ret
 .remove:
@@ -249,21 +257,21 @@ CountdownAnimation::
     ld [hli], a
     ld [hli], a
     ld [hli], a
-    ld hl, countdown_frame
+    ld hl, wCountdownFrame
     ld [hl], 7
 .end:
     ret
 
 IncrementScrollOffset::
 .close:
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
 	and %0000111
 	jr nz, .far
     ld a, [wParallaxClose]
 	inc a
 	ld [wParallaxClose], a
 .far:
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
 	and %0001111
 	jr nz, .end
     ld a, [wParallaxFar]
@@ -272,7 +280,7 @@ IncrementScrollOffset::
 .end:
 	ret
 
-SetClassicMapStartPoint::
+SetGameMapStartPoint::
     ld a, BACKGROUND_VSCROLL_START
     ldh [rSCY], a
     ret
@@ -286,8 +294,8 @@ UpdateSprites:
     call PorcupineUpdate
     ret
 
-UpdateClassicCountdown::
-    ld a, [countdown_frame]
+UpdateGameCountdown::
+    ld a, [wCountdownFrame]
     cp a, 7 ; TODO dont hardcode in case we change it in CountdownAnimation
     jp nc, GameLoop
     call CountdownAnimation
@@ -297,9 +305,9 @@ UpdateClassicCountdown::
     call ReplaceTilemapHorizontal
     ret
 
-UpdateClassic::
+UpdateGame::
 	call TryToUnpause
-	ld a, [paused_game]
+	ld a, [wPaused]
 	cp a, 1
 	jr z, .end
     call MoveToNextTilemap
