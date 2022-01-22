@@ -6,7 +6,7 @@ SECTION "rom", ROM0
 Start::
 	di
 	ld sp, $FFFE
-	call SetBaseInterrupts
+	call InitializeInterrupts
 	call WaitVBlank
 	call LCD_OFF
 	call ClearMap
@@ -20,6 +20,8 @@ Start::
 	call SetupPalettes
 	call CopyDMARoutine
 	call InitializeGameVars
+	call InitializeGame
+	call InitializeController
 	call InitializeMenu
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoopOpening to skip menu opening
@@ -58,7 +60,7 @@ StartClassic::
 	call ClearSound
 	call ClearAllTiles
 	call ResetScroll
-	call SetClassicMapStartPoint
+	call SetGameMapStartPoint
 	call SpawnHandWave
 	call SetupWindow
 	call InitializeScore
@@ -96,12 +98,12 @@ PreGameLoop::
 GameLoopCountdown:
 	call WaitVBlank
 	call OAMDMA
-	call UpdateClassicCountdown
+	call UpdateGameCountdown
 	call UpdateGlobalTimer
 	jp GameLoopCountdown
 GameLoop::
 	call WaitVBlank
 	call OAMDMA
-	call UpdateClassic
+	call UpdateGame
 	call UpdateGlobalTimer
 	jp GameLoop

@@ -6,12 +6,14 @@ MENU_MODES EQU 2
 
 SECTION "menu vars", WRAM0
 	wMenuFrame:: DB
+	wSelectedMode:: DB
 
 SECTION "menu", ROMX
 
 InitializeMenu::
 	xor a ; ld a, 0
 	ld [wMenuFrame], a
+	ld [wSelectedMode], a
 	ld a, 140
 	ld [rSCY], a
 	ret
@@ -37,7 +39,7 @@ SpawnMenuCursor::
 
 BlinkMenuCursor::
 	; Check timer
-	ld a, [global_timer]
+	ld a, [wGlobalTimer]
 	and %00011111
 	jr z, .blink
 	ret
@@ -58,11 +60,11 @@ BlinkMenuCursor::
 
 MoveCursor:
 ; 	; call CollectSound
-; 	ld a, [selected_mode]
+; 	ld a, [wSelectedMode]
 ; 	inc a
 ; 	ld d, MENU_MODES
 ; 	call MODULO
-; 	ld [selected_mode], a
+; 	ld [wSelectedMode], a
 ; 	cp a, 0
 ; 	jr nz, .storyMode
 ; .classicMode:
@@ -77,12 +79,12 @@ MoveCursor:
 	ret
 
 SelectMode:
-	ld a, [selected_mode]
+	ld a, [wSelectedMode]
 	cp a, 0
 	jr nz, .storyMode
 .classicMode:
 	call CollectSound
-	ld hl, classic_mode_stage
+	ld hl, wClassicModeStage
 	ld [hl], STAGE_CLASSIC_SELECTED
 	; call StartClassic
 	ret
@@ -91,16 +93,16 @@ SelectMode:
 	ret
 
 MenuInput:
-	ld a, [global_timer]
+	ld a, [wGlobalTimer]
 	and %00000011
 	jr nz, .end
 	call ReadInput	
 .moveSelected:
-	ld a, [joypad_pressed]
+	ld a, [wControllerPressed]
 	call JOY_SELECT
 	call nz, MoveCursor
 .selectMode:
-	ld a, [joypad_down]
+	ld a, [wControllerDown]
 	call JOY_START
 	call nz, SelectMode
 .end:
@@ -173,7 +175,7 @@ UpdateMenu::
 	ret z
 .hasFadedIn:
 	call BlinkMenuCursor
-	ld a, [classic_mode_stage]
+	ld a, [wClassicModeStage]
 	cp a, STAGE_CLASSIC_SELECTED
 	jr z, .fadeOut
 	call MenuInput

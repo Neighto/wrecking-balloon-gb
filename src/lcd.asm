@@ -32,7 +32,7 @@ WaitVBlank::
     push af
     push hl
     ei
-    ld hl, vblank_flag
+    ld hl, wVBlankFlag
     xor a ; ld a, 0
 .loop:
     halt 

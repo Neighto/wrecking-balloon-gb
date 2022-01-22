@@ -5,12 +5,32 @@ MENU_LCD_SCROLL_RESET EQU 128
 MENU_LCD_SCROLL_FAR EQU 96
 MENU_LCD_SCROLL_CLOSE EQU 113
 
+SECTION "interrupts vars", WRAM0
+    wVBlankFlag:: DB
+    wLCDInterrupt:: DS 2
+
 SECTION "interrupts", ROM0
+
+InitializeInterrupts::
+	xor a ; ld a, 0
+	ld [wVBlankFlag], a
+
+    ld hl, wLCDInterrupt
+    ld a, LOW(LCDInterruptEnd)
+    ld [hli], a
+    ld a, HIGH(LCDInterruptEnd)
+    ld [hl], a
+
+    ld a, IEF_STAT | IEF_VBLANK ; Enable LCD and VBLANK interrupts
+	ldh [rIE], a
+	ld a, STATF_LYC
+	ldh [rSTAT], a
+    ret
 
 VBlankInterrupt::
     push hl
     push af
-    ld hl, vblank_flag
+    ld hl, wVBlankFlag
     ld [hl], 1
     ldh a, [rLCDC]
     or LCDCF_OBJON
@@ -34,19 +54,6 @@ LCDInterruptEnd:
     pop bc
     pop af
     reti
-
-SetBaseInterrupts::
-	ld hl, wLCDInterrupt
-    ld a, LOW(LCDInterruptEnd)
-    ld [hli], a
-    ld a, HIGH(LCDInterruptEnd)
-    ld [hl], a
-
-    ld a, IEF_STAT | IEF_VBLANK ; Enable LCD and VBLANK interrupts
-	ldh [rIE], a
-	ld a, STATF_LYC
-	ldh [rSTAT], a
-    ret
 
 MenuLCDInterrupt:
     ld a, [rLYC]
@@ -118,11 +125,11 @@ SetParkInterrupts::
     xor a ; ld a, 0
 	ldh [rLYC], a
 
-    ld hl, wLCDInterrupt
-    ld a, LOW(ParkLCDInterrupt)
-    ld [hli], a
-    ld a, HIGH(ParkLCDInterrupt)
-    ld [hl], a
+    ; ld hl, wLCDInterrupt
+    ; ld a, LOW(ParkLCDInterrupt)
+    ; ld [hli], a
+    ; ld a, HIGH(ParkLCDInterrupt)
+    ; ld [hl], a
     ret 
 
 ClassicLCDInterrupt:

@@ -138,34 +138,34 @@ LoadMenuData::
 RefreshScore:
 	ld hl, SCORE_INDEX_ONE_ADDRESS
 	; First digit
-	ld a, [score]
+	ld a, [wScore]
 	and %00001111
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Second digit
-    ld a, [score]
+    ld a, [wScore]
     swap a
 	and %00001111
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Third digit
-	ld a, [score+1]
+	ld a, [wScore+1]
     and %00001111
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Fourth digit
-	ld a, [score+1]
+	ld a, [wScore+1]
 	swap a
     and %00001111
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Fifth digit
-	ld a, [score+2]
+	ld a, [wScore+2]
 	and %00001111
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Sixth digit
-	ld a, [score+2]
+	ld a, [wScore+2]
 	swap a
     and %00001111
 	add NUMBERS_TILE_OFFSET
@@ -193,7 +193,7 @@ RefreshAttackBar:
 	ret
 
 RefreshWindow::
-	ld a, [global_timer]
+	ld a, [wGlobalTimer]
 	and REFRESH_WINDOW_WAIT_TIME
 	jr nz, .end
 	call RefreshScore

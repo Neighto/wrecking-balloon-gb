@@ -35,7 +35,7 @@ SetupParkPalettes::
 FadeOutPalettes::
 	; Return a for has faded (0 = false, 1 = true)
 .fadeOut:
-	ld a, [global_timer]
+	ld a, [wGlobalTimer]
 	and FADE_SPEED
 	jr nz, .end
 	ld a, [wFadeOutFrame]
@@ -74,8 +74,14 @@ FadeOutPalettes::
 
 FadeInPalettes::
 	; Return a for has faded (0 = false, 1 = true)
+	ld a, [wFadeInFrame]
+	cp a, 4
+	jr c, .fadeIn
+.hasFadedIn:
+	ld a, 1
+	ret
 .fadeIn:
-	ld a, [global_timer]
+	ld a, [wGlobalTimer]
 	and FADE_SPEED
 	jr nz, .end
 	ld a, [wFadeInFrame]
@@ -87,9 +93,7 @@ FadeInPalettes::
 	jr z, .fade3
 	cp a, 3
 	jr z, .fade4
-.hasFadedIn:
-	ld a, 1
-	ret
+	jr .end
 .fade1:
     ld a, FADE_PALETTE_4
 	jr .fadePalettes

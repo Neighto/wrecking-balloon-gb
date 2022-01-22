@@ -1,8 +1,11 @@
+SECTION "score vars", WRAM0
+wScore:: DS 3
+
 SECTION "score", ROMX
 
 InitializeScore::
     xor a ; ld a, 0
-    ld hl, score
+    ld hl, wScore
 	ld [hli], a
     ld [hli], a
     ld [hl], a
@@ -17,7 +20,7 @@ AddPoints::
     and 1
     jr z, .end
     ; Alive so we can add points
-    ld hl, score ; 1st byte of score
+    ld hl, wScore ; 1st byte of score
     ld a, d
     call ToBCD ; a is now BCD
     ; Now update hl and if there's a carry add to hl+1

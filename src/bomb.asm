@@ -302,11 +302,11 @@ BombUpdate::
     jr z, .popped
 .isAlive:
     ; Check if we can move and collide
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     and	BOMB_MOVE_TIME
     call z, Move
     ; Check if we can collide
-    ld a, [global_timer]
+    ld a, [wGlobalTimer]
     and	BOMB_COLLISION_TIME
     push bc
     call z, CollisionBomb
