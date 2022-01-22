@@ -209,7 +209,7 @@ CollisionPointBalloon:
     LD_BC_HL
     ld hl, wPlayerBulletOAM
     ld e, 4
-    call CollisionCheck ; TODO need a special collision checker for bullet
+    call CollisionCheck
     cp a, 0
     call nz, DeathOfPointBalloon
     ret
