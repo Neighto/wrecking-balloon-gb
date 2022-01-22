@@ -10,10 +10,9 @@ SECTION "collision", ROM0
 CollisionCheck::
     ; bc = argument for target colliding with player cactus
     ; hl = argument for collider
-    ; a = argument for 8x16 tile check (a = 0) or 8x8 tile check (a = 1) on hl
-    ; a = return result
-    push de
-    ld e, a
+    ; d = unused
+    ; e = argument for Y size check (ex: 16 for 16 pixels high)
+    ; a = return result (0 = no collision)
 
     ; CHECK Y
     ld a, [bc]
@@ -26,24 +25,19 @@ CollisionCheck::
     ; cactus_y[hl] < balloon_y'[a']
     jr .checkX
 
-.tryOtherY
+.tryOtherY:
     ; Also check OR cactus_y'
-    ld a, e ; Are we 8x16 or 8x8
-    cp a, 0
     ld a, [hl]
-    jr z, .skip8x8Adjustment
-    sub 8
-.skip8x8Adjustment:
-    add 16
-    ld d, a
+    add a, e
+    ld e, a ; We no longer need e
 
     ld a, [bc]
-    cp a, d
-    jr nc, .end
+    cp a, e
+    jr nc, .noCollision
     ; cactus_y'[c'] > balloon_y[a]
     add 16
-    cp a, d
-    jr c, .end
+    cp a, e
+    jr c, .noCollision
     ; cactus_y'[c'] < balloon_y'[a']
 
 .checkX:
@@ -64,24 +58,22 @@ CollisionCheck::
     ; Also check OR cactus_x'
     ld a, [hl]
     add 16
-    ld d, a
+    ld e, a
 
     ld a, [bc]
-    cp a, d
-    jr nc, .end
+    cp a, e
+    jr nc, .noCollision
     ; cactus_x'[c'] > balloon_x[a]
     add 16
-    cp a, d
-    jr c, .end
+    cp a, e
+    jr c, .noCollision
     ; cactus_x'[c'] < balloon_x'[a']
 
 .collision:
     ld a, 1 ; Success
-    pop de
     ret
-.end:
-    ld a, 0 ; Fail
-    pop de
+.noCollision:
+    xor a ; ld a, 0 ; Fail
     ret
 
 CollisionWithPlayer::
@@ -106,7 +98,7 @@ CollisionFallingEnemy:
 ;     SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
 ;     LD_BC_HL
 ;     SET_HL_TO_ADDRESS wOAM, wBirdOAM
-;     ld a, 1
+    ; ld e, 8
 ;     call CollisionCheck
 ;     cp a, 0
 ;     call nz, DeathOfBird
@@ -118,7 +110,7 @@ CollisionFallingEnemy:
 ;     SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
 ;     LD_BC_HL
 ;     SET_HL_TO_ADDRESS wOAM, pointBalloon+2
-;     xor a ;ld a, 0
+    ; ld e, 16
 ;     call CollisionCheck
 ;     cp a, 0
 ;     ; call nz, DeathOfPointBalloon
@@ -134,7 +126,7 @@ CollisionFallingEnemy:
 ;     ; Check collision
 ;     ld bc, wPlayerBalloonOAM
 ;     SET_HL_TO_ADDRESS wOAM, wBirdOAM
-;     ld a, 1
+    ; ld e, 8
 ;     call CollisionCheck
 ;     cp a, 0
 ;     call nz, CollisionWithPlayer

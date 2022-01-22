@@ -200,7 +200,7 @@ CollisionPointBalloon:
 .checkHit:
     ld bc, wPlayerCactusOAM
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    xor a ; ld a, 0
+    ld e, 16
     call CollisionCheck
     cp a, 0
     call nz, DeathOfPointBalloon
@@ -208,7 +208,7 @@ CollisionPointBalloon:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     LD_BC_HL
     ld hl, wPlayerBulletOAM
-    ld a, 1
+    ld e, 4
     call CollisionCheck ; TODO need a special collision checker for bullet
     cp a, 0
     call nz, DeathOfPointBalloon

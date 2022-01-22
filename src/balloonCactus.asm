@@ -336,7 +336,7 @@ CollisionBalloonCactus:
 .checkHit:
     ld bc, wPlayerCactusOAM
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    xor a ; ld a, 0
+    ld e, 16
     call CollisionCheck
     cp a, 0
     call nz, DeathOfBalloonCactus
@@ -346,7 +346,7 @@ CollisionBalloonCactus:
     ret z
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM+8, wEnemyOAM
-    xor a ; ld a, 0
+    ld e, 16
     call CollisionCheck
     cp a, 0
     call nz, CollisionWithPlayer

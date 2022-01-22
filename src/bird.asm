@@ -341,7 +341,7 @@ CollisionBird:
     ret z
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM+4, wEnemyOAM
-    ld a, 1
+    ld e, 8
     call CollisionCheck
     cp a, 0
     call nz, CollisionWithPlayer
