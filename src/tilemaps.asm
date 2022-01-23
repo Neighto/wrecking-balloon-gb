@@ -1,8 +1,13 @@
 SECTION "tilemaps", ROM0
 
+ParkMap::
+    INCBIN "incbin/background/Classic_Map.tilemap"
+ParkMapEnd::
+
 BackgroundMap:: 
     ; INCBIN "incbin/background/Sunset.tilemap"
-    INCBIN "incbin/background/Classic_Map.tilemap"
+    ; INCBIN "incbin/background/Classic_Map.tilemap"
+    INCBIN "incbin/background/City.tilemap"
 BackgroundMapEnd::
 
 World2Map::

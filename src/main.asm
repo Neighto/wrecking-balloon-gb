@@ -26,10 +26,10 @@ Start::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	; call WaitVBlank
-	; call UpdateMenuOpening
-	; call UpdateGlobalTimer
-	; jp MenuLoopOpening
+	call WaitVBlank
+	call UpdateMenuOpening
+	call UpdateGlobalTimer
+	jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
 	call WaveSound
@@ -41,12 +41,12 @@ StartMenu::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateMenu
-	; call UpdateGlobalTimer
-	; call _hUGE_dosound
-	; jp MenuLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateMenu
+	call UpdateGlobalTimer
+	call _hUGE_dosound
+	jp MenuLoop
 
 StartClassic::
 	call ParkEnteredClassic
@@ -64,7 +64,7 @@ StartClassic::
 	call SpawnHandWave
 	call SetupWindow
 	call InitializeScore
-	call LoadClassicData
+	call LoadParkData
 	call InitializeLevelVars
 	call InitializeEnemyStructVars
 	call InitializePointBalloon
@@ -78,20 +78,23 @@ StartClassic::
 	call LCD_ON_NO_WINDOW
 	; Comment out ParkLoop to skip park cutscene
 ParkLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdatePark
-	; call UpdateGlobalTimer
-	; jp ParkLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdatePark
+	call UpdateGlobalTimer
+	jp ParkLoop
 
 PreGameLoop::
+	call WaitVBlank
+	call LCD_OFF
 	call StartedClassic
-	call SetClassicInterrupts
+	call SetGameInterrupts
 	call ResetScroll
 	call ClearOAM
 	call ClearRAM
 	ld hl, angryTheme
 	call hUGE_init
+	call LoadGameData
 	call InitializePlayer
 	call SpawnPlayer
 	call SpawnCountdown

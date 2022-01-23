@@ -5,6 +5,10 @@ MENU_LCD_SCROLL_RESET EQU 128
 MENU_LCD_SCROLL_FAR EQU 96
 MENU_LCD_SCROLL_CLOSE EQU 113
 
+GAME_LCD_SCROLL_RESET EQU 128
+GAME_LCD_SCROLL_FAR EQU 47
+GAME_LCD_SCROLL_CLOSE EQU 102
+
 SECTION "interrupts vars", WRAM0
     wVBlankFlag:: DB
     wLCDInterrupt:: DS 2
@@ -132,45 +136,80 @@ SetParkInterrupts::
     ; ld [hl], a
     ret 
 
-ClassicLCDInterrupt:
-    ; We call nop multiple times to delay hiding sprites so it happens on a new line read
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
-    nop
+GameLCDInterrupt:
+    ld a, [rLYC]
+    cp a, GAME_LCD_SCROLL_RESET
+    jr z, .reset
+	cp a, GAME_LCD_SCROLL_FAR
+    jr z, .far
+    cp a, GAME_LCD_SCROLL_CLOSE
+    jr z, .close
+    jr .end
+.reset:
+    ld a, GAME_LCD_SCROLL_FAR
+	ldh [rLYC], a
+    xor a ; ld a, 0
+    ldh [rSCX], a
     ld hl, rLCDC
     res 1, [hl]
+    jr .end
+.far:
+    ld a, GAME_LCD_SCROLL_CLOSE
+    ldh [rLYC], a
+    ldh a, [rSCX]
+    ld hl, wParallaxFar
+    add a, [hl]
+	ldh [rSCX], a
+    jr .end
+.close:
+    ld a, GAME_LCD_SCROLL_RESET
+	ldh [rLYC], a
+    ldh a, [rSCX]
+    ld hl, wParallaxClose
+    add a, [hl]
+	ldh [rSCX], a
+.end:
+    ; We call nop multiple times to delay hiding sprites so it happens on a new line read
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; nop
+    ; ld hl, rLCDC
+    ; res 1, [hl]
     jp LCDInterruptEnd
 
-SetClassicInterrupts::
-	ld a, WINDOW_START_Y-1
-	ldh [rLYC], a
+SetGameInterrupts::
+    ld a, GAME_LCD_SCROLL_FAR
+    ldh [rLYC], a
+
+	; ld a, WINDOW_START_Y-1
+	; ldh [rLYC], a
 
     ld hl, wLCDInterrupt
-    ld a, LOW(ClassicLCDInterrupt)
+    ld a, LOW(GameLCDInterrupt)
     ld [hli], a
-    ld a, HIGH(ClassicLCDInterrupt)
+    ld a, HIGH(GameLCDInterrupt)
     ld [hl], a
     ret
