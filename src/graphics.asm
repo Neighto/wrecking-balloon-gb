@@ -78,11 +78,7 @@ LoadEnemyTiles:
 	ld hl, _VRAM8000 + (PlayerSpriteTilesEnd - PlayerSpriteTiles) + (EnemyTilesEnd - EnemyTiles)
 	ld de, CountdownTilesEnd - CountdownTiles
 	call MEMCPY
-	; TODO fix shouldt be here
-	ld bc, ClassicParkTiles
-	ld hl, _VRAM8000 + (PlayerSpriteTilesEnd - PlayerSpriteTiles) + (EnemyTilesEnd - EnemyTiles) + (CountdownTilesEnd - CountdownTiles)
-	ld de, ClassicParkTilesEnd - ClassicParkTiles
-	call MEMCPY
+
 	; ld bc, PorcupineTiles
 	; ld hl, _VRAM8800+$500
 	; ld de, PorcupineTilesEnd - PorcupineTiles
@@ -103,9 +99,24 @@ LoadWorld1:
 	call MEMCPY
 	ret
 
-LoadClassicData::
+LoadParkData::
 	call LoadPlayerTiles
 	call LoadWindow
+	ld bc, ClassicParkTiles
+	ld hl, _VRAM8000 + (PlayerSpriteTilesEnd - PlayerSpriteTiles) + (EnemyTilesEnd - EnemyTiles) + (CountdownTilesEnd - CountdownTiles)
+	ld de, ClassicParkTilesEnd - ClassicParkTiles
+	call MEMCPY
+	ld bc, ParkTiles
+	ld hl, _VRAM9000
+	ld de, ParkTilesEnd - ParkTiles
+	call MEMCPY
+	ld bc, ParkMap
+	ld hl, _SCRN0
+	ld de, ParkMapEnd - ParkMap
+	call MEMCPY
+	ret
+
+LoadGameData::
 	call LoadWorld1
 	ret
 

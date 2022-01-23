@@ -310,9 +310,10 @@ UpdateGameCountdown::
     jp nc, GameLoop
     call CountdownAnimation
     call RefreshWindow
-    call HorizontalScroll
-    call MoveToNextTilemap
-    call ReplaceTilemapHorizontal
+    ; call HorizontalScroll
+    call IncrementScrollOffset
+    ; call MoveToNextTilemap
+    ; call ReplaceTilemapHorizontal
     ret
 
 UpdateGame::
@@ -320,12 +321,13 @@ UpdateGame::
 	ld a, [wPaused]
 	cp a, 1
 	jr z, .end
-    call MoveToNextTilemap
-    call ReplaceTilemapHorizontal
+    ; call MoveToNextTilemap
+    ; call ReplaceTilemapHorizontal
     call UpdateSprites
     call LevelDataManager
     call RefreshWindow
-    call HorizontalScroll
+    ; call HorizontalScroll
+    call IncrementScrollOffset
     call _hUGE_dosound
 .end:
     ret

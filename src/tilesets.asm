@@ -24,10 +24,14 @@ PorcupineTiles::
     INCBIN "incbin/sprite/porcu.2bpp"
 PorcupineTilesEnd::
 
-BackgroundTiles::
+ParkTiles::
     INCBIN "incbin/background/Classic_Map.2bpp"
+ParkTilesEnd::
+
+BackgroundTiles::
+    INCBIN "incbin/background/City.2bpp"
     ; INCBIN "incbin/background/Sunset.2bpp"
-    INCBIN "incbin/background/World2.2bpp"
+    ; INCBIN "incbin/background/World2.2bpp"
 BackgroundTilesEnd::
 
 ClassicParkTiles::
