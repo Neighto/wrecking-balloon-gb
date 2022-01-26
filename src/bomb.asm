@@ -118,8 +118,8 @@ SpawnBomb::
     ret
 
 Clear:
-    xor a ; ld a, 0
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    xor a ; ld a, 0
     ld [hli], a
     ld [hli], a
     ld [hli], a
