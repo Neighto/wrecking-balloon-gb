@@ -50,7 +50,7 @@ AddBGTiles8800Method:
 
 LoadPlayerTiles:
 	ld bc, PlayerSpriteTiles
-	ld hl, _VRAM8000
+	ld hl, _VRAM8000+$20 ; Offset first 2 tiles as empty
 	ld de, PlayerSpriteTilesEnd - PlayerSpriteTiles
 	call MEMCPY
 	ret
@@ -71,11 +71,11 @@ LoadWindow:
 
 LoadEnemyTiles:
 	ld bc, EnemyTiles
-	ld hl, _VRAM8000 + (PlayerSpriteTilesEnd - PlayerSpriteTiles)
+	ld hl, _VRAM8000 + $20 + (PlayerSpriteTilesEnd - PlayerSpriteTiles)
 	ld de, EnemyTilesEnd - EnemyTiles
 	call MEMCPY
 	ld bc, CountdownTiles ; Could erase these countdown tiles after use if needed
-	ld hl, _VRAM8000 + (PlayerSpriteTilesEnd - PlayerSpriteTiles) + (EnemyTilesEnd - EnemyTiles)
+	ld hl, _VRAM8000 + $20 + (PlayerSpriteTilesEnd - PlayerSpriteTiles) + (EnemyTilesEnd - EnemyTiles)
 	ld de, CountdownTilesEnd - CountdownTiles
 	call MEMCPY
 
@@ -103,7 +103,7 @@ LoadParkData::
 	call LoadPlayerTiles
 	call LoadWindow
 	ld bc, ClassicParkTiles
-	ld hl, _VRAM8000 + (PlayerSpriteTilesEnd - PlayerSpriteTiles) + (EnemyTilesEnd - EnemyTiles) + (CountdownTilesEnd - CountdownTiles)
+	ld hl, _VRAM8000 + $20 + (PlayerSpriteTilesEnd - PlayerSpriteTiles) + (EnemyTilesEnd - EnemyTiles) + (CountdownTilesEnd - CountdownTiles)
 	ld de, ClassicParkTilesEnd - ClassicParkTiles
 	call MEMCPY
 	ld bc, ParkTiles
@@ -138,7 +138,7 @@ LoadMenuOpeningData::
 
 LoadMenuData::
 	ld bc, MenuTiles
-	ld hl, _VRAM8000
+	ld hl, _VRAM8000 + $20
 	ld de, MenuTilesEnd - MenuTiles
 	call MEMCPY
 	ld bc, MenuMap

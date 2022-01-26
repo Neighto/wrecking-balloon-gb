@@ -78,11 +78,11 @@ StartClassic::
 	call LCD_ON_NO_WINDOW
 	; Comment out ParkLoop to skip park cutscene
 ParkLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdatePark
-	; call UpdateGlobalTimer
-	; jp ParkLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdatePark
+	call UpdateGlobalTimer
+	jp ParkLoop
 
 PreGameLoop::
 	call WaitVBlank
