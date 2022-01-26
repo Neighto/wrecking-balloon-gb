@@ -593,6 +593,7 @@ PopBalloonAnimation:
   ld [hl], a
   ret
 .endFrame:
+  ld [wPlayerPoppingFrame], a
   inc a 
   ld [wPlayerPoppingFrame], a
   ret

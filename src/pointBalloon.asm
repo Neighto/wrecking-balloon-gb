@@ -143,6 +143,7 @@ PopBalloonAnimation:
     call Clear
     ret
 .endFrame:
+    ld a, [wEnemyPoppingFrame]
     inc a 
     ld [wEnemyPoppingFrame], a
     ret
