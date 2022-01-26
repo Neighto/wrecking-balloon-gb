@@ -43,6 +43,7 @@ SECTION "level data", ROM0
 
 Set1:
     DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B
+    ;     ; DB PORCUPINE, 50, 50
 Set1End:
 Set1Size EQU (Set1End - Set1) / LEVEL_DATA_FIELDS
 
@@ -52,68 +53,55 @@ Set2:
 Set2End:
 Set2Size EQU (Set2End - Set2) / LEVEL_DATA_FIELDS
 
+Set3:
+    DB BALLOON_CACTUS, SPAWN_Y_C, 0
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_C
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_D
+Set3End:
+Set3Size EQU (Set3End - Set3) / LEVEL_DATA_FIELDS
+
+Set4:
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_A
+    DB BOMB, OFFSCREEN_BOTTOM_Y, SPAWN_X_D
+Set4End:
+Set4Size EQU (Set4End - Set4) / LEVEL_DATA_FIELDS
+
+Set5:
+    DB BALLOON_CACTUS, SPAWN_Y_A, 0
+    DB BIRD, SPAWN_Y_C, SCRN_X
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B
+Set5End:
+Set5Size EQU (Set5End - Set5) / LEVEL_DATA_FIELDS
+
+Set6:
+    DB BOMB, OFFSCREEN_BOTTOM_Y, SPAWN_X_B
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_D
+Set6End:
+Set6Size EQU (Set6End - Set6) / LEVEL_DATA_FIELDS
+
+Set7:
+    DB BIRD, SPAWN_Y_A, 0
+    DB BALLOON_CACTUS, SPAWN_Y_B, 0
+Set7End:
+Set7Size EQU (Set7End - Set7) / LEVEL_DATA_FIELDS
+
+Set8:
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y-2, SPAWN_X_A
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y-6, SPAWN_X_B
+    DB BOMB, OFFSCREEN_BOTTOM_Y, SPAWN_X_C
+    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y-4, SPAWN_X_D
+Set8End:
+Set8Size EQU (Set8End - Set8) / LEVEL_DATA_FIELDS
+
 ; Template Level 1
 
 LevelInstructions:
-    DB SPAWN_GROUP, HIGH(Set1), LOW(Set1), Set1Size
-    DB SPAWN_GROUP, HIGH(Set1), LOW(Set1), Set1Size
+    ADD_INSTRUCTION SPAWN_GROUP, Set1, Set1Size
+    ADD_INSTRUCTION2 WAIT, 0
+    ADD_INSTRUCTION SPAWN_GROUP, Set2, Set2Size
+    ADD_INSTRUCTION2 WAIT, 1
+    ADD_INSTRUCTION SPAWN_GROUP, Set1, Set1Size
     DB END
-    DB SPAWN_GROUP, HIGH(Set1), LOW(Set1), Set1Size
-    ; DB WAIT, 3
-    ; DS SPAWN_GROUP, Set2, Set2Size
-
-
-; World 1
-
-; W1L1W1:
-;     DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B
-;     ; DB PORCUPINE, 50, 50
-; W1L1W1End:
-
-; W1L1W2:
-;     DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_A
-;     DB BALLOON_CACTUS, SPAWN_Y_B, SCRN_X
-; W1L1W2End:
-
-; W1L1W3:
-;     DB BALLOON_CACTUS, SPAWN_Y_C, 0
-;     DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_C
-;     DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_D
-; W1L1W3End:
-
-; W1L1W4:
-;     DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_A
-;     DB BOMB, OFFSCREEN_BOTTOM_Y, SPAWN_X_D
-; W1L1W4End:
-
-; W1L2W1:
-;     DB BALLOON_CACTUS, SPAWN_Y_A, 0
-;     DB BIRD, SPAWN_Y_C, SCRN_X
-;     DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B
-; W1L2W1End:
-
-; W1L2W2:
-;     DB BOMB, OFFSCREEN_BOTTOM_Y, SPAWN_X_B
-;     DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_D
-; W1L2W2End:
-
-; W1L2W3:
-;     DB BIRD, SPAWN_Y_A, 0
-;     DB BALLOON_CACTUS, SPAWN_Y_B, 0
-; W1L2W3End:
-
-; W1L2W4:
-;     DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y-2, SPAWN_X_A
-;     DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y-6, SPAWN_X_B
-;     DB BOMB, OFFSCREEN_BOTTOM_Y, SPAWN_X_C
-;     DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y-4, SPAWN_X_D
-; W1L2W4End:
-
-; World 2
-
-; W2L1:
-;     DB BIRD, 80, 150
-; W2L1End:
 
 ; Handler and Initializer
 
@@ -213,7 +201,7 @@ LevelDataHandler:
 LevelDataManager::
     ; Frequency we read 
     ld a, [wGlobalTimer]
-    cp a, 50
+    and %00011111
     ret nz
     
     ; Read next level instruction
@@ -227,7 +215,7 @@ LevelDataManager::
     jr z, .wait 
     ret
 .spawnGroup:
-    ; Next instructions: start address and end address
+    ; Next instructions: start address and size
     inc l
     ld a, [hli]
     ld b, a
@@ -243,9 +231,8 @@ LevelDataManager::
     ret
 .wait:
     ; Next instruction: amount to wait
-    ld a, [wLevelPointer]
-    inc a
-    ld b, a
+    inc l
+    ld b, [hl]
     ld a, [wLevelPointerWaitCounter]
     cp a, b
     jr nc, .waitEnd
@@ -253,105 +240,9 @@ LevelDataManager::
     ld [wLevelPointerWaitCounter], a
     ret
 .waitEnd:
-    ld a, b 
-    inc a
+    ld a, [wLevelPointer]
+    add a, 2
     ld [wLevelPointer], a
     xor a ; ld a, 0
     ld [wLevelPointerWaitCounter], a
     ret
-
-; LevelDataManager::
-;     ; Frequency we read 
-;     ld a, [wGlobalTimer]
-;     cp a, 50
-;     jp nz, .end
-
-;     ; Find which world, level, wave we are on
-;     ld a, [wWorld]
-;     cp a, 1
-;     jp z, .w1 
-;     cp a, 2
-;     jp z, .w2 
-;     cp a, 3
-;     jp z, .w3
-;     jp .end
-; .w1:
-;     ld a, [wLevel]
-;     cp a, 1
-;     jr z, .w1_l1
-;     cp a, 2
-;     jr z, .w1_l2
-;     jp .end
-;     ; LEVEL 1 *******************************
-; .w1_l1:
-;     ld a, [wWave]
-;     cp a, 1
-;     jr z, .w1_l1_w1
-;     cp a, 2
-;     jr z, .w1_l1_w2
-;     cp a, 3
-;     jr z, .w1_l1_w3
-;     cp a, 4
-;     jr z, .w1_l1_w4
-;     jp .end
-; .w1_l1_w1:
-;     ld hl, W1L1W1
-;     ld de, (W1L1W1End - W1L1W1) / LEVEL_DATA_FIELDS
-;     jr .handle
-; .w1_l1_w2:
-;     ld hl, W1L1W2
-;     ld de, (W1L1W2End - W1L1W2) / LEVEL_DATA_FIELDS
-;     jr .handle
-; .w1_l1_w3:
-;     ld hl, W1L1W3
-;     ld de, (W1L1W3End - W1L1W3) / LEVEL_DATA_FIELDS
-;     jr .handle
-; .w1_l1_w4:
-;     xor a ; ld a, 0
-;     ld [wWave], a ; set to 0 about to increment to 1
-;     ld a, [wLevel]
-;     inc a
-;     ld [wLevel], a
-;     ld hl, W1L1W4
-;     ld de, (W1L1W4End - W1L1W4) / LEVEL_DATA_FIELDS
-;     jr .handle
-;     ; LEVEL 2 *******************************
-; .w1_l2:
-;     ld a, [wWave]
-;     cp a, 1
-;     jr z, .w1_l2_w1
-;     cp a, 2
-;     jr z, .w1_l2_w2
-;     cp a, 3
-;     jr z, .w1_l2_w3
-;     cp a, 4
-;     jr z, .w1_l2_w4
-;     jr .end
-; .w1_l2_w1:
-;     ld hl, W1L2W1
-;     ld de, (W1L2W1End - W1L2W1) / LEVEL_DATA_FIELDS
-;     jr .handle
-; .w1_l2_w2:
-;     ld hl, W1L2W2
-;     ld de, (W1L2W2End - W1L2W2) / LEVEL_DATA_FIELDS
-;     jr .handle
-; .w1_l2_w3:
-;     ld hl, W1L2W3
-;     ld de, (W1L2W3End - W1L2W3) / LEVEL_DATA_FIELDS
-;     jr .handle
-; .w1_l2_w4:
-;     ld hl, W1L2W4
-;     ld de, (W1L2W4End - W1L2W4) / LEVEL_DATA_FIELDS
-;     jr .handle
-; .w2:
-;     jr .end ; temp
-; .w3:
-;     jr .end ; temp
-; .handle:
-;     ld a, [wWave]  ; temp so we only read it once
-;     inc a 
-;     ld [wWave], a
-;     call LevelDataHandler
-; .end:
-;     ; Possibly here too we will increment those vars where needed
-; ret
