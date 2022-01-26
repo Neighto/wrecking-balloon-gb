@@ -106,23 +106,40 @@ MACRO SUB_FROM_HL_16
     pop af
 ENDM
 
-; Use with caution: Overwrites hl and de
+; TODO this is the same as add to hl !!!!
+
 MACRO SET_HL_TO_ADDRESS
     ; argument 1 is starting address
     ; argument 2 is offset
     ld hl, \1 ; 3 cycles
-    ld de, \2 ; 3 cycles
     push af ; 4 cycles
-    ld a, [de] ; 2 cycles
+    ld a, [\2] ; 2 cycles
     add a, l ; 1 cycle
     ld l, a ; 1 cycle
+    ld a, h
+    adc a, 0
+    ld h, a
     pop af ; 3 cycles
 ENDM
 
-MACRO ADD_INSTRUCTION
-    DB \1, HIGH(\2), LOW(\2), \3
+; Level Data Macros
+
+; Level Instructions
+LEVEL_SPAWN_KEY EQU 0 
+LEVEL_WAIT_KEY EQU 1
+LEVEL_END_KEY EQU 2
+
+MACRO LEVEL_SPAWN
+    ; Address and size to pass to handler
+    DB 0, HIGH(\1), LOW(\1), \2
 ENDM
 
-MACRO ADD_INSTRUCTION2
-    DB \1, \2
+MACRO LEVEL_WAIT
+    ; Amount of iterations to wait
+    DB 1, \1
+ENDM
+
+MACRO LEVEL_END
+    ; Stop reading
+    DB 2
 ENDM

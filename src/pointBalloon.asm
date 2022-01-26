@@ -282,5 +282,5 @@ PointBalloonUpdate::
     dec bc
     ld a, b
     or a, c
-    jr nz, .loop
+    jp nz, .loop
     ret
