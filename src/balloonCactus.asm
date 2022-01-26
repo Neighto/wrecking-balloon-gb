@@ -227,6 +227,7 @@ PopBalloonAnimation:
     ld [wEnemyPopping], a
     ret
 .endFrame:
+    ld a, [wEnemyPoppingFrame]
     inc a 
     ld [wEnemyPoppingFrame], a
 .end:

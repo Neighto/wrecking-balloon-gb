@@ -81,45 +81,39 @@ ENDM
 
 MACRO ADD_TO_HL
     ; argument 1 is value to add to HL (8 bit)
-    push af
-    ld a, l
-    add a, \1
+    ld a, \1
+    add a, l
     ld l, a
     ld a, h
     adc a, 0
     ld h, a
-    pop af
+ENDM
+
+MACRO ADD_TO_HL_16
+    ; argument 1 is value to add to HL (16 bit)
+    ld a, l
+    add a, LOW(\1)
+    ld l, a
+    ld a, h
+    adc a, HIGH(\1)
+    ld h, a
 ENDM
 
 MACRO SUB_FROM_HL_16
     ; argument 1 is value to sub from HL (16 bit)
-    push af
-    push de
-    ld de, \1
     ld a, l
-    sub a, e
+    sub a, LOW(\1)
     ld l, a
     ld a, h
-    sbc a, d
+    sbc a, HIGH(\1)
     ld h, a
-    pop de
-    pop af
 ENDM
-
-; TODO this is the same as add to hl !!!!
 
 MACRO SET_HL_TO_ADDRESS
     ; argument 1 is starting address
     ; argument 2 is offset
-    ld hl, \1 ; 3 cycles
-    push af ; 4 cycles
-    ld a, [\2] ; 2 cycles
-    add a, l ; 1 cycle
-    ld l, a ; 1 cycle
-    ld a, h
-    adc a, 0
-    ld h, a
-    pop af ; 3 cycles
+    ld hl, \1
+    ADD_TO_HL [\2]
 ENDM
 
 ; Level Data Macros
