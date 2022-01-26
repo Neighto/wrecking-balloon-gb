@@ -5,11 +5,6 @@ LEVEL_UPDATE_REFRESH_TIME EQU %00001111
 
 LEVEL_DATA_FIELDS EQU 3
 
-; Instructions Legend
-SPAWN_GROUP EQU 0 ; Followed by start address of group and size
-WAIT EQU 1 ; Followed by how many iterations to wait
-END EQU 2
-
 ; Enemy Legend (Get Enemy_Number Here)
 EMPTY EQU 0
 POINT_BALLOON EQU 1
@@ -40,6 +35,7 @@ SECTION "level data", ROM0
 ;   Label: WXLYWZ (W:World, L:Level, W:Wave)
 ;   Enemy_Number, Spawn_Location_Y, Spawn_Location_X
 
+; ENEMY SETS *************************************
 
 Set1:
     DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B
@@ -93,15 +89,25 @@ Set8:
 Set8End:
 Set8Size EQU (Set8End - Set8) / LEVEL_DATA_FIELDS
 
-; Template Level 1
+; LEVEL INSTRUCTIONS *************************************
 
 LevelInstructions:
-    ADD_INSTRUCTION SPAWN_GROUP, Set1, Set1Size
-    ADD_INSTRUCTION2 WAIT, 0
-    ADD_INSTRUCTION SPAWN_GROUP, Set2, Set2Size
-    ADD_INSTRUCTION2 WAIT, 1
-    ADD_INSTRUCTION SPAWN_GROUP, Set1, Set1Size
-    DB END
+    LEVEL_SPAWN Set1, Set1Size
+    LEVEL_WAIT 8
+    LEVEL_SPAWN Set2, Set2Size
+    LEVEL_WAIT 8
+    LEVEL_SPAWN Set3, Set3Size
+    LEVEL_WAIT 8
+    LEVEL_SPAWN Set4, Set4Size
+    LEVEL_WAIT 8
+    LEVEL_SPAWN Set5, Set5Size
+    LEVEL_WAIT 8
+    LEVEL_SPAWN Set6, Set6Size
+    LEVEL_WAIT 8
+    LEVEL_SPAWN Set7, Set7Size
+    LEVEL_WAIT 8
+    LEVEL_SPAWN Set8, Set8Size
+    LEVEL_END
 
 ; Handler and Initializer
 
@@ -117,9 +123,18 @@ LevelDataHandler:
     ; argument hl = source address
     ; argument de = size
 .loop:
-    ld a, [hl]
+    ld a, [hli]
     cp a, EMPTY
-    jr z, .empty 
+    jr z, .empty
+
+    ; Update enemy Y/X
+    ld b, a
+    ld a, [hli]
+    ld [wEnemyY], a
+    ld a, [hli]
+    ld [wEnemyX], a
+    ld a, b
+
     cp a, POINT_BALLOON
     jr z, .pointBalloon 
     cp a, BALLOON_CACTUS
@@ -130,78 +145,36 @@ LevelDataHandler:
     jr z, .bomb
     cp a, PORCUPINE
     jr z, .porcupine
-    jr .end
+    ret
 .pointBalloon:
-    ; Y
-    inc hl
-    ld a, [hl]
-    ld [wEnemyY], a
-    ; X
-    inc hl
-    ld a, [hl]
-    ld [wEnemyX], a
     call SpawnPointBalloon
     jr .loopCheck
 .balloonCactus:
-    ; Y
-    inc hl
-    ld a, [hl]
-    ld [wEnemyY], a
-    ; X
-    inc hl
-    ld a, [hl]
-    ld [wEnemyX], a
     call SpawnBalloonCactus
     jr .loopCheck
 .bird:
-    ; Y
-    inc hl
-    ld a, [hl]
-    ld [wEnemyY], a
-    ; X
-    inc hl
-    ld a, [hl]
-    ld [wEnemyX], a
     call SpawnBird
     jr .loopCheck
 .bomb:
-    ; Y
-    inc hl
-    ld a, [hl]
-    ld [wEnemyY], a
-    ; X
-    inc hl
-    ld a, [hl]
-    ld [wEnemyX], a
     call SpawnBomb
     jr .loopCheck
 .porcupine:
-    ; Y
-    inc hl
-    ld a, [hl]
-    ld [wEnemyY], a
-    ; X
-    inc hl
-    ld a, [hl]
-    ld [wEnemyX], a
     call SpawnPorcupine
     jr .loopCheck
 .empty:
     inc hl
     inc hl
 .loopCheck:
-    inc hl
     dec de
     ld a, d
     or a, e
     jr nz, .loop
-.end:
     ret
 
 LevelDataManager::
     ; Frequency we read 
     ld a, [wGlobalTimer]
-    and %00011111
+    and LEVEL_UPDATE_REFRESH_TIME
     ret nz
     
     ; Read next level instruction
@@ -209,14 +182,14 @@ LevelDataManager::
     ld a, [hl]
 
     ; Interpret
-    cp a, SPAWN_GROUP
-    jr z, .spawnGroup 
-    cp a, WAIT
+    cp a, LEVEL_SPAWN_KEY
+    jr z, .spawn
+    cp a, LEVEL_WAIT_KEY
     jr z, .wait 
     ret
-.spawnGroup:
+.spawn:
     ; Next instructions: start address and size
-    inc l
+    inc hl
     ld a, [hli]
     ld b, a
     ld a, [hli]
@@ -231,7 +204,7 @@ LevelDataManager::
     ret
 .wait:
     ; Next instruction: amount to wait
-    inc l
+    inc hl
     ld b, [hl]
     ld a, [wLevelPointerWaitCounter]
     cp a, b
