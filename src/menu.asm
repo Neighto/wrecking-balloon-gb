@@ -1,8 +1,10 @@
 INCLUDE "constants.inc"
 INCLUDE "macro.inc"
 INCLUDE "hardware.inc"
+INCLUDE "tileConstants.inc"
 
 MENU_MODES EQU 2
+MENU_CURSOR_TILE EQU $02
 
 SECTION "menu vars", WRAM0
 	wMenuFrame:: DB
@@ -31,7 +33,7 @@ SpawnMenuCursor::
 	ld [hli], a
 	ld a, 56 ; x
 	ld [hli], a
-	ld [hl], $00
+	ld [hl], MENU_CURSOR_TILE
 	inc l
 	ld [hl], OAMF_PAL0
 .end:
@@ -47,14 +49,14 @@ BlinkMenuCursor::
 	; Check what tile and flip it
 	SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
 	ld a, [hl]
-	cp a, $00
+	cp a, EMPTY_TILE
 	jr nz, .empty
 .show:
-	ld a, $02
+	ld a, MENU_CURSOR_TILE
 	ld [hl], a
 	ret
 .empty:
-	ld a, $00
+	ld a, EMPTY_TILE
 	ld [hl], a
 	ret
 
