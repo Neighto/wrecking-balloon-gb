@@ -306,79 +306,91 @@ ROM0 bank #0:
            $1a81 = MoveToNextTilemap.clouds1
            $1a96 = MoveToNextTilemap.clouds2
            $1aa9 = MoveToNextTilemap.end
-  SECTION: $1aac-$1b99 ($00ee bytes) ["rom"]
-           $1aac = Start
-           $1ae6 = MenuLoopOpening
-           $1ae6 = StartMenu
-           $1afe = StartClassic
-           $1afe = MenuLoop
-           $1b4f = ParkLoop
-           $1b4f = PreGameLoop
-           $1b7c = GameLoopCountdown
-           $1b8b = GameLoop
-  SECTION: $1b9a-$1c80 ($00e7 bytes) ["interrupts"]
-           $1b9a = InitializeInterrupts
-           $1bb0 = VBlankInterrupt
-           $1bc0 = LCDInterrupt
-           $1bca = LCDInterruptEnd
-           $1bce = MenuLCDInterrupt
-           $1bde = MenuLCDInterrupt.reset
-           $1be7 = MenuLCDInterrupt.far
-           $1bf5 = MenuLCDInterrupt.close
-           $1c01 = MenuLCDInterrupt.end
-           $1c04 = SetMenuInterrupts
-           $1c12 = ParkLCDInterrupt
-           $1c1e = ParkLCDInterrupt.clouds
-           $1c2c = ParkLCDInterrupt.ground
-           $1c31 = ParkLCDInterrupt.end
-           $1c34 = SetParkInterrupts
-           $1c38 = GameLCDInterrupt
-           $1c48 = GameLCDInterrupt.reset
-           $1c56 = GameLCDInterrupt.far
-           $1c64 = GameLCDInterrupt.close
-           $1c70 = GameLCDInterrupt.end
-           $1c73 = SetGameInterrupts
-  SECTION: $1c81-$1d5d ($00dd bytes) ["level data"]
-           $1c81 = Set1
-           $1c84 = Set1End
-           $1c84 = Set2
-           $1c8a = LevelInstructions
-           $1c8a = Set2End
-           $1c97 = InitializeLevelVars
-           $1ca4 = LevelDataHandler
-           $1ca4 = LevelDataHandler.loop
-           $1cbf = LevelDataHandler.pointBalloon
-           $1cce = LevelDataHandler.balloonCactus
-           $1cdd = LevelDataHandler.bird
-           $1cec = LevelDataHandler.bomb
-           $1cfb = LevelDataHandler.porcupine
-           $1d0a = LevelDataHandler.empty
-           $1d0c = LevelDataHandler.loopCheck
-           $1d12 = LevelDataHandler.end
-           $1d13 = LevelDataManager
-           $1d2e = LevelDataManager.spawnGroup
-           $1d44 = LevelDataManager.wait
-           $1d54 = LevelDataManager.waitEnd
-  SECTION: $1d5e-$1dd5 ($0078 bytes) ["controller"]
-           $1d5e = InitializeController
-           $1d63 = ReadInput
-           $1d93 = JOY_RIGHT
-           $1d9b = JOY_LEFT
-           $1da3 = JOY_UP
-           $1dab = JOY_DOWN
-           $1db3 = JOY_A
-           $1dbb = JOY_B
-           $1dc3 = JOY_SELECT
-           $1dcb = JOY_START
-           $1dd3 = JOY_FALSE
-  SECTION: $1dd6-$1df3 ($001e bytes) ["OAM DMA routine"]
-           $1dd6 = CopyDMARoutine
-           $1ddd = CopyDMARoutine.copy
-           $1de4 = DMARoutine
-           $1de8 = DMARoutine.wait
-           $1dec = DMARoutineEnd
-           $1dec = OAMDMA
-    SLACK: $2239 bytes
+  SECTION: $1aac-$1bc0 ($0115 bytes) ["level data"]
+           $1aac = Set1
+           $1aaf = Set2
+           $1aaf = Set1End
+           $1ab5 = Set3
+           $1ab5 = Set2End
+           $1abe = Set4
+           $1abe = Set3End
+           $1ac4 = Set4End
+           $1ac4 = Set5
+           $1acd = Set5End
+           $1acd = Set6
+           $1ad3 = Set6End
+           $1ad3 = Set7
+           $1ad9 = Set7End
+           $1ad9 = Set8
+           $1ae5 = LevelInstructions
+           $1ae5 = Set8End
+           $1afa = InitializeLevelVars
+           $1b07 = LevelDataHandler
+           $1b07 = LevelDataHandler.loop
+           $1b22 = LevelDataHandler.pointBalloon
+           $1b31 = LevelDataHandler.balloonCactus
+           $1b40 = LevelDataHandler.bird
+           $1b4f = LevelDataHandler.bomb
+           $1b5e = LevelDataHandler.porcupine
+           $1b6d = LevelDataHandler.empty
+           $1b6f = LevelDataHandler.loopCheck
+           $1b75 = LevelDataHandler.end
+           $1b76 = LevelDataManager
+           $1b91 = LevelDataManager.spawnGroup
+           $1ba7 = LevelDataManager.wait
+           $1bb4 = LevelDataManager.waitEnd
+  SECTION: $1bc1-$1cae ($00ee bytes) ["rom"]
+           $1bc1 = Start
+           $1bfb = MenuLoopOpening
+           $1bfb = StartMenu
+           $1c13 = StartClassic
+           $1c13 = MenuLoop
+           $1c64 = ParkLoop
+           $1c64 = PreGameLoop
+           $1c91 = GameLoopCountdown
+           $1ca0 = GameLoop
+  SECTION: $1caf-$1d95 ($00e7 bytes) ["interrupts"]
+           $1caf = InitializeInterrupts
+           $1cc5 = VBlankInterrupt
+           $1cd5 = LCDInterrupt
+           $1cdf = LCDInterruptEnd
+           $1ce3 = MenuLCDInterrupt
+           $1cf3 = MenuLCDInterrupt.reset
+           $1cfc = MenuLCDInterrupt.far
+           $1d0a = MenuLCDInterrupt.close
+           $1d16 = MenuLCDInterrupt.end
+           $1d19 = SetMenuInterrupts
+           $1d27 = ParkLCDInterrupt
+           $1d33 = ParkLCDInterrupt.clouds
+           $1d41 = ParkLCDInterrupt.ground
+           $1d46 = ParkLCDInterrupt.end
+           $1d49 = SetParkInterrupts
+           $1d4d = GameLCDInterrupt
+           $1d5d = GameLCDInterrupt.reset
+           $1d6b = GameLCDInterrupt.far
+           $1d79 = GameLCDInterrupt.close
+           $1d85 = GameLCDInterrupt.end
+           $1d88 = SetGameInterrupts
+  SECTION: $1d96-$1e0d ($0078 bytes) ["controller"]
+           $1d96 = InitializeController
+           $1d9b = ReadInput
+           $1dcb = JOY_RIGHT
+           $1dd3 = JOY_LEFT
+           $1ddb = JOY_UP
+           $1de3 = JOY_DOWN
+           $1deb = JOY_A
+           $1df3 = JOY_B
+           $1dfb = JOY_SELECT
+           $1e03 = JOY_START
+           $1e0b = JOY_FALSE
+  SECTION: $1e0e-$1e2b ($001e bytes) ["OAM DMA routine"]
+           $1e0e = CopyDMARoutine
+           $1e15 = CopyDMARoutine.copy
+           $1e1c = DMARoutine
+           $1e20 = DMARoutine.wait
+           $1e24 = DMARoutineEnd
+           $1e24 = OAMDMA
+    SLACK: $2201 bytes
 
 ROMX bank #1:
   SECTION: $4000-$57af ($17b0 bytes) ["tilesets"]
@@ -1145,7 +1157,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $1dc7 bytes in 1 bank
+    ROM0: $1dff bytes in 1 bank
     ROMX: $3b38 bytes in 1 bank
     WRAM0: $018e bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

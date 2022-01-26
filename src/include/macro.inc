@@ -118,3 +118,11 @@ MACRO SET_HL_TO_ADDRESS
     ld l, a ; 1 cycle
     pop af ; 3 cycles
 ENDM
+
+MACRO ADD_INSTRUCTION
+    DB \1, HIGH(\2), LOW(\2), \3
+ENDM
+
+MACRO ADD_INSTRUCTION2
+    DB \1, \2
+ENDM
