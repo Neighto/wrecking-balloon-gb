@@ -48,7 +48,7 @@ MenuLoop:
 	; call _hUGE_dosound
 	; jp MenuLoop
 
-StartClassic::
+StartGame::
 	call ParkEnteredClassic
 	call SetParkInterrupts
 	call WaitVBlank
@@ -100,6 +100,7 @@ PreGameLoop::
 	call SpawnCountdown
 	call SetupPalettes
 	call LCD_ON
+
 GameLoopCountdown:
 	call WaitVBlank
 	call OAMDMA
@@ -112,3 +113,22 @@ GameLoop::
 	call UpdateGame
 	call UpdateGlobalTimer
 	jp GameLoop
+
+NextLevel::
+	call WaitVBlank
+	call LCD_OFF
+	xor a
+	ld [wCountdownFrame], a
+	call ResetScroll
+	call ClearOAM
+	call ClearRAM
+	ld hl, angryTheme
+	call hUGE_init
+	call LoadGameData
+	call InitializeNewLevel
+	call InitializePlayer
+	call SpawnPlayer
+	call SpawnCountdown
+	call SetupPalettes
+	call LCD_ON
+	jp GameLoopCountdown

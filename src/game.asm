@@ -170,19 +170,18 @@ SpawnCountdown::
 	ret
 
 CountdownAnimation::
-    ; See if we go to faster-frames balloon pop
     ld a, [wCountdownFrame]
     cp a, 4
     jr nc, .balloonPop
 .countdown:
     ld a, [wGlobalTimer]
     and COUNTDOWN_SPEED
-    jp nz, .end
+    ret nz
     jr .frames
 .balloonPop:
     ld a, [wGlobalTimer]
     and COUNTDOWN_BALLOON_POP_SPEED
-    jp nz, .end
+    ret nz
 .frames:
     ld a, [wCountdownFrame]
     cp a, 0
@@ -206,27 +205,21 @@ CountdownAnimation::
     ld [hl], COUNTDOWN_3_TILE_1
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
     ld [hl], COUNTDOWN_3_TILE_2
-    ld hl, wCountdownFrame
-    ld [hl], 1
-    ret
+    jp .endFrame
 .frame1:
     call PercussionSound
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
     ld [hl], COUNTDOWN_2_TILE_1
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
     ld [hl], COUNTDOWN_2_TILE_2
-    ld hl, wCountdownFrame
-    ld [hl], 2
-    ret
+    jp .endFrame
 .frame2:
     call PercussionSound
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
     ld [hl], COUNTDOWN_1_TILE_1
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
     ld [hl], COUNTDOWN_1_TILE_2
-    ld hl, wCountdownFrame
-    ld [hl], 3
-    ret
+    jr .endFrame
 .frame3:
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
     ld [hl], COUNTDOWN_NEUTRAL_BALLOON_TILE
@@ -234,26 +227,20 @@ CountdownAnimation::
     ld [hl], COUNTDOWN_NEUTRAL_BALLOON_TILE
     inc l 
     ld [hl], OAMF_XFLIP
-    ld hl, wCountdownFrame
-    ld [hl], 4
-    ret
+    jr .endFrame
 .frame4:
     call PopSound
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
     ld [hl], POP_BALLOON_FRAME_0_TILE
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
     ld [hl], POP_BALLOON_FRAME_0_TILE
-    ld hl, wCountdownFrame
-    ld [hl], 5
-    ret
+    jr .endFrame
 .frame5:
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
     ld [hl], POP_BALLOON_FRAME_1_TILE
     SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
     ld [hl], POP_BALLOON_FRAME_1_TILE
-    ld hl, wCountdownFrame
-    ld [hl], 6
-    ret
+    jr .endFrame
 .remove:
     ; todo make erase func for oam
     SET_HL_TO_ADDRESS wOAM, wOAMGeneral1
@@ -266,9 +253,10 @@ CountdownAnimation::
     ld [hli], a
     ld [hli], a
     ld [hli], a
-    ld hl, wCountdownFrame
-    ld [hl], 7
-.end:
+.endFrame:
+    ld a, [wCountdownFrame]
+    inc a 
+    ld [wCountdownFrame], a
     ret
 
 IncrementScrollOffset::
@@ -310,7 +298,6 @@ UpdateGameCountdown::
     jp nc, GameLoop
     call CountdownAnimation
     call RefreshWindow
-    ; call HorizontalScroll
     call IncrementScrollOffset
     ; call MoveToNextTilemap
     ; call ReplaceTilemapHorizontal
@@ -326,7 +313,6 @@ UpdateGame::
     call UpdateSprites
     call LevelDataManager
     call RefreshWindow
-    ; call HorizontalScroll
     call IncrementScrollOffset
     call _hUGE_dosound
 .end:
