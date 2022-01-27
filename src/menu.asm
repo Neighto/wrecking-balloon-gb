@@ -88,7 +88,7 @@ SelectMode:
 	call CollectSound
 	ld hl, wClassicModeStage
 	ld [hl], STAGE_CLASSIC_SELECTED
-	; call StartClassic
+	; call StartGame
 	ret
 .storyMode:
 	; call StartStory
@@ -186,5 +186,5 @@ UpdateMenu::
 .fadeOut:
 	call FadeOutPalettes
 	cp a, 0
-	jp nz, StartClassic
+	jp nz, StartGame
 	ret

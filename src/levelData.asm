@@ -91,30 +91,38 @@ Set8Size EQU (Set8End - Set8) / LEVEL_DATA_FIELDS
 
 ; LEVEL INSTRUCTIONS *************************************
 
-LevelInstructions:
+Level1:
     LEVEL_SPAWN Set1, Set1Size
     LEVEL_WAIT 8
     LEVEL_SPAWN Set2, Set2Size
     LEVEL_WAIT 8
-    LEVEL_SPAWN Set3, Set3Size
-    LEVEL_WAIT 8
-    LEVEL_SPAWN Set4, Set4Size
-    LEVEL_WAIT 8
-    LEVEL_SPAWN Set5, Set5Size
-    LEVEL_WAIT 8
-    LEVEL_SPAWN Set6, Set6Size
-    LEVEL_WAIT 8
-    LEVEL_SPAWN Set7, Set7Size
-    LEVEL_WAIT 8
+    ; LEVEL_SPAWN Set3, Set3Size
+    ; LEVEL_WAIT 8
+    ; LEVEL_SPAWN Set4, Set4Size
+    ; LEVEL_WAIT 8
+    ; LEVEL_SPAWN Set5, Set5Size
+    ; LEVEL_WAIT 8
+    ; LEVEL_SPAWN Set6, Set6Size
+    ; LEVEL_WAIT 8
+    ; LEVEL_SPAWN Set7, Set7Size
+    ; LEVEL_WAIT 8
+    ; LEVEL_SPAWN Set8, Set8Size
+    LEVEL_END
+
+Level2:
     LEVEL_SPAWN Set8, Set8Size
     LEVEL_END
 
 ; Handler and Initializer
 
-InitializeLevelVars::
+InitializeNewLevel::
     xor a ; ld a, 0
     ld [wLevelPointer], a
     ld [wLevelPointerWaitCounter], a
+    ret
+
+InitializeLevelVars::
+    call InitializeNewLevel
     ld a, 1
     ld [wLevel], a 
     ret
@@ -178,14 +186,16 @@ LevelDataManager::
     ret nz
     
     ; Read next level instruction
-    SET_HL_TO_ADDRESS LevelInstructions, wLevelPointer
+    SET_HL_TO_ADDRESS Level1, wLevelPointer
     ld a, [hl]
 
     ; Interpret
     cp a, LEVEL_SPAWN_KEY
     jr z, .spawn
     cp a, LEVEL_WAIT_KEY
-    jr z, .wait 
+    jr z, .wait
+    cp a, LEVEL_END_KEY
+    jr z, .end
     ret
 .spawn:
     ; Next instructions: start address and size
@@ -218,4 +228,10 @@ LevelDataManager::
     ld [wLevelPointer], a
     xor a ; ld a, 0
     ld [wLevelPointerWaitCounter], a
+    ret 
+.end:
+    ld a, [wLevel] 
+    inc a
+    ld [wLevel], a 
+    jp NextLevel
     ret
