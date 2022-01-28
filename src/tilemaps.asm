@@ -1,17 +1,17 @@
 SECTION "tilemaps", ROM0
 
-ParkMap::
-    INCBIN "incbin/background/Classic_Map.tilemap"
-ParkMapEnd::
+OpeningCutsceneMap::
+    INCBIN "incbin/background/OpeningCutsceneMap.tilemap"
+OpeningCutsceneMapEnd::
 
-BackgroundMap:: 
-    ; INCBIN "incbin/background/Sunset.tilemap"
-    ; INCBIN "incbin/background/Classic_Map.tilemap"
+Level1Map:: 
     INCBIN "incbin/background/City.tilemap"
-BackgroundMapEnd::
+Level1MapEnd::
 
 World2Map::
-    INCBIN "incbin/background/World2.tilemap"
+    ; INCBIN "incbin/background/Sunset.tilemap"
+    ; INCBIN "incbin/background/Classic_Map.tilemap"
+    ; INCBIN "incbin/background/World2.tilemap"
 World2MapEnd::
 
 MenuMap::

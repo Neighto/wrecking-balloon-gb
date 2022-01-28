@@ -24,7 +24,6 @@ COUNTDOWN_NEUTRAL_BALLOON_TILE EQU $3A
 SECTION "game vars", WRAM0
     wHandWavingFrame:: DB
     wCountdownFrame:: DB
-    wClassicModeStage:: DB ; Todo remove
 
 SECTION "game", ROMX
 
@@ -32,7 +31,6 @@ InitializeGame::
 	xor a ; ld a, 0
 	ld [wHandWavingFrame], a
 	ld [wCountdownFrame], a
-	ld [wClassicModeStage], a
     ret
 
 UpdatePark::
@@ -41,17 +39,16 @@ UpdatePark::
 	cp a, 0
 	ret z
 .hasFadedIn:
-
-    ld a, [wClassicModeStage]
-	cp a, STAGE_CLASSIC_STARTING
-	jr z, .fadeOut
+    ld a, [wTriggerFadeOut]
+	cp a, 0
+	jr nz, .fadeOut
     ld a, [wPlayerY]
     add 4 ; Buffer for extra time before screen switch
     ld b, a
     call OffScreenYEnemies
     jr z, .skipFade
-    ld hl, wClassicModeStage
-    ld [hl], STAGE_CLASSIC_STARTING
+    ld a, 1 
+    ld [wTriggerFadeOut], a
     jr .skipFade
 .fadeOut:
 	call FadeOutPalettes
@@ -88,20 +85,6 @@ TryToUnpause::
 	ld [hl], a ; pause
 .end:
 	ret
-
-ParkEnteredClassic::
-    push hl
-    ld hl, wClassicModeStage
-	ld [hl], STAGE_CLASSIC_PARK_ENTERED
-    pop hl
-    ret
-
-StartedClassic::
-    push hl
-    ld hl, wClassicModeStage
-	ld [hl], STAGE_CLASSIC_STARTED
-    pop hl
-    ret
 
 SpawnHandWave::
 	ld b, 1
@@ -276,11 +259,6 @@ IncrementScrollOffset::
 	ld [wParallaxFar], a
 .end:
 	ret
-
-SetGameMapStartPoint::
-    ld a, BACKGROUND_VSCROLL_START
-    ldh [rSCY], a
-    ret
 
 UpdateSprites:
     call PlayerUpdate

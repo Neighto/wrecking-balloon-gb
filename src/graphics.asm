@@ -88,31 +88,31 @@ LoadEnemyTiles:
 LoadWorld1:
 	call LoadEnemyTiles
 
-	; World 1
-	ld bc, BackgroundTiles
+	; Level 1
+	ld bc, Level1Tiles
 	ld hl, _VRAM9000
-	ld de, BackgroundTilesEnd - BackgroundTiles
+	ld de, Level1TilesEnd - Level1Tiles
 	call MEMCPY
-	ld bc, BackgroundMap
+	ld bc, Level1Map
 	ld hl, _SCRN0
-	ld de, BackgroundMapEnd - BackgroundMap
+	ld de, Level1MapEnd - Level1Map
 	call MEMCPY
 	ret
 
 LoadParkData::
 	call LoadPlayerTiles
 	call LoadWindow
-	ld bc, ClassicParkTiles
+	ld bc, OpeningCutsceneSpriteTiles
 	ld hl, _VRAM8000 + $20 + (PlayerSpriteTilesEnd - PlayerSpriteTiles) + (EnemyTilesEnd - EnemyTiles) + (CountdownTilesEnd - CountdownTiles)
-	ld de, ClassicParkTilesEnd - ClassicParkTiles
+	ld de, OpeningCutsceneSpriteTilesEnd - OpeningCutsceneSpriteTiles
 	call MEMCPY
-	ld bc, ParkTiles
+	ld bc, OpeningCutsceneTiles
 	ld hl, _VRAM9000
-	ld de, ParkTilesEnd - ParkTiles
+	ld de, OpeningCutsceneTilesEnd - OpeningCutsceneTiles
 	call MEMCPY
-	ld bc, ParkMap
+	ld bc, OpeningCutsceneMap
 	ld hl, _SCRN0
-	ld de, ParkMapEnd - ParkMap
+	ld de, OpeningCutsceneMapEnd - OpeningCutsceneMap
 	call MEMCPY
 	ret
 

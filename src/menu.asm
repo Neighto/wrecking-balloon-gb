@@ -81,17 +81,9 @@ MoveCursor:
 	ret
 
 SelectMode:
-	ld a, [wSelectedMode]
-	cp a, 0
-	jr nz, .storyMode
-.classicMode:
 	call CollectSound
-	ld hl, wClassicModeStage
-	ld [hl], STAGE_CLASSIC_SELECTED
-	; call StartGame
-	ret
-.storyMode:
-	; call StartStory
+	ld a, 1 
+	ld [wTriggerFadeOut], a
 	ret
 
 MenuInput:
@@ -177,9 +169,9 @@ UpdateMenu::
 	ret z
 .hasFadedIn:
 	call BlinkMenuCursor
-	ld a, [wClassicModeStage]
-	cp a, STAGE_CLASSIC_SELECTED
-	jr z, .fadeOut
+	ld a, [wTriggerFadeOut]
+	cp a, 0
+	jr nz, .fadeOut
 	call MenuInput
 	call IncrementScrollOffset
 	ret
