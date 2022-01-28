@@ -1,7 +1,4 @@
 SECTION "general RAM vars", WRAM0[$C000]
-	; Fading
-	wFadeInFrame:: DB
-	wFadeOutFrame:: DB
 
 	; General-use OAM offset
 	wOAMGeneral1:: DB
@@ -20,12 +17,10 @@ SECTION "general RAM vars", WRAM0[$C000]
 
 SECTION "general initialization", ROMX
 
-InitializeGameVars::
+InitializeGeneralVars::
 	xor a ; ld a, 0
 	ld [wParallaxClose], a
 	ld [wParallaxFar], a
-	ld [wFadeInFrame], a
-	ld [wFadeOutFrame], a
 	ld [wUpdateTilemapOffset], a
 	ld [wUpdateTilemapIndex], a
 	ld [wHasUpdatedNextTilemapAddress], a

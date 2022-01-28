@@ -7,30 +7,29 @@ FADE_PALETTE_2 EQU %10000100
 FADE_PALETTE_3 EQU %01000000
 FADE_PALETTE_4 EQU %00000000
 
+SECTION "palettes vars", WRAM0
+	wFadeInFrame:: DB
+	wFadeOutFrame:: DB
+	wTriggerFadeIn:: DB
+	wTriggerFadeOut:: DB
+
 SECTION "palettes", ROMX
 
-SetupPalettes::
-	push af
-    ld a, MAIN_PALETTE
+InitializePalettes::
+	xor a ; ld a, 0
+	ld [wFadeInFrame], a
+	ld [wFadeOutFrame], a
+	ld [wTriggerFadeIn], a
+	ld [wTriggerFadeOut], a
+
+	ld a, MAIN_PALETTE
 	ldh [rBGP], a
     ldh [rOCPD], a
 	ldh [rOBP1], a
 	ldh [rOBP0], a
 	ld a, MAIN_PALETTE2
 	ldh [rOBP1], a
-	pop af
-    ret
-
-SetupParkPalettes::
-	push af
-	ld a, MAIN_PALETTE
-    ldh [rBGP], a
-    ldh [rOCPD], a
-	ldh [rOBP0], a
-	ld a, MAIN_PALETTE2
-	ldh [rOBP1], a
-	pop af
-    ret
+	ret
 
 FadeOutPalettes::
 	; Return a for has faded (0 = false, 1 = true)
@@ -115,10 +114,4 @@ FadeInPalettes::
 	ld [wFadeInFrame], a
 .end:
 	xor a ; ld a, 0
-	ret
-
-ResetFading::
-	xor a ; ld a, 0
-	ld [wFadeInFrame], a
-	ld [wFadeOutFrame], a
 	ret

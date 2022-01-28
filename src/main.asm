@@ -14,10 +14,10 @@ Start::
 	call ClearRAM
 	call ClearAllTiles
 	call ResetScroll
-	call LoadMenuOpeningData
-	call SetupPalettes
 	call CopyDMARoutine
-	call InitializeGameVars
+	call LoadMenuOpeningData
+	call InitializeGeneralVars
+	call InitializePalettes
 	call InitializeGame
 	call InitializeController
 	call InitializeMenu
@@ -33,8 +33,8 @@ MenuLoopOpening:
 StartMenu::
 	call LCD_OFF
 	call ResetScroll
-	call ResetFading
 	call SetMenuInterrupts
+	call InitializePalettes
 	call LoadMenuData
 	call SpawnMenuCursor
 	call WaveSound
@@ -49,7 +49,6 @@ MenuLoop:
 	; jp MenuLoop
 
 StartGame::
-	call ParkEnteredClassic
 	call WaitVBlank
 	call LCD_OFF
 	call ClearMap
@@ -58,12 +57,10 @@ StartGame::
 	call ClearSound
 	call ClearAllTiles
 	call ResetScroll
-	call ResetFading
 	call SetParkInterrupts
-	call SetupParkPalettes
-	call SetGameMapStartPoint
 	call SetupWindow
 	call LoadParkData
+	call InitializePalettes
 	call InitializeScore
 	call InitializeLevelVars
 	call InitializeEnemyStructVars
@@ -87,8 +84,8 @@ SetupNextLevel::
 	call ClearRAM
 	call ClearSound
 	call SetGameInterrupts
-	call SetupPalettes
 	call LoadGameData
+	call InitializePalettes
 	call InitializeGame
 	call InitializeNewLevel
 	call InitializePointBalloon

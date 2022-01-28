@@ -24,20 +24,20 @@ PorcupineTiles::
     INCBIN "incbin/sprite/porcu.2bpp"
 PorcupineTilesEnd::
 
-ParkTiles::
-    INCBIN "incbin/background/Classic_Map.2bpp"
-ParkTilesEnd::
+OpeningCutsceneTiles::
+    INCBIN "incbin/background/OpeningCutsceneMap.2bpp"
+OpeningCutsceneTilesEnd::
 
-BackgroundTiles::
+OpeningCutsceneSpriteTiles::
+    INCBIN "incbin/background/Man_Wave.2bpp"
+    INCBIN "incbin/background/Man_Wave2.2bpp"
+OpeningCutsceneSpriteTilesEnd::
+
+Level1Tiles::
     INCBIN "incbin/background/City.2bpp"
     ; INCBIN "incbin/background/Sunset.2bpp"
     ; INCBIN "incbin/background/World2.2bpp"
-BackgroundTilesEnd::
-
-ClassicParkTiles::
-    INCBIN "incbin/background/Man_Wave.2bpp"
-    INCBIN "incbin/background/Man_Wave2.2bpp"
-ClassicParkTilesEnd::
+Level1TilesEnd::
 
 CountdownTiles::
     INCBIN "incbin/sprite/Bubble1.2bpp"
