@@ -56,7 +56,7 @@ UpdatePark::
 .fadeOut:
 	call FadeOutPalettes
 	cp a, 0
-	call nz, PreGameLoop
+	call nz, SetupNextLevel
 .skipFade:
     call HandWaveAnimation
     ; call IncrementScrollOffset
