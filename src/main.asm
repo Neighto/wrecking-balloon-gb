@@ -32,12 +32,12 @@ MenuLoopOpening:
 	; jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
-	call WaveSound
-	call SetMenuInterrupts
-	call SpawnMenuCursor
-	call LoadMenuData
 	call ResetScroll
 	call ResetFading
+	call SetMenuInterrupts
+	call LoadMenuData
+	call SpawnMenuCursor
+	call WaveSound
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
@@ -58,18 +58,18 @@ StartGame::
 	call ClearSound
 	call ClearAllTiles
 	call ResetScroll
+	call ResetFading
 	call SetParkInterrupts
 	call SetupParkPalettes
 	call SetGameMapStartPoint
-	call SpawnHandWave
 	call SetupWindow
-	call InitializeScore
 	call LoadParkData
+	call InitializeScore
 	call InitializeLevelVars
 	call InitializeEnemyStructVars
 	call InitializePlayer
 	call SpawnPlayer
-	call ResetFading
+	call SpawnHandWave
 	call LCD_ON_NO_WINDOW
 	; Comment out ParkLoop to skip park cutscene
 ParkLoop:
@@ -85,6 +85,7 @@ SetupNextLevel::
 	call ResetScroll
 	call ClearOAM
 	call ClearRAM
+	call ClearSound
 	call SetGameInterrupts
 	call SetupPalettes
 	call LoadGameData
