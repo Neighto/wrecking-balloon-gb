@@ -85,21 +85,7 @@ LoadEnemyTiles:
 	; call MEMCPY
 	ret
 
-LoadWorld1:
-	call LoadEnemyTiles
-
-	; Level 1
-	ld bc, Level1Tiles
-	ld hl, _VRAM9000
-	ld de, Level1TilesEnd - Level1Tiles
-	call MEMCPY
-	ld bc, Level1Map
-	ld hl, _SCRN0
-	ld de, Level1MapEnd - Level1Map
-	call MEMCPY
-	ret
-
-LoadParkData::
+LoadParkGraphics::
 	call LoadPlayerTiles
 	call LoadWindow
 	ld bc, OpeningCutsceneSpriteTiles
@@ -116,14 +102,43 @@ LoadParkData::
 	call MEMCPY
 	ret
 
-LoadGameData::
-	call LoadWorld1
+LoadGameGraphics::
+	; ld a, [wLevel]
+	; cp a, 1
+	; jr z, .level1
+	; cp a, 2
+	; jr z, .level2
+	; cp a, 3
+	; jr z, .level3
+	; ret
+.level1:
+	call LoadEnemyTiles
+
+	ld bc, Level1Tiles
+	ld hl, _VRAM9000
+	ld de, Level1TilesEnd - Level1Tiles
+	call MEMCPY
+	ld bc, Level1Map
+	ld hl, _SCRN0
+	ld de, Level1MapEnd - Level1Map
+	call MEMCPY
+	ret
+.level2:
+	; call LoadEnemyTiles ; Later might want to change loaded enemies
+
+	; ld bc, Level2Tiles
+	; ld hl, _VRAM9000
+	; ld de, Level2TilesEnd - Level2Tiles
+	; call MEMCPY
+	; ld bc, Level2Map
+	; ld hl, _SCRN0
+	; ld de, Level2MapEnd - Level2Map
+	; call MEMCPY
+	ret
+.level3:
 	ret
 
-LoadMenuOpeningData::
-	push hl
-	push bc
-	push de
+LoadMenuOpeningGraphics::
 	ld bc, MenuTitleTiles
 	ld de, MenuTitleTilesEnd - MenuTitleTiles
 	call AddBGTiles8800Method
@@ -131,12 +146,9 @@ LoadMenuOpeningData::
 	ld hl, _SCRN0 + TITLE_ADDRESS_OFFSET
 	ld de, $A0
 	call MEMCPY
-	pop de
-	pop bc
-	pop hl
 	ret
 
-LoadMenuData::
+LoadMenuGraphics::
 	ld bc, MenuTiles
 	ld hl, _VRAM8000 + $20
 	ld de, MenuTilesEnd - MenuTiles
@@ -393,9 +405,9 @@ MoveToNextTilemap::
 	jr .end
 .clouds2:
 	ld hl, wUpdateTilemapAddress
-	ld a, LOW(World2Map)
+	ld a, LOW(Level2Map)
 	ld [hli], a
-	ld a, HIGH(World2Map)
+	ld a, HIGH(Level2Map)
 	ld [hl], a
 	ld a, $37
 	ld [wUpdateTilemapOffset], a

@@ -28,6 +28,7 @@ SECTION "level vars", WRAM0
     wLevel:: DB
     wLevelPointer:: DB
     wLevelPointerWaitCounter:: DB
+    wLevelDataAddress:: DS 2
 
 SECTION "level data", ROM0
 
@@ -96,21 +97,29 @@ Level1:
     LEVEL_WAIT 8
     LEVEL_SPAWN Set2, Set2Size
     LEVEL_WAIT 8
-    ; LEVEL_SPAWN Set3, Set3Size
-    ; LEVEL_WAIT 8
-    ; LEVEL_SPAWN Set4, Set4Size
-    ; LEVEL_WAIT 8
-    ; LEVEL_SPAWN Set5, Set5Size
-    ; LEVEL_WAIT 8
-    ; LEVEL_SPAWN Set6, Set6Size
-    ; LEVEL_WAIT 8
-    ; LEVEL_SPAWN Set7, Set7Size
-    ; LEVEL_WAIT 8
-    ; LEVEL_SPAWN Set8, Set8Size
+    LEVEL_SPAWN Set3, Set3Size
+    LEVEL_WAIT 8
+    LEVEL_SPAWN Set4, Set4Size
+    LEVEL_WAIT 8
+    LEVEL_SPAWN Set5, Set5Size
+    LEVEL_WAIT 8
+    LEVEL_SPAWN Set6, Set6Size
+    LEVEL_WAIT 8
+    LEVEL_SPAWN Set7, Set7Size
+    LEVEL_WAIT 8
+    LEVEL_SPAWN Set8, Set8Size
+    LEVEL_WAIT 16
     LEVEL_END
 
 Level2:
     LEVEL_SPAWN Set8, Set8Size
+    LEVEL_WAIT 8
+    LEVEL_SPAWN Set7, Set7Size
+    LEVEL_WAIT 8
+    LEVEL_SPAWN Set1, Set1Size
+    LEVEL_WAIT 1
+    LEVEL_SPAWN Set3, Set3Size
+    LEVEL_WAIT 32
     LEVEL_END
 
 ; Handler and Initializer
@@ -119,12 +128,41 @@ InitializeNewLevel::
     xor a ; ld a, 0
     ld [wLevelPointer], a
     ld [wLevelPointerWaitCounter], a
+
+    ld a, [wLevel]
+    cp a, 1
+    jr z, .level1
+    cp a, 2
+    jr z, .level2
+    cp a, 3
+    jr z, .level3
+    cp a, 4
+    jr z, .level4
+    ret
+.level1:
+    ld bc, Level1
+    jr .setLevelDataAddress
+.level2:
+    ld bc, Level2
+    jr .setLevelDataAddress
+.level3:
+    ld bc, Level1
+    jr .setLevelDataAddress
+.level4:
+    ; Temporary for debugging!
+    jp Start
+.setLevelDataAddress:
+    ld hl, wLevelDataAddress
+    ld a, LOW(bc)
+    ld [hli], a
+    ld a, HIGH(bc)
+    ld [hl], a
     ret
 
 InitializeLevelVars::
-    call InitializeNewLevel
     ld a, 1
-    ld [wLevel], a 
+    ld [wLevel], a
+    call InitializeNewLevel
     ret
 
 LevelDataHandler:
@@ -186,7 +224,11 @@ LevelDataManager::
     ret nz
     
     ; Read next level instruction
-    SET_HL_TO_ADDRESS Level1, wLevelPointer
+    ld a, [wLevelDataAddress]
+    ld l, a
+    ld a, [wLevelDataAddress+1]
+    ld h, a
+    ADD_TO_HL [wLevelPointer]
     ld a, [hl]
 
     ; Interpret
