@@ -382,9 +382,9 @@ MoveToNextTilemap::
 .clouds1:
 	; Default loaded tilemap
 	ld hl, wUpdateTilemapAddress
-	ld a, LOW(BackgroundMap)
+	ld a, LOW(Level1Map)
 	ld [hli], a
-	ld a, HIGH(BackgroundMap)
+	ld a, HIGH(Level1Map)
 	ld [hl], a
 	ld a, $0
 	ld [wUpdateTilemapOffset], a
