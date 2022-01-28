@@ -15,14 +15,14 @@ Start::
 	call ClearAllTiles
 	call ResetScroll
 	call LoadMenuOpeningData
-	ld hl, menuTheme
-	call hUGE_init
 	call SetupPalettes
 	call CopyDMARoutine
 	call InitializeGameVars
 	call InitializeGame
 	call InitializeController
 	call InitializeMenu
+	ld hl, menuTheme
+	call hUGE_init
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
@@ -50,16 +50,16 @@ MenuLoop:
 
 StartGame::
 	call ParkEnteredClassic
-	call SetParkInterrupts
 	call WaitVBlank
 	call LCD_OFF
-	call SetupParkPalettes
 	call ClearMap
 	call ClearOAM
 	call ClearRAM
 	call ClearSound
 	call ClearAllTiles
 	call ResetScroll
+	call SetParkInterrupts
+	call SetupParkPalettes
 	call SetGameMapStartPoint
 	call SpawnHandWave
 	call SetupWindow
@@ -67,11 +67,6 @@ StartGame::
 	call LoadParkData
 	call InitializeLevelVars
 	call InitializeEnemyStructVars
-	call InitializePointBalloon
-	call InitializeBalloonCactus
-	call InitializePorcupine
-	call InitializeBird
-	call InitializeBomb
 	call InitializePlayer
 	call SpawnPlayer
 	call ResetFading
@@ -84,51 +79,38 @@ ParkLoop:
 	call UpdateGlobalTimer
 	jp ParkLoop
 
-PreGameLoop::
+SetupNextLevel::
 	call WaitVBlank
 	call LCD_OFF
-	call StartedClassic
-	call SetGameInterrupts
 	call ResetScroll
 	call ClearOAM
 	call ClearRAM
-	ld hl, angryTheme
-	call hUGE_init
+	call SetGameInterrupts
+	call SetupPalettes
 	call LoadGameData
+	call InitializeGame
+	call InitializeNewLevel
+	call InitializePointBalloon
+	call InitializeBalloonCactus
+	call InitializePorcupine
+	call InitializeBird
+	call InitializeBomb
 	call InitializePlayer
 	call SpawnPlayer
 	call SpawnCountdown
-	call SetupPalettes
+	ld hl, angryTheme
+	call hUGE_init
 	call LCD_ON
 
-GameLoopCountdown:
+GameCountdownLoop:
 	call WaitVBlank
 	call OAMDMA
 	call UpdateGameCountdown
 	call UpdateGlobalTimer
-	jp GameLoopCountdown
+	jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA
 	call UpdateGame
 	call UpdateGlobalTimer
 	jp GameLoop
-
-NextLevel::
-	call WaitVBlank
-	call LCD_OFF
-	xor a
-	ld [wCountdownFrame], a
-	call ResetScroll
-	call ClearOAM
-	call ClearRAM
-	ld hl, angryTheme
-	call hUGE_init
-	call LoadGameData
-	call InitializeNewLevel
-	call InitializePlayer
-	call SpawnPlayer
-	call SpawnCountdown
-	call SetupPalettes
-	call LCD_ON
-	jp GameLoopCountdown

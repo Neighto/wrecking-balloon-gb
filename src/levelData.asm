@@ -233,5 +233,5 @@ LevelDataManager::
     ld a, [wLevel] 
     inc a
     ld [wLevel], a 
-    jp NextLevel
+    jp SetupNextLevel
     ret
