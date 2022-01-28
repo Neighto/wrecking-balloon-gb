@@ -35,9 +35,12 @@ OpeningCutsceneSpriteTilesEnd::
 
 Level1Tiles::
     INCBIN "incbin/background/City.2bpp"
-    ; INCBIN "incbin/background/Sunset.2bpp"
-    ; INCBIN "incbin/background/World2.2bpp"
 Level1TilesEnd::
+
+Level2Tiles::
+    ; INCBIN "incbin/background/Sunset.2bpp"
+    INCBIN "incbin/background/World2.2bpp"
+Level2TilesEnd::
 
 CountdownTiles::
     INCBIN "incbin/sprite/Bubble1.2bpp"

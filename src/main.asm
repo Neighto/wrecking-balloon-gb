@@ -15,7 +15,7 @@ Start::
 	call ClearAllTiles
 	call ResetScroll
 	call CopyDMARoutine
-	call LoadMenuOpeningData
+	call LoadMenuOpeningGraphics
 	call InitializeGeneralVars
 	call InitializePalettes
 	call InitializeGame
@@ -35,7 +35,7 @@ StartMenu::
 	call ResetScroll
 	call SetMenuInterrupts
 	call InitializePalettes
-	call LoadMenuData
+	call LoadMenuGraphics
 	call SpawnMenuCursor
 	call WaveSound
 	call LCD_ON_NO_WINDOW
@@ -59,7 +59,7 @@ StartGame::
 	call ResetScroll
 	call SetParkInterrupts
 	call SetupWindow
-	call LoadParkData
+	call LoadParkGraphics
 	call InitializePalettes
 	call InitializeScore
 	call InitializeLevelVars
@@ -70,11 +70,11 @@ StartGame::
 	call LCD_ON_NO_WINDOW
 	; Comment out ParkLoop to skip park cutscene
 ParkLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdatePark
-	call UpdateGlobalTimer
-	jp ParkLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdatePark
+	; call UpdateGlobalTimer
+	; jp ParkLoop
 
 SetupNextLevel::
 	call WaitVBlank
@@ -84,7 +84,7 @@ SetupNextLevel::
 	call ClearRAM
 	call ClearSound
 	call SetGameInterrupts
-	call LoadGameData
+	call LoadGameGraphics
 	call InitializePalettes
 	call InitializeGame
 	call InitializeNewLevel

@@ -62,7 +62,6 @@ FadeOutPalettes::
 .fadePalettes:
 	ldh [rBGP], a
     ldh [rOCPD], a
-	ldh [rOBP1], a
 	ldh [rOBP0], a
 	ld a, [wFadeOutFrame]
 	inc a
@@ -107,7 +106,6 @@ FadeInPalettes::
 .fadePalettes:
 	ldh [rBGP], a
     ldh [rOCPD], a
-	ldh [rOBP1], a
 	ldh [rOBP0], a
 	ld a, [wFadeInFrame]
 	inc a
