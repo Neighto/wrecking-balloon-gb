@@ -4,6 +4,9 @@ SECTION "enemy struct vars", WRAM0
     ; Offset for looping through enemy data
     wEnemyOffset:: DB
 
+    wEnemyOffset2:: DB ; If we loop inside another enemy's data
+
+
     ; Vars set by data
     wEnemyY:: DB
     wEnemyX:: DB
@@ -29,6 +32,9 @@ SECTION "enemy struct vars", WRAM0
     wEnemyFallingTimer:: DB
     wEnemyDelayFallingTimer:: DB
 
+    ; If enemy set to die from external file
+    wEnemyToDie:: DB
+
 SECTION "enemy struct", ROM0
 
 InitializeEnemyStructVars::
@@ -47,6 +53,7 @@ InitializeEnemyStructVars::
     ld [wEnemyFallingSpeed], a 
     ld [wEnemyFallingTimer], a
     ld [wEnemyDelayFallingTimer], a
+    ld [wEnemyToDie], a
     pop af
     ret
 

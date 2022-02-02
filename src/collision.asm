@@ -85,54 +85,6 @@ CollisionWithPlayer::
     pop af
     ret
 
-CollisionFallingEnemy:
-;     ; Check if falling
-;     ld a, [enemy_falling]
-;     cp a, 0
-;     jr z, .end
-; .birdCollision:
-;     ; Check if alive
-;     ld a, [bird_alive]
-;     cp a, 0
-;     jr z, .pointBalloonCollision
-;     SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
-;     LD_BC_HL
-;     SET_HL_TO_ADDRESS wOAM, wBirdOAM
-    ; ld e, 8
-;     call CollisionCheck
-;     cp a, 0
-;     call nz, DeathOfBird
-; .pointBalloonCollision:
-;     ; Check if alive
-;     ld a, [pointBalloon+3] ; Alive
-;     cp a, 0
-;     jr z, .bombCollision
-;     SET_HL_TO_ADDRESS wOAM, wEnemyCactusOAM
-;     LD_BC_HL
-;     SET_HL_TO_ADDRESS wOAM, pointBalloon+2
-    ; ld e, 16
-;     call CollisionCheck
-;     cp a, 0
-;     ; call nz, DeathOfPointBalloon
-; .bombCollision:
-; .end
-    ret
-
-; CollisionBird:
-;     ; Check if alive
-;     ld a, [bird_alive]
-;     cp a, 0
-;     jr z, .end
-;     ; Check collision
-;     ld bc, wPlayerBalloonOAM
-;     SET_HL_TO_ADDRESS wOAM, wBirdOAM
-    ; ld e, 8
-;     call CollisionCheck
-;     cp a, 0
-;     call nz, CollisionWithPlayer
-; .end:
-;     ret
-
 OffScreenXEnemies::
     ; b = x value to check
     ; return a (1 = end of screen)
