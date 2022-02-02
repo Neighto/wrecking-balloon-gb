@@ -1,4 +1,5 @@
 INCLUDE "hardware.inc"
+INCLUDE "macro.inc"
 
 SECTION "math", ROMX
 
@@ -15,20 +16,20 @@ MODULO::
     jr nc, .loop
     ret
 
-RANDOM::
-    ; takes 'a' argument as range number
-    ; uses 'd' as holder
-    ; returns 'a' as random number => 0 to a - 1
-    ; ex:
-    ; ld a, 10
-    ; call RANDOM
-    ; [a is # 0-9]
-    push de
-    ld d, a
-    ldh a, [rDIV]
-    call MODULO
-    pop de
-    ret
+; RANDOM::
+;     ; takes 'a' argument as range number
+;     ; uses 'd' as holder
+;     ; returns 'a' as random number => 0 to a - 1
+;     ; ex:
+;     ; ld a, 10
+;     ; call RANDOM
+;     ; [a is # 0-9]
+;     push de
+;     ld d, a
+;     ldh a, [rDIV]
+;     call MODULO
+;     pop de
+;     ret
 
 DIVISION::
     ; simple division formula
@@ -54,8 +55,6 @@ ToBCD::
     ; takes 'a' argument as non-BCD number
     ; uses 'b' 'c' as holder
     ; returns 'a' as BCD number
-    push bc
-    push de
     ld b, a ; save a
     ld d, 10
     call MODULO
@@ -67,11 +66,7 @@ ToBCD::
     call DIVISION
     swap a
     or c
-.end:
-    pop de
-    pop bc
     ret
-
 
 MULTIPLY::
     ; simple multiply formula
@@ -79,7 +74,6 @@ MULTIPLY::
     ; argument 'c'
     ; uses 'a' and 'd' as counter
     ; returns 'a' as solution
-    push de
     xor a ; ld a, 0
     ld d, a
 .loop:
@@ -93,5 +87,4 @@ MULTIPLY::
     jr .loop
 .end:
     ld a, d
-    pop de
     ret

@@ -3,14 +3,13 @@ INCLUDE "hardware.inc"
 INCLUDE "balloonConstants.inc"
 INCLUDE "macro.inc"
 
-PROPELLER_START_X EQU 105
-PROPELLER_START_Y EQU 55
-
 PORCUPINE_STRUCT_SIZE EQU 5
 PORCUPINE_STRUCT_AMOUNT EQU 1
 PORCUPINE_DATA_SIZE EQU PORCUPINE_STRUCT_SIZE * PORCUPINE_STRUCT_AMOUNT
 PORCUPINE_OAM_SPRITES EQU 8
 PORCUPINE_OAM_BYTES EQU PORCUPINE_OAM_SPRITES * 4
+POINT_BALLOON_MOVE_TIME EQU %00000001
+POINT_BALLOON_COLLISION_TIME EQU %00001000
 
 SECTION "porcupine vars", WRAM0
     porcupine:: DS PORCUPINE_DATA_SIZE
@@ -25,26 +24,8 @@ InitializePorcupine::
     pop hl
     ret
 
-GetStruct:
-    ; Argument hl = start of free enemy struct
-    push af
-    ld a, [hli]
-    ld [wEnemyActive], a
-    ld a, [hli]
-    ld [wEnemyY], a
-    ld a, [hli]
-    ld [wEnemyX], a
-    ld a, [hli]
-    ld [wEnemyOAM], a
-    ld a, [hli]
-    ld [wEnemyAlive], a
-    ld a, [hli]
-    pop af
-    ret
-
 SetStruct:
     ; Argument hl = start of free enemy struct
-    push af
     ld a, [wEnemyActive]
     ld [hli], a
     ld a, [wEnemyY]
@@ -54,8 +35,7 @@ SetStruct:
     ld a, [wEnemyOAM]
     ld [hli], a
     ld a, [wEnemyAlive]
-    ld [hli], a
-    pop af
+    ld [hl], a
     ret
 
 SpawnPorcupine::
@@ -92,7 +72,7 @@ SpawnPorcupine::
     ld [hli], a
     ld [hl], $D0
     inc l
-    ld [hl], %00000000
+    ld [hl], OAMF_PAL0
 .topMiddle:
     inc l
     ld a, [wEnemyY]
@@ -102,7 +82,7 @@ SpawnPorcupine::
     ld [hli], a
     ld [hl], $D4
     inc l
-    ld [hl], %00000000
+    ld [hl], OAMF_PAL0
 .topMiddle2:
     inc l
     ld a, [wEnemyY]
@@ -112,7 +92,7 @@ SpawnPorcupine::
     ld [hli], a
     ld [hl], $D8
     inc l
-    ld [hl], %00000000
+    ld [hl], OAMF_PAL0
 .topRight:
     inc l
     ld a, [wEnemyY]
@@ -122,7 +102,7 @@ SpawnPorcupine::
     ld [hli], a
     ld [hl], $DC
     inc l
-    ld [hl], %00000000
+    ld [hl], OAMF_PAL0
 .bottomLeft:
     inc l
     ld a, [wEnemyY]
@@ -132,7 +112,7 @@ SpawnPorcupine::
     ld [hli], a
     ld [hl], $D2
     inc l
-    ld [hl], %00000000
+    ld [hl], OAMF_PAL0
 .bottomMiddle:
     inc l
     ld a, [wEnemyY]
@@ -143,7 +123,7 @@ SpawnPorcupine::
     ld [hli], a
     ld [hl], $D6
     inc l
-    ld [hl], %00000000
+    ld [hl], OAMF_PAL0
 .bottomMiddle2:
     inc l
     ld a, [wEnemyY]
@@ -154,7 +134,7 @@ SpawnPorcupine::
     ld [hli], a
     ld [hl], $DA
     inc l
-    ld [hl], %00000000
+    ld [hl], OAMF_PAL0
 .bottomRight:
     inc l
     ld a, [wEnemyY]
@@ -165,7 +145,7 @@ SpawnPorcupine::
     ld [hli], a
     ld [hl], $DE
     inc l
-    ld [hl], %00000000
+    ld [hl], OAMF_PAL0
 .setStruct:
     LD_HL_BC
     call SetStruct
@@ -181,13 +161,23 @@ PorcupineUpdate::
     xor a ; ld a, 0
     ld [wEnemyOffset], a
 .loop:
+    ; Get active state
     SET_HL_TO_ADDRESS porcupine, wEnemyOffset
-    call GetStruct
-    
+    ld a, [hli]
+    ld [wEnemyActive], a
     ; Check active
     ld a, [wEnemyActive]
     cp a, 0
-    jr z, .checkLoop
+    jr z, .checkLoopSkipSet
+    ; Get rest of struct
+    ld a, [hli]
+    ld [wEnemyY], a
+    ld a, [hli]
+    ld [wEnemyX], a
+    ld a, [hli]
+    ld [wEnemyOAM], a
+    ld a, [hli]
+    ld [wEnemyAlive], a    
     ; Check alive
     ld a, [wEnemyAlive]
     cp a, 0
@@ -202,6 +192,7 @@ PorcupineUpdate::
 .checkLoop:
     SET_HL_TO_ADDRESS porcupine, wEnemyOffset
     call SetStruct
+.checkLoopSkipSet:
     ld a, [wEnemyOffset]
     add a, PORCUPINE_STRUCT_SIZE
     ld [wEnemyOffset], a    
@@ -209,7 +200,4 @@ PorcupineUpdate::
     ld a, b
     or a, c
     jr nz, .loop
-.end:
-    xor a ; ld a, 0
-    ld [wEnemyOffset], a
     ret

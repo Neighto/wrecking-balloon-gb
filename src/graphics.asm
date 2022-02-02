@@ -79,10 +79,10 @@ LoadEnemyTiles:
 	ld de, CountdownTilesEnd - CountdownTiles
 	call MEMCPY
 
-	; ld bc, PorcupineTiles
-	; ld hl, _VRAM8800+$500
-	; ld de, PorcupineTilesEnd - PorcupineTiles
-	; call MEMCPY
+	ld bc, PorcupineTiles
+	ld hl, _VRAM8800+$500
+	ld de, PorcupineTilesEnd - PorcupineTiles
+	call MEMCPY
 	ret
 
 LoadParkGraphics::

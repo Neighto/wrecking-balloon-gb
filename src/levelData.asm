@@ -32,94 +32,51 @@ SECTION "level vars", WRAM0
 
 SECTION "level data", ROM0
 
-; Template Format
-;   Label: WXLYWZ (W:World, L:Level, W:Wave)
-;   Enemy_Number, Spawn_Location_Y, Spawn_Location_X
-
-; ENEMY SETS *************************************
-
-Set1:
-    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B
-    ;     ; DB PORCUPINE, 50, 50
-Set1End:
-Set1Size EQU (Set1End - Set1) / LEVEL_DATA_FIELDS
-
-Set2:
-    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_A
-    DB BALLOON_CACTUS, SPAWN_Y_B, SCRN_X
-Set2End:
-Set2Size EQU (Set2End - Set2) / LEVEL_DATA_FIELDS
-
-Set3:
-    DB BALLOON_CACTUS, SPAWN_Y_C, 0
-    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_C
-    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_D
-Set3End:
-Set3Size EQU (Set3End - Set3) / LEVEL_DATA_FIELDS
-
-Set4:
-    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_A
-    DB BOMB, OFFSCREEN_BOTTOM_Y, SPAWN_X_D
-Set4End:
-Set4Size EQU (Set4End - Set4) / LEVEL_DATA_FIELDS
-
-Set5:
-    DB BALLOON_CACTUS, SPAWN_Y_A, 0
-    DB BIRD, SPAWN_Y_C, SCRN_X
-    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B
-Set5End:
-Set5Size EQU (Set5End - Set5) / LEVEL_DATA_FIELDS
-
-Set6:
-    DB BOMB, OFFSCREEN_BOTTOM_Y, SPAWN_X_B
-    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_D
-Set6End:
-Set6Size EQU (Set6End - Set6) / LEVEL_DATA_FIELDS
-
-Set7:
-    DB BIRD, SPAWN_Y_A, 0
-    DB BALLOON_CACTUS, SPAWN_Y_B, 0
-Set7End:
-Set7Size EQU (Set7End - Set7) / LEVEL_DATA_FIELDS
-
-Set8:
-    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y-2, SPAWN_X_A
-    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y-6, SPAWN_X_B
-    DB BOMB, OFFSCREEN_BOTTOM_Y, SPAWN_X_C
-    DB POINT_BALLOON, OFFSCREEN_BOTTOM_Y-4, SPAWN_X_D
-Set8End:
-Set8Size EQU (Set8End - Set8) / LEVEL_DATA_FIELDS
-
 ; LEVEL INSTRUCTIONS *************************************
 
 Level1:
-    LEVEL_SPAWN Set1, Set1Size
+    LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B
     LEVEL_WAIT 8
-    LEVEL_SPAWN Set2, Set2Size
+    LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_A
+    LEVEL_SPAWN BALLOON_CACTUS, SPAWN_Y_B, SCRN_X
     LEVEL_WAIT 8
-    LEVEL_SPAWN Set3, Set3Size
+    LEVEL_SPAWN BALLOON_CACTUS, SPAWN_Y_C, 0
+    LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_C
+    LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_D
     LEVEL_WAIT 8
-    LEVEL_SPAWN Set4, Set4Size
+    LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_A
+    LEVEL_SPAWN BOMB, OFFSCREEN_BOTTOM_Y, SPAWN_X_D
     LEVEL_WAIT 8
-    LEVEL_SPAWN Set5, Set5Size
+    LEVEL_SPAWN BALLOON_CACTUS, SPAWN_Y_A, 0
+    LEVEL_SPAWN BIRD, SPAWN_Y_C, SCRN_X
+    LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B
     LEVEL_WAIT 8
-    LEVEL_SPAWN Set6, Set6Size
+    LEVEL_SPAWN BOMB, OFFSCREEN_BOTTOM_Y, SPAWN_X_B
+    LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_D
     LEVEL_WAIT 8
-    LEVEL_SPAWN Set7, Set7Size
+    LEVEL_SPAWN BIRD, SPAWN_Y_A, 0
+    LEVEL_SPAWN BALLOON_CACTUS, SPAWN_Y_B, 0
     LEVEL_WAIT 8
-    LEVEL_SPAWN Set8, Set8Size
+    LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y-2, SPAWN_X_A
+    LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y-6, SPAWN_X_B
+    LEVEL_SPAWN BOMB, OFFSCREEN_BOTTOM_Y, SPAWN_X_C
+    LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y-4, SPAWN_X_D
     LEVEL_WAIT 16
     LEVEL_END
 
 Level2:
-    LEVEL_SPAWN Set8, Set8Size
     LEVEL_WAIT 8
-    LEVEL_SPAWN Set7, Set7Size
+    LEVEL_SPAWN BIRD, SPAWN_Y_B, 0
+    LEVEL_SPAWN BIRD, SPAWN_Y_C, SCRN_X
     LEVEL_WAIT 8
-    LEVEL_SPAWN Set1, Set1Size
-    LEVEL_WAIT 1
-    LEVEL_SPAWN Set3, Set3Size
-    LEVEL_WAIT 32
+    LEVEL_SPAWN BOMB, OFFSCREEN_BOTTOM_Y, SPAWN_X_A
+    LEVEL_SPAWN BOMB, OFFSCREEN_BOTTOM_Y, SPAWN_X_C
+    LEVEL_WAIT 16
+    LEVEL_END
+
+Level3:
+    LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B
+    LEVEL_WAIT 16
     LEVEL_END
 
 ; Handler and Initializer
@@ -146,11 +103,11 @@ InitializeNewLevel::
     ld bc, Level2
     jr .setLevelDataAddress
 .level3:
-    ld bc, Level1
+    ld bc, Level3
     jr .setLevelDataAddress
 .level4:
-    ; Temporary for debugging!
-    jp Start
+    ; nothing
+    ret
 .setLevelDataAddress:
     ld hl, wLevelDataAddress
     ld a, LOW(bc)
@@ -167,11 +124,9 @@ InitializeLevelVars::
 
 LevelDataHandler:
     ; argument hl = source address
-    ; argument de = size
-.loop:
     ld a, [hli]
     cp a, EMPTY
-    jr z, .empty
+    ret z
 
     ; Update enemy Y/X
     ld b, a
@@ -181,6 +136,7 @@ LevelDataHandler:
     ld [wEnemyX], a
     ld a, b
 
+    ; Spawns
     cp a, POINT_BALLOON
     jr z, .pointBalloon 
     cp a, BALLOON_CACTUS
@@ -194,27 +150,18 @@ LevelDataHandler:
     ret
 .pointBalloon:
     call SpawnPointBalloon
-    jr .loopCheck
+    ret
 .balloonCactus:
     call SpawnBalloonCactus
-    jr .loopCheck
+    ret
 .bird:
     call SpawnBird
-    jr .loopCheck
+    ret
 .bomb:
     call SpawnBomb
-    jr .loopCheck
+    ret
 .porcupine:
     call SpawnPorcupine
-    jr .loopCheck
-.empty:
-    inc hl
-    inc hl
-.loopCheck:
-    dec de
-    ld a, d
-    or a, e
-    jr nz, .loop
     ret
 
 LevelDataManager::
@@ -223,6 +170,11 @@ LevelDataManager::
     and LEVEL_UPDATE_REFRESH_TIME
     ret nz
     
+    ; Testing remove later
+    ld a, [wLevel]
+    cp a, 4
+    jp z, Start
+
     ; Read next level instruction
     ld a, [wLevelDataAddress]
     ld l, a
@@ -240,15 +192,8 @@ LevelDataManager::
     jr z, .end
     ret
 .spawn:
-    ; Next instructions: start address and size
+    ; Next instructions: enemy, y, x
     inc hl
-    ld a, [hli]
-    ld b, a
-    ld a, [hli]
-    ld c, a
-    ld d, 0
-    ld e, [hl]
-    LD_HL_BC
     call LevelDataHandler
     ld a, [wLevelPointer]
     add a, 4

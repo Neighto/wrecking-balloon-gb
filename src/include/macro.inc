@@ -124,16 +124,16 @@ LEVEL_WAIT_KEY EQU 1
 LEVEL_END_KEY EQU 2
 
 MACRO LEVEL_SPAWN
-    ; Address and size to pass to handler
-    DB 0, HIGH(\1), LOW(\1), \2
+    ; Enemy, Y, X
+    DB LEVEL_SPAWN_KEY, \1, \2, \3
 ENDM
 
 MACRO LEVEL_WAIT
     ; Amount of iterations to wait
-    DB 1, \1
+    DB LEVEL_WAIT_KEY, \1
 ENDM
 
 MACRO LEVEL_END
     ; Stop reading
-    DB 2
+    DB LEVEL_END_KEY
 ENDM
