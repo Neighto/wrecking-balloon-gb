@@ -2,7 +2,7 @@ INCLUDE "points.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
-BIRD_STRUCT_SIZE EQU 8
+BIRD_STRUCT_SIZE EQU 9
 BIRD_STRUCT_AMOUNT EQU 2
 BIRD_DATA_SIZE EQU BIRD_STRUCT_SIZE * BIRD_STRUCT_AMOUNT
 BIRD_OAM_SPRITES EQU 3
@@ -58,6 +58,8 @@ SetStruct:
     ld a, [wEnemyFalling]
     ld [hli], a
     ld a, [wEnemyPoppingFrame]
+    ld [hli], a
+    ld a, [wEnemyToDie]
     ld [hl], a
     ret
 
@@ -283,8 +285,7 @@ Move:
     ret
 
 BirdFall:
-    push hl
-    push af
+    push bc
     INCREMENT_POS wEnemyY, 2
     call UpdateBirdPosition
 .checkOffscreenY:
@@ -297,8 +298,7 @@ BirdFall:
     ld [wEnemyFalling], a
     call Clear
 .end:
-    pop af
-    pop hl
+    pop bc
     ret
 
 DeathOfBird::
@@ -335,7 +335,7 @@ DeathOfBird::
     ret
 
 CollisionBird:
-.checkHitPlayer
+.checkHitPlayer:
     ld a, [wPlayerAlive]
     cp a, 0
     ret z
@@ -350,7 +350,7 @@ CollisionBird:
 BirdUpdate::
     ld bc, BIRD_STRUCT_AMOUNT
     xor a ; ld a, 0
-    ld [wEnemyOffset], a ; TODO, we can remove enemy offset this if we optimize this code
+    ld [wEnemyOffset], a
 .loop:
     ; Get active state
     SET_HL_TO_ADDRESS bird, wEnemyOffset
@@ -373,8 +373,10 @@ BirdUpdate::
     ld [wEnemyRightside], a
     ld a, [hli]
     ld [wEnemyFalling], a
-    ld a, [hl]
+    ld a, [hli]
     ld [wEnemyPoppingFrame], a ; flapping frame
+    ld a, [hl]
+    ld [wEnemyToDie], a
     ; Check if alive
     ld a, [wEnemyAlive]
     cp a, 0
@@ -389,6 +391,10 @@ BirdUpdate::
     and	BIRD_COLLISION_TIME
     push bc
     call z, CollisionBird
+    ; Check if we should die
+    ld a, [wEnemyToDie]
+    cp a, 0
+    call nz, DeathOfBird
     ; Check offscreen
     ld a, [wEnemyX]
     ld b, a

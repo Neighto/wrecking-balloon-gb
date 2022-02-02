@@ -234,6 +234,46 @@ PopBalloonAnimation:
 .end:
     ret
 
+CactusFallingCollision:
+    ; Costly and awkward operation but worth it for the fun
+    push bc
+.checkBird:
+    xor a ; ld a, 0
+    ld [wEnemyOffset2], a
+    ld bc, 2 ; BIRD_STRUCT_AMOUNT
+.birdLoop:
+    SET_HL_TO_ADDRESS bird, wEnemyOffset2+4 ; Alive
+    ld a, [hl]
+    cp a, 0
+    jr z, .checkBirdLoop
+.isAlive:
+    push bc
+    SET_HL_TO_ADDRESS wOAM+8, wEnemyOAM
+    LD_BC_HL
+    SET_HL_TO_ADDRESS bird+3, wEnemyOffset2 ; OAM
+    ld a, [hl]
+    ld hl, wOAM
+    ADD_TO_HL a
+    ld e, 8
+    call CollisionCheck
+    pop bc
+    cp a, 0
+    jr z, .checkBirdLoop
+.hitBird:
+    SET_HL_TO_ADDRESS bird+8, wEnemyOffset2 ; To Die
+    ld [hl], 1
+.checkBirdLoop:
+    ld a, [wEnemyOffset2]
+    add a, 9;BIRD_STRUCT_SIZE
+    ld [wEnemyOffset2], a
+    dec bc
+    ld a, b
+    or a, c
+    jr nz, .birdLoop
+.end:
+    pop bc
+    ret
+
 CactusFalling:
     ld a, [wEnemyFallingTimer]
     inc a
@@ -246,6 +286,8 @@ CactusFalling:
     cp a, [hl]
     jr c, .offScreen
 .falling:
+    call CactusFallingCollision
+
     ld a, [wEnemyDelayFallingTimer]
     inc a
     ld [wEnemyDelayFallingTimer], a
@@ -262,7 +304,6 @@ CactusFalling:
     ret
 .offScreen:
     call Clear
-.end:
     ret
 
 UpdateBalloonPosition:
