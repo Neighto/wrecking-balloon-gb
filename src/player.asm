@@ -348,7 +348,7 @@ PlayerControls:
 	jr z, .endRight
   ; Check offscreen
   ld a, [wPlayerX]
-  add 8
+  add 10
   ld b, a
   call OffScreenX
   cp a, 0
@@ -365,7 +365,7 @@ PlayerControls:
 	jr z, .endLeft
   ; Check offscreen
   ld a, [wPlayerX]
-  sub 8
+  sub 10
   ld b, a
   call OffScreenX
   cp a, 0
@@ -382,7 +382,7 @@ PlayerControls:
 	jr z, .endUp
   ; Check offscreen
   ld a, [wPlayerY]
-  sub 16 ; unusual I have to do this??
+  sub 18
   ld b, a
   call OffScreenY
   cp a, 0
