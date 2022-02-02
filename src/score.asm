@@ -17,9 +17,9 @@ AddPoints::
     push af
     push hl
     ld a, [wPlayerAlive]
-    and 1
+    cp a, 0
     jr z, .end
-    ; Alive so we can add points
+.isAlive:
     ld hl, wScore ; 1st byte of score
     ld a, d
     call ToBCD ; a is now BCD
