@@ -26,27 +26,26 @@ Start::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	; call WaitVBlank
-	; call UpdateMenuOpening
-	; call UpdateGlobalTimer
-	; jp MenuLoopOpening
+	call WaitVBlank
+	call UpdateMenuOpening
+	call UpdateGlobalTimer
+	jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
+	call WaveSound
 	call ResetScroll
 	call SetMenuInterrupts
-	call InitializePalettes
+	call ResetFading
 	call LoadMenuGraphics
 	call SpawnMenuCursor
-	call WaveSound
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateMenu
-	; call UpdateGlobalTimer
-	; call _hUGE_dosound
-	; jp MenuLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateMenu
+	call UpdateGlobalTimer
+	jp MenuLoop
 
 StartGame::
 	call WaitVBlank
@@ -60,7 +59,7 @@ StartGame::
 	call SetParkInterrupts
 	call SetupWindow
 	call LoadParkGraphics
-	call InitializePalettes
+	call ResetFading
 	call InitializeScore
 	call InitializeLevelVars
 	call InitializeEnemyStructVars
@@ -70,11 +69,11 @@ StartGame::
 	call LCD_ON_NO_WINDOW
 	; Comment out ParkLoop to skip park cutscene
 ParkLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdatePark
-	; call UpdateGlobalTimer
-	; jp ParkLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdatePark
+	call UpdateGlobalTimer
+	jp ParkLoop
 
 SetupNextLevel::
 	call WaitVBlank
@@ -85,7 +84,7 @@ SetupNextLevel::
 	call ClearSound
 	call SetGameInterrupts
 	call LoadGameGraphics
-	call InitializePalettes
+	call ResetFading
 	call InitializeGame
 	call InitializeNewLevel
 	call InitializePointBalloon

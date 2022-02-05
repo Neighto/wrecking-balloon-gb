@@ -15,13 +15,16 @@ SECTION "palettes vars", WRAM0
 
 SECTION "palettes", ROMX
 
-InitializePalettes::
+ResetFading::
 	xor a ; ld a, 0
 	ld [wFadeInFrame], a
 	ld [wFadeOutFrame], a
 	ld [wTriggerFadeIn], a
 	ld [wTriggerFadeOut], a
+	ret
 
+InitializePalettes::
+	call ResetFading
 	ld a, MAIN_PALETTE
 	ldh [rBGP], a
     ldh [rOCPD], a
@@ -32,7 +35,13 @@ InitializePalettes::
 	ret
 
 FadeOutPalettes::
-	; Return a for has faded (0 = false, 1 = true)
+	; Return a for has faded (0 = false)
+	ld a, [wFadeOutFrame]
+	cp a, 5
+	jr c, .fadeOut
+.hasFadedIn:
+	ld a, 1
+	ret
 .fadeOut:
 	ld a, [wGlobalTimer]
 	and FADE_SPEED
@@ -46,8 +55,9 @@ FadeOutPalettes::
 	jr z, .fade3
 	cp a, 3
 	jr z, .fade4
-	ld a, 1
-	ret
+	cp a, 4
+	jr z, .increaseFrame
+	jr .end
 .fade1:
     ld a, FADE_PALETTE_1
 	jr .fadePalettes
@@ -63,6 +73,7 @@ FadeOutPalettes::
 	ldh [rBGP], a
     ldh [rOCPD], a
 	ldh [rOBP0], a
+.increaseFrame:
 	ld a, [wFadeOutFrame]
 	inc a
 	ld [wFadeOutFrame], a
@@ -73,7 +84,7 @@ FadeOutPalettes::
 FadeInPalettes::
 	; Return a for has faded (0 = false, 1 = true)
 	ld a, [wFadeInFrame]
-	cp a, 4
+	cp a, 5
 	jr c, .fadeIn
 .hasFadedIn:
 	ld a, 1
@@ -91,6 +102,8 @@ FadeInPalettes::
 	jr z, .fade3
 	cp a, 3
 	jr z, .fade4
+	cp a, 4
+	jr z, .increaseFrame
 	jr .end
 .fade1:
     ld a, FADE_PALETTE_4
@@ -107,6 +120,7 @@ FadeInPalettes::
 	ldh [rBGP], a
     ldh [rOCPD], a
 	ldh [rOBP0], a
+.increaseFrame:
 	ld a, [wFadeInFrame]
 	inc a
 	ld [wFadeInFrame], a

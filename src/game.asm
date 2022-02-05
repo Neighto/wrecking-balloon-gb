@@ -53,7 +53,7 @@ UpdatePark::
 .fadeOut:
 	call FadeOutPalettes
 	cp a, 0
-	call nz, SetupNextLevel
+	jp nz, SetupNextLevel
 .skipFade:
     call HandWaveAnimation
     ; call IncrementScrollOffset
@@ -152,19 +152,25 @@ SpawnCountdown::
 .end:
 	ret
 
-CountdownAnimation::
+Countdown::
+    ld a, [wCountdownFrame]
+    cp a, 7
+    jr c, .countdown
+.hasCountedDown:
+    ld a, 1
+    ret
+.countdown:
     ld a, [wCountdownFrame]
     cp a, 4
     jr nc, .balloonPop
-.countdown:
     ld a, [wGlobalTimer]
     and COUNTDOWN_SPEED
-    ret nz
+    jp nz, .end
     jr .frames
 .balloonPop:
     ld a, [wGlobalTimer]
     and COUNTDOWN_BALLOON_POP_SPEED
-    ret nz
+    jp nz, .end
 .frames:
     ld a, [wCountdownFrame]
     cp a, 0
@@ -181,7 +187,7 @@ CountdownAnimation::
     jp z, .frame5
     cp a, 6
     jp z, .remove
-    ret
+    jp .end
 .frame0:
     call PercussionSound
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
@@ -240,6 +246,8 @@ CountdownAnimation::
     ld a, [wCountdownFrame]
     inc a 
     ld [wCountdownFrame], a
+.end:
+    xor a ; ld a, 0
     ret
 
 IncrementScrollOffset::
@@ -271,12 +279,14 @@ UpdateSprites:
     ret
 
 UpdateGameCountdown::
-    ld a, [wCountdownFrame]
-    cp a, 7 ; TODO dont hardcode in case we change it in CountdownAnimation
-    jp nc, GameLoop
-    call CountdownAnimation
     call RefreshWindow
     call IncrementScrollOffset
+    call FadeInPalettes
+	cp a, 0
+	ret z
+    call Countdown
+    cp a, 0
+    jp nz, GameLoop
     ; call MoveToNextTilemap
     ; call ReplaceTilemapHorizontal
     ret

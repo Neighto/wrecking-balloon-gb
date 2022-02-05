@@ -35,10 +35,6 @@ SECTION "level data", ROM0
 ; LEVEL INSTRUCTIONS *************************************
 
 Level1:
-    LEVEL_SPAWN BIRD, SPAWN_Y_C, 0
-    LEVEL_SPAWN BALLOON_CACTUS, SPAWN_Y_A, 20
-    LEVEL_SPAWN BIRD, SPAWN_Y_C, SCRN_X - 20
-    LEVEL_WAIT 8
     LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B
     LEVEL_WAIT 8
     LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_A
@@ -221,8 +217,11 @@ LevelDataManager::
     ld [wLevelPointerWaitCounter], a
     ret 
 .end:
+    call FadeOutPalettes
+	cp a, 0
+    ret z
     ld a, [wLevel] 
     inc a
     ld [wLevel], a 
-    jp SetupNextLevel
+    jp SetupNextLevel ; should actually take you to an intermediate screen first
     ret
