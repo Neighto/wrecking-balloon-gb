@@ -499,24 +499,25 @@ MovePlayer:
   call UpdateCactusPosition
   ret
 
-; MovePlayerAutoMiddle::
-;   xor a ; ld a, 0
-;   ld d, a
-;   ld e, a
-;   ld a, [wPlayerX]
-;   cp a, SCRN_X/2
-;   jr z, .end
-;   jr nc, .moveLeft
-; .moveRight:
-;   ld d, %00010000 ; TODO make these constants
-;   jr .end
-; .moveLeft:
-;   ld d, OAMF_XFLIP
-; .end:
-;   call PlayerControls
-;   call UpdateBalloonPosition
-;   call UpdateCactusPosition
-;   ret
+MovePlayerAutoMiddleRight::
+  ld d, %00010000
+  ld e, 0
+  ld a, [wPlayerY]
+  cp a, SCRN_Y/2
+  jr z, .end
+  jr c, .moveDownRight
+.moveUpRight:
+  ld d, %01010000 ; TODO make these constants
+  jr .end
+.moveDownRight:
+  ld d, %10010000
+.end:
+  ld a, 1
+  ld [wPlayerSpeed], a
+  call PlayerControls
+  call UpdateBalloonPosition
+  call UpdateCactusPosition
+  ret
 
 MovePlayerAutoFlyUp::
   DECREMENT_POS wPlayerY, 1

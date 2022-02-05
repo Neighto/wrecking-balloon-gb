@@ -150,8 +150,7 @@ UpdateMenuOpening::
 .fadeOut:
 	call FadeOutPalettes
 	cp a, 0
-	jr nz, .next
-	ret
+	ret z
 .next:
 	jp StartMenu
 	ret
@@ -169,6 +168,7 @@ UpdateMenu::
 	ret z
 .hasFadedIn:
 	call BlinkMenuCursor
+	call _hUGE_dosound
 	ld a, [wTriggerFadeOut]
 	cp a, 0
 	jr nz, .fadeOut

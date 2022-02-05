@@ -128,12 +128,6 @@ ParkLCDInterrupt:
 SetParkInterrupts::
     xor a ; ld a, 0
 	ldh [rLYC], a
-
-    ; ld hl, wLCDInterrupt
-    ; ld a, LOW(ParkLCDInterrupt)
-    ; ld [hli], a
-    ; ld a, HIGH(ParkLCDInterrupt)
-    ; ld [hl], a
     ret 
 
 GameLCDInterrupt:
@@ -201,11 +195,9 @@ GameLCDInterrupt:
     jp LCDInterruptEnd
 
 SetGameInterrupts::
+    ; Can check level here to know how to set our interrupts for a level
     ld a, GAME_LCD_SCROLL_FAR
     ldh [rLYC], a
-
-	; ld a, WINDOW_START_Y-1
-	; ldh [rLYC], a
 
     ld hl, wLCDInterrupt
     ld a, LOW(GameLCDInterrupt)
