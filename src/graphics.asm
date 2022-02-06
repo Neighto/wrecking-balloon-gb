@@ -3,11 +3,12 @@ INCLUDE "constants.inc"
 INCLUDE "playerConstants.inc"
 INCLUDE "macro.inc"
 
-NUMBERS_TILE_OFFSET EQU $F3
+NUMBERS_TILE_OFFSET EQU $F5
 SCORE_INDEX_ONE_ADDRESS EQU $9C32
 LIVES_ADDRESS EQU $9C0B
 BAR_LEFT_EMPTY EQU $EF
 BAR_LEFT_FULL EQU $F1
+BAR_LEFT_HALF EQU $F3
 BOOST_BAR_ADDRESS EQU $9C22
 ATTACK_BAR_ADDRESS EQU $9C26
 REFRESH_WINDOW_WAIT_TIME EQU %00000100
@@ -208,17 +209,34 @@ RefreshBoostBar:
 	cp a, PLAYER_BOOST_FULL
 	jr z, .isReady
 .isCharging:
-	cp a, PLAYER_BOOST_HALF_FULL
-	jr c, .isHalfReady
+	cp a, PLAYER_BOOST_75_PERC
+	jr c, .is75Percent
+	cp a, PLAYER_BOOST_50_PERC
+	jr c, .is50Percent
+	cp a, PLAYER_BOOST_25_PERC
+	jr c, .is25Percent
+.isEmpty:
 	ld a, BAR_LEFT_EMPTY
 	ld [hli], a
 	inc a
 	ld [hl], a
 	ret
-.isHalfReady:
+.is25Percent:
+	ld a, BAR_LEFT_HALF
+	ld [hli], a
+	ld a, BAR_LEFT_EMPTY+1
+	ld [hl], a
+	ret
+.is50Percent:
 	ld a, BAR_LEFT_FULL
 	ld [hli], a
 	ld a, BAR_LEFT_EMPTY+1
+	ld [hl], a
+	ret
+.is75Percent:
+	ld a, BAR_LEFT_FULL
+	ld [hli], a
+	ld a, BAR_LEFT_HALF+1
 	ld [hl], a
 	ret
 .isReady:
@@ -234,17 +252,34 @@ RefreshAttackBar:
 	cp a, PLAYER_ATTACK_FULL
 	jr z, .isReady
 .isCharging:
-	cp a, PLAYER_ATTACK_HALF_FULL
-	jr c, .isHalfReady
+	cp a, PLAYER_ATTACK_75_PERC
+	jr c, .is75Percent
+	cp a, PLAYER_ATTACK_50_PERC
+	jr c, .is50Percent
+	cp a, PLAYER_ATTACK_25_PERC
+	jr c, .is25Percent
+.isEmpty:
 	ld a, BAR_LEFT_EMPTY
 	ld [hli], a
 	inc a
 	ld [hl], a
 	ret
-.isHalfReady:
+.is25Percent:
+	ld a, BAR_LEFT_HALF
+	ld [hli], a
+	ld a, BAR_LEFT_EMPTY+1
+	ld [hl], a
+	ret
+.is50Percent:
 	ld a, BAR_LEFT_FULL
 	ld [hli], a
 	ld a, BAR_LEFT_EMPTY+1
+	ld [hl], a
+	ret
+.is75Percent:
+	ld a, BAR_LEFT_FULL
+	ld [hli], a
+	ld a, BAR_LEFT_HALF+1
 	ld [hl], a
 	ret
 .isReady:
