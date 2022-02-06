@@ -903,98 +903,98 @@ ROMX bank #1:
            $79c7 = UpdateMenu.fadeIn
            $79cd = UpdateMenu.hasFadedIn
            $79e1 = UpdateMenu.fadeOut
-  SECTION: $79ea-$7aa3 ($00ba bytes) ["sound"]
-           $79ea = AUDIO_OFF
-           $79ee = AUDIO_ON
-           $79f3 = PopSound
-           $7a06 = ExplosionSound
-           $7a13 = WaveSound
-           $7a20 = FallingSound
-           $7a35 = RisingSound
-           $7a4a = StopSweepSound
-           $7a4f = CollectSound
-           $7a64 = WrongAnswerSound
-           $7a7b = PercussionSound
-           $7a88 = BassSound
-           $7a99 = ClearSound
-  SECTION: $7aa4-$7b51 ($00ae bytes) ["palettes"]
-           $7aa4 = ResetFading
-           $7ab2 = InitializePalettes
-           $7ac4 = FadeOutPalettes
-           $7acb = FadeOutPalettes.hasFadedIn
-           $7ace = FadeOutPalettes.fadeOut
-           $7aee = FadeOutPalettes.fade1
-           $7af2 = FadeOutPalettes.fade2
-           $7af6 = FadeOutPalettes.fade3
-           $7afa = FadeOutPalettes.fade4
-           $7afc = FadeOutPalettes.fadePalettes
-           $7b02 = FadeOutPalettes.increaseFrame
-           $7b09 = FadeOutPalettes.end
-           $7b0b = FadeInPalettes
-           $7b12 = FadeInPalettes.hasFadedIn
-           $7b15 = FadeInPalettes.fadeIn
-           $7b35 = FadeInPalettes.fade1
-           $7b39 = FadeInPalettes.fade2
-           $7b3d = FadeInPalettes.fade3
-           $7b41 = FadeInPalettes.fade4
-           $7b43 = FadeInPalettes.fadePalettes
-           $7b49 = FadeInPalettes.increaseFrame
-           $7b50 = FadeInPalettes.end
-  SECTION: $7b52-$7beb ($009a bytes) ["memory"]
-           $7b52 = MEMCPY.memcpy_loop
-           $7b52 = MEMCPY
-           $7b56 = MEMCPY.memcpy_check_limit
-           $7b5c = MEMCPY_WITH_OFFSET
-           $7b5d = MEMCPY_WITH_OFFSET.memcpy_loop
-           $7b68 = MEMCPY_WITH_OFFSET.memcpy_check_limit
-           $7b6f = ClearOAM
-           $7b76 = ClearOAM.loop_u1
-           $7b7f = ClearRAM
-           $7b86 = ClearRAM.loop_u2
-           $7b8f = RequestOAMSpace
-           $7b98 = RequestOAMSpace.loop
-           $7baf = RequestOAMSpace.availableSpace
-           $7bb4 = RequestOAMSpace.sufficientSpace
-           $7bc4 = RequestOAMSpace.isNotZero4
-           $7bc5 = RequestOAMSpace.isNotZero3
-           $7bc6 = RequestOAMSpace.isNotZero2
-           $7bc7 = RequestOAMSpace.isNotZero1
-           $7bc9 = RequestOAMSpace.notEnoughSprites
-           $7bd1 = RequestOAMSpace.end
-           $7bd4 = RequestRAMSpace
-           $7bd4 = RequestRAMSpace.loop
-           $7bd9 = RequestRAMSpace.availableSpace
-           $7bdd = RequestRAMSpace.checkLoop
-           $7bea = RequestRAMSpace.noFreeSpace
-           $7beb = RequestRAMSpace.end
-  SECTION: $7bec-$7c25 ($003a bytes) ["math"]
-           $7bec = MODULO
-           $7bee = MODULO.loop
-           $7bf3 = DIVISION
-           $7bf9 = DIVISION.loop
-           $7bfe = DIVISION.end
-           $7c01 = ToBCD
-           $7c17 = MULTIPLY
-           $7c19 = MULTIPLY.loop
-           $7c24 = MULTIPLY.end
-  SECTION: $7c26-$7c57 ($0032 bytes) ["lcd"]
-           $7c26 = LCD_OFF
-           $7c2d = LCD_ON
-           $7c34 = LCD_ON_NO_WINDOW
-           $7c3b = WaitVBlank
-           $7c42 = WaitVBlank.loop
-           $7c4d = SetupWindow
-  SECTION: $7c58-$7c7c ($0025 bytes) ["score"]
-           $7c58 = InitializeScore
-           $7c60 = AddPoints
-           $7c69 = AddPoints.isAlive
-           $7c70 = AddPoints.carry
-           $7c7a = AddPoints.end
-  SECTION: $7c7d-$7c97 ($001b bytes) ["general initialization"]
-           $7c7d = InitializeGeneralVars
-  SECTION: $7c98-$7c9f ($0008 bytes) ["timer"]
-           $7c98 = UpdateGlobalTimer
-    SLACK: $0360 bytes
+  SECTION: $79ea-$7ab7 ($00ce bytes) ["palettes"]
+           $79ea = ResetFading
+           $79f8 = InitializePalettes
+           $7a0a = FadeOutPalettes
+           $7a11 = FadeOutPalettes.hasFadedIn
+           $7a14 = FadeOutPalettes.fadeOut
+           $7a34 = FadeOutPalettes.fade1
+           $7a3c = FadeOutPalettes.fade2
+           $7a44 = FadeOutPalettes.fade3
+           $7a4c = FadeOutPalettes.fade4
+           $7a52 = FadeOutPalettes.fadePalettes
+           $7a58 = FadeOutPalettes.increaseFrame
+           $7a5f = FadeOutPalettes.end
+           $7a61 = FadeInPalettes
+           $7a68 = FadeInPalettes.hasFadedIn
+           $7a6b = FadeInPalettes.fadeIn
+           $7a8b = FadeInPalettes.fade1
+           $7a93 = FadeInPalettes.fade2
+           $7a9b = FadeInPalettes.fade3
+           $7aa3 = FadeInPalettes.fade4
+           $7aa9 = FadeInPalettes.fadePalettes
+           $7aaf = FadeInPalettes.increaseFrame
+           $7ab6 = FadeInPalettes.end
+  SECTION: $7ab8-$7b71 ($00ba bytes) ["sound"]
+           $7ab8 = AUDIO_OFF
+           $7abc = AUDIO_ON
+           $7ac1 = PopSound
+           $7ad4 = ExplosionSound
+           $7ae1 = WaveSound
+           $7aee = FallingSound
+           $7b03 = RisingSound
+           $7b18 = StopSweepSound
+           $7b1d = CollectSound
+           $7b32 = WrongAnswerSound
+           $7b49 = PercussionSound
+           $7b56 = BassSound
+           $7b67 = ClearSound
+  SECTION: $7b72-$7c0b ($009a bytes) ["memory"]
+           $7b72 = MEMCPY.memcpy_loop
+           $7b72 = MEMCPY
+           $7b76 = MEMCPY.memcpy_check_limit
+           $7b7c = MEMCPY_WITH_OFFSET
+           $7b7d = MEMCPY_WITH_OFFSET.memcpy_loop
+           $7b88 = MEMCPY_WITH_OFFSET.memcpy_check_limit
+           $7b8f = ClearOAM
+           $7b96 = ClearOAM.loop_u1
+           $7b9f = ClearRAM
+           $7ba6 = ClearRAM.loop_u2
+           $7baf = RequestOAMSpace
+           $7bb8 = RequestOAMSpace.loop
+           $7bcf = RequestOAMSpace.availableSpace
+           $7bd4 = RequestOAMSpace.sufficientSpace
+           $7be4 = RequestOAMSpace.isNotZero4
+           $7be5 = RequestOAMSpace.isNotZero3
+           $7be6 = RequestOAMSpace.isNotZero2
+           $7be7 = RequestOAMSpace.isNotZero1
+           $7be9 = RequestOAMSpace.notEnoughSprites
+           $7bf1 = RequestOAMSpace.end
+           $7bf4 = RequestRAMSpace
+           $7bf4 = RequestRAMSpace.loop
+           $7bf9 = RequestRAMSpace.availableSpace
+           $7bfd = RequestRAMSpace.checkLoop
+           $7c0a = RequestRAMSpace.noFreeSpace
+           $7c0b = RequestRAMSpace.end
+  SECTION: $7c0c-$7c45 ($003a bytes) ["math"]
+           $7c0c = MODULO
+           $7c0e = MODULO.loop
+           $7c13 = DIVISION
+           $7c19 = DIVISION.loop
+           $7c1e = DIVISION.end
+           $7c21 = ToBCD
+           $7c37 = MULTIPLY
+           $7c39 = MULTIPLY.loop
+           $7c44 = MULTIPLY.end
+  SECTION: $7c46-$7c77 ($0032 bytes) ["lcd"]
+           $7c46 = LCD_OFF
+           $7c4d = LCD_ON
+           $7c54 = LCD_ON_NO_WINDOW
+           $7c5b = WaitVBlank
+           $7c62 = WaitVBlank.loop
+           $7c6d = SetupWindow
+  SECTION: $7c78-$7c9c ($0025 bytes) ["score"]
+           $7c78 = InitializeScore
+           $7c80 = AddPoints
+           $7c89 = AddPoints.isAlive
+           $7c90 = AddPoints.carry
+           $7c9a = AddPoints.end
+  SECTION: $7c9d-$7cb7 ($001b bytes) ["general initialization"]
+           $7c9d = InitializeGeneralVars
+  SECTION: $7cb8-$7cbf ($0008 bytes) ["timer"]
+           $7cb8 = UpdateGlobalTimer
+    SLACK: $0340 bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c009 ($000a bytes) ["general RAM vars"]
@@ -1162,6 +1162,6 @@ HRAM bank #0:
 
 USED:
     ROM0: $1cca bytes in 1 bank
-    ROMX: $3ca0 bytes in 1 bank
+    ROMX: $3cc0 bytes in 1 bank
     WRAM0: $0195 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

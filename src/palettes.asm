@@ -2,10 +2,20 @@ INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 
 FADE_SPEED EQU %00000011
-FADE_PALETTE_1 EQU %11100100
+
+; PAL0
+FADE_PALETTE_1 EQU MAIN_PALETTE
 FADE_PALETTE_2 EQU %10000100
 FADE_PALETTE_3 EQU %01000000
 FADE_PALETTE_4 EQU %00000000
+
+; PAL1
+FADE_PALETTE2_1 EQU MAIN_PALETTE2
+FADE_PALETTE2_2 EQU %10000001
+FADE_PALETTE2_3 EQU %01000000
+FADE_PALETTE2_4 EQU %00000000
+
+
 
 SECTION "palettes vars", WRAM0
 	wFadeInFrame:: DB
@@ -59,15 +69,23 @@ FadeOutPalettes::
 	jr z, .increaseFrame
 	jr .end
 .fade1:
+	ld a, FADE_PALETTE2_1
+	ldh [rOBP1], a
     ld a, FADE_PALETTE_1
 	jr .fadePalettes
 .fade2:
+	ld a, FADE_PALETTE2_2
+	ldh [rOBP1], a
 	ld a, FADE_PALETTE_2
 	jr .fadePalettes
 .fade3:
+	ld a, FADE_PALETTE2_3
+	ldh [rOBP1], a
 	ld a, FADE_PALETTE_3
 	jr .fadePalettes
 .fade4:
+	ld a, FADE_PALETTE2_4
+	ldh [rOBP1], a
 	ld a, FADE_PALETTE_4
 .fadePalettes:
 	ldh [rBGP], a
@@ -106,15 +124,23 @@ FadeInPalettes::
 	jr z, .increaseFrame
 	jr .end
 .fade1:
+	ld a, FADE_PALETTE2_4
+	ldh [rOBP1], a
     ld a, FADE_PALETTE_4
 	jr .fadePalettes
 .fade2:
+	ld a, FADE_PALETTE2_3
+	ldh [rOBP1], a
 	ld a, FADE_PALETTE_3
 	jr .fadePalettes
 .fade3:
+	ld a, FADE_PALETTE2_2
+	ldh [rOBP1], a
 	ld a, FADE_PALETTE_2
 	jr .fadePalettes
 .fade4:
+	ld a, FADE_PALETTE2_1
+	ldh [rOBP1], a
 	ld a, FADE_PALETTE_1
 .fadePalettes:
 	ldh [rBGP], a
