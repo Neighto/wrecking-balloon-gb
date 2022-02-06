@@ -204,7 +204,8 @@ CollisionPointBalloon:
     ld e, 16
     call CollisionCheck
     cp a, 0
-    call nz, DeathOfPointBalloon
+    jr z, .checkHitByBullet
+    call DeathOfPointBalloon
 .checkHitByBullet:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     LD_BC_HL
@@ -212,7 +213,10 @@ CollisionPointBalloon:
     ld e, 4
     call CollisionCheck
     cp a, 0
-    call nz, DeathOfPointBalloon
+    jr z, .end
+    call DeathOfPointBalloon
+    call ClearBullet
+.end:
     ret
 
 PointBalloonUpdate::

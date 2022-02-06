@@ -184,8 +184,9 @@ CollisionBomb::
     ld e, 16
     call CollisionCheck
     cp a, 0
-    call nz, CollisionWithPlayer
-    call nz, DeathOfBomb
+    jr z, .checkHitByBullet
+    call CollisionWithPlayer
+    call DeathOfBomb
 .checkHitByBullet:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     LD_BC_HL
@@ -193,7 +194,10 @@ CollisionBomb::
     ld e, 4
     call CollisionCheck
     cp a, 0
-    call nz, DeathOfBomb
+    jr z, .end
+    call DeathOfBomb
+    call ClearBullet
+.end:
     ret
 
 ExplosionAnimation:

@@ -294,7 +294,7 @@ SpawnBullet:
   ld [hl], OAMF_PAL0
   ret
 
-ClearBullet:
+ClearBullet::
   xor a ; ld a, 0
   ld [wPlayerBulletAlive], a
   ld hl, wPlayerBulletOAM
