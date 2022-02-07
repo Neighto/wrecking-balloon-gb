@@ -335,58 +335,58 @@ ROM0 bank #0:
            $1a42 = LevelDataManager.wait
            $1a4f = LevelDataManager.waitEnd
            $1a5c = LevelDataManager.end
-  SECTION: $1a6d-$1b57 ($00eb bytes) ["rom"]
+  SECTION: $1a6d-$1b72 ($0106 bytes) ["rom"]
            $1a6d = Start
            $1aa7 = MenuLoopOpening
-           $1aa7 = StartMenu
-           $1abf = MenuLoop
-           $1abf = StartGame
-           $1af8 = ParkLoop
-           $1af8 = SetupNextLevel
-           $1b3a = GameCountdownLoop
-           $1b49 = GameLoop
-  SECTION: $1b58-$1c3e ($00e7 bytes) ["interrupts"]
-           $1b58 = InitializeInterrupts
-           $1b6e = VBlankInterrupt
-           $1b7e = LCDInterrupt
-           $1b88 = LCDInterruptEnd
-           $1b8c = MenuLCDInterrupt
-           $1b9c = MenuLCDInterrupt.reset
-           $1ba5 = MenuLCDInterrupt.far
-           $1bb3 = MenuLCDInterrupt.close
-           $1bbf = MenuLCDInterrupt.end
-           $1bc2 = SetMenuInterrupts
-           $1bd0 = ParkLCDInterrupt
-           $1bdc = ParkLCDInterrupt.clouds
-           $1bea = ParkLCDInterrupt.ground
-           $1bef = ParkLCDInterrupt.end
-           $1bf2 = SetParkInterrupts
-           $1bf6 = GameLCDInterrupt
-           $1c06 = GameLCDInterrupt.reset
-           $1c14 = GameLCDInterrupt.far
-           $1c22 = GameLCDInterrupt.close
-           $1c2e = GameLCDInterrupt.end
-           $1c31 = SetGameInterrupts
-  SECTION: $1c3f-$1cb6 ($0078 bytes) ["controller"]
-           $1c3f = InitializeController
-           $1c44 = ReadInput
-           $1c74 = JOY_RIGHT
-           $1c7c = JOY_LEFT
-           $1c84 = JOY_UP
-           $1c8c = JOY_DOWN
-           $1c94 = JOY_A
-           $1c9c = JOY_B
-           $1ca4 = JOY_SELECT
-           $1cac = JOY_START
-           $1cb4 = JOY_FALSE
-  SECTION: $1cb7-$1cd4 ($001e bytes) ["OAM DMA routine"]
-           $1cb7 = CopyDMARoutine
-           $1cbe = CopyDMARoutine.copy
-           $1cc5 = DMARoutine
-           $1cc9 = DMARoutine.wait
-           $1ccd = DMARoutineEnd
-           $1ccd = OAMDMA
-    SLACK: $2356 bytes
+           $1ab3 = StartMenu
+           $1acb = MenuLoop
+           $1ada = StartGame
+           $1b13 = ParkLoop
+           $1b13 = SetupNextLevel
+           $1b55 = GameCountdownLoop
+           $1b64 = GameLoop
+  SECTION: $1b73-$1c59 ($00e7 bytes) ["interrupts"]
+           $1b73 = InitializeInterrupts
+           $1b89 = VBlankInterrupt
+           $1b99 = LCDInterrupt
+           $1ba3 = LCDInterruptEnd
+           $1ba7 = MenuLCDInterrupt
+           $1bb7 = MenuLCDInterrupt.reset
+           $1bc0 = MenuLCDInterrupt.far
+           $1bce = MenuLCDInterrupt.close
+           $1bda = MenuLCDInterrupt.end
+           $1bdd = SetMenuInterrupts
+           $1beb = ParkLCDInterrupt
+           $1bf7 = ParkLCDInterrupt.clouds
+           $1c05 = ParkLCDInterrupt.ground
+           $1c0a = ParkLCDInterrupt.end
+           $1c0d = SetParkInterrupts
+           $1c11 = GameLCDInterrupt
+           $1c21 = GameLCDInterrupt.reset
+           $1c2f = GameLCDInterrupt.far
+           $1c3d = GameLCDInterrupt.close
+           $1c49 = GameLCDInterrupt.end
+           $1c4c = SetGameInterrupts
+  SECTION: $1c5a-$1cd1 ($0078 bytes) ["controller"]
+           $1c5a = InitializeController
+           $1c5f = ReadInput
+           $1c8f = JOY_RIGHT
+           $1c97 = JOY_LEFT
+           $1c9f = JOY_UP
+           $1ca7 = JOY_DOWN
+           $1caf = JOY_A
+           $1cb7 = JOY_B
+           $1cbf = JOY_SELECT
+           $1cc7 = JOY_START
+           $1ccf = JOY_FALSE
+  SECTION: $1cd2-$1cef ($001e bytes) ["OAM DMA routine"]
+           $1cd2 = CopyDMARoutine
+           $1cd9 = CopyDMARoutine.copy
+           $1ce0 = DMARoutine
+           $1ce4 = DMARoutine.wait
+           $1ce8 = DMARoutineEnd
+           $1ce8 = OAMDMA
+    SLACK: $233b bytes
 
 ROMX bank #1:
   SECTION: $4000-$589f ($18a0 bytes) ["tilesets"]
@@ -1165,7 +1165,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $1caa bytes in 1 bank
+    ROM0: $1cc5 bytes in 1 bank
     ROMX: $3cf5 bytes in 1 bank
     WRAM0: $0195 bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
