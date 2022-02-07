@@ -7,15 +7,15 @@ MEMCPY::
     ; de = block size
     ; bc = source address
     ; hl = destination address
-.memcpy_loop:
+.loop:
     ld a, [bc]
     ld [hli], a
     inc bc
     dec de
-.memcpy_check_limit:
+.checkLoop:
 	ld a, d
 	or a, e
-	jp nz, .memcpy_loop
+	jr nz, .loop
     ret
 
 MEMCPY_WITH_OFFSET::
@@ -24,7 +24,7 @@ MEMCPY_WITH_OFFSET::
     ; hl = destination address
     ; a = offset
     push af
-.memcpy_loop:
+.loop:
     pop af
 
     push de
@@ -37,11 +37,34 @@ MEMCPY_WITH_OFFSET::
     push af
     inc bc
     dec de
-.memcpy_check_limit:
+.checkLoop:
 	ld a, d
 	or a, e
-	jp nz, .memcpy_loop
+	jr nz, .loop
     pop af
+    ret
+
+MEMCPY_SINGLE_SCREEN::
+    ; Assumes source is 160x144
+    ; bc = source address
+    ; hl = destination address
+    ld d, SCRN_Y_B ; Y counter
+    ld e, SCRN_X_B ; X counter
+.loop:
+    ld a, [bc]
+    ld [hli], a
+    inc bc
+    dec e
+    ld a, e
+    cp a, 0
+    jr nz, .checkLoop
+    dec d
+    ld e, SCRN_X_B
+    ADD_TO_HL SCRN_VX_B - SCRN_X_B
+.checkLoop:
+	ld a, d
+    cp a, 0
+	jr nz, .loop
     ret
 
 ClearOAM::
