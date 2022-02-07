@@ -103,6 +103,8 @@ LoadParkGraphics::
 	ret
 
 LoadGameGraphics::
+	call LoadPlayerTiles
+	call LoadWindow
 	; ld a, [wLevel]
 	; cp a, 1
 	; jr z, .level1
@@ -138,6 +140,17 @@ LoadGameGraphics::
 .level3:
 	ret
 
+LoadIntermissionGraphics::
+	call LoadWindow
+	ld bc, IntermissionTiles
+	ld hl, _VRAM9000
+	ld de, IntermissionTilesEnd - IntermissionTiles
+	call MEMCPY
+	ld bc, IntermissionMap
+	ld hl, _SCRN0
+	call MEMCPY_SINGLE_SCREEN
+	ret
+
 LoadMenuOpeningGraphics::
 	ld bc, MenuTitleTiles
 	ld de, MenuTitleTilesEnd - MenuTitleTiles
@@ -160,7 +173,8 @@ LoadMenuGraphics::
 	ret
 
 RefreshScore:
-	ld hl, SCORE_INDEX_ONE_ADDRESS
+	; Argument hl is index one address to update
+	; ld hl, SCORE_INDEX_ONE_ADDRESS
 	; First digit
 	ld a, [wScore]
 	and %00001111
@@ -292,11 +306,26 @@ RefreshWindow::
 	ld a, [wGlobalTimer]
 	and REFRESH_WINDOW_WAIT_TIME
 	jr nz, .end
+	ld hl, SCORE_INDEX_ONE_ADDRESS
 	call RefreshScore
 	call RefreshLives
 	call RefreshBoostBar
 	call RefreshAttackBar
 .end:
+	ret
+
+RefreshStageClear::
+	ld hl, $990F
+	call RefreshScore
+
+	ld a, [wPlayerLives]
+	add NUMBERS_TILE_OFFSET
+	ld [$998C], a
+
+	ld hl, $998F
+	ld [hl], $00
+	ld hl, $998E
+	ld [hl], $00
 	ret
 
 ClearAllTiles::

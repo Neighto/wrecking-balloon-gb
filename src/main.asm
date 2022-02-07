@@ -26,10 +26,10 @@ Start::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	; call WaitVBlank
-	; call UpdateMenuOpening
-	; call UpdateGlobalTimer
-	; jp MenuLoopOpening
+	call WaitVBlank
+	call UpdateMenuOpening
+	call UpdateGlobalTimer
+	jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
 	call WaveSound
@@ -41,11 +41,11 @@ StartMenu::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateMenu
-	; call UpdateGlobalTimer
-	; jp MenuLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateMenu
+	call UpdateGlobalTimer
+	jp MenuLoop
 
 StartGame::
 	call WaitVBlank
@@ -57,7 +57,6 @@ StartGame::
 	call ClearAllTiles
 	call ResetScroll
 	call SetParkInterrupts
-	call SetupWindow
 	call LoadParkGraphics
 	call ResetFading
 	call InitializeScore
@@ -67,13 +66,13 @@ StartGame::
 	call SpawnPlayer
 	call SpawnHandWave
 	call LCD_ON_NO_WINDOW
-	; Comment out ParkLoop to skip park cutscene
-ParkLoop:
+	; Comment out OpeningCutsceneLoop to skip cutscene
+OpeningCutsceneLoop:
 	call WaitVBlank
 	call OAMDMA
 	call UpdatePark
 	call UpdateGlobalTimer
-	jp ParkLoop
+	jp OpeningCutsceneLoop
 
 SetupNextLevel::
 	call WaitVBlank
@@ -83,6 +82,7 @@ SetupNextLevel::
 	call ClearRAM
 	call ClearSound
 	call SetGameInterrupts
+	call SetupWindow
 	call LoadGameGraphics
 	call ResetFading
 	call InitializeGame
@@ -111,3 +111,26 @@ GameLoop::
 	call UpdateGame
 	call UpdateGlobalTimer
 	jp GameLoop
+
+StageClear::
+	call WaitVBlank
+	call LCD_OFF
+	call ResetScroll
+	call ClearMap
+	call ClearOAM
+	call ClearRAM
+	call ClearAllTiles
+	call ClearSound
+	call InitializeInterrupts
+	call LoadIntermissionGraphics
+	call InitializePalettes ; Warning cannot fade back in with this set this way
+	call InitializeStageClear
+	call RefreshStageClear
+	ld hl, menuTheme
+	call hUGE_init
+	call LCD_ON_NO_WINDOW
+StageClearLoop:
+	call WaitVBlank
+	call UpdateStageClear
+	call UpdateGlobalTimer
+	jp StageClearLoop
