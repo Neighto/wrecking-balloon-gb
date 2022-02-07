@@ -33,13 +33,17 @@ OpeningCutsceneSpriteTiles::
     INCBIN "incbin/background/Man_Wave2.2bpp"
 OpeningCutsceneSpriteTilesEnd::
 
+IntermissionTiles::
+    INCBIN "incbin/background/IntermissionMap.2bpp"
+IntermissionTilesEnd::
+
 Level1Tiles::
     INCBIN "incbin/background/City.2bpp"
 Level1TilesEnd::
 
 Level2Tiles::
+    ; INCBIN "incbin/background/City.2bpp"
     ; INCBIN "incbin/background/Sunset.2bpp"
-    INCBIN "incbin/background/World2.2bpp"
 Level2TilesEnd::
 
 CountdownTiles::
