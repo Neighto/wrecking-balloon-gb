@@ -99,8 +99,7 @@ LoadParkGraphics::
 	call MEMCPY
 	ld bc, OpeningCutsceneMap
 	ld hl, _SCRN0
-	ld de, OpeningCutsceneMapEnd - OpeningCutsceneMap
-	call MEMCPY
+	call MEMCPY_SINGLE_SCREEN
 	ret
 
 LoadGameGraphics::
