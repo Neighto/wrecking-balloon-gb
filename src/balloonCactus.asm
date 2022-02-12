@@ -395,9 +395,6 @@ CollisionBalloonCactus:
     call DeathOfBalloonCactus
     call ClearBullet
 .checkHitPlayer:
-    ld a, [wPlayerAlive]
-    cp a, 0
-    ret z
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM+8, wEnemyOAM
     ld e, 16
