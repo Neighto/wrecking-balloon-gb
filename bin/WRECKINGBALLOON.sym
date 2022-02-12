@@ -979,12 +979,11 @@
 01:7e1a LCD_OFF
 01:7e21 LCD_ON
 01:7e28 LCD_ON_NO_WINDOW
-01:7e2f LCD_ON_NO_WINDOW_OBJ8
-01:7e36 WaitVBlank
-01:7e3d WaitVBlank.loop
-01:7e48 SetupWindow
-01:7e53 InitializeGeneralVars
-01:7e6e UpdateGlobalTimer
+01:7e2f WaitVBlank
+01:7e36 WaitVBlank.loop
+01:7e41 SetupWindow
+01:7e4c InitializeGeneralVars
+01:7e67 UpdateGlobalTimer
 00:c000 wOAMGeneral1
 00:c001 wOAMGeneral2
 00:c002 wParallaxClose

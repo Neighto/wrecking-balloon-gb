@@ -129,7 +129,7 @@ StageClear::
 	call InitializeStageClear
 	ld hl, menuTheme
 	call hUGE_init
-	call LCD_ON_NO_WINDOW_OBJ8
+	call LCD_ON_NO_WINDOW
 StageClearLoop:
 	call WaitVBlank
 	call OAMDMA

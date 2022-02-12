@@ -64,5 +64,5 @@ MenuTiles::
 MenuTilesEnd::
 
 MenuTitleTiles::
-    INCBIN "incbin/background/WB.2bpp"
+    INCBIN "incbin/background/Menu.2bpp"
 MenuTitleTilesEnd::
