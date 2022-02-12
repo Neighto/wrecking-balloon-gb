@@ -336,9 +336,6 @@ DeathOfBird::
 
 CollisionBird:
 .checkHitPlayer:
-    ld a, [wPlayerAlive]
-    cp a, 0
-    ret z
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM+4, wEnemyOAM
     ld e, 8

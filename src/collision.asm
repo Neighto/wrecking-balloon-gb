@@ -77,12 +77,14 @@ CollisionCheck::
     ret
 
 CollisionWithPlayer::
-    push af
     ; Check if player is invincible
     ld a, [wPlayerInvincible]
     cp a, 0
-    call z, DeathOfPlayer
-    pop af
+    ret nz
+    ld a, [wPlayerAlive]
+    cp a, 0
+    ret z
+    call DeathOfPlayer
     ret
 
 OffScreenXEnemies::
