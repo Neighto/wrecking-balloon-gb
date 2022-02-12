@@ -11,7 +11,7 @@ SRC_ASM		 :=	$(wildcard $(SRC_DIR)/*.asm)
 OBJ_FILES	 :=	$(addprefix $(BIN_DIR)/$(OBJ_DIR)/, $(SRC_ASM:src/%.asm=%.o))
 
 ASSETS_DIR	 := assets
-IMG_DIR		 := $(ASSETS_DIR)/images
+IMG_DIR		 := $(ASSETS_DIR)/graphics
 SPRITE_DIR	 := $(IMG_DIR)/sprite
 BKGRND_DIR	 := $(IMG_DIR)/background
 WINDOW_DIR	 := $(IMG_DIR)/window
@@ -35,7 +35,7 @@ $(BIN_DIR)/$(OBJ_DIR)/%.o : $(SRC_DIR)/%.asm
 	rgbasm -i $(INC_DIR) -o $@ $<
 	@echo "Ran rgbasm - gameboy assembler"
 
-# Use to make a tileset (ex: make path={png_path_from_images} flag={-u or -m} tileset)
+# Use to make a tileset (ex: make path={png_path_from_graphics} flag={-u or -m} tileset)
 # Omit path to generate all
 # Special case used flag -u instead of -m for doing countdown numbers
 tileset: 
@@ -47,7 +47,7 @@ else
 	@echo "Ran rgbgfx - tileset for all"
 endif
 
-# Use to make a tilemap and tileset (ex: make path={png_path_from_images} tilemap)
+# Use to make a tilemap and tileset (ex: make path={png_path_from_graphics} tilemap)
 # Omit path to generate all
 tilemap: 
 ifdef path

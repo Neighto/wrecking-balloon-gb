@@ -4,11 +4,6 @@ INCLUDE "tileConstants.inc"
 INCLUDE "macro.inc"
 INCLUDE "balloonConstants.inc"
 
-HAND_WAVE_START_X EQU 120
-HAND_WAVE_START_Y EQU 112
-HAND_WAVE_TILE_1 EQU $3E
-HAND_WAVE_TILE_2 EQU $40
-
 COUNTDOWN_START_X EQU 80
 COUNTDOWN_START_Y EQU 50
 COUNTDOWN_SPEED EQU %00011111
@@ -22,52 +17,52 @@ COUNTDOWN_1_TILE_2 EQU $30
 COUNTDOWN_NEUTRAL_BALLOON_TILE EQU $3A
 
 SECTION "game vars", WRAM0
-    wHandWavingFrame:: DB
     wCountdownFrame:: DB
 
-SECTION "game", ROMX
+SECTION "game", ROM0
 
 InitializeGame::
 	xor a ; ld a, 0
 	ld [wHandWavingFrame], a
 	ld [wCountdownFrame], a
     ret
+    
+    LoadGameGraphics::
+	call LoadPlayerTiles
+	call LoadWindow
+	; ld a, [wLevel]
+	; cp a, 1
+	; jr z, .level1
+	; cp a, 2
+	; jr z, .level2
+	; cp a, 3
+	; jr z, .level3
+	; ret
+.level1:
+	call LoadEnemyTiles
 
-UpdatePark::
-.fadeIn:
-    call FadeInPalettes
-	cp a, 0
-	ret z
-.hasFadedIn:
-    ld a, [wTriggerFadeOut]
-	cp a, 0
-	jr nz, .fadeOut
-    ld a, [wPlayerY]
-    add 4 ; Buffer for extra time before screen switch
-    ld b, a
-    call OffScreenYEnemies
-    jr z, .skipFade
-    ld a, 1 
-    ld [wTriggerFadeOut], a
-    jr .skipFade
-.fadeOut:
-	call FadeOutPalettes
-	cp a, 0
-	jp nz, SetupNextLevel
-.skipFade:
-    call HandWaveAnimation
-    ; call IncrementScrollOffset
-.moveUp:
-    ld a, [wPlayerY]
-    add 16
-    cp a, 80
-    jr c, .flyUpFast
-.flyUpNormal:
-    ld a, [wGlobalTimer]
-    and %00000011
-    ret nz
-.flyUpFast:
-    call MovePlayerAutoFlyUp
+	ld bc, Level1Tiles
+	ld hl, _VRAM9000
+	ld de, Level1TilesEnd - Level1Tiles
+	call MEMCPY
+	ld bc, Level1Map
+	ld hl, _SCRN0
+	ld de, Level1MapEnd - Level1Map
+	call MEMCPY
+	ret
+.level2:
+	call LoadEnemyTiles ; Later might want to change loaded enemies
+
+	ld bc, Level2Tiles
+	ld hl, _VRAM9000
+	ld de, Level2TilesEnd - Level2Tiles
+	call MEMCPY
+	ld bc, Level2Map
+	ld hl, _SCRN0
+	ld de, Level2MapEnd - Level2Map
+	call MEMCPY
+	ret
+.level3:
 	ret
 
 TryToUnpause::
@@ -83,48 +78,6 @@ TryToUnpause::
 	jr z, .end
 	xor a ; ld a, 0
 	ld [hl], a ; pause
-.end:
-	ret
-
-SpawnHandWave::
-	ld b, 1
-	call RequestOAMSpace
-    cp a, 0
-    ret z
-    ld a, b
-	ld [wOAMGeneral1], a
-	SET_HL_TO_ADDRESS wOAM, wOAMGeneral1
-    ld a, HAND_WAVE_START_Y
-    ld [hli], a
-    ld a, HAND_WAVE_START_X
-    ld [hli], a
-    ld [hl], HAND_WAVE_TILE_1
-    inc l
-    ld [hl], OAMF_PAL0
-	ret
-
-; NOTE if ram becomes a problem I could probably use modulo off global timer for frames
-HandWaveAnimation::
-    ld a, [wHandWavingFrame]
-    cp a, 0
-    jr nz, .frame1
-.frame0:
-    ld a, [wGlobalTimer]
-    and 15
-    jp nz, .end
-    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], HAND_WAVE_TILE_2
-    ld hl, wHandWavingFrame
-    ld [hl], 1
-    ret
-.frame1:
-    ld a, [wGlobalTimer]
-    and 15
-    jp nz, .end
-    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], HAND_WAVE_TILE_1
-    ld hl, wHandWavingFrame
-    ld [hl], 0
 .end:
 	ret
 
@@ -286,21 +239,16 @@ UpdateGameCountdown::
     call Countdown
     cp a, 0
     jp nz, GameLoop
-    ; call MoveToNextTilemap
-    ; call ReplaceTilemapHorizontal
     ret
 
 UpdateGame::
 	call TryToUnpause
 	ld a, [wPaused]
-	cp a, 1
-	jr z, .end
-    ; call MoveToNextTilemap
-    ; call ReplaceTilemapHorizontal
+	cp a, 0
+    ret nz
     call UpdateSprites
     call LevelDataManager
     call RefreshWindow
     call IncrementScrollOffset
     call _hUGE_dosound
-.end:
     ret

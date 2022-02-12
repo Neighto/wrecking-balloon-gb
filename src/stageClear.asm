@@ -1,4 +1,5 @@
 INCLUDE "playerConstants.inc"
+INCLUDE "hardware.inc"
 
 STAGE_CLEAR_PAUSE_LENGTH EQU 20
 
@@ -16,6 +17,17 @@ InitializeStageClear::
     ld [wStageClearFrame], a
     ld [wLivesToAdd], a
     ret
+
+LoadStageClearGraphics::
+	call LoadWindow
+	ld bc, IntermissionTiles
+	ld hl, _VRAM9000
+	ld de, IntermissionTilesEnd - IntermissionTiles
+	call MEMCPY
+	ld bc, IntermissionMap
+	ld hl, _SCRN0
+	call MEMCPY_SINGLE_SCREEN
+	ret
 
 UpdateStageClear::
     call _hUGE_dosound
