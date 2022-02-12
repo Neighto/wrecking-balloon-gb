@@ -44,6 +44,7 @@ Level1TilesEnd::
 Level2Tiles::
     ; INCBIN "incbin/background/City.2bpp"
     ; INCBIN "incbin/background/Sunset.2bpp"
+    ; INCBIN "incbin/background/DesertMap.2bpp"
 Level2TilesEnd::
 
 CountdownTiles::

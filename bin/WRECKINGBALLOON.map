@@ -264,7 +264,7 @@ ROM0 bank #0:
            $1495 = InvincibleBlink.blinkFast
            $1499 = InvincibleBlink.blinkEnd
            $14ae = InvincibleBlink.defaultPalette
-  SECTION: $14c3-$179e ($02dc bytes) ["graphics"]
+  SECTION: $14c3-$180c ($034a bytes) ["graphics"]
            $14c3 = AddBGTiles8800Method
            $14cd = AddBGTiles8800Method.tilesFitBlock
            $14d2 = AddBGTiles8800Method.tilesExceedBlock
@@ -278,121 +278,124 @@ ROM0 bank #0:
            $1564 = LoadGameGraphics
            $156a = LoadGameGraphics.level1
            $1586 = LoadGameGraphics.level2
-           $1587 = LoadGameGraphics.level3
-           $1588 = LoadIntermissionGraphics
-           $15a1 = LoadMenuOpeningGraphics
-           $15b7 = LoadMenuGraphics
-           $15d0 = RefreshScore
-           $1607 = RefreshLives
-           $1610 = RefreshBoostBar
-           $161a = RefreshBoostBar.isCharging
-           $1626 = RefreshBoostBar.isEmpty
-           $162c = RefreshBoostBar.is25Percent
-           $1633 = RefreshBoostBar.is50Percent
-           $163a = RefreshBoostBar.is75Percent
-           $1641 = RefreshBoostBar.isReady
-           $1647 = RefreshAttackBar
-           $1651 = RefreshAttackBar.isCharging
-           $165d = RefreshAttackBar.isEmpty
-           $1663 = RefreshAttackBar.is25Percent
-           $166a = RefreshAttackBar.is50Percent
-           $1671 = RefreshAttackBar.is75Percent
-           $1678 = RefreshAttackBar.isReady
-           $167e = RefreshWindow
-           $1694 = RefreshWindow.end
-           $1695 = RefreshStageClear
-           $16ae = ClearAllTiles
-           $16b7 = ClearAllTiles.loop_u4
-           $16c6 = ClearAllTiles.loop_u5
-           $16d5 = ClearAllTiles.loop_u6
-           $16e0 = ClearMap
-           $16e9 = ClearMap.loop_u7
-           $16f4 = ReplaceTilemapHorizontal
-           $171d = ReplaceTilemapHorizontal.handleZero
-           $171f = ReplaceTilemapHorizontal.handleZeroEnd
-           $172b = ReplaceTilemapHorizontal.loop
-           $1749 = ReplaceTilemapHorizontal.end
-           $174e = MoveToNextTilemap
-           $1761 = MoveToNextTilemap.canUpdateTilemap
-           $1774 = MoveToNextTilemap.clouds1
-           $1789 = MoveToNextTilemap.clouds2
-           $179c = MoveToNextTilemap.end
-  SECTION: $179f-$1967 ($01c9 bytes) ["level data"]
-           $179f = Level1
-           $17fc = Level2
-           $1857 = Level3
-           $1890 = InitializeNewLevel
-           $18ab = InitializeNewLevel.level1
-           $18b0 = InitializeNewLevel.level2
-           $18b5 = InitializeNewLevel.level3
-           $18ba = InitializeNewLevel.level4
-           $18bb = InitializeNewLevel.setLevelDataAddress
-           $18c3 = InitializeLevelVars
-           $18cc = LevelDataHandler
-           $18ef = LevelDataHandler.pointBalloon
-           $18f3 = LevelDataHandler.balloonCactus
-           $18f7 = LevelDataHandler.bird
-           $18fb = LevelDataHandler.bomb
-           $18ff = LevelDataHandler.porcupine
-           $1903 = LevelDataManager
-           $1930 = LevelDataManager.spawn
-           $193d = LevelDataManager.wait
-           $194a = LevelDataManager.waitEnd
-           $1957 = LevelDataManager.end
-  SECTION: $1968-$1ab8 ($0151 bytes) ["rom"]
-           $1968 = Start
-           $19a2 = MenuLoopOpening
-           $19ae = StartMenu
-           $19c6 = MenuLoop
-           $19d5 = StartGame
-           $1a0b = OpeningCutsceneLoop
-           $1a1a = SetupNextLevel
-           $1a5f = GameCountdownLoop
-           $1a6e = GameLoop
-           $1a7d = StageClear
-           $1aad = StageClearLoop
-  SECTION: $1ab9-$1b9f ($00e7 bytes) ["interrupts"]
-           $1ab9 = InitializeInterrupts
-           $1acf = VBlankInterrupt
-           $1adf = LCDInterrupt
-           $1ae9 = LCDInterruptEnd
-           $1aed = MenuLCDInterrupt
-           $1afd = MenuLCDInterrupt.reset
-           $1b06 = MenuLCDInterrupt.far
-           $1b14 = MenuLCDInterrupt.close
-           $1b20 = MenuLCDInterrupt.end
-           $1b23 = SetMenuInterrupts
-           $1b31 = ParkLCDInterrupt
-           $1b3d = ParkLCDInterrupt.clouds
-           $1b4b = ParkLCDInterrupt.ground
-           $1b50 = ParkLCDInterrupt.end
-           $1b53 = SetParkInterrupts
-           $1b57 = GameLCDInterrupt
-           $1b67 = GameLCDInterrupt.reset
-           $1b75 = GameLCDInterrupt.far
-           $1b83 = GameLCDInterrupt.close
-           $1b8f = GameLCDInterrupt.end
-           $1b92 = SetGameInterrupts
-  SECTION: $1ba0-$1c17 ($0078 bytes) ["controller"]
-           $1ba0 = InitializeController
-           $1ba5 = ReadInput
-           $1bd5 = JOY_RIGHT
-           $1bdd = JOY_LEFT
-           $1be5 = JOY_UP
-           $1bed = JOY_DOWN
-           $1bf5 = JOY_A
-           $1bfd = JOY_B
-           $1c05 = JOY_SELECT
-           $1c0d = JOY_START
-           $1c15 = JOY_FALSE
-  SECTION: $1c18-$1c35 ($001e bytes) ["OAM DMA routine"]
-           $1c18 = CopyDMARoutine
-           $1c1f = CopyDMARoutine.copy
-           $1c26 = DMARoutine
-           $1c2a = DMARoutine.wait
-           $1c2e = DMARoutineEnd
-           $1c2e = OAMDMA
-    SLACK: $23f5 bytes
+           $15a2 = LoadGameGraphics.level3
+           $15a3 = LoadIntermissionGraphics
+           $15bc = LoadMenuOpeningGraphics
+           $15d2 = LoadMenuGraphics
+           $15eb = RefreshScore
+           $1622 = RefreshTotal
+           $1659 = RefreshLives
+           $1662 = RefreshBoostBar
+           $166c = RefreshBoostBar.isCharging
+           $1678 = RefreshBoostBar.isEmpty
+           $167e = RefreshBoostBar.is25Percent
+           $1685 = RefreshBoostBar.is50Percent
+           $168c = RefreshBoostBar.is75Percent
+           $1693 = RefreshBoostBar.isReady
+           $1699 = RefreshAttackBar
+           $16a3 = RefreshAttackBar.isCharging
+           $16af = RefreshAttackBar.isEmpty
+           $16b5 = RefreshAttackBar.is25Percent
+           $16bc = RefreshAttackBar.is50Percent
+           $16c3 = RefreshAttackBar.is75Percent
+           $16ca = RefreshAttackBar.isReady
+           $16d0 = RefreshWindow
+           $16e6 = RefreshWindow.end
+           $16e7 = RefreshAddLives
+           $16f9 = RefreshAddLives.hasLivesToAdd
+           $1704 = RefreshStageClear
+           $171c = ClearAllTiles
+           $1725 = ClearAllTiles.loop_u4
+           $1734 = ClearAllTiles.loop_u5
+           $1743 = ClearAllTiles.loop_u6
+           $174e = ClearMap
+           $1757 = ClearMap.loop_u7
+           $1762 = ReplaceTilemapHorizontal
+           $178b = ReplaceTilemapHorizontal.handleZero
+           $178d = ReplaceTilemapHorizontal.handleZeroEnd
+           $1799 = ReplaceTilemapHorizontal.loop
+           $17b7 = ReplaceTilemapHorizontal.end
+           $17bc = MoveToNextTilemap
+           $17cf = MoveToNextTilemap.canUpdateTilemap
+           $17e2 = MoveToNextTilemap.clouds1
+           $17f7 = MoveToNextTilemap.clouds2
+           $180a = MoveToNextTilemap.end
+  SECTION: $180d-$19d6 ($01ca bytes) ["level data"]
+           $180d = Level1
+           $186b = Level2
+           $18c6 = Level3
+           $18ff = InitializeNewLevel
+           $191a = InitializeNewLevel.level1
+           $191f = InitializeNewLevel.level2
+           $1924 = InitializeNewLevel.level3
+           $1929 = InitializeNewLevel.level4
+           $192a = InitializeNewLevel.setLevelDataAddress
+           $1932 = InitializeLevelVars
+           $193b = LevelDataHandler
+           $195e = LevelDataHandler.pointBalloon
+           $1962 = LevelDataHandler.balloonCactus
+           $1966 = LevelDataHandler.bird
+           $196a = LevelDataHandler.bomb
+           $196e = LevelDataHandler.porcupine
+           $1972 = LevelDataManager
+           $199f = LevelDataManager.spawn
+           $19ac = LevelDataManager.wait
+           $19b9 = LevelDataManager.waitEnd
+           $19c6 = LevelDataManager.end
+  SECTION: $19d7-$1afd ($0127 bytes) ["rom"]
+           $19d7 = Start
+           $1a11 = MenuLoopOpening
+           $1a11 = StartMenu
+           $1a29 = MenuLoop
+           $1a29 = StartGame
+           $1a5f = OpeningCutsceneLoop
+           $1a5f = SetupNextLevel
+           $1aa7 = GameCountdownLoop
+           $1ab6 = GameLoop
+           $1ac5 = StageClear
+           $1af2 = StageClearLoop
+  SECTION: $1afe-$1be4 ($00e7 bytes) ["interrupts"]
+           $1afe = InitializeInterrupts
+           $1b14 = VBlankInterrupt
+           $1b24 = LCDInterrupt
+           $1b2e = LCDInterruptEnd
+           $1b32 = MenuLCDInterrupt
+           $1b42 = MenuLCDInterrupt.reset
+           $1b4b = MenuLCDInterrupt.far
+           $1b59 = MenuLCDInterrupt.close
+           $1b65 = MenuLCDInterrupt.end
+           $1b68 = SetMenuInterrupts
+           $1b76 = ParkLCDInterrupt
+           $1b82 = ParkLCDInterrupt.clouds
+           $1b90 = ParkLCDInterrupt.ground
+           $1b95 = ParkLCDInterrupt.end
+           $1b98 = SetParkInterrupts
+           $1b9c = GameLCDInterrupt
+           $1bac = GameLCDInterrupt.reset
+           $1bba = GameLCDInterrupt.far
+           $1bc8 = GameLCDInterrupt.close
+           $1bd4 = GameLCDInterrupt.end
+           $1bd7 = SetGameInterrupts
+  SECTION: $1be5-$1c5c ($0078 bytes) ["controller"]
+           $1be5 = InitializeController
+           $1bea = ReadInput
+           $1c1a = JOY_RIGHT
+           $1c22 = JOY_LEFT
+           $1c2a = JOY_UP
+           $1c32 = JOY_DOWN
+           $1c3a = JOY_A
+           $1c42 = JOY_B
+           $1c4a = JOY_SELECT
+           $1c52 = JOY_START
+           $1c5a = JOY_FALSE
+  SECTION: $1c5d-$1c7a ($001e bytes) ["OAM DMA routine"]
+           $1c5d = CopyDMARoutine
+           $1c64 = CopyDMARoutine.copy
+           $1c6b = DMARoutine
+           $1c6f = DMARoutine.wait
+           $1c73 = DMARoutineEnd
+           $1c73 = OAMDMA
+    SLACK: $23b0 bytes
 
 ROMX bank #1:
   SECTION: $4000-$5a7f ($1a80 bytes) ["tilesets"]
@@ -982,38 +985,48 @@ ROMX bank #1:
            $7e2e = RequestRAMSpace.checkLoop
            $7e3b = RequestRAMSpace.noFreeSpace
            $7e3c = RequestRAMSpace.end
-  SECTION: $7e3d-$7e76 ($003a bytes) ["math"]
-           $7e3d = MODULO
-           $7e3f = MODULO.loop
-           $7e44 = DIVISION
-           $7e4a = DIVISION.loop
-           $7e4f = DIVISION.end
-           $7e52 = ToBCD
-           $7e68 = MULTIPLY
-           $7e6a = MULTIPLY.loop
-           $7e75 = MULTIPLY.end
-  SECTION: $7e77-$7ea8 ($0032 bytes) ["lcd"]
-           $7e77 = LCD_OFF
-           $7e7e = LCD_ON
-           $7e85 = LCD_ON_NO_WINDOW
-           $7e8c = WaitVBlank
-           $7e93 = WaitVBlank.loop
-           $7e9e = SetupWindow
-  SECTION: $7ea9-$7ecd ($0025 bytes) ["score"]
-           $7ea9 = InitializeScore
-           $7eb1 = AddPoints
-           $7eba = AddPoints.isAlive
-           $7ec1 = AddPoints.carry
-           $7ecb = AddPoints.end
-  SECTION: $7ece-$7eec ($001f bytes) ["stage clear"]
-           $7ece = InitializeStageClear
-           $7ed4 = UpdateStageClear
-           $7ee9 = UpdateStageClear.end
-  SECTION: $7eed-$7f07 ($001b bytes) ["general initialization"]
-           $7eed = InitializeGeneralVars
-  SECTION: $7f08-$7f0f ($0008 bytes) ["timer"]
-           $7f08 = UpdateGlobalTimer
-    SLACK: $00f0 bytes
+  SECTION: $7e3d-$7eb2 ($0076 bytes) ["stage clear"]
+           $7e3d = InitializeStageClear
+           $7e4a = UpdateStageClear
+           $7e70 = UpdateStageClear.pause
+           $7e81 = UpdateStageClear.copyFirstDigitToTotal
+           $7e95 = UpdateStageClear.copyPointsToTotal
+           $7ea5 = UpdateStageClear.showGainedLives
+           $7eab = UpdateStageClear.endFrame
+  SECTION: $7eb3-$7f0f ($005d bytes) ["score"]
+           $7eb3 = InitializeScore
+           $7ebb = InitializeTotal
+           $7ec3 = AddPoints
+           $7eca = AddPoints.carry
+           $7ed3 = DecrementPoints
+           $7edc = DecrementPoints.carry
+           $7ee3 = DecrementPoints.checkCapAtZero
+           $7eec = DecrementPoints.noCap
+           $7ef1 = IsScoreZero
+           $7f00 = AddTotal
+           $7f07 = AddTotal.carry
+  SECTION: $7f10-$7f49 ($003a bytes) ["math"]
+           $7f10 = MODULO
+           $7f12 = MODULO.loop
+           $7f17 = DIVISION
+           $7f1d = DIVISION.loop
+           $7f22 = DIVISION.end
+           $7f25 = ToBCD
+           $7f3b = MULTIPLY
+           $7f3d = MULTIPLY.loop
+           $7f48 = MULTIPLY.end
+  SECTION: $7f4a-$7f7b ($0032 bytes) ["lcd"]
+           $7f4a = LCD_OFF
+           $7f51 = LCD_ON
+           $7f58 = LCD_ON_NO_WINDOW
+           $7f5f = WaitVBlank
+           $7f66 = WaitVBlank.loop
+           $7f71 = SetupWindow
+  SECTION: $7f7c-$7f96 ($001b bytes) ["general initialization"]
+           $7f7c = InitializeGeneralVars
+  SECTION: $7f97-$7f9e ($0008 bytes) ["timer"]
+           $7f97 = UpdateGlobalTimer
+    SLACK: $0061 bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c009 ($000a bytes) ["general RAM vars"]
@@ -1136,27 +1149,25 @@ WRAM0 bank #0:
            $c0e6 = wEnemyFallingTimer
            $c0e7 = wEnemyDelayFallingTimer
            $c0e8 = wEnemyToDie
-  SECTION: $c0e9-$c0ed ($0005 bytes) ["porcupine vars"]
-           $c0e9 = porcupine
-  SECTION: $c0ee-$c0f2 ($0005 bytes) ["level vars"]
-           $c0ee = wLevel
-           $c0ef = wLevelPointer
-           $c0f0 = wLevelPointerWaitCounter
-           $c0f1 = wLevelDataAddress
-  SECTION: $c0f3-$c0f6 ($0004 bytes) ["palettes vars"]
-           $c0f3 = wFadeInFrame
-           $c0f4 = wFadeOutFrame
-           $c0f5 = wTriggerFadeIn
-           $c0f6 = wTriggerFadeOut
-  SECTION: $c0f7-$c0f9 ($0003 bytes) ["controller vars"]
-           $c0f7 = wControllerDown
-           $c0f8 = wControllerPressed
-           $c0f9 = wPaused
-  SECTION: $c0fa-$c0fc ($0003 bytes) ["score vars"]
-           $c0fa = wScore
-  SECTION: $c0fd-$c0ff ($0003 bytes) ["interrupts vars"]
-           $c0fd = wVBlankFlag
-           $c0fe = wLCDInterrupt
+  SECTION: $c0e9-$c0ee ($0006 bytes) ["score vars"]
+           $c0e9 = wScore
+           $c0ec = wTotal
+  SECTION: $c0ef-$c0f3 ($0005 bytes) ["porcupine vars"]
+           $c0ef = porcupine
+  SECTION: $c0f4-$c0f8 ($0005 bytes) ["level vars"]
+           $c0f4 = wLevel
+           $c0f5 = wLevelPointer
+           $c0f6 = wLevelPointerWaitCounter
+           $c0f7 = wLevelDataAddress
+  SECTION: $c0f9-$c0fc ($0004 bytes) ["palettes vars"]
+           $c0f9 = wFadeInFrame
+           $c0fa = wFadeOutFrame
+           $c0fb = wTriggerFadeIn
+           $c0fc = wTriggerFadeOut
+  SECTION: $c0fd-$c0ff ($0003 bytes) ["stage clear vars"]
+           $c0fd = wStageClearTimer
+           $c0fe = wStageClearFrame
+           $c0ff = wLivesToAdd
   SECTION: $c100-$c19f ($00a0 bytes) ["OAM vars"]
            $c100 = wPlayerCactusOAM
            $c108 = wPlayerBalloonOAM
@@ -1164,17 +1175,22 @@ WRAM0 bank #0:
            $c114 = OAMVars
            $c114 = wOAM
            $c1a0 = OAMVarsEnd
-  SECTION: $c1a0-$c1a1 ($0002 bytes) ["menu vars"]
-           $c1a0 = wMenuFrame
-           $c1a1 = wSelectedMode
-  SECTION: $c1a2-$c1a3 ($0002 bytes) ["game vars"]
-           $c1a2 = wHandWavingFrame
-           $c1a3 = wCountdownFrame
-  SECTION: $c1a4-$c1a4 ($0001 byte) ["stage clear vars"]
-           $c1a4 = wStageClearTimer
-  SECTION: $c1a5-$c1a5 ($0001 byte) ["timer vars"]
-           $c1a5 = wGlobalTimer
-    SLACK: $0e5a bytes
+  SECTION: $c1a0-$c1a2 ($0003 bytes) ["controller vars"]
+           $c1a0 = wControllerDown
+           $c1a1 = wControllerPressed
+           $c1a2 = wPaused
+  SECTION: $c1a3-$c1a5 ($0003 bytes) ["interrupts vars"]
+           $c1a3 = wVBlankFlag
+           $c1a4 = wLCDInterrupt
+  SECTION: $c1a6-$c1a7 ($0002 bytes) ["menu vars"]
+           $c1a6 = wMenuFrame
+           $c1a7 = wSelectedMode
+  SECTION: $c1a8-$c1a9 ($0002 bytes) ["game vars"]
+           $c1a8 = wHandWavingFrame
+           $c1a9 = wCountdownFrame
+  SECTION: $c1aa-$c1aa ($0001 byte) ["timer vars"]
+           $c1aa = wGlobalTimer
+    SLACK: $0e55 bytes
 
 HRAM bank #0:
   SECTION: $ff80-$ff87 ($0008 bytes) ["OAM DMA"]
@@ -1182,7 +1198,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $1c0b bytes in 1 bank
-    ROMX: $3f10 bytes in 1 bank
-    WRAM0: $01a6 bytes in 1 bank
+    ROM0: $1c50 bytes in 1 bank
+    ROMX: $3f9f bytes in 1 bank
+    WRAM0: $01ab bytes in 1 bank
     HRAM: $0008 bytes in 1 bank

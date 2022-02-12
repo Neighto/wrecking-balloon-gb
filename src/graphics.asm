@@ -126,16 +126,16 @@ LoadGameGraphics::
 	call MEMCPY
 	ret
 .level2:
-	; call LoadEnemyTiles ; Later might want to change loaded enemies
+	call LoadEnemyTiles ; Later might want to change loaded enemies
 
-	; ld bc, Level2Tiles
-	; ld hl, _VRAM9000
-	; ld de, Level2TilesEnd - Level2Tiles
-	; call MEMCPY
-	; ld bc, Level2Map
-	; ld hl, _SCRN0
-	; ld de, Level2MapEnd - Level2Map
-	; call MEMCPY
+	ld bc, Level2Tiles
+	ld hl, _VRAM9000
+	ld de, Level2TilesEnd - Level2Tiles
+	call MEMCPY
+	ld bc, Level2Map
+	ld hl, _SCRN0
+	ld de, Level2MapEnd - Level2Map
+	call MEMCPY
 	ret
 .level3:
 	ret
@@ -174,7 +174,6 @@ LoadMenuGraphics::
 
 RefreshScore:
 	; Argument hl is index one address to update
-	; ld hl, SCORE_INDEX_ONE_ADDRESS
 	; First digit
 	ld a, [wScore]
 	and %00001111
@@ -204,6 +203,43 @@ RefreshScore:
 	ld [hld], a
 	; Sixth digit
 	ld a, [wScore+2]
+	swap a
+    and %00001111
+	add NUMBERS_TILE_OFFSET
+	ld [hl], a
+	ret
+
+RefreshTotal:
+	; Argument hl is index one address to update
+	; First digit
+	ld a, [wTotal]
+	and %00001111
+	add NUMBERS_TILE_OFFSET
+	ld [hld], a
+	; Second digit
+    ld a, [wTotal]
+    swap a
+	and %00001111
+	add NUMBERS_TILE_OFFSET
+	ld [hld], a
+	; Third digit
+	ld a, [wTotal+1]
+    and %00001111
+	add NUMBERS_TILE_OFFSET
+	ld [hld], a
+	; Fourth digit
+	ld a, [wTotal+1]
+	swap a
+    and %00001111
+	add NUMBERS_TILE_OFFSET
+	ld [hld], a
+	; Fifth digit
+	ld a, [wTotal+2]
+	and %00001111
+	add NUMBERS_TILE_OFFSET
+	ld [hld], a
+	; Sixth digit
+	ld a, [wTotal+2]
 	swap a
     and %00001111
 	add NUMBERS_TILE_OFFSET
@@ -314,18 +350,34 @@ RefreshWindow::
 .end:
 	ret
 
+RefreshAddLives::
+	; wLivesToAdd
+	ld a, [wLivesToAdd]
+	cp a, 0
+	jr nz, .hasLivesToAdd
+	ld hl, $998F
+	ld [hl], $00
+	ld hl, $998E
+	ld [hl], $00
+	ret
+.hasLivesToAdd:
+	ld hl, $998F
+	ld [hl], $F6
+	ld hl, $998E
+	ld [hl], $1A
+	ret
+
 RefreshStageClear::
 	ld hl, $990F
 	call RefreshScore
+	ld hl, $994F
+	call RefreshTotal
 
 	ld a, [wPlayerLives]
 	add NUMBERS_TILE_OFFSET
 	ld [$998C], a
 
-	ld hl, $998F
-	ld [hl], $00
-	ld hl, $998E
-	ld [hl], $00
+	call RefreshAddLives
 	ret
 
 ClearAllTiles::

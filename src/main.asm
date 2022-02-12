@@ -26,10 +26,10 @@ Start::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	call WaitVBlank
-	call UpdateMenuOpening
-	call UpdateGlobalTimer
-	jp MenuLoopOpening
+	; call WaitVBlank
+	; call UpdateMenuOpening
+	; call UpdateGlobalTimer
+	; jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
 	call WaveSound
@@ -41,11 +41,11 @@ StartMenu::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateMenu
-	call UpdateGlobalTimer
-	jp MenuLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateMenu
+	; call UpdateGlobalTimer
+	; jp MenuLoop
 
 StartGame::
 	call WaitVBlank
@@ -59,7 +59,7 @@ StartGame::
 	call SetParkInterrupts
 	call LoadParkGraphics
 	call ResetFading
-	call InitializeScore
+	call InitializeTotal
 	call InitializeLevelVars
 	call InitializeEnemyStructVars
 	call InitializePlayer
@@ -68,11 +68,11 @@ StartGame::
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdatePark
-	call UpdateGlobalTimer
-	jp OpeningCutsceneLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdatePark
+	; call UpdateGlobalTimer
+	; jp OpeningCutsceneLoop
 
 SetupNextLevel::
 	call WaitVBlank
@@ -86,6 +86,7 @@ SetupNextLevel::
 	call LoadGameGraphics
 	call ResetFading
 	call InitializeGame
+	call InitializeScore
 	call InitializeNewLevel
 	call InitializePointBalloon
 	call InitializeBalloonCactus
@@ -125,7 +126,6 @@ StageClear::
 	call LoadIntermissionGraphics
 	call InitializePalettes ; Warning cannot fade back in with this set this way
 	call InitializeStageClear
-	call RefreshStageClear
 	ld hl, menuTheme
 	call hUGE_init
 	call LCD_ON_NO_WINDOW
