@@ -20,7 +20,7 @@ Level2Map::
 Level2MapEnd::
 
 MenuMap::
-    INCBIN "incbin/background/WB.tilemap"
+    INCBIN "incbin/background/Menu.tilemap"
 MenuMapEnd::
 
 WindowMap::

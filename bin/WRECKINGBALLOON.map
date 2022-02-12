@@ -1012,19 +1012,18 @@ ROMX bank #1:
            $7e0b = MULTIPLY
            $7e0d = MULTIPLY.loop
            $7e18 = MULTIPLY.end
-  SECTION: $7e1a-$7e52 ($0039 bytes) ["lcd"]
+  SECTION: $7e1a-$7e4b ($0032 bytes) ["lcd"]
            $7e1a = LCD_OFF
            $7e21 = LCD_ON
            $7e28 = LCD_ON_NO_WINDOW
-           $7e2f = LCD_ON_NO_WINDOW_OBJ8
-           $7e36 = WaitVBlank
-           $7e3d = WaitVBlank.loop
-           $7e48 = SetupWindow
-  SECTION: $7e53-$7e6d ($001b bytes) ["general initialization"]
-           $7e53 = InitializeGeneralVars
-  SECTION: $7e6e-$7e75 ($0008 bytes) ["timer"]
-           $7e6e = UpdateGlobalTimer
-    SLACK: $018a bytes
+           $7e2f = WaitVBlank
+           $7e36 = WaitVBlank.loop
+           $7e41 = SetupWindow
+  SECTION: $7e4c-$7e66 ($001b bytes) ["general initialization"]
+           $7e4c = InitializeGeneralVars
+  SECTION: $7e67-$7e6e ($0008 bytes) ["timer"]
+           $7e67 = UpdateGlobalTimer
+    SLACK: $0191 bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c009 ($000a bytes) ["general RAM vars"]
@@ -1197,6 +1196,6 @@ HRAM bank #0:
 
 USED:
     ROM0: $201b bytes in 1 bank
-    ROMX: $3e76 bytes in 1 bank
+    ROMX: $3e6f bytes in 1 bank
     WRAM0: $01aa bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
