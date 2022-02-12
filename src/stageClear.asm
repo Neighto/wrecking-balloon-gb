@@ -1,3 +1,5 @@
+INCLUDE "playerConstants.inc"
+
 STAGE_CLEAR_PAUSE_LENGTH EQU 20
 
 SECTION "stage clear vars", WRAM0
@@ -33,8 +35,13 @@ UpdateStageClear::
     cp a, 3
     jr z, .pause
     cp a, 4
-    jr z, .showGainedLives
-    ret
+    jr z, .addGainedLives
+    cp a, 5
+    jr z, .pause
+    cp a, 6
+    jr z, .pause
+    ; Jump to next level!
+    jp SetupNextLevel
 .pause:
     ld a, [wStageClearTimer]
     dec a 
@@ -62,22 +69,20 @@ UpdateStageClear::
     ld d, 10
     call DecrementPoints
     ret
-.showGainedLives:
-    ld a, 1
+.addGainedLives:
+    ld a, [wLivesToAdd]
+    cp a, 0
+    jr z, .endFrame
+    dec a
     ld [wLivesToAdd], a
-
-    ; For every 100 points get a +1 life
+    ld a, [wPlayerLives]
+    cp a, PLAYER_MAX_LIVES
+    ret nc
+    inc a
+    ld [wPlayerLives], a
     ret
-    ; Lastly jp SetupNextLevel
 .endFrame:
     ld a, [wStageClearFrame]
     inc a
     ld [wStageClearFrame], a
     ret
-
-; Pause
-; Copy first digit space to total
-; Then do sub/add by 10
-; Subtract points from score quickly and make a noise
-; Add to total
-; Show for every 1k points a +1 life

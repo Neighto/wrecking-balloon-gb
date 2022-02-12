@@ -128,9 +128,10 @@ StageClear::
 	call InitializeStageClear
 	ld hl, menuTheme
 	call hUGE_init
-	call LCD_ON_NO_WINDOW
+	call LCD_ON_NO_WINDOW_OBJ8
 StageClearLoop:
 	call WaitVBlank
+	call OAMDMA
 	call UpdateStageClear
 	call UpdateGlobalTimer
 	jp StageClearLoop

@@ -90,7 +90,7 @@ SpawnHandWave::
 	ld b, 1
 	call RequestOAMSpace
     cp a, 0
-    jr z, .end
+    ret z
     ld a, b
 	ld [wOAMGeneral1], a
 	SET_HL_TO_ADDRESS wOAM, wOAMGeneral1
@@ -101,7 +101,6 @@ SpawnHandWave::
     ld [hl], HAND_WAVE_TILE_1
     inc l
     ld [hl], OAMF_PAL0
-.end:
 	ret
 
 ; NOTE if ram becomes a problem I could probably use modulo off global timer for frames
