@@ -1,8 +1,10 @@
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 INCLUDE "playerConstants.inc"
+INCLUDE "tileConstants.inc"
 INCLUDE "macro.inc"
 
+; Window
 NUMBERS_TILE_OFFSET EQU $F5
 SCORE_INDEX_ONE_ADDRESS EQU $9C32
 LIVES_ADDRESS EQU $9C0B
@@ -12,6 +14,15 @@ BAR_LEFT_HALF EQU $F3
 BOOST_BAR_ADDRESS EQU $9C22
 ATTACK_BAR_ADDRESS EQU $9C26
 REFRESH_WINDOW_WAIT_TIME EQU %00000100
+
+; Stage Clear
+PLUS_TILE EQU $FF
+SCORE_SC_INDEX_ONE_ADDRESS EQU $990F
+TOTAL_SC_INDEX_ONE_ADDRESS EQU $994F
+LIVES_SC_ADDRESS EQU $998C
+LIVES_TO_ADD_SC_ADDRESS EQU $998E
+
+; Title
 TITLE_ADDRESS EQU $9880
 TITLE_ADDRESS_OFFSET EQU TITLE_ADDRESS - _SCRN0
 TITLE_SIZE EQU $9920 - TITLE_ADDRESS
@@ -351,31 +362,32 @@ RefreshWindow::
 	ret
 
 RefreshAddLives::
-	; wLivesToAdd
 	ld a, [wLivesToAdd]
 	cp a, 0
 	jr nz, .hasLivesToAdd
-	ld hl, $998F
-	ld [hl], $00
-	ld hl, $998E
-	ld [hl], $00
+	ld a, EMPTY_TILE
+	ld hl, LIVES_TO_ADD_SC_ADDRESS
+	ld [hli], a
+	ld [hl], a
 	ret
 .hasLivesToAdd:
-	ld hl, $998F
-	ld [hl], $F6
-	ld hl, $998E
-	ld [hl], $1A
+	ld hl, LIVES_TO_ADD_SC_ADDRESS
+	ld a, PLUS_TILE
+	ld [hli], a
+	ld a, [wLivesToAdd]
+	add NUMBERS_TILE_OFFSET
+	ld [hl], a
 	ret
 
 RefreshStageClear::
-	ld hl, $990F
+	ld hl, SCORE_SC_INDEX_ONE_ADDRESS
 	call RefreshScore
-	ld hl, $994F
+	ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
 	call RefreshTotal
 
 	ld a, [wPlayerLives]
 	add NUMBERS_TILE_OFFSET
-	ld [$998C], a
+	ld [LIVES_SC_ADDRESS], a
 
 	call RefreshAddLives
 	ret

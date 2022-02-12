@@ -1,3 +1,5 @@
+INCLUDE "playerConstants.inc"
+
 SCORE_SIZE EQU 3
 
 SECTION "score vars", WRAM0
@@ -23,7 +25,7 @@ InitializeTotal::
     ret
 
 AddPoints::
-    ; takes 'd' argument as points to receive (must be 1 byte BCD [max 99])
+    ; d = points to receive (must be 1 byte BCD [max 99])
     ; Warning no CAP at max points
     ld hl, wScore ; 1st byte of score
     ld a, d
@@ -39,7 +41,7 @@ AddPoints::
     jr .carry
 
 DecrementPoints::
-    ; takes 'd' argument as points to remove (must be 1 byte BCD [max 99])
+    ; d = points to remove (must be 1 byte BCD [max 99])
     ld hl, wScore
     ld e, SCORE_SIZE
     ld a, d
@@ -77,14 +79,35 @@ IsScoreZero::
     ret
 
 AddTotal::
-    ; takes 'd' argument as points to receive (must be 1 byte BCD [max 99])
+    ; d = points to receive (must be 1 byte BCD [max 99])
     ld hl, wTotal
+.saveFourthDigit:
+    ld a, [wTotal+1]
+    swap a
+    and %00001111
+    ld e, a
+.toBCD:
     ld a, d
     call ToBCD
 .carry:
     add a, [hl]
     daa
     ld [hl], a
+    push af
+.checkAddLife:
+    ld a, [wTotal+1]
+    swap a
+    and %00001111
+    cp a, e
+    jr z, .checkLoop
+.addLife:
+    ld a, [wLivesToAdd]
+    cp a, PLAYER_MAX_LIVES
+    jr nc, .checkLoop
+    inc a
+    ld [wLivesToAdd], a
+.checkLoop:
+    pop af
     ret nc
     inc l
     ld a, 1
