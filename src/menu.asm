@@ -6,6 +6,10 @@ INCLUDE "tileConstants.inc"
 MENU_MODES EQU 2
 MENU_CURSOR_TILE EQU $02
 
+TITLE_ADDRESS EQU $9880
+TITLE_ADDRESS_OFFSET EQU TITLE_ADDRESS - _SCRN0
+TITLE_SIZE EQU $9920 - TITLE_ADDRESS
+
 SECTION "menu vars", WRAM0
 	wMenuFrame:: DB
 	wSelectedMode:: DB
@@ -18,6 +22,27 @@ InitializeMenu::
 	ld [wSelectedMode], a
 	ld a, 140
 	ld [rSCY], a
+	ret
+
+LoadMenuOpeningGraphics::
+	ld bc, MenuTitleTiles
+	ld de, MenuTitleTilesEnd - MenuTitleTiles
+	call AddBGTiles8800Method
+	ld bc, MenuMap + TITLE_ADDRESS_OFFSET
+	ld hl, _SCRN0 + TITLE_ADDRESS_OFFSET
+	ld de, $A0
+	call MEMCPY
+	ret
+
+LoadMenuGraphics::
+	ld bc, MenuTiles
+	ld hl, _VRAM8000 + $20
+	ld de, MenuTilesEnd - MenuTiles
+	call MEMCPY
+	ld bc, MenuMap
+	ld hl, _SCRN0
+	ld de, MenuMapEnd - MenuMap
+	call MEMCPY
 	ret
 
 SpawnMenuCursor::
@@ -60,26 +85,6 @@ BlinkMenuCursor::
 	ld [hl], a
 	ret
 
-MoveCursor:
-; 	; call CollectSound
-; 	ld a, [wSelectedMode]
-; 	inc a
-; 	ld d, MENU_MODES
-; 	call MODULO
-; 	ld [wSelectedMode], a
-; 	cp a, 0
-; 	jr nz, .storyMode
-; .classicMode:
-; 	SET_HL_TO_ADDRESS wOAM, wOAMGeneral1
-; 	ld a, 104
-; 	ld [hl], a
-; 	ret
-; .storyMode:
-; 	SET_HL_TO_ADDRESS wOAM, wOAMGeneral1
-; 	ld a, 120
-; 	ld [hl], a
-	ret
-
 SelectMode:
 	call CollectSound
 	ld a, 1 
@@ -94,7 +99,7 @@ MenuInput:
 .moveSelected:
 	ld a, [wControllerPressed]
 	call JOY_SELECT
-	call nz, MoveCursor
+	; call nz, MoveCursor
 .selectMode:
 	ld a, [wControllerDown]
 	call JOY_START
