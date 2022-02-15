@@ -5,9 +5,13 @@ MENU_LCD_SCROLL_RESET EQU 128
 MENU_LCD_SCROLL_FAR EQU 96
 MENU_LCD_SCROLL_CLOSE EQU 113
 
-GAME_LCD_SCROLL_RESET EQU 128
-GAME_LCD_SCROLL_FAR EQU 47
-GAME_LCD_SCROLL_CLOSE EQU 102
+GAME_CITY_LCD_SCROLL_RESET EQU 128
+GAME_CITY_LCD_SCROLL_FAR EQU 47
+GAME_CITY_LCD_SCROLL_CLOSE EQU 102
+
+GAME_DESERT_LCD_SCROLL_RESET EQU 128
+GAME_DESERT_LCD_SCROLL_FAR EQU 58
+GAME_DESERT_LCD_SCROLL_CLOSE EQU 99
 
 SECTION "interrupts vars", WRAM0
     wVBlankFlag:: DB
@@ -130,17 +134,17 @@ SetParkInterrupts::
 	ldh [rLYC], a
     ret 
 
-GameLCDInterrupt:
+Level1LCDInterrupt:
     ld a, [rLYC]
-    cp a, GAME_LCD_SCROLL_RESET
+    cp a, GAME_CITY_LCD_SCROLL_RESET
     jr z, .reset
-	cp a, GAME_LCD_SCROLL_FAR
+	cp a, GAME_CITY_LCD_SCROLL_FAR
     jr z, .far
-    cp a, GAME_LCD_SCROLL_CLOSE
+    cp a, GAME_CITY_LCD_SCROLL_CLOSE
     jr z, .close
     jr .end
 .reset:
-    ld a, GAME_LCD_SCROLL_FAR
+    ld a, GAME_CITY_LCD_SCROLL_FAR
 	ldh [rLYC], a
     xor a ; ld a, 0
     ldh [rSCX], a
@@ -148,7 +152,7 @@ GameLCDInterrupt:
     res 1, [hl]
     jr .end
 .far:
-    ld a, GAME_LCD_SCROLL_CLOSE
+    ld a, GAME_CITY_LCD_SCROLL_CLOSE
     ldh [rLYC], a
     ldh a, [rSCX]
     ld hl, wParallaxFar
@@ -156,52 +160,68 @@ GameLCDInterrupt:
 	ldh [rSCX], a
     jr .end
 .close:
-    ld a, GAME_LCD_SCROLL_RESET
+    ld a, GAME_CITY_LCD_SCROLL_RESET
 	ldh [rLYC], a
     ldh a, [rSCX]
     ld hl, wParallaxClose
     add a, [hl]
 	ldh [rSCX], a
 .end:
-    ; We call nop multiple times to delay hiding sprites so it happens on a new line read
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; nop
-    ; ld hl, rLCDC
-    ; res 1, [hl]
     jp LCDInterruptEnd
 
-SetGameInterrupts::
-    ; Can check level here to know how to set our interrupts for a level
-    ld a, GAME_LCD_SCROLL_FAR
+SetLevel1Interrupts::
+    ld a, GAME_CITY_LCD_SCROLL_FAR
     ldh [rLYC], a
 
     ld hl, wLCDInterrupt
-    ld a, LOW(GameLCDInterrupt)
+    ld a, LOW(Level1LCDInterrupt)
     ld [hli], a
-    ld a, HIGH(GameLCDInterrupt)
+    ld a, HIGH(Level1LCDInterrupt)
+    ld [hl], a
+    ret
+
+Level2LCDInterrupt:
+    ld a, [rLYC]
+    cp a, GAME_DESERT_LCD_SCROLL_RESET
+    jr z, .reset
+	cp a, GAME_DESERT_LCD_SCROLL_FAR
+    jr z, .far
+    cp a, GAME_DESERT_LCD_SCROLL_CLOSE
+    jr z, .close
+    jr .end
+.reset:
+    ld a, GAME_DESERT_LCD_SCROLL_FAR
+	ldh [rLYC], a
+    xor a ; ld a, 0
+    ldh [rSCX], a
+    ld hl, rLCDC
+    res 1, [hl]
+    jr .end
+.far:
+    ld a, GAME_DESERT_LCD_SCROLL_CLOSE
+    ldh [rLYC], a
+    ldh a, [rSCX]
+    ld hl, wParallaxFar
+    add a, [hl]
+	ldh [rSCX], a
+    jr .end
+.close:
+    ld a, GAME_DESERT_LCD_SCROLL_RESET
+	ldh [rLYC], a
+    ldh a, [rSCX]
+    ld hl, wParallaxClose
+    add a, [hl]
+	ldh [rSCX], a
+.end:
+    jp LCDInterruptEnd
+
+SetLevel2Interrupts::
+    ld a, GAME_DESERT_LCD_SCROLL_FAR
+    ldh [rLYC], a
+
+    ld hl, wLCDInterrupt
+    ld a, LOW(Level2LCDInterrupt)
+    ld [hli], a
+    ld a, HIGH(Level2LCDInterrupt)
     ld [hl], a
     ret
