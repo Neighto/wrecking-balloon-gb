@@ -27,18 +27,9 @@ InitializeGame::
 	ld [wCountdownFrame], a
     ret
     
-    LoadGameGraphics::
+LoadLevel1Graphics::
 	call LoadPlayerTiles
 	call LoadWindow
-	; ld a, [wLevel]
-	; cp a, 1
-	; jr z, .level1
-	; cp a, 2
-	; jr z, .level2
-	; cp a, 3
-	; jr z, .level3
-	; ret
-.level1:
 	call LoadEnemyTiles
 
 	ld bc, Level1Tiles
@@ -50,8 +41,12 @@ InitializeGame::
 	ld de, Level1MapEnd - Level1Map
 	call MEMCPY
 	ret
-.level2:
-	call LoadEnemyTiles ; Later might want to change loaded enemies
+	ret
+
+LoadLevel2Graphics::
+	call LoadPlayerTiles
+	call LoadWindow
+    call LoadEnemyTiles ; Later might want to change loaded enemies
 
 	ld bc, Level2Tiles
 	ld hl, _VRAM9000
@@ -61,9 +56,7 @@ InitializeGame::
 	ld hl, _SCRN0
 	ld de, Level2MapEnd - Level2Map
 	call MEMCPY
-	ret
-.level3:
-	ret
+    ret
 
 TryToUnpause::
 	xor a ; ld a, 0

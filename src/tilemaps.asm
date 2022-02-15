@@ -13,10 +13,8 @@ Level1Map::
 Level1MapEnd::
 
 Level2Map::
-    ; INCBIN "incbin/background/City.tilemap"
     ; INCBIN "incbin/background/Sunset.tilemap"
-    ; INCBIN "incbin/background/Classic_Map.tilemap"
-    ; INCBIN "incbin/background/DesertMap.tilemap"
+    INCBIN "incbin/background/Desert.tilemap"
 Level2MapEnd::
 
 MenuMap::

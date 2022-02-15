@@ -1,4 +1,4 @@
-SECTION "tilesets", ROMX
+SECTION "tilesets", ROM0
 
 PlayerSpriteTiles::
     INCBIN "incbin/sprite/Player.2bpp"
@@ -20,6 +20,12 @@ EnemyTiles::
     INCBIN "incbin/sprite/Bird3.2bpp"
 EnemyTilesEnd::
 
+Level1Tiles::
+    INCBIN "incbin/background/City.2bpp"
+Level1TilesEnd::
+
+SECTION "tilesets 2", ROMX
+
 PorcupineTiles::
     INCBIN "incbin/sprite/porcu.2bpp"
 PorcupineTilesEnd::
@@ -37,14 +43,9 @@ IntermissionTiles::
     INCBIN "incbin/background/IntermissionMap.2bpp"
 IntermissionTilesEnd::
 
-Level1Tiles::
-    INCBIN "incbin/background/City.2bpp"
-Level1TilesEnd::
-
 Level2Tiles::
-    ; INCBIN "incbin/background/City.2bpp"
     ; INCBIN "incbin/background/Sunset.2bpp"
-    ; INCBIN "incbin/background/DesertMap.2bpp"
+    INCBIN "incbin/background/Desert.2bpp"
 Level2TilesEnd::
 
 CountdownTiles::

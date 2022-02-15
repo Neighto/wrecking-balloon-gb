@@ -26,10 +26,10 @@ Start::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	call WaitVBlank
-	call UpdateMenuOpening
-	call UpdateGlobalTimer
-	jp MenuLoopOpening
+	; call WaitVBlank
+	; call UpdateMenuOpening
+	; call UpdateGlobalTimer
+	; jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
 	call WaveSound
@@ -41,11 +41,11 @@ StartMenu::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateMenu
-	call UpdateGlobalTimer
-	jp MenuLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateMenu
+	; call UpdateGlobalTimer
+	; jp MenuLoop
 
 StartGame::
 	call WaitVBlank
@@ -82,9 +82,29 @@ SetupNextLevel::
 	call ClearOAM
 	call ClearRAM
 	call ClearSound
-	call SetGameInterrupts
+
+	ld a, [wLevel]
+	cp a, 1
+	jr z, .level1
+	cp a, 2
+	jr z, .level2
+	cp a, 3
+	jr z, .level3
+	; Don't reach this point
+.level1:
+	call SetLevel1Interrupts
+	call LoadLevel1Graphics
+	jr .endLevelSetup
+.level2:
+	call SetLevel2Interrupts
+	call LoadLevel2Graphics
+	jr .endLevelSetup
+.level3:
+.level4:
+.level5:
+.level6:
+.endLevelSetup:
 	call SetupWindow
-	call LoadGameGraphics
 	call ResetFading
 	call InitializeGame
 	call InitializeScore
