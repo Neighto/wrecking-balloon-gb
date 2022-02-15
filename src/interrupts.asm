@@ -11,7 +11,8 @@ GAME_CITY_LCD_SCROLL_CLOSE EQU 102
 
 GAME_DESERT_LCD_SCROLL_RESET EQU 128
 GAME_DESERT_LCD_SCROLL_FAR EQU 58
-GAME_DESERT_LCD_SCROLL_CLOSE EQU 99
+GAME_DESERT_LCD_SCROLL_MIDDLE EQU 99
+GAME_DESERT_LCD_SCROLL_CLOSE EQU 109
 
 SECTION "interrupts vars", WRAM0
     wVBlankFlag:: DB
@@ -186,6 +187,8 @@ Level2LCDInterrupt:
     jr z, .reset
 	cp a, GAME_DESERT_LCD_SCROLL_FAR
     jr z, .far
+    cp a, GAME_DESERT_LCD_SCROLL_MIDDLE
+    jr z, .middle
     cp a, GAME_DESERT_LCD_SCROLL_CLOSE
     jr z, .close
     jr .end
@@ -198,10 +201,18 @@ Level2LCDInterrupt:
     res 1, [hl]
     jr .end
 .far:
-    ld a, GAME_DESERT_LCD_SCROLL_CLOSE
+    ld a, GAME_DESERT_LCD_SCROLL_MIDDLE
     ldh [rLYC], a
     ldh a, [rSCX]
     ld hl, wParallaxFar
+    add a, [hl]
+	ldh [rSCX], a
+    jr .end
+.middle:
+    ld a, GAME_DESERT_LCD_SCROLL_CLOSE
+    ldh [rLYC], a
+    ldh a, [rSCX]
+    ld hl, wParallaxMiddle
     add a, [hl]
 	ldh [rSCX], a
     jr .end

@@ -4,10 +4,6 @@ SECTION "general RAM vars", WRAM0[$C000]
 	wOAMGeneral1:: DB
 	wOAMGeneral2:: DB
 
-	; Parallax scroll offset
-	wParallaxClose:: DB
-	wParallaxFar:: DB
-
 	; Updating tilemap
 	wUpdateTilemapAddress:: DS 2
 	wUpdateTilemapOffset:: DB
@@ -19,8 +15,6 @@ SECTION "general initialization", ROMX
 
 InitializeGeneralVars::
 	xor a ; ld a, 0
-	ld [wParallaxClose], a
-	ld [wParallaxFar], a
 	ld [wUpdateTilemapOffset], a
 	ld [wUpdateTilemapIndex], a
 	ld [wHasUpdatedNextTilemapAddress], a

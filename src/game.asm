@@ -195,24 +195,6 @@ Countdown::
     xor a ; ld a, 0
     ret
 
-IncrementScrollOffset::
-.close:
-    ld a, [wGlobalTimer]
-	and %0000111
-	jr nz, .far
-    ld a, [wParallaxClose]
-	inc a
-	ld [wParallaxClose], a
-.far:
-    ld a, [wGlobalTimer]
-	and %0001111
-	jr nz, .end
-    ld a, [wParallaxFar]
-	inc a
-	ld [wParallaxFar], a
-.end:
-	ret
-
 UpdateSprites:
     call PlayerUpdate
     call BulletUpdate
