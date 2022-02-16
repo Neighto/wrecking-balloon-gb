@@ -26,6 +26,7 @@ LoadStageClearGraphics::
 	call MEMCPY
 	ld bc, IntermissionMap
 	ld hl, _SCRN0
+    ld d, SCRN_Y_B
 	call MEMCPY_SINGLE_SCREEN
 	ret
 
