@@ -48,7 +48,7 @@ MEMCPY_SINGLE_SCREEN::
     ; Assumes source is 160x144
     ; bc = source address
     ; hl = destination address
-    ld d, SCRN_Y_B ; Y counter
+    ; d = Y counter (set to SCRN_Y_B if you want the entire screen)
     ld e, SCRN_X_B ; X counter
 .loop:
     ld a, [bc]

@@ -1,7 +1,7 @@
 INCLUDE "macro.inc"
 INCLUDE "hardware.inc"
 
-HAND_WAVE_START_X EQU 120
+HAND_WAVE_START_X EQU 152
 HAND_WAVE_START_Y EQU 112
 HAND_WAVE_TILE_1 EQU $3E
 HAND_WAVE_TILE_2 EQU $40
@@ -30,6 +30,7 @@ LoadParkGraphics::
 	call MEMCPY
 	ld bc, OpeningCutsceneMap
 	ld hl, _SCRN0
+    ld d, SCRN_Y_B
 	call MEMCPY_SINGLE_SCREEN
 	ret
 

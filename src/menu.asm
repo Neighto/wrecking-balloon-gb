@@ -8,7 +8,8 @@ MENU_CURSOR_TILE EQU $02
 
 TITLE_ADDRESS EQU $9880
 TITLE_ADDRESS_OFFSET EQU TITLE_ADDRESS - _SCRN0
-TITLE_SIZE EQU $9920 - TITLE_ADDRESS
+TITLE_DISTANCE_FROM_TOP_IN_TILES EQU 4
+TITLE_HEIGHT_IN_TILES EQU 5
 
 SECTION "menu vars", WRAM0
 	wMenuFrame:: DB
@@ -26,12 +27,13 @@ InitializeMenu::
 
 LoadMenuOpeningGraphics::
 	ld bc, MenuTitleTiles
+	ld hl, _VRAM9000
 	ld de, MenuTitleTilesEnd - MenuTitleTiles
-	call AddBGTiles8800Method
-	ld bc, MenuMap + TITLE_ADDRESS_OFFSET
-	ld hl, _SCRN0 + TITLE_ADDRESS_OFFSET
-	ld de, $A0
 	call MEMCPY
+	ld bc, MenuMap + SCRN_X_B * TITLE_DISTANCE_FROM_TOP_IN_TILES
+	ld hl, TITLE_ADDRESS
+	ld d, TITLE_HEIGHT_IN_TILES
+	call MEMCPY_SINGLE_SCREEN
 	ret
 
 LoadMenuGraphics::
@@ -41,8 +43,8 @@ LoadMenuGraphics::
 	call MEMCPY
 	ld bc, MenuMap
 	ld hl, _SCRN0
-	ld de, MenuMapEnd - MenuMap
-	call MEMCPY
+	ld d, SCRN_Y_B
+	call MEMCPY_SINGLE_SCREEN
 	ret
 
 SpawnMenuCursor::
