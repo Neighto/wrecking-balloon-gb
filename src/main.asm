@@ -90,7 +90,7 @@ SetupNextLevel::
 	cp a, 2
 	jr z, .level2
 	cp a, 3
-	jr z, .level3
+	jr z, .level1
 	; Don't reach this point
 .level1:
 	call SetLevel1Interrupts
