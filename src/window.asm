@@ -2,7 +2,6 @@ INCLUDE "playerConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "tileConstants.inc"
 
-NUMBERS_TILE_OFFSET EQU $F5
 SCORE_INDEX_ONE_ADDRESS EQU $9C32
 LIVES_ADDRESS EQU $9C0B
 BAR_LEFT_EMPTY EQU $EF
@@ -12,15 +11,9 @@ BOOST_BAR_ADDRESS EQU $9C22
 ATTACK_BAR_ADDRESS EQU $9C26
 REFRESH_WINDOW_WAIT_TIME EQU %00000100
 
-PLUS_TILE EQU $FF
-SCORE_SC_INDEX_ONE_ADDRESS EQU $990F
-TOTAL_SC_INDEX_ONE_ADDRESS EQU $994F
-LIVES_SC_ADDRESS EQU $998C
-LIVES_TO_ADD_SC_ADDRESS EQU $998E
-
 SECTION "window", ROM0
 
-RefreshScore:
+RefreshScore::
 	; Argument hl is index one address to update
 	; First digit
 	ld a, [wScore]
@@ -57,7 +50,7 @@ RefreshScore:
 	ld [hl], a
 	ret
 
-RefreshTotal:
+RefreshTotal::
 	; Argument hl is index one address to update
 	; First digit
 	ld a, [wTotal]
@@ -213,37 +206,4 @@ RefreshWindow::
 	call RefreshLives
 	call RefreshBoostBar
 	call RefreshAttackBar
-	ret
-
-; The following for STAGE CLEAR is ssentially all window tiles
-
-RefreshAddLives::
-	ld a, [wLivesToAdd]
-	cp a, 0
-	jr nz, .hasLivesToAdd
-	ld a, EMPTY_TILE
-	ld hl, LIVES_TO_ADD_SC_ADDRESS
-	ld [hli], a
-	ld [hl], a
-	ret
-.hasLivesToAdd:
-	ld hl, LIVES_TO_ADD_SC_ADDRESS
-	ld a, PLUS_TILE
-	ld [hli], a
-	ld a, [wLivesToAdd]
-	add NUMBERS_TILE_OFFSET
-	ld [hl], a
-	ret
-
-RefreshStageClear::
-	ld hl, SCORE_SC_INDEX_ONE_ADDRESS
-	call RefreshScore
-	ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
-	call RefreshTotal
-
-	ld a, [wPlayerLives]
-	add NUMBERS_TILE_OFFSET
-	ld [LIVES_SC_ADDRESS], a
-
-	call RefreshAddLives
 	ret

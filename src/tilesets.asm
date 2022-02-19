@@ -35,7 +35,7 @@ PorcupineTiles::
 PorcupineTilesEnd::
 
 OpeningCutsceneTiles::
-    INCBIN "incbin/background/OpeningCutsceneMap.2bpp"
+    INCBIN "incbin/background/OpeningCutscene.2bpp"
 OpeningCutsceneTilesEnd::
 
 OpeningCutsceneSpriteTiles::
@@ -44,7 +44,7 @@ OpeningCutsceneSpriteTiles::
 OpeningCutsceneSpriteTilesEnd::
 
 IntermissionTiles::
-    INCBIN "incbin/background/IntermissionMap.2bpp"
+    INCBIN "incbin/background/StageClear.2bpp"
 IntermissionTilesEnd::
 
 Level2Tiles::
