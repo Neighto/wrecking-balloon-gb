@@ -1,7 +1,14 @@
 INCLUDE "playerConstants.inc"
 INCLUDE "hardware.inc"
+INCLUDE "tileConstants.inc"
 
 STAGE_CLEAR_PAUSE_LENGTH EQU 20
+
+PLUS_TILE EQU $FF
+SCORE_SC_INDEX_ONE_ADDRESS EQU $992F
+TOTAL_SC_INDEX_ONE_ADDRESS EQU $996F
+LIVES_SC_ADDRESS EQU $99AC
+LIVES_TO_ADD_SC_ADDRESS EQU $99AE
 
 SECTION "stage clear vars", WRAM0
     wStageClearTimer:: DB
@@ -28,6 +35,37 @@ LoadStageClearGraphics::
 	ld hl, _SCRN0
     ld d, SCRN_Y_B
 	call MEMCPY_SINGLE_SCREEN
+	ret
+
+RefreshAddLives::
+	ld a, [wLivesToAdd]
+	cp a, 0
+	jr nz, .hasLivesToAdd
+	ld a, EMPTY_TILE
+	ld hl, LIVES_TO_ADD_SC_ADDRESS
+	ld [hli], a
+	ld [hl], a
+	ret
+.hasLivesToAdd:
+	ld hl, LIVES_TO_ADD_SC_ADDRESS
+	ld a, PLUS_TILE
+	ld [hli], a
+	ld a, [wLivesToAdd]
+	add NUMBERS_TILE_OFFSET
+	ld [hl], a
+	ret
+
+RefreshStageClear::
+	ld hl, SCORE_SC_INDEX_ONE_ADDRESS
+	call RefreshScore
+	ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
+	call RefreshTotal
+
+	ld a, [wPlayerLives]
+	add NUMBERS_TILE_OFFSET
+	ld [LIVES_SC_ADDRESS], a
+
+	call RefreshAddLives
 	ret
 
 UpdateStageClear::

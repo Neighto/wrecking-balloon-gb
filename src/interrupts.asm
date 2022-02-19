@@ -1,19 +1,19 @@
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 
-MENU_LCD_SCROLL_RESET EQU 127
 MENU_LCD_SCROLL_FAR EQU 111
 MENU_LCD_SCROLL_CLOSE EQU 119
+MENU_LCD_SCROLL_RESET EQU 127
 
-GAME_CITY_LCD_SCROLL_RESET EQU 128
 GAME_CITY_LCD_SCROLL_FAR EQU 47
 GAME_CITY_LCD_SCROLL_MIDDLE EQU 102
 GAME_CITY_LCD_SCROLL_CLOSE EQU 109
+GAME_CITY_LCD_SCROLL_RESET EQU 128
 
-GAME_DESERT_LCD_SCROLL_RESET EQU 128
 GAME_DESERT_LCD_SCROLL_FAR EQU 57
 GAME_DESERT_LCD_SCROLL_MIDDLE EQU 99
 GAME_DESERT_LCD_SCROLL_CLOSE EQU 109
+GAME_DESERT_LCD_SCROLL_RESET EQU 128
 
 SECTION "interrupts vars", WRAM0
     wVBlankFlag:: DB
@@ -83,17 +83,13 @@ MenuLCDInterrupt:
 .far:
     ld a, MENU_LCD_SCROLL_CLOSE
     ldh [rLYC], a
-    ldh a, [rSCX]
-    ld hl, wParallaxFar
-    add a, [hl]
+    ld a, [wParallaxFar]
 	ldh [rSCX], a
     jr .end
 .close:
     ld a, MENU_LCD_SCROLL_RESET
 	ldh [rLYC], a
-    ldh a, [rSCX]
-    ld hl, wParallaxClose
-    add a, [hl]
+    ld a, [wParallaxClose]
 	ldh [rSCX], a
 .end:
     jp LCDInterruptEnd
@@ -109,28 +105,6 @@ SetMenuInterrupts::
     ld [hl], a
     ret 
 
-ParkLCDInterrupt:
-    ld a, [rLYC]
-	cp a, 0
-    jr z, .clouds
-    CP a, 72
-    jr z, .ground
-    jr .end
-.clouds:
-    ld a, 72
-	ldh [rLYC], a
-    ldh a, [rSCX]
-    ld hl, wParallaxClose
-    add a, [hl]
-	ldh [rSCX], a
-    jr .end
-.ground:
-    xor a ; ld a, 0
-    ldh [rLYC], a
-	ldh [rSCX], a
-.end:
-    jp LCDInterruptEnd
-
 SetParkInterrupts::
     xor a ; ld a, 0
 	ldh [rLYC], a
@@ -145,7 +119,7 @@ Level1LCDInterrupt:
     cp a, GAME_CITY_LCD_SCROLL_MIDDLE
     jr z, .middle
     cp a, GAME_CITY_LCD_SCROLL_CLOSE
-    jr z, .close
+    jr z, .close2
     jr .end
 .reset:
     ld a, GAME_CITY_LCD_SCROLL_FAR
@@ -158,25 +132,19 @@ Level1LCDInterrupt:
 .far:
     ld a, GAME_CITY_LCD_SCROLL_MIDDLE
     ldh [rLYC], a
-    ldh a, [rSCX]
-    ld hl, wParallaxFar
-    add a, [hl]
+    ld a, [wParallaxFar]
 	ldh [rSCX], a
     jr .end
 .middle:
     ld a, GAME_CITY_LCD_SCROLL_CLOSE
     ldh [rLYC], a
-    ldh a, [rSCX]
-    ld hl, wParallaxMiddle
-    add a, [hl]
+    ld a, [wParallaxMiddle]
 	ldh [rSCX], a
     jr .end
-.close:
+.close2:
     ld a, GAME_CITY_LCD_SCROLL_RESET
 	ldh [rLYC], a
-    ldh a, [rSCX]
-    ld hl, wParallaxClose
-    add a, [hl]
+    ld a, [wParallaxClose]
 	ldh [rSCX], a
 .end:
     jp LCDInterruptEnd
@@ -214,25 +182,19 @@ Level2LCDInterrupt:
 .far:
     ld a, GAME_DESERT_LCD_SCROLL_MIDDLE
     ldh [rLYC], a
-    ldh a, [rSCX]
-    ld hl, wParallaxFar
-    add a, [hl]
+    ld a, [wParallaxFar]
 	ldh [rSCX], a
     jr .end
 .middle:
     ld a, GAME_DESERT_LCD_SCROLL_CLOSE
     ldh [rLYC], a
-    ldh a, [rSCX]
-    ld hl, wParallaxMiddle
-    add a, [hl]
+    ld a, [wParallaxMiddle]
 	ldh [rSCX], a
     jr .end
 .close:
     ld a, GAME_DESERT_LCD_SCROLL_RESET
 	ldh [rLYC], a
-    ldh a, [rSCX]
-    ld hl, wParallaxClose
-    add a, [hl]
+    ld a, [wParallaxClose]
 	ldh [rSCX], a
 .end:
     jp LCDInterruptEnd

@@ -1,11 +1,11 @@
 SECTION "tilemaps", ROM0
 
 OpeningCutsceneMap::
-    INCBIN "incbin/background/OpeningCutsceneMap.tilemap"
+    INCBIN "incbin/background/OpeningCutscene.tilemap"
 OpeningCutsceneMapEnd::
     
 IntermissionMap::
-    INCBIN "incbin/background/IntermissionMap.tilemap"
+    INCBIN "incbin/background/StageClear.tilemap"
 IntermissionMapEnd::
 
 Level1Map:: 
