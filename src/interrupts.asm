@@ -7,7 +7,8 @@ MENU_LCD_SCROLL_CLOSE EQU 119
 
 GAME_CITY_LCD_SCROLL_RESET EQU 128
 GAME_CITY_LCD_SCROLL_FAR EQU 47
-GAME_CITY_LCD_SCROLL_CLOSE EQU 102
+GAME_CITY_LCD_SCROLL_MIDDLE EQU 101
+GAME_CITY_LCD_SCROLL_CLOSE EQU 109
 
 GAME_DESERT_LCD_SCROLL_RESET EQU 128
 GAME_DESERT_LCD_SCROLL_FAR EQU 58
@@ -141,6 +142,8 @@ Level1LCDInterrupt:
     jr z, .reset
 	cp a, GAME_CITY_LCD_SCROLL_FAR
     jr z, .far
+    cp a, GAME_CITY_LCD_SCROLL_MIDDLE
+    jr z, .middle
     cp a, GAME_CITY_LCD_SCROLL_CLOSE
     jr z, .close
     jr .end
@@ -153,10 +156,18 @@ Level1LCDInterrupt:
     res 1, [hl]
     jr .end
 .far:
-    ld a, GAME_CITY_LCD_SCROLL_CLOSE
+    ld a, GAME_CITY_LCD_SCROLL_MIDDLE
     ldh [rLYC], a
     ldh a, [rSCX]
     ld hl, wParallaxFar
+    add a, [hl]
+	ldh [rSCX], a
+    jr .end
+.middle:
+    ld a, GAME_CITY_LCD_SCROLL_CLOSE
+    ldh [rLYC], a
+    ldh a, [rSCX]
+    ld hl, wParallaxMiddle
     add a, [hl]
 	ldh [rSCX], a
     jr .end
