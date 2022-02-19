@@ -35,7 +35,7 @@ StartMenu::
 	call LCD_OFF
 	call WaveSound
 	call ResetScroll
-	; call SetMenuInterrupts
+	call SetMenuInterrupts
 	call ResetFading
 	call LoadMenuGraphics
 	call SpawnMenuCursor

@@ -45,6 +45,17 @@ LoadMenuGraphics::
 	ld hl, _SCRN0
 	ld d, SCRN_Y_B
 	call MEMCPY_SINGLE_SCREEN
+
+	ld bc, CloudsTiles
+	ld hl, _VRAM8800
+	ld de, CloudsTilesEnd - CloudsTiles
+	call MEMCPY
+
+	ld bc, CloudsMap
+	ld hl, $99C0
+	ld de, CloudsMapEnd - CloudsMap
+	ld a, $80
+	call MEMCPY_WITH_OFFSET
 	ret
 
 SpawnMenuCursor::

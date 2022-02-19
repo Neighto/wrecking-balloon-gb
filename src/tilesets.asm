@@ -24,6 +24,10 @@ Level1Tiles::
     INCBIN "incbin/background/City.2bpp"
 Level1TilesEnd::
 
+CloudsTiles::
+    INCBIN "incbin/background/Clouds.2bpp"
+CloudsTilesEnd::
+
 SECTION "tilesets 2", ROMX
 
 PorcupineTiles::
@@ -44,9 +48,12 @@ IntermissionTiles::
 IntermissionTilesEnd::
 
 Level2Tiles::
-    ; INCBIN "incbin/background/Sunset.2bpp"
     INCBIN "incbin/background/Desert.2bpp"
 Level2TilesEnd::
+
+Level3Tiles::
+    ; INCBIN "incbin/background/Sunset.2bpp"
+Level3TilesEnd::
 
 CountdownTiles::
     INCBIN "incbin/sprite/Bubble1.2bpp"
