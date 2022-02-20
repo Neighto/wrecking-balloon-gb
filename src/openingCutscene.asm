@@ -102,15 +102,21 @@ UpdatePark::
 .moveUp:
     ld a, [wPlayerY]
     add 16
-    cp a, 80
+    cp a, 60
+    ld a, [wGlobalTimer]
     jr c, .flyUpFast
 .flyUpNormal:
-    ld a, [wGlobalTimer]
     and %00000111
-    call z, MovePlayerAutoFlyUp
-    ret
+    ret nz
+    jr .flyUp
 .flyUpFast:
-    ld a, [wGlobalTimer]
     and %00000001
-    call z, MovePlayerAutoFlyUp
+    ret nz
+.flyUp:
+    ld a, 1
+    ld [wPlayerSpeed], a
+    ld d, %01000000
+    ld e, 0
+    ld c, 0
+    call MovePlayer
     ret

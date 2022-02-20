@@ -27,10 +27,10 @@ Start::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	call WaitVBlank
-	call UpdateMenuOpening
-	call UpdateGlobalTimer
-	jp MenuLoopOpening
+	; call WaitVBlank
+	; call UpdateMenuOpening
+	; call UpdateGlobalTimer
+	; jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
 	call WaveSound
@@ -42,11 +42,11 @@ StartMenu::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateMenu
-	call UpdateGlobalTimer
-	jp MenuLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateMenu
+	; call UpdateGlobalTimer
+	; jp MenuLoop
 
 StartGame::
 	call WaitVBlank
@@ -66,6 +66,7 @@ StartGame::
 	call InitializeEnemyStructVars
 	call InitializePlayer
 	call SpawnPlayer
+	call SetPlayerPositionOpeningCutscene
 	call SpawnHandWave
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
