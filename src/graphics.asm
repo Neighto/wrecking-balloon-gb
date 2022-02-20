@@ -34,29 +34,6 @@ AddBGTiles8800Method::
 	pop hl
 	ret
 
-LoadPlayerTiles::
-	ld bc, PlayerSpriteTiles
-	ld hl, _VRAM8000+$20 ; Offset first 2 tiles as empty
-	ld de, PlayerSpriteTilesEnd - PlayerSpriteTiles
-	call MEMCPY
-	ret
-
-LoadEnemyTiles::
-	ld bc, EnemyTiles
-	ld hl, _VRAM8000 + $20 + (PlayerSpriteTilesEnd - PlayerSpriteTiles)
-	ld de, EnemyTilesEnd - EnemyTiles
-	call MEMCPY
-	ld bc, CountdownTiles ; Could erase these countdown tiles after use if needed
-	ld hl, _VRAM8000 + $20 + (PlayerSpriteTilesEnd - PlayerSpriteTiles) + (EnemyTilesEnd - EnemyTiles)
-	ld de, CountdownTilesEnd - CountdownTiles
-	call MEMCPY
-
-	ld bc, PorcupineTiles
-	ld hl, _VRAM8800+$500
-	ld de, PorcupineTilesEnd - PorcupineTiles
-	call MEMCPY
-	ret
-
 ClearAllTiles::
 	push hl
 	push bc

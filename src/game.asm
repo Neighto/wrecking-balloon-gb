@@ -26,12 +26,15 @@ InitializeGame::
 	ld [wHandWavingFrame], a
 	ld [wCountdownFrame], a
     ret
+
+LoadGameSpriteTiles::
+	ld bc, GameSpriteTiles
+	ld hl, _VRAM8000+$20 ; Offset first 2 tiles as empty
+	ld de, GameSpriteTilesEnd - GameSpriteTiles
+	call MEMCPY
+	ret
     
 LoadLevel1Graphics::
-	call LoadPlayerTiles
-	call LoadWindow
-	call LoadEnemyTiles
-
 	ld bc, Level1Tiles
 	ld hl, _VRAM9000
 	ld de, Level1TilesEnd - Level1Tiles
@@ -44,10 +47,6 @@ LoadLevel1Graphics::
 	ret
 
 LoadLevel2Graphics::
-	call LoadPlayerTiles
-	call LoadWindow
-    call LoadEnemyTiles ; Later might want to change loaded enemies
-
 	ld bc, Level2Tiles
 	ld hl, _VRAM9000
 	ld de, Level2TilesEnd - Level2Tiles
@@ -59,10 +58,6 @@ LoadLevel2Graphics::
     ret
 
 LoadLevel3Graphics::
-	call LoadPlayerTiles
-	call LoadWindow
-    call LoadEnemyTiles ; Later might want to change loaded enemies
-
 	ld bc, Level3Tiles
 	ld hl, _VRAM9000
 	ld de, Level3TilesEnd - Level3Tiles
@@ -71,6 +66,17 @@ LoadLevel3Graphics::
 	ld hl, _SCRN0
     ld d, SCRN_VY_B
 	call MEMCPY_SINGLE_SCREEN
+
+    ld bc, RainCloudsTiles
+	ld hl, _VRAM8800
+	ld de, RainCloudsTilesEnd - RainCloudsTiles
+	call MEMCPY
+
+	ld bc, RainCloudsMap
+	ld hl, $9820
+	ld de, RainCloudsMapEnd - RainCloudsMap
+	ld a, $80
+	call MEMCPY_WITH_OFFSET
     ret
 
 TryToUnpause::

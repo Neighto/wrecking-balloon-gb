@@ -18,7 +18,9 @@ GAME_DESERT_LCD_SCROLL_MIDDLE EQU 97
 GAME_DESERT_LCD_SCROLL_CLOSE EQU 111
 GAME_DESERT_LCD_SCROLL_RESET EQU 128
 
-GAME_SHOWDOWN_LCD_SCROLL_TOP EQU 16
+GAME_SHOWDOWN_LCD_SCROLL_CLOSE EQU 0
+GAME_SHOWDOWN_LCD_SCROLL_MIDDLE EQU 16
+GAME_SHOWDOWN_LCD_SCROLL_RAIN EQU 23
 GAME_SHOWDOWN_LCD_SCROLL_RESET EQU 128
 
 SECTION "interrupts vars", WRAM0
@@ -247,27 +249,45 @@ Level3LCDInterrupt:
     ld a, [rLYC]
     cp a, GAME_SHOWDOWN_LCD_SCROLL_RESET
     jr z, .reset
-    cp a, GAME_SHOWDOWN_LCD_SCROLL_TOP
-    jr z, .top
+    cp a, GAME_SHOWDOWN_LCD_SCROLL_CLOSE
+    jr z, .close
+    cp a, GAME_SHOWDOWN_LCD_SCROLL_MIDDLE
+    jr z, .middle
+    cp a, GAME_SHOWDOWN_LCD_SCROLL_RAIN
+    jr z, .rain
     jr .end
 .reset:
-    ld a, GAME_SHOWDOWN_LCD_SCROLL_TOP
+    ld a, GAME_SHOWDOWN_LCD_SCROLL_CLOSE
     ldh [rLYC], a
     xor a ; ld a, 0
     ldh [rSCY], a
     ld hl, rLCDC
     res 1, [hl]
     jr .end
-.top:
+.close:
+    ld a, GAME_SHOWDOWN_LCD_SCROLL_MIDDLE
+    ldh [rLYC], a
+    ld a, [wParallaxClose]
+	ldh [rSCX], a
+    jr .end
+.middle:
+    ld a, GAME_SHOWDOWN_LCD_SCROLL_RAIN
+    ldh [rLYC], a
+    ld a, [wParallaxMiddle]
+	ldh [rSCX], a
+    jr .end
+.rain:
     ld a, GAME_SHOWDOWN_LCD_SCROLL_RESET
     ldh [rLYC], a
     ld a, [wRain]    
     ldh [rSCY], a
+    xor a ; ld a, 0
+    ldh [rSCX], a
 .end:
     jp LCDInterruptEnd
 
 SetLevel3Interrupts::
-    ld a, GAME_SHOWDOWN_LCD_SCROLL_TOP
+    ld a, GAME_SHOWDOWN_LCD_SCROLL_CLOSE
     ldh [rLYC], a
 
     ld hl, wLCDInterrupt

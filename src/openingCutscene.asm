@@ -18,12 +18,6 @@ InitializeOpeningCutscene::
     ret
 
 LoadParkGraphics::
-	call LoadPlayerTiles
-	call LoadWindow
-	ld bc, OpeningCutsceneSpriteTiles
-	ld hl, _VRAM8000 + $20 + (PlayerSpriteTilesEnd - PlayerSpriteTiles) + (EnemyTilesEnd - EnemyTiles) + (CountdownTilesEnd - CountdownTiles)
-	ld de, OpeningCutsceneSpriteTilesEnd - OpeningCutsceneSpriteTiles
-	call MEMCPY
 	ld bc, OpeningCutsceneTiles
 	ld hl, _VRAM9000
 	ld de, OpeningCutsceneTilesEnd - OpeningCutsceneTiles

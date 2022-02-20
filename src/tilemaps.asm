@@ -31,3 +31,7 @@ WindowMapEnd::
 CloudsMap::
     INCBIN "incbin/background/Clouds.tilemap"
 CloudsMapEnd::
+
+RainCloudsMap::
+    INCBIN "incbin/background/RainClouds.tilemap"
+RainCloudsMapEnd::

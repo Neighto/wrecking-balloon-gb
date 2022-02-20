@@ -1,6 +1,6 @@
 SECTION "tilesets", ROM0
 
-PlayerSpriteTiles::
+GameSpriteTiles::
     INCBIN "incbin/sprite/Player.2bpp"
     INCBIN "incbin/sprite/PlayerFalling.2bpp"
     INCBIN "incbin/sprite/PlayerInvincible.2bpp"
@@ -8,9 +8,6 @@ PlayerSpriteTiles::
     INCBIN "incbin/sprite/Pop1.2bpp"
     INCBIN "incbin/sprite/Pop2.2bpp"
     INCBIN "incbin/sprite/Bullet.2bpp"
-PlayerSpriteTilesEnd::
-
-EnemyTiles::
     INCBIN "incbin/sprite/EnemyCactus.2bpp"
     INCBIN "incbin/sprite/EnemyCactusFalling.2bpp"
     INCBIN "incbin/sprite/Bird1.2bpp"
@@ -18,7 +15,13 @@ EnemyTiles::
     INCBIN "incbin/sprite/Bomb.2bpp"
     INCBIN "incbin/sprite/Explosion2.2bpp"
     INCBIN "incbin/sprite/Bird3.2bpp"
-EnemyTilesEnd::
+    INCBIN "incbin/sprite/Bubble1.2bpp"
+    INCBIN "incbin/sprite/Bubble2.2bpp"
+    INCBIN "incbin/sprite/Bubble3.2bpp"
+    INCBIN "incbin/sprite/BalloonGeneric.2bpp"
+    INCBIN "incbin/background/Man_Wave.2bpp"
+    INCBIN "incbin/background/Man_Wave2.2bpp"
+GameSpriteTilesEnd::
 
 Level1Tiles::
     INCBIN "incbin/background/City.2bpp"
@@ -27,6 +30,10 @@ Level1TilesEnd::
 CloudsTiles::
     INCBIN "incbin/background/Clouds.2bpp"
 CloudsTilesEnd::
+
+RainCloudsTiles::
+    INCBIN "incbin/background/RainClouds.2bpp"
+RainCloudsTilesEnd::
 
 SECTION "tilesets 2", ROMX
 
@@ -37,11 +44,6 @@ PorcupineTilesEnd::
 OpeningCutsceneTiles::
     INCBIN "incbin/background/OpeningCutscene.2bpp"
 OpeningCutsceneTilesEnd::
-
-OpeningCutsceneSpriteTiles::
-    INCBIN "incbin/background/Man_Wave.2bpp"
-    INCBIN "incbin/background/Man_Wave2.2bpp"
-OpeningCutsceneSpriteTilesEnd::
 
 StageClearTiles::
     INCBIN "incbin/background/StageClear.2bpp"
@@ -54,13 +56,6 @@ Level2TilesEnd::
 Level3Tiles::
     INCBIN "incbin/background/Showdown.2bpp"
 Level3TilesEnd::
-
-CountdownTiles::
-    INCBIN "incbin/sprite/Bubble1.2bpp"
-    INCBIN "incbin/sprite/Bubble2.2bpp"
-    INCBIN "incbin/sprite/Bubble3.2bpp"
-    INCBIN "incbin/sprite/BalloonGeneric.2bpp"
-CountdownTilesEnd::
 
 WindowTiles::
     INCBIN "incbin/window/Window.2bpp"
