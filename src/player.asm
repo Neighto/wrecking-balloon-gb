@@ -55,16 +55,7 @@ InitializePlayer::
   ld [wPlayerRight], a
   ld [wPlayerBulletRight], a
 
-  ld hl, wPlayerX
-  ld [hl], PLAYER_START_X
-  ld hl, wPlayerY
-  ld [hl], PLAYER_START_Y
-  ld hl, wPlayerX2
-  ld [hl], PLAYER_START_X
-  ld hl, wPlayerY2
-  ld a, PLAYER_START_Y
-  add a, 16
-  ld [hl], a
+  call SetPlayerPositionOpeningDefault
   ld hl, wPlayerSpeed
   ld [hl], PLAYER_DEFAULT_SPEED
   ret
@@ -101,6 +92,32 @@ UpdateCactusPosition:
   ld a, [wPlayerX2]
   add 8
   ld [hl], a
+  ret
+
+SetPlayerPosition:
+  ; b = start x
+  ; c = start y
+  ld a, b
+  ld [wPlayerX], a
+  ld [wPlayerX2], a
+  ld a, c
+  ld [wPlayerY], a
+  add a, 16
+  ld [wPlayerY2], a
+  call UpdateBalloonPosition
+  call UpdateCactusPosition
+  ret
+
+SetPlayerPositionOpeningDefault:
+  ld b, PLAYER_START_X
+  ld c, PLAYER_START_Y
+  call SetPlayerPosition
+  ret
+
+SetPlayerPositionOpeningCutscene::
+  ld b, PLAYER_START_X
+  ld c, PLAYER_START_Y - 30
+  call SetPlayerPosition
   ret
 
 SpawnPlayer::
@@ -342,11 +359,15 @@ BulletUpdate::
 PlayerControls:
   ; argument d = input directions down
   ; argument e = input directions pressed
+  ; argument c = check boundaries (0 = no)
 .right:
 	ld a, d
 	call JOY_RIGHT
 	jr z, .endRight
   ; Check offscreen
+  ld a, c
+  cp a, 0
+  jr z, .moveRight
   ld a, [wPlayerX]
   add 10
   ld b, a
@@ -364,6 +385,9 @@ PlayerControls:
 	call JOY_LEFT
 	jr z, .endLeft
   ; Check offscreen
+  ld a, c
+  cp a, 0
+  jr z, .moveLeft
   ld a, [wPlayerX]
   sub 10
   ld b, a
@@ -381,6 +405,9 @@ PlayerControls:
 	call JOY_UP
 	jr z, .endUp
   ; Check offscreen
+  ld a, c
+  cp a, 0
+  jr z, .moveUp
   ld a, [wPlayerY]
   sub 18
   ld b, a
@@ -397,12 +424,16 @@ PlayerControls:
 	call JOY_DOWN
 	jr z, .endDown
   ; Check offscreen
+  ld a, c
+  cp a, 0
+  jr z, .moveDown
   ld a, [wPlayerY]
   add 16
   ld b, a
   call OffScreenY
   cp a, 0
   jr nz, .endDown
+.moveDown:
 	call MoveDown
 .endDown:
 
@@ -488,42 +519,21 @@ PlayerControls:
 .endB:
   ret
 
-MovePlayer:
-  call ReadInput
-  ld a, [wControllerDown]
-  ld d, a
-  ld a, [wControllerPressed]
-  ld e, a
+MovePlayer::
+  ; See PlayerControls for arguments
   call PlayerControls
   call UpdateBalloonPosition
   call UpdateCactusPosition
   ret
 
-; MovePlayerAutoMiddleRight::
-;   ld d, %00010000
-;   ld e, 0
-;   ld a, [wPlayerY]
-;   cp a, SCRN_Y/2
-;   jr z, .end
-;   jr c, .moveDownRight
-; .moveUpRight:
-;   ld d, %01010000 ; TODO make these constants
-;   jr .end
-; .moveDownRight:
-;   ld d, %10010000
-; .end:
-;   ld a, 1
-;   ld [wPlayerSpeed], a
-;   call PlayerControls
-;   call UpdateBalloonPosition
-;   call UpdateCactusPosition
-;   ret
-
-MovePlayerAutoFlyUp::
-  DECREMENT_POS wPlayerY, 1
-  DECREMENT_POS wPlayerY2, 1
-  call UpdateBalloonPosition
-  call UpdateCactusPosition
+MovePlayerWithInput:
+  call ReadInput
+  ld a, [wControllerDown]
+  ld d, a
+  ld a, [wControllerPressed]
+  ld e, a
+  ld c, 1
+  call MovePlayer
   ret
 
 FallCactusDown:
@@ -638,7 +648,7 @@ PlayerUpdate::
   ; Check if we can move
   ld a, [wGlobalTimer]
 	and	PLAYER_MOVE_TIME
-	call z, MovePlayer
+	call z, MovePlayerWithInput
   ; Check if we can charge boost
   ld a, [wGlobalTimer]
 	and	PLAYER_BOOST_TIME
