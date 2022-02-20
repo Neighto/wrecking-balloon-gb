@@ -45,7 +45,13 @@ IncrementScrollOffset::
     ld [wParallaxFar], a
 .rain:
     ld a, [wRain]
-    sub a, 8
+    sub a, 4
+    cp a, SCRN_VY - SCRN_Y
+    jr nc, .resetRain
+    ld [wRain], a
+    ret
+.resetRain:
+    ld a, SCRN_VY - SCRN_Y
     ld [wRain], a
 .end:
     ret
