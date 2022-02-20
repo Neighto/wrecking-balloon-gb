@@ -1,10 +1,10 @@
-SECTION "timer vars", WRAM0
-	wGlobalTimer:: DB
+SECTION "timer vars", HRAM
+	hGlobalTimer:: DB
 
 SECTION "timer", ROMX
 
 UpdateGlobalTimer::
-	ld a, [wGlobalTimer]
+	ldh a, [hGlobalTimer]
 	inc	a
-	ld [wGlobalTimer], a
+	ldh [hGlobalTimer], a
 	ret

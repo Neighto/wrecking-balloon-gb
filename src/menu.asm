@@ -79,7 +79,7 @@ SpawnMenuCursor::
 
 BlinkMenuCursor::
 	; Check timer
-	ld a, [wGlobalTimer]
+	ldh a, [hGlobalTimer]
 	and %00011111
 	jr z, .blink
 	ret
@@ -105,7 +105,7 @@ SelectMode:
 	ret
 
 MenuInput:
-	ld a, [wGlobalTimer]
+	ldh a, [hGlobalTimer]
 	and %00000011
 	jr nz, .end
 	call ReadInput	

@@ -71,7 +71,7 @@ UpdateStageClear::
     call _hUGE_dosound
     call RefreshStageClear
 
-    ld a, [wGlobalTimer]
+    ldh a, [hGlobalTimer]
     and %00000011
     cp a, 0
     ret nz

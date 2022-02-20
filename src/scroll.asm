@@ -23,21 +23,21 @@ InitializeParallaxScrolling::
 
 IncrementScrollOffset::
 .close:
-    ld a, [wGlobalTimer]
+    ldh a, [hGlobalTimer]
     and PARALLAX_CLOSE_WAIT_TIME
     jr nz, .middle
     ld a, [wParallaxClose]
     inc a
     ld [wParallaxClose], a
 .middle:
-    ld a, [wGlobalTimer]
+    ldh a, [hGlobalTimer]
     and PARALLAX_MIDDLE_WAIT_TIME
     jr nz, .far
     ld a, [wParallaxMiddle]
     inc a
     ld [wParallaxMiddle], a
 .far:
-    ld a, [wGlobalTimer]
+    ldh a, [hGlobalTimer]
     and PARALLAX_FAR_WAIT_TIME
     jr nz, .rain
     ld a, [wParallaxFar]
@@ -58,7 +58,7 @@ IncrementScrollOffset::
 
 HorizontalScroll::
     push af
-    ld a, [wGlobalTimer]
+    ldh a, [hGlobalTimer]
     and	BACKGROUND_HSCROLL_SPEED
     jr nz, .end
     ldh a, [rSCX]

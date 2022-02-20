@@ -201,7 +201,7 @@ MoveRight:
   INCREMENT_POS wPlayerX, [wPlayerSpeed]
   INCREMENT_POS wPlayerX2, [wPlayerSpeed]
 .canCactusDriftLeft:
-  ld a, [wGlobalTimer]
+  ldh a, [hGlobalTimer]
   and	%00000001
   ret nz
   ld hl, wPlayerX
@@ -219,7 +219,7 @@ MoveLeft:
   DECREMENT_POS wPlayerX, [wPlayerSpeed]
   DECREMENT_POS wPlayerX2, [wPlayerSpeed]
 .canCactusDriftRight:
-  ld a, [wGlobalTimer]
+  ldh a, [hGlobalTimer]
   and	%00000001
   ret nz
   ld hl, wPlayerX
@@ -236,7 +236,7 @@ MoveDown:
   INCREMENT_POS wPlayerY, [wPlayerSpeed]
   INCREMENT_POS wPlayerY2, [wPlayerSpeed]
 .canCactusDriftUp:
-  ld a, [wGlobalTimer]
+  ldh a, [hGlobalTimer]
   and	%00000001
   ret nz
   ld hl, wPlayerY  
@@ -337,7 +337,7 @@ BulletUpdate::
   ret
 .onScreen:
   ; Check if we can move
-  ld a, [wGlobalTimer]
+  ldh a, [hGlobalTimer]
   and PLAYER_BULLET_TIME
   ret nz
 .move:
@@ -444,7 +444,7 @@ PlayerControls:
   ld a, d
 	call JOY_LEFT
   jr nz, .endDriftToCenterX
-  ld a, [wGlobalTimer]
+  ldh a, [hGlobalTimer]
   and	%00000001
   jr nz, .endDriftToCenterX
   ld a, [wPlayerX]
@@ -466,7 +466,7 @@ PlayerControls:
   ld a, d
 	call JOY_DOWN
   jr nz, .endDriftToCenterY
-  ld a, [wGlobalTimer]
+  ldh a, [hGlobalTimer]
   and	%00000001
   jr nz, .endDriftToCenterY
   ld hl, wPlayerY
@@ -646,15 +646,15 @@ PlayerUpdate::
 .isAlive:
   call InvincibleBlink
   ; Check if we can move
-  ld a, [wGlobalTimer]
+  ldh a, [hGlobalTimer]
 	and	PLAYER_MOVE_TIME
 	call z, MovePlayerWithInput
   ; Check if we can charge boost
-  ld a, [wGlobalTimer]
+  ldh a, [hGlobalTimer]
 	and	PLAYER_BOOST_TIME
   call z, ChargeBoost
   ; Check if we can charge attack
-  ld a, [wGlobalTimer]
+  ldh a, [hGlobalTimer]
 	and	PLAYER_ATTACK_TIME
   call z, ChargeAttack
   ret
@@ -720,7 +720,7 @@ InvincibleBlink:
   cp a, 3 ; TODO: Dangerous way to do this
   jr c, .defaultPalette
   cp a, INVINCIBLE_BLINK_FASTER_TIME
-  ld a, [wGlobalTimer]
+  ldh a, [hGlobalTimer]
   jr c, .blinkFast
 .blinkNormal:
 	and INVINCIBLE_BLINK_NORMAL_SPEED
