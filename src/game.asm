@@ -79,22 +79,6 @@ LoadLevel3Graphics::
 	call MEMCPY_WITH_OFFSET
     ret
 
-TryToUnpause::
-	xor a ; ld a, 0
-	ld hl, wPaused
-	cp a, [hl]
-	jr z, .end
-	; Is paused
-    call ClearSound
-	call ReadInput
-	ld a, [wControllerPressed]
-	call JOY_START
-	jr z, .end
-	xor a ; ld a, 0
-	ld [hl], a ; pause
-.end:
-	ret
-
 SpawnCountdown::
 	ld b, 2
 	call RequestOAMSpace
@@ -238,12 +222,22 @@ UpdateGameCountdown::
     ret
 
 UpdateGame::
-	call TryToUnpause
-	ld a, [wPaused]
+.tryToUnpause:
+    ld a, [wPaused]
 	cp a, 0
-    ret nz
+	jr z, .isNotPaused
+.isPaused:
+    call ClearSound
+	call ReadInput
+	ld a, [wControllerPressed]
+	call JOY_START
+    ret z
+	xor a ; ld a, 0
+	ld [wPaused], a
+    ret
+.isNotPaused:
     call UpdateSprites
-    call LevelDataManager
+    call LevelDataHandler
     call RefreshWindow
     call IncrementScrollOffset
     call _hUGE_dosound

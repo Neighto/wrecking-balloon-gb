@@ -289,7 +289,7 @@ InitializeLevelVars::
     call InitializeNewLevel
     ret
 
-LevelDataHandler:
+SpawnDataHandler:
     ; argument hl = source address
     ld a, [hli]
     cp a, EMPTY
@@ -298,7 +298,6 @@ LevelDataHandler:
     inc hl
     ret
 .notEmpty:
-
     ; Update enemy Y/X
     ld b, a
     ld a, [hli]
@@ -306,45 +305,24 @@ LevelDataHandler:
     ld a, [hli]
     ld [wEnemyX], a
     ld a, b
-
     ; Spawns
     cp a, POINT_BALLOON
-    jr z, .pointBalloon 
+    jp z, SpawnPointBalloon
     cp a, BALLOON_CACTUS
-    jr z, .balloonCactus 
+    jp z, SpawnBalloonCactus
     cp a, BIRD
-    jr z, .bird 
+    jp z, SpawnBird
     cp a, BOMB
-    jr z, .bomb
+    jp z, SpawnBomb
     cp a, PORCUPINE
-    jr z, .porcupine
-    ret
-.pointBalloon:
-    call SpawnPointBalloon
-    ret
-.balloonCactus:
-    call SpawnBalloonCactus
-    ret
-.bird:
-    call SpawnBird
-    ret
-.bomb:
-    call SpawnBomb
-    ret
-.porcupine:
-    call SpawnPorcupine
+    jp z, SpawnPorcupine
     ret
 
-LevelDataManager::
+LevelDataHandler::
     ; Frequency we read 
     ldh a, [hGlobalTimer]
     and LEVEL_UPDATE_REFRESH_TIME
     ret nz
-    
-    ; Testing remove later
-    ld a, [wLevel]
-    cp a, 4
-    jp z, Start
 
     ; Read next level instruction
     ld a, [wLevelDataAddress]
@@ -364,7 +342,7 @@ LevelDataManager::
 .spawn:
     ; Next instructions: enemy, y, x
     inc hl
-    call LevelDataHandler
+    call SpawnDataHandler
     ld a, l
     ld [wLevelDataAddress], a
     ld a, h
@@ -373,9 +351,8 @@ LevelDataManager::
 .wait:
     ; Next instruction: amount to wait
     inc hl
-    ld b, [hl]
     ld a, [wLevelWaitCounter]
-    cp a, b
+    cp a, [hl]
     jr nc, .waitEnd
     inc a
     ld [wLevelWaitCounter], a
