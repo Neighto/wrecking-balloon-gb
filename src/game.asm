@@ -58,6 +58,21 @@ LoadLevel2Graphics::
 	call MEMCPY
     ret
 
+LoadLevel3Graphics::
+	call LoadPlayerTiles
+	call LoadWindow
+    call LoadEnemyTiles ; Later might want to change loaded enemies
+
+	ld bc, Level3Tiles
+	ld hl, _VRAM9000
+	ld de, Level3TilesEnd - Level3Tiles
+	call MEMCPY
+	ld bc, Level3Map
+	ld hl, _SCRN0
+    ld d, SCRN_VY_B
+	call MEMCPY_SINGLE_SCREEN
+    ret
+
 TryToUnpause::
 	xor a ; ld a, 0
 	ld hl, wPaused

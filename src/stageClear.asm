@@ -27,11 +27,11 @@ InitializeStageClear::
 
 LoadStageClearGraphics::
 	call LoadWindow
-	ld bc, IntermissionTiles
+	ld bc, StageClearTiles
 	ld hl, _VRAM9000
-	ld de, IntermissionTilesEnd - IntermissionTiles
+	ld de, StageClearTilesEnd - StageClearTiles
 	call MEMCPY
-	ld bc, IntermissionMap
+	ld bc, StageClearMap
 	ld hl, _SCRN0
     ld d, SCRN_Y_B
 	call MEMCPY_SINGLE_SCREEN

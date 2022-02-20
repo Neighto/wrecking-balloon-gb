@@ -4,9 +4,9 @@ OpeningCutsceneMap::
     INCBIN "incbin/background/OpeningCutscene.tilemap"
 OpeningCutsceneMapEnd::
     
-IntermissionMap::
+StageClearMap::
     INCBIN "incbin/background/StageClear.tilemap"
-IntermissionMapEnd::
+StageClearMapEnd::
 
 Level1Map:: 
     INCBIN "incbin/background/City.tilemap"
@@ -17,7 +17,7 @@ Level2Map::
 Level2MapEnd::
 
 Level3Map::
-    ; INCBIN "incbin/background/Sunset.tilemap"
+    INCBIN "incbin/background/Showdown.tilemap"
 Level3MapEnd::
 
 MenuMap::

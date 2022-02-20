@@ -43,16 +43,16 @@ OpeningCutsceneSpriteTiles::
     INCBIN "incbin/background/Man_Wave2.2bpp"
 OpeningCutsceneSpriteTilesEnd::
 
-IntermissionTiles::
+StageClearTiles::
     INCBIN "incbin/background/StageClear.2bpp"
-IntermissionTilesEnd::
+StageClearTilesEnd::
 
 Level2Tiles::
     INCBIN "incbin/background/Desert.2bpp"
 Level2TilesEnd::
 
 Level3Tiles::
-    ; INCBIN "incbin/background/Sunset.2bpp"
+    INCBIN "incbin/background/Showdown.2bpp"
 Level3TilesEnd::
 
 CountdownTiles::

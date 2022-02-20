@@ -70,16 +70,17 @@ StartGame::
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdatePark
-	call UpdateGlobalTimer
-	jp OpeningCutsceneLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdatePark
+	; call UpdateGlobalTimer
+	; jp OpeningCutsceneLoop
 
 SetupNextLevel::
 	call WaitVBlank
 	call LCD_OFF
 	call ResetScroll
+	call ClearMap
 	call ClearOAM
 	call ClearRAM
 	call ClearSound
@@ -90,17 +91,20 @@ SetupNextLevel::
 	cp a, 2
 	jr z, .level2
 	cp a, 3
-	jr z, .level1
+	jr z, .level3
 	; Don't reach this point
 .level1:
-	call SetLevel1Interrupts
-	call LoadLevel1Graphics
-	jr .endLevelSetup
+	; call SetLevel1Interrupts
+	; call LoadLevel1Graphics
+	; jr .endLevelSetup
 .level2:
-	call SetLevel2Interrupts
-	call LoadLevel2Graphics
-	jr .endLevelSetup
+	; call SetLevel2Interrupts
+	; call LoadLevel2Graphics
+	; jr .endLevelSetup
 .level3:
+	call SetLevel3Interrupts
+	call LoadLevel3Graphics
+	jr .endLevelSetup
 .level4:
 .level5:
 .level6:

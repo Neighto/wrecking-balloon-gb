@@ -9,6 +9,7 @@ SECTION "scroll vars", WRAM0
 wParallaxClose:: DB
 wParallaxMiddle:: DB
 wParallaxFar:: DB
+wRain:: DB
 
 SECTION "scroll", ROM0
 
@@ -17,6 +18,7 @@ InitializeParallaxScrolling::
 	ld [wParallaxClose], a
 	ld [wParallaxMiddle], a
 	ld [wParallaxFar], a
+    ld [wRain], a
     ret
 
 IncrementScrollOffset::
@@ -37,10 +39,14 @@ IncrementScrollOffset::
 .far:
     ld a, [wGlobalTimer]
     and PARALLAX_FAR_WAIT_TIME
-    jr nz, .end
+    jr nz, .rain
     ld a, [wParallaxFar]
     inc a
     ld [wParallaxFar], a
+.rain:
+    ld a, [wRain]
+    sub a, 8
+    ld [wRain], a
 .end:
     ret
 
@@ -52,18 +58,6 @@ HorizontalScroll::
     ldh a, [rSCX]
     inc a
     ldh [rSCX], a
-.end:
-    pop af
-    ret
-
-VerticalScroll::
-    push af
-    ld a, [wGlobalTimer]
-    and	BACKGROUND_VSCROLL_SPEED
-    jr nz, .end
-    ldh a, [rSCY]
-    inc a
-    ldh [rSCY], a
 .end:
     pop af
     ret
