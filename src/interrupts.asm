@@ -18,6 +18,9 @@ GAME_DESERT_LCD_SCROLL_MIDDLE EQU 99
 GAME_DESERT_LCD_SCROLL_CLOSE EQU 109
 GAME_DESERT_LCD_SCROLL_RESET EQU 128
 
+GAME_SHOWDOWN_LCD_SCROLL_TOP EQU 26
+GAME_SHOWDOWN_LCD_SCROLL_RESET EQU 128
+
 SECTION "interrupts vars", WRAM0
     wVBlankFlag:: DB
     wLCDInterrupt:: DS 2
@@ -237,5 +240,39 @@ SetLevel2Interrupts::
     ld a, LOW(Level2LCDInterrupt)
     ld [hli], a
     ld a, HIGH(Level2LCDInterrupt)
+    ld [hl], a
+    ret
+
+Level3LCDInterrupt:
+    ld a, [rLYC]
+    cp a, GAME_SHOWDOWN_LCD_SCROLL_RESET
+    jr z, .reset
+    cp a, GAME_SHOWDOWN_LCD_SCROLL_TOP
+    jr z, .top
+    jr .end
+.reset:
+    ld a, GAME_SHOWDOWN_LCD_SCROLL_TOP
+    ldh [rLYC], a
+    xor a ; ld a, 0
+    ldh [rSCY], a
+    ld hl, rLCDC
+    res 1, [hl]
+    jr .end
+.top:
+    ld a, GAME_SHOWDOWN_LCD_SCROLL_RESET
+    ldh [rLYC], a
+    ld a, [wRain]
+    ldh [rSCY], a
+.end:
+    jp LCDInterruptEnd
+
+SetLevel3Interrupts::
+    ld a, GAME_SHOWDOWN_LCD_SCROLL_TOP
+    ldh [rLYC], a
+
+    ld hl, wLCDInterrupt
+    ld a, LOW(Level3LCDInterrupt)
+    ld [hli], a
+    ld a, HIGH(Level3LCDInterrupt)
     ld [hl], a
     ret
