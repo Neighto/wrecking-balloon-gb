@@ -337,7 +337,7 @@ LevelDataHandler:
 
 LevelDataManager::
     ; Frequency we read 
-    ld a, [wGlobalTimer]
+    ldh a, [hGlobalTimer]
     and LEVEL_UPDATE_REFRESH_TIME
     ret nz
     

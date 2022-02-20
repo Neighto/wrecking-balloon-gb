@@ -51,7 +51,7 @@ FadeOutPalettes::
 	ld a, 1
 	ret
 .fadeOut:
-	ld a, [wGlobalTimer]
+	ldh a, [hGlobalTimer]
 	and FADE_SPEED
 	jr nz, .end
 	ld a, [wFadeOutFrame]
@@ -106,7 +106,7 @@ FadeInPalettes::
 	ld a, 1
 	ret
 .fadeIn:
-	ld a, [wGlobalTimer]
+	ldh a, [hGlobalTimer]
 	and FADE_SPEED
 	jr nz, .end
 	ld a, [wFadeInFrame]

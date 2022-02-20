@@ -129,12 +129,12 @@ Countdown::
     ld a, [wCountdownFrame]
     cp a, 4
     jr nc, .balloonPop
-    ld a, [wGlobalTimer]
+    ldh a, [hGlobalTimer]
     and COUNTDOWN_SPEED
     jp nz, .end
     jr .frames
 .balloonPop:
-    ld a, [wGlobalTimer]
+    ldh a, [hGlobalTimer]
     and COUNTDOWN_BALLOON_POP_SPEED
     jp nz, .end
 .frames:

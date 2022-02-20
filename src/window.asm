@@ -198,7 +198,7 @@ LoadWindow::
     ret
 
 RefreshWindow::
-	ld a, [wGlobalTimer]
+	ldh a, [hGlobalTimer]
 	and REFRESH_WINDOW_WAIT_TIME
     ret nz
 	ld hl, SCORE_INDEX_ONE_ADDRESS

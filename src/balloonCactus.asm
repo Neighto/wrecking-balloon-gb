@@ -451,11 +451,11 @@ BalloonCactusUpdate::
     jr z, .popped
 .isAlive:
     ; Check if we can move
-    ld a, [wGlobalTimer]
+    ldh a, [hGlobalTimer]
     and	BALLOON_CACTUS_MOVE_TIME
     call z, Move
     ; Check if we can collide
-    ld a, [wGlobalTimer]
+    ldh a, [hGlobalTimer]
     and	BALLOON_CACTUS_COLLISION_TIME
     push bc
     call z, CollisionBalloonCactus

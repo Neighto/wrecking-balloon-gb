@@ -51,7 +51,7 @@ HandWaveAnimation::
     cp a, 0
     jr nz, .frame1
 .frame0:
-    ld a, [wGlobalTimer]
+    ldh a, [hGlobalTimer]
     and 15
     jp nz, .end
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
@@ -60,7 +60,7 @@ HandWaveAnimation::
     ld [hl], 1
     ret
 .frame1:
-    ld a, [wGlobalTimer]
+    ldh a, [hGlobalTimer]
     and 15
     jp nz, .end
     SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
@@ -97,7 +97,7 @@ UpdatePark::
     ld a, [wPlayerY]
     add 16
     cp a, 60
-    ld a, [wGlobalTimer]
+    ldh a, [hGlobalTimer]
     jr c, .flyUpFast
 .flyUpNormal:
     and %00000111

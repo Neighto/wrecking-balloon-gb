@@ -101,9 +101,9 @@ SetupNextLevel::
 	; call LoadLevel1Graphics
 	; jr .endLevelSetup
 .level2:
-	; call SetLevel2Interrupts
-	; call LoadLevel2Graphics
-	; jr .endLevelSetup
+	call SetLevel2Interrupts
+	call LoadLevel2Graphics
+	jr .endLevelSetup
 .level3:
 	call SetLevel3Interrupts
 	call LoadLevel3Graphics
