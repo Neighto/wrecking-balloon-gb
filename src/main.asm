@@ -57,7 +57,7 @@ StartGame::
 	call ClearSound
 	call ClearAllTiles
 	call ResetScroll
-	call SetParkInterrupts
+	call SetOpeningCutsceneInterrupts
 	call LoadParkGraphics
 	call ResetFading
 	call InitializeOpeningCutscene

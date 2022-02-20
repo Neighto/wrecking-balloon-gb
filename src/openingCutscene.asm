@@ -2,7 +2,7 @@ INCLUDE "macro.inc"
 INCLUDE "hardware.inc"
 
 HAND_WAVE_START_X EQU 152
-HAND_WAVE_START_Y EQU 112
+HAND_WAVE_START_Y EQU 96
 HAND_WAVE_TILE_1 EQU $3E
 HAND_WAVE_TILE_2 EQU $40
 
@@ -99,7 +99,6 @@ UpdatePark::
     jp nz, SetupNextLevel
 .skipFade:
     call HandWaveAnimation
-    ; call IncrementScrollOffset
 .moveUp:
     ld a, [wPlayerY]
     add 16
@@ -107,8 +106,11 @@ UpdatePark::
     jr c, .flyUpFast
 .flyUpNormal:
     ld a, [wGlobalTimer]
-    and %00000011
-    ret nz
+    and %00000111
+    call z, MovePlayerAutoFlyUp
+    ret
 .flyUpFast:
-    call MovePlayerAutoFlyUp
+    ld a, [wGlobalTimer]
+    and %00000001
+    call z, MovePlayerAutoFlyUp
     ret
