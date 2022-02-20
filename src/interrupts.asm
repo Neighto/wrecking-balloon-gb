@@ -5,6 +5,9 @@ MENU_LCD_SCROLL_FAR EQU 111
 MENU_LCD_SCROLL_CLOSE EQU 119
 MENU_LCD_SCROLL_RESET EQU 127
 
+OPENING_CUTSCENE_HIDE EQU 0
+OPENING_CUTSCENE_SHOW EQU 23
+
 GAME_CITY_LCD_SCROLL_FAR EQU 47
 GAME_CITY_LCD_SCROLL_MIDDLE EQU 102
 GAME_CITY_LCD_SCROLL_CLOSE EQU 109
@@ -105,9 +108,36 @@ SetMenuInterrupts::
     ld [hl], a
     ret 
 
-SetParkInterrupts::
-    xor a ; ld a, 0
+OpeningCutsceneLCDInterrupt:
+    ld a, [rLYC]
+    cp a, OPENING_CUTSCENE_HIDE
+    jr z, .hide
+	cp a, OPENING_CUTSCENE_SHOW
+    jr z, .show
+    jr .end
+.hide:
+    ld a, OPENING_CUTSCENE_SHOW
 	ldh [rLYC], a
+    ld hl, rLCDC
+    res 1, [hl]
+    jr .end
+.show:
+    ld a, OPENING_CUTSCENE_HIDE
+    ldh [rLYC], a
+    ld hl, rLCDC
+    set 1, [hl]
+.end:
+    jp LCDInterruptEnd
+
+SetOpeningCutsceneInterrupts::
+    ld a, OPENING_CUTSCENE_HIDE
+	ldh [rLYC], a
+
+    ld hl, wLCDInterrupt
+    ld a, LOW(OpeningCutsceneLCDInterrupt)
+    ld [hli], a
+    ld a, HIGH(OpeningCutsceneLCDInterrupt)
+    ld [hl], a
     ret 
 
 Level1LCDInterrupt:
