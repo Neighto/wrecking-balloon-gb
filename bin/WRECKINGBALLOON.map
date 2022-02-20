@@ -354,7 +354,7 @@ ROM0 bank #0:
            $26bf = Level3LCDInterrupt.top
            $26c8 = Level3LCDInterrupt.end
            $26cb = SetLevel3Interrupts
-  SECTION: $26d9-$282c ($0154 bytes) ["rom"]
+  SECTION: $26d9-$2824 ($014c bytes) ["rom"]
            $26d9 = Start
            $2716 = MenuLoopOpening
            $2716 = StartMenu
@@ -363,86 +363,86 @@ ROM0 bank #0:
            $2767 = OpeningCutsceneLoop
            $2767 = SetupNextLevel
            $278b = SetupNextLevel.level1
-           $2793 = SetupNextLevel.level2
-           $279b = SetupNextLevel.level3
-           $27a3 = SetupNextLevel.endLevelSetup
-           $27a3 = SetupNextLevel.level6
-           $27a3 = SetupNextLevel.level5
-           $27a3 = SetupNextLevel.level4
-           $27d3 = GameCountdownLoop
-           $27e2 = GameLoop
-           $27f1 = StageClear
-           $281e = StageClearLoop
-  SECTION: $282d-$294d ($0121 bytes) ["window"]
-           $282d = RefreshScore
-           $2864 = RefreshTotal
-           $289b = RefreshLives
-           $28a4 = RefreshBoostBar
-           $28ae = RefreshBoostBar.isCharging
-           $28ba = RefreshBoostBar.isEmpty
-           $28c0 = RefreshBoostBar.is25Percent
-           $28c7 = RefreshBoostBar.is50Percent
-           $28ce = RefreshBoostBar.is75Percent
-           $28d5 = RefreshBoostBar.isReady
-           $28db = RefreshAttackBar
-           $28e5 = RefreshAttackBar.isCharging
-           $28f1 = RefreshAttackBar.isEmpty
-           $28f7 = RefreshAttackBar.is25Percent
-           $28fe = RefreshAttackBar.is50Percent
-           $2905 = RefreshAttackBar.is75Percent
-           $290c = RefreshAttackBar.isReady
-           $2912 = LoadWindow.loadTiles
-           $2912 = LoadWindow
-           $291e = LoadWindow.drawMap
-           $2938 = RefreshWindow
-  SECTION: $294e-$29cf ($0082 bytes) ["collision"]
-           $294e = CollisionCheck
-           $2959 = CollisionCheck.tryOtherY
-           $2965 = CollisionCheck.checkX
-           $2972 = CollisionCheck.tryOtherX
-           $297f = CollisionCheck.collision
-           $2982 = CollisionCheck.noCollision
-           $2984 = CollisionWithPlayer
-           $2994 = OffScreenXEnemies
-           $29a5 = OffScreenXEnemies.end
-           $29a7 = OffScreenYEnemies
-           $29b8 = OffScreenYEnemies.end
-           $29ba = OffScreenX
-           $29c2 = OffScreenX.end
-           $29c4 = OffScreenY
-           $29ce = OffScreenY.end
-  SECTION: $29d0-$2a47 ($0078 bytes) ["controller"]
-           $29d0 = InitializeController
-           $29d5 = ReadInput
-           $2a05 = JOY_RIGHT
-           $2a0d = JOY_LEFT
-           $2a15 = JOY_UP
-           $2a1d = JOY_DOWN
-           $2a25 = JOY_A
-           $2a2d = JOY_B
-           $2a35 = JOY_SELECT
-           $2a3d = JOY_START
-           $2a45 = JOY_FALSE
-  SECTION: $2a48-$2aa7 ($0060 bytes) ["scroll"]
-           $2a48 = InitializeParallaxScrolling
-           $2a56 = IncrementScrollOffset
-           $2a56 = IncrementScrollOffset.close
-           $2a64 = IncrementScrollOffset.middle
-           $2a72 = IncrementScrollOffset.far
-           $2a80 = IncrementScrollOffset.rain
-           $2a8d = IncrementScrollOffset.resetRain
-           $2a92 = IncrementScrollOffset.end
-           $2a93 = HorizontalScroll
-           $2aa0 = HorizontalScroll.end
-           $2aa2 = ResetScroll
-  SECTION: $2aa8-$2ac5 ($001e bytes) ["OAM DMA routine"]
-           $2aa8 = CopyDMARoutine
-           $2aaf = CopyDMARoutine.copy
-           $2ab6 = DMARoutine
-           $2aba = DMARoutine.wait
-           $2abe = DMARoutineEnd
-           $2abe = OAMDMA
-    SLACK: $1556 bytes
+           $278b = SetupNextLevel.level2
+           $2793 = SetupNextLevel.level3
+           $279b = SetupNextLevel.endLevelSetup
+           $279b = SetupNextLevel.level6
+           $279b = SetupNextLevel.level5
+           $279b = SetupNextLevel.level4
+           $27cb = GameCountdownLoop
+           $27da = GameLoop
+           $27e9 = StageClear
+           $2816 = StageClearLoop
+  SECTION: $2825-$2945 ($0121 bytes) ["window"]
+           $2825 = RefreshScore
+           $285c = RefreshTotal
+           $2893 = RefreshLives
+           $289c = RefreshBoostBar
+           $28a6 = RefreshBoostBar.isCharging
+           $28b2 = RefreshBoostBar.isEmpty
+           $28b8 = RefreshBoostBar.is25Percent
+           $28bf = RefreshBoostBar.is50Percent
+           $28c6 = RefreshBoostBar.is75Percent
+           $28cd = RefreshBoostBar.isReady
+           $28d3 = RefreshAttackBar
+           $28dd = RefreshAttackBar.isCharging
+           $28e9 = RefreshAttackBar.isEmpty
+           $28ef = RefreshAttackBar.is25Percent
+           $28f6 = RefreshAttackBar.is50Percent
+           $28fd = RefreshAttackBar.is75Percent
+           $2904 = RefreshAttackBar.isReady
+           $290a = LoadWindow.loadTiles
+           $290a = LoadWindow
+           $2916 = LoadWindow.drawMap
+           $2930 = RefreshWindow
+  SECTION: $2946-$29c7 ($0082 bytes) ["collision"]
+           $2946 = CollisionCheck
+           $2951 = CollisionCheck.tryOtherY
+           $295d = CollisionCheck.checkX
+           $296a = CollisionCheck.tryOtherX
+           $2977 = CollisionCheck.collision
+           $297a = CollisionCheck.noCollision
+           $297c = CollisionWithPlayer
+           $298c = OffScreenXEnemies
+           $299d = OffScreenXEnemies.end
+           $299f = OffScreenYEnemies
+           $29b0 = OffScreenYEnemies.end
+           $29b2 = OffScreenX
+           $29ba = OffScreenX.end
+           $29bc = OffScreenY
+           $29c6 = OffScreenY.end
+  SECTION: $29c8-$2a3f ($0078 bytes) ["controller"]
+           $29c8 = InitializeController
+           $29cd = ReadInput
+           $29fd = JOY_RIGHT
+           $2a05 = JOY_LEFT
+           $2a0d = JOY_UP
+           $2a15 = JOY_DOWN
+           $2a1d = JOY_A
+           $2a25 = JOY_B
+           $2a2d = JOY_SELECT
+           $2a35 = JOY_START
+           $2a3d = JOY_FALSE
+  SECTION: $2a40-$2a9f ($0060 bytes) ["scroll"]
+           $2a40 = InitializeParallaxScrolling
+           $2a4e = IncrementScrollOffset
+           $2a4e = IncrementScrollOffset.close
+           $2a5c = IncrementScrollOffset.middle
+           $2a6a = IncrementScrollOffset.far
+           $2a78 = IncrementScrollOffset.rain
+           $2a85 = IncrementScrollOffset.resetRain
+           $2a8a = IncrementScrollOffset.end
+           $2a8b = HorizontalScroll
+           $2a98 = HorizontalScroll.end
+           $2a9a = ResetScroll
+  SECTION: $2aa0-$2abd ($001e bytes) ["OAM DMA routine"]
+           $2aa0 = CopyDMARoutine
+           $2aa7 = CopyDMARoutine.copy
+           $2aae = DMARoutine
+           $2ab2 = DMARoutine.wait
+           $2ab6 = DMARoutineEnd
+           $2ab6 = OAMDMA
+    SLACK: $155e bytes
 
 ROMX bank #1:
   SECTION: $4000-$558f ($1590 bytes) ["tilesets 2"]
@@ -1228,7 +1228,7 @@ HRAM bank #0:
     SLACK: $0077 bytes
 
 USED:
-    ROM0: $2aaa bytes in 1 bank
+    ROM0: $2aa2 bytes in 1 bank
     ROMX: $39c2 bytes in 1 bank
     WRAM0: $01ac bytes in 1 bank
     HRAM: $0008 bytes in 1 bank
