@@ -1,4 +1,5 @@
 INCLUDE "hardware.inc"
+INCLUDE "constants.inc"
 
 SECTION "controller vars", WRAM0
 	wControllerDown:: DB
@@ -23,7 +24,7 @@ ReadInput::
 	ld a, [_IO]
 	; Upper bits are DPAD (1 = pressed)
 	cpl
-	and %00001111
+	and HIGH_HALF_BYTE_MASK
 	swap a
 	ld b, a
 	; Select Buttons
@@ -36,7 +37,7 @@ ReadInput::
 	ld a, [_IO]
 	; Lower bits are Buttons (1 = pressed)
 	cpl
-	and %00001111
+	and HIGH_HALF_BYTE_MASK
 	or b
 	; Check if input reads the same
 	ld b, a

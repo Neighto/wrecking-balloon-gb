@@ -97,9 +97,9 @@ SetupNextLevel::
 	jr z, .level3
 	; Don't reach this point
 .level1:
-	; call SetLevel1Interrupts
-	; call LoadLevel1Graphics
-	; jr .endLevelSetup
+	call SetLevel1Interrupts
+	call LoadLevel1Graphics
+	jr .endLevelSetup
 .level2:
 	call SetLevel2Interrupts
 	call LoadLevel2Graphics

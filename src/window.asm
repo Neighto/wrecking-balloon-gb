@@ -1,5 +1,6 @@
 INCLUDE "playerConstants.inc"
 INCLUDE "hardware.inc"
+INCLUDE "constants.inc"
 INCLUDE "tileConstants.inc"
 
 SCORE_INDEX_ONE_ADDRESS EQU $9C32
@@ -9,175 +10,89 @@ BAR_LEFT_FULL EQU $F1
 BAR_LEFT_HALF EQU $F3
 BOOST_BAR_ADDRESS EQU $9C22
 ATTACK_BAR_ADDRESS EQU $9C26
-REFRESH_WINDOW_WAIT_TIME EQU %00000100
+REFRESH_WINDOW_WAIT_TIME EQU %00000011
 
 SECTION "window", ROM0
 
 RefreshScore::
 	; Argument hl is index one address to update
+	ld bc, wScore
 	; First digit
-	ld a, [wScore]
-	and %00001111
+	ld a, [bc]
+	and HIGH_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Second digit
-    ld a, [wScore]
+    ld a, [bc]
     swap a
-	and %00001111
+	and HIGH_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Third digit
-	ld a, [wScore+1]
-    and %00001111
+	inc bc ; Move up score
+	ld a, [bc]
+    and HIGH_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Fourth digit
-	ld a, [wScore+1]
+	ld a, [bc]
 	swap a
-    and %00001111
+    and HIGH_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Fifth digit
-	ld a, [wScore+2]
-	and %00001111
+	inc bc ; Move up score
+	ld a, [bc]
+	and HIGH_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Sixth digit
-	ld a, [wScore+2]
+	ld a, [bc]
 	swap a
-    and %00001111
+    and HIGH_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hl], a
 	ret
 
 RefreshTotal::
 	; Argument hl is index one address to update
+	ld bc, wTotal
 	; First digit
-	ld a, [wTotal]
-	and %00001111
+	ld a, [bc]
+	and HIGH_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Second digit
     ld a, [wTotal]
     swap a
-	and %00001111
+	and HIGH_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Third digit
-	ld a, [wTotal+1]
-    and %00001111
+	inc bc ; Move up total
+	ld a, [bc]
+    and HIGH_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Fourth digit
-	ld a, [wTotal+1]
+	ld a, [bc]
 	swap a
-    and %00001111
+    and HIGH_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Fifth digit
-	ld a, [wTotal+2]
-	and %00001111
+	inc bc ; Move up total
+	ld a, [bc]
+	and HIGH_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Sixth digit
-	ld a, [wTotal+2]
+	ld a, [bc]
 	swap a
-    and %00001111
+    and HIGH_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hl], a
 	ret
-
-RefreshLives:
-	ld a, [wPlayerLives]
-	add NUMBERS_TILE_OFFSET
-	ld [LIVES_ADDRESS], a
-	ret
-
-RefreshBoostBar:
-	ld hl, BOOST_BAR_ADDRESS
-	ld a, [wPlayerBoost]
-	cp a, PLAYER_BOOST_FULL
-	jr z, .isReady
-.isCharging:
-	cp a, PLAYER_BOOST_75_PERC
-	jr c, .is75Percent
-	cp a, PLAYER_BOOST_50_PERC
-	jr c, .is50Percent
-	cp a, PLAYER_BOOST_25_PERC
-	jr c, .is25Percent
-.isEmpty:
-	ld a, BAR_LEFT_EMPTY
-	ld [hli], a
-	inc a
-	ld [hl], a
-	ret
-.is25Percent:
-	ld a, BAR_LEFT_HALF
-	ld [hli], a
-	ld a, BAR_LEFT_EMPTY+1
-	ld [hl], a
-	ret
-.is50Percent:
-	ld a, BAR_LEFT_FULL
-	ld [hli], a
-	ld a, BAR_LEFT_EMPTY+1
-	ld [hl], a
-	ret
-.is75Percent:
-	ld a, BAR_LEFT_FULL
-	ld [hli], a
-	ld a, BAR_LEFT_HALF+1
-	ld [hl], a
-	ret
-.isReady:
-	ld a, BAR_LEFT_FULL
-	ld [hli], a
-	inc a
-	ld [hl], a
-	ret 
-
-RefreshAttackBar:
-	ld hl, ATTACK_BAR_ADDRESS
-	ld a, [wPlayerAttack]
-	cp a, PLAYER_ATTACK_FULL
-	jr z, .isReady
-.isCharging:
-	cp a, PLAYER_ATTACK_75_PERC
-	jr c, .is75Percent
-	cp a, PLAYER_ATTACK_50_PERC
-	jr c, .is50Percent
-	cp a, PLAYER_ATTACK_25_PERC
-	jr c, .is25Percent
-.isEmpty:
-	ld a, BAR_LEFT_EMPTY
-	ld [hli], a
-	inc a
-	ld [hl], a
-	ret
-.is25Percent:
-	ld a, BAR_LEFT_HALF
-	ld [hli], a
-	ld a, BAR_LEFT_EMPTY+1
-	ld [hl], a
-	ret
-.is50Percent:
-	ld a, BAR_LEFT_FULL
-	ld [hli], a
-	ld a, BAR_LEFT_EMPTY+1
-	ld [hl], a
-	ret
-.is75Percent:
-	ld a, BAR_LEFT_FULL
-	ld [hli], a
-	ld a, BAR_LEFT_HALF+1
-	ld [hl], a
-	ret
-.isReady:
-	ld a, BAR_LEFT_FULL
-	ld [hli], a
-	inc a
-	ld [hl], a
-	ret 
 
 LoadWindow::
 .loadTiles:
@@ -201,9 +116,97 @@ RefreshWindow::
 	ldh a, [hGlobalTimer]
 	and REFRESH_WINDOW_WAIT_TIME
     ret nz
+	; SCORE
+.refreshScore:
 	ld hl, SCORE_INDEX_ONE_ADDRESS
 	call RefreshScore
-	call RefreshLives
-	call RefreshBoostBar
-	call RefreshAttackBar
+	; LIVES
+.refreshLives:
+	ld a, [wPlayerLives]
+	add NUMBERS_TILE_OFFSET
+	ld [LIVES_ADDRESS], a
+	; BOOST
+.refreshBoostBar:
+	ld hl, BOOST_BAR_ADDRESS
+	ld a, [wPlayerBoost]
+	cp a, PLAYER_BOOST_FULL
+	jr z, .isBoostReady
+.isBoostCharging:
+	cp a, PLAYER_BOOST_75_PERC
+	jr c, .isBoost75Percent
+	cp a, PLAYER_BOOST_50_PERC
+	jr c, .isBoost50Percent
+	cp a, PLAYER_BOOST_25_PERC
+	jr c, .isBoost25Percent
+.isBoostEmpty:
+	ld a, BAR_LEFT_EMPTY
+	ld [hli], a
+	inc a
+	ld [hl], a
+	jr .refreshAttackBar
+.isBoost25Percent:
+	ld a, BAR_LEFT_HALF
+	ld [hli], a
+	ld a, BAR_LEFT_EMPTY+1
+	ld [hl], a
+	jr .refreshAttackBar
+.isBoost50Percent:
+	ld a, BAR_LEFT_FULL
+	ld [hli], a
+	ld a, BAR_LEFT_EMPTY+1
+	ld [hl], a
+	jr .refreshAttackBar
+.isBoost75Percent:
+	ld a, BAR_LEFT_FULL
+	ld [hli], a
+	ld a, BAR_LEFT_HALF+1
+	ld [hl], a
+	jr .refreshAttackBar
+.isBoostReady:
+	ld a, BAR_LEFT_FULL
+	ld [hli], a
+	inc a
+	ld [hl], a
+	; ATTACK
+.refreshAttackBar:
+	ld hl, ATTACK_BAR_ADDRESS
+	ld a, [wPlayerAttack]
+	cp a, PLAYER_ATTACK_FULL
+	jr z, .isAttackReady
+.isAttackCharging:
+	cp a, PLAYER_ATTACK_75_PERC
+	jr c, .isAttack75Percent
+	cp a, PLAYER_ATTACK_50_PERC
+	jr c, .isAttack50Percent
+	cp a, PLAYER_ATTACK_25_PERC
+	jr c, .isAttack25Percent
+.isAttackEmpty:
+	ld a, BAR_LEFT_EMPTY
+	ld [hli], a
+	inc a
+	ld [hl], a
+	ret
+.isAttack25Percent:
+	ld a, BAR_LEFT_HALF
+	ld [hli], a
+	ld a, BAR_LEFT_EMPTY+1
+	ld [hl], a
+	ret
+.isAttack50Percent:
+	ld a, BAR_LEFT_FULL
+	ld [hli], a
+	ld a, BAR_LEFT_EMPTY+1
+	ld [hl], a
+	ret
+.isAttack75Percent:
+	ld a, BAR_LEFT_FULL
+	ld [hli], a
+	ld a, BAR_LEFT_HALF+1
+	ld [hl], a
+	ret
+.isAttackReady:
+	ld a, BAR_LEFT_FULL
+	ld [hli], a
+	inc a
+	ld [hl], a
 	ret

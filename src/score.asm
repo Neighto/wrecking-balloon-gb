@@ -1,4 +1,5 @@
 INCLUDE "playerConstants.inc"
+INCLUDE "constants.inc"
 
 SCORE_SIZE EQU 3
 
@@ -84,7 +85,7 @@ AddTotal::
 .saveFourthDigit:
     ld a, [wTotal+1]
     swap a
-    and %00001111
+    and HIGH_HALF_BYTE_MASK
     ld e, a
 .toBCD:
     ld a, d
@@ -97,7 +98,7 @@ AddTotal::
 .checkAddLife:
     ld a, [wTotal+1]
     swap a
-    and %00001111
+    and HIGH_HALF_BYTE_MASK
     cp a, e
     jr z, .checkLoop
 .addLife:
