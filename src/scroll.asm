@@ -4,6 +4,7 @@ INCLUDE "constants.inc"
 PARALLAX_CLOSE_WAIT_TIME EQU %0000111
 PARALLAX_MIDDLE_WAIT_TIME EQU %0001111
 PARALLAX_FAR_WAIT_TIME EQU %0011111
+RAIN_SCROLL_SPEED EQU 4
 
 SECTION "scroll vars", WRAM0
 wParallaxClose:: DB
@@ -22,30 +23,31 @@ InitializeParallaxScrolling::
     ret
 
 IncrementScrollOffset::
+    ; Parallax
+    ldh a, [hGlobalTimer] ; 3
+    ld b, a ; 1
 .close:
-    ldh a, [hGlobalTimer]
     and PARALLAX_CLOSE_WAIT_TIME
-    jr nz, .middle
-    ld a, [wParallaxClose]
-    inc a
-    ld [wParallaxClose], a
+    jr nz, .endParallax
+    ld hl, wParallaxClose
+    inc [hl]
 .middle:
-    ldh a, [hGlobalTimer]
+    ld a, b
     and PARALLAX_MIDDLE_WAIT_TIME
-    jr nz, .far
-    ld a, [wParallaxMiddle]
-    inc a
-    ld [wParallaxMiddle], a
+    jr nz, .endParallax
+    ld hl, wParallaxMiddle
+    inc [hl]
 .far:
-    ldh a, [hGlobalTimer]
+    ld a, b
     and PARALLAX_FAR_WAIT_TIME
-    jr nz, .rain
-    ld a, [wParallaxFar]
-    inc a
-    ld [wParallaxFar], a
+    jr nz, .endParallax
+    ld hl, wParallaxFar
+    inc [hl]
+.endParallax:
+    ; Rain
 .rain:
     ld a, [wRain]
-    sub a, 4
+    sub a, RAIN_SCROLL_SPEED
     cp a, SCRN_VY - SCRN_Y
     jr nc, .resetRain
     ld [wRain], a
@@ -53,19 +55,6 @@ IncrementScrollOffset::
 .resetRain:
     ld a, SCRN_VY - SCRN_Y
     ld [wRain], a
-.end:
-    ret
-
-HorizontalScroll::
-    push af
-    ldh a, [hGlobalTimer]
-    and	BACKGROUND_HSCROLL_SPEED
-    jr nz, .end
-    ldh a, [rSCX]
-    inc a
-    ldh [rSCX], a
-.end:
-    pop af
     ret
 
 ResetScroll::

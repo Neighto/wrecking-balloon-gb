@@ -371,7 +371,7 @@ ROM0 bank #0:
            $28f0 = Level3LCDInterrupt.rain
            $28fc = Level3LCDInterrupt.end
            $28ff = SetLevel3Interrupts
-  SECTION: $290d-$2a5e ($0152 bytes) ["rom"]
+  SECTION: $290d-$2a66 ($015a bytes) ["rom"]
            $290d = Start
            $294a = MenuLoopOpening
            $294a = StartMenu
@@ -380,76 +380,75 @@ ROM0 bank #0:
            $29a4 = OpeningCutsceneLoop
            $29a4 = SetupNextLevel
            $29c8 = SetupNextLevel.level1
-           $29c8 = SetupNextLevel.level2
-           $29d0 = SetupNextLevel.level3
-           $29d8 = SetupNextLevel.endLevelSetup
-           $29d8 = SetupNextLevel.level6
-           $29d8 = SetupNextLevel.level5
-           $29d8 = SetupNextLevel.level4
-           $2a08 = GameCountdownLoop
-           $2a17 = GameLoop
-           $2a26 = StageClear
-           $2a50 = StageClearLoop
-  SECTION: $2a5f-$2b7e ($0120 bytes) ["window"]
-           $2a5f = RefreshScore
-           $2a96 = RefreshTotal
-           $2acd = RefreshLives
-           $2ad6 = RefreshBoostBar
-           $2ae0 = RefreshBoostBar.isCharging
-           $2aec = RefreshBoostBar.isEmpty
-           $2af2 = RefreshBoostBar.is25Percent
-           $2af9 = RefreshBoostBar.is50Percent
-           $2b00 = RefreshBoostBar.is75Percent
-           $2b07 = RefreshBoostBar.isReady
-           $2b0d = RefreshAttackBar
-           $2b17 = RefreshAttackBar.isCharging
-           $2b23 = RefreshAttackBar.isEmpty
-           $2b29 = RefreshAttackBar.is25Percent
-           $2b30 = RefreshAttackBar.is50Percent
-           $2b37 = RefreshAttackBar.is75Percent
-           $2b3e = RefreshAttackBar.isReady
-           $2b44 = LoadWindow.loadTiles
-           $2b44 = LoadWindow
-           $2b50 = LoadWindow.drawMap
-           $2b6a = RefreshWindow
-  SECTION: $2b7f-$2bfc ($007e bytes) ["graphics"]
-           $2b7f = AddBGTiles8800Method
-           $2b89 = AddBGTiles8800Method.tilesFitBlock
-           $2b8e = AddBGTiles8800Method.tilesExceedBlock
-           $2ba8 = AddBGTiles8800Method.end
-           $2bab = ClearAllTiles
-           $2bb4 = ClearAllTiles.loop_u4
-           $2bc3 = ClearAllTiles.loop_u5
-           $2bd2 = ClearAllTiles.loop_u6
-           $2bdd = ClearMap
-           $2be4 = ClearMap.loop_u7
-           $2bed = ClearWindow
-           $2bf4 = ClearWindow.loop_u8
-  SECTION: $2bfd-$2c74 ($0078 bytes) ["controller"]
-           $2bfd = InitializeController
-           $2c02 = ReadInput
-           $2c32 = JOY_RIGHT
-           $2c3a = JOY_LEFT
-           $2c42 = JOY_UP
-           $2c4a = JOY_DOWN
-           $2c52 = JOY_A
-           $2c5a = JOY_B
-           $2c62 = JOY_SELECT
-           $2c6a = JOY_START
-           $2c72 = JOY_FALSE
-  SECTION: $2c75-$2cd0 ($005c bytes) ["scroll"]
-           $2c75 = InitializeParallaxScrolling
-           $2c83 = IncrementScrollOffset
-           $2c83 = IncrementScrollOffset.close
-           $2c90 = IncrementScrollOffset.middle
-           $2c9d = IncrementScrollOffset.far
-           $2caa = IncrementScrollOffset.rain
-           $2cb7 = IncrementScrollOffset.resetRain
-           $2cbc = IncrementScrollOffset.end
-           $2cbd = HorizontalScroll
-           $2cc9 = HorizontalScroll.end
-           $2ccb = ResetScroll
-    SLACK: $135b bytes
+           $29d0 = SetupNextLevel.level2
+           $29d8 = SetupNextLevel.level3
+           $29e0 = SetupNextLevel.endLevelSetup
+           $29e0 = SetupNextLevel.level6
+           $29e0 = SetupNextLevel.level5
+           $29e0 = SetupNextLevel.level4
+           $2a10 = GameCountdownLoop
+           $2a1f = GameLoop
+           $2a2e = StageClear
+           $2a58 = StageClearLoop
+  SECTION: $2a67-$2b72 ($010c bytes) ["window"]
+           $2a67 = RefreshScore
+           $2a97 = RefreshTotal
+           $2ac9 = LoadWindow.loadTiles
+           $2ac9 = LoadWindow
+           $2ad5 = LoadWindow.drawMap
+           $2aef = RefreshWindow
+           $2af4 = RefreshWindow.refreshScore
+           $2afa = RefreshWindow.refreshLives
+           $2b02 = RefreshWindow.refreshBoostBar
+           $2b0c = RefreshWindow.isBoostCharging
+           $2b18 = RefreshWindow.isBoostEmpty
+           $2b1f = RefreshWindow.isBoost25Percent
+           $2b27 = RefreshWindow.isBoost50Percent
+           $2b2f = RefreshWindow.isBoost75Percent
+           $2b37 = RefreshWindow.isBoostReady
+           $2b3c = RefreshWindow.refreshAttackBar
+           $2b46 = RefreshWindow.isAttackCharging
+           $2b52 = RefreshWindow.isAttackEmpty
+           $2b58 = RefreshWindow.isAttack25Percent
+           $2b5f = RefreshWindow.isAttack50Percent
+           $2b66 = RefreshWindow.isAttack75Percent
+           $2b6d = RefreshWindow.isAttackReady
+  SECTION: $2b73-$2bf0 ($007e bytes) ["graphics"]
+           $2b73 = AddBGTiles8800Method
+           $2b7d = AddBGTiles8800Method.tilesFitBlock
+           $2b82 = AddBGTiles8800Method.tilesExceedBlock
+           $2b9c = AddBGTiles8800Method.end
+           $2b9f = ClearAllTiles
+           $2ba8 = ClearAllTiles.loop_u4
+           $2bb7 = ClearAllTiles.loop_u5
+           $2bc6 = ClearAllTiles.loop_u6
+           $2bd1 = ClearMap
+           $2bd8 = ClearMap.loop_u7
+           $2be1 = ClearWindow
+           $2be8 = ClearWindow.loop_u8
+  SECTION: $2bf1-$2c68 ($0078 bytes) ["controller"]
+           $2bf1 = InitializeController
+           $2bf6 = ReadInput
+           $2c26 = JOY_RIGHT
+           $2c2e = JOY_LEFT
+           $2c36 = JOY_UP
+           $2c3e = JOY_DOWN
+           $2c46 = JOY_A
+           $2c4e = JOY_B
+           $2c56 = JOY_SELECT
+           $2c5e = JOY_START
+           $2c66 = JOY_FALSE
+  SECTION: $2c69-$2cac ($0044 bytes) ["scroll"]
+           $2c69 = InitializeParallaxScrolling
+           $2c77 = IncrementScrollOffset
+           $2c7a = IncrementScrollOffset.close
+           $2c82 = IncrementScrollOffset.middle
+           $2c8b = IncrementScrollOffset.far
+           $2c94 = IncrementScrollOffset.endParallax
+           $2c94 = IncrementScrollOffset.rain
+           $2ca1 = IncrementScrollOffset.resetRain
+           $2ca7 = ResetScroll
+    SLACK: $137f bytes
 
 ROMX bank #1:
   SECTION: $4000-$53cf ($13d0 bytes) ["tilesets 2"]
@@ -1232,7 +1231,7 @@ HRAM bank #0:
     SLACK: $0076 bytes
 
 USED:
-    ROM0: $2ca5 bytes in 1 bank
+    ROM0: $2c81 bytes in 1 bank
     ROMX: $37dd bytes in 1 bank
     WRAM0: $01ab bytes in 1 bank
     HRAM: $0009 bytes in 1 bank

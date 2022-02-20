@@ -1,6 +1,7 @@
 INCLUDE "playerConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "tileConstants.inc"
+INCLUDE "constants.inc"
 
 STAGE_CLEAR_PAUSE_LENGTH EQU 20
 
@@ -103,11 +104,11 @@ UpdateStageClear::
     jr .endFrame
 .copyFirstDigitToTotal:
     ld a, [wScore]
-    and %00001111
+    and HIGH_HALF_BYTE_MASK
     ld d, a
     call AddTotal
     ld a, [wScore]
-    and %00001111
+    and HIGH_HALF_BYTE_MASK
     ld d, a
     call DecrementPoints
     jr .endFrame
