@@ -26,7 +26,6 @@ InitializeStageClear::
     ret
 
 LoadStageClearGraphics::
-	call LoadWindow
 	ld bc, StageClearTiles
 	ld hl, _VRAM9000
 	ld de, StageClearTilesEnd - StageClearTiles
