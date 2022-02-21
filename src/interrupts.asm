@@ -267,12 +267,24 @@ Level3LCDInterrupt:
 .close:
     ld a, GAME_SHOWDOWN_LCD_SCROLL_MIDDLE
     ldh [rLYC], a
+
+    ; ld a, [rLY]
+    ; cp a, GAME_SHOWDOWN_LCD_SCROLL_CLOSE
+    ; jr nz, .end
+
+
     ld a, [wParallaxClose]
 	ldh [rSCX], a
     jr .end
 .middle:
     ld a, GAME_SHOWDOWN_LCD_SCROLL_RAIN
     ldh [rLYC], a
+
+    ; ld a, [rLY]
+    ; cp a, GAME_SHOWDOWN_LCD_SCROLL_MIDDLE
+    ; jr nz, .end
+
+
     ld a, [wParallaxMiddle]
 	ldh [rSCX], a
     jr .end

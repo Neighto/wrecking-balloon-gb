@@ -230,8 +230,9 @@ UpdateGame::
 .updateSprites:
     call PlayerUpdate
     call BulletUpdate
-    call PointBalloonUpdate
-    call BalloonCactusUpdate
+    call UpdateEnemy
+    ; call PointBalloonUpdate
+    ; call BalloonCactusUpdate
     ; call BombUpdate
     ; call BirdUpdate
     ; call PorcupineUpdate

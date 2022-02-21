@@ -118,6 +118,7 @@ SetupNextLevel::
 	call InitializeGame
 	call InitializeScore
 	call InitializeNewLevel
+	call InitializeEnemies
 	call InitializePointBalloon
 	call InitializeBalloonCactus
 	call InitializePorcupine

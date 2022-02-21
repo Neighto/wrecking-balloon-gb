@@ -2,8 +2,9 @@ INCLUDE "points.inc"
 INCLUDE "balloonConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
+INCLUDE "enemyNumber.inc"
 
-POINT_BALLOON_STRUCT_SIZE EQU 8
+POINT_BALLOON_STRUCT_SIZE EQU 9
 POINT_BALLOON_STRUCT_AMOUNT EQU 4
 POINT_BALLOON_DATA_SIZE EQU POINT_BALLOON_STRUCT_SIZE * POINT_BALLOON_STRUCT_AMOUNT
 POINT_BALLOON_OAM_SPRITES EQU 2
@@ -28,6 +29,8 @@ SetStruct:
     ; Argument hl = start of free enemy struct
     ld a, [wEnemyActive]
     ld [hli], a
+    ld a, [wEnemyNumber]
+    ld [hli], a
     ld a, [wEnemyY]
     ld [hli], a
     ld a, [wEnemyX]
@@ -49,9 +52,9 @@ SpawnPointBalloon::
     push hl
     push de
     push bc
-    ld hl, pointBalloon
-    ld d, POINT_BALLOON_STRUCT_AMOUNT
-    ld e, POINT_BALLOON_STRUCT_SIZE
+    ld hl, wEnemies
+    ld d, NUMBER_OF_ENEMIES
+    ld e, ENEMY_STRUCT_SIZE
     call RequestRAMSpace ; hl now contains free RAM space address
     cp a, 0
     jr z, .end
@@ -70,6 +73,8 @@ SpawnPointBalloon::
     ld a, 1
     ld [wEnemyActive], a
     ld [wEnemyAlive], a
+    ld a, POINT_BALLOON
+    ld [wEnemyNumber], a
 .balloonLeft:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     ld a, [wEnemyY]
@@ -220,18 +225,6 @@ CollisionPointBalloon:
     ret
 
 PointBalloonUpdate::
-    ld bc, POINT_BALLOON_STRUCT_AMOUNT
-    xor a ; ld a, 0
-    ld [wEnemyOffset], a
-.loop:
-    ; Get active state
-    SET_HL_TO_ADDRESS pointBalloon, wEnemyOffset
-    ld a, [hli]
-    ld [wEnemyActive], a
-    ; Check active
-    ld a, [wEnemyActive]
-    cp a, 0
-    jr z, .checkLoopSkipSet
     ; Get rest of struct
     ld a, [hli]
     ld [wEnemyY], a
@@ -278,14 +271,6 @@ PointBalloonUpdate::
     jr z, .checkLoop
     call PopBalloonAnimation
 .checkLoop:
-    SET_HL_TO_ADDRESS pointBalloon, wEnemyOffset
+    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
-.checkLoopSkipSet:
-    ld a, [wEnemyOffset]
-    add a, POINT_BALLOON_STRUCT_SIZE
-    ld [wEnemyOffset], a    
-    dec bc
-    ld a, b
-    or a, c
-    jp nz, .loop
     ret

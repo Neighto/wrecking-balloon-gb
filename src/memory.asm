@@ -72,7 +72,7 @@ ClearOAM::
     ret
 
 ClearRAM::
-    RESET_IN_RANGE $C100, $A0 ; should probably be at C000
+    RESET_IN_RANGE $C100, $A0
     ret
 
 RequestOAMSpace::
