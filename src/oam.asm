@@ -23,6 +23,7 @@ CopyDMARoutine::
 	dec b
 	jr nz, .copy
 	ret
+	
 DMARoutine:
 	ldh [rDMA], a
 	ld a, 40
@@ -41,4 +42,4 @@ OAMDMA::
 	ret
 
 SECTION "OAM DMA", HRAM
-hOAMDMA:: ds DMARoutineEnd - DMARoutine ; Reserve space to copy the routine to
+hOAMDMA:: DS DMARoutineEnd - DMARoutine ; Reserve space to copy the routine to
