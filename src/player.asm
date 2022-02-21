@@ -21,11 +21,6 @@ SECTION "player vars", WRAM0
   wPlayerLives:: DB
   wPlayerRight:: DB
 
-  wPlayerBulletY:: DB
-  wPlayerBulletX:: DB
-  wPlayerBulletAlive:: DB
-  wPlayerBulletRight:: DB
-
   ; Operate like timers
   wPlayerInvincible:: DB
   wPlayerBoost:: DB ; TODO it would be a lot more logical to make these increase instead of decrease
@@ -45,15 +40,11 @@ InitializePlayer::
   ld [wPlayerInvincible], a
   ld [wPlayerBoost], a
   ld [wPlayerAttack], a
-  ld [wPlayerBulletY], a
-  ld [wPlayerBulletX], a
-  ld [wPlayerBulletAlive], a ; TODO probably have bullet have its own file and init so it doesnt disappear on death
 
   ld a, 1
   ld [wPlayerAlive], a
   ld [wPlayerFallSpeed], a
   ld [wPlayerRight], a
-  ld [wPlayerBulletRight], a
 
   call SetPlayerPositionOpeningDefault
   ld hl, wPlayerSpeed
@@ -191,6 +182,7 @@ RespawnPlayer:
   xor a ; ld a, 0
   ld [wPlayerRespawnTimer], a
   call InitializePlayer
+  call InitializeBullet
   call SpawnPlayer
   ld a, INVINCIBLE_RESPAWN_TIME
   ld [wPlayerInvincible], a
@@ -271,89 +263,6 @@ ChargeAttack:
 .isCharging:
   dec a
   ld [wPlayerAttack], a
-  ret
-
-SpawnBullet:
-  ld a, 1 
-  ld [wPlayerBulletAlive], a
-  ld a, [wPlayerY2]
-  add 5
-  ld [wPlayerBulletY], a
-  ld hl, wPlayerBulletOAM
-  ld a, [wPlayerRight]
-  ld [wPlayerBulletRight], a
-  cp a, 0
-  jr nz, .spawnFromRight
-.spawnFromLeft:
-  ld a, [wPlayerX2]
-  sub 3
-  ld [wPlayerBulletX], a
-.leftOAM:
-  ld a, [wPlayerBulletY]
-  ld [hli], a
-  ld a, [wPlayerBulletX]
-  ld [hli], a
-  ld [hl], PLAYER_BULLET_TILE
-  inc l
-  ld [hl], OAMF_PAL0 | OAMF_XFLIP
-  ret
-.spawnFromRight:
-  ld a, [wPlayerX2]
-  add 12
-  ld [wPlayerBulletX], a
-.rightOAM:
-  ld a, [wPlayerBulletY]
-  ld [hli], a
-  ld a, [wPlayerBulletX]
-  ld [hli], a
-  ld [hl], PLAYER_BULLET_TILE
-  inc l
-  ld [hl], OAMF_PAL0
-  ret
-
-ClearBullet::
-  xor a ; ld a, 0
-  ld [wPlayerBulletAlive], a
-  ld hl, wPlayerBulletOAM
-  ld [hli], a
-  ld [hli], a
-  ld [hli], a
-  ld [hl], a
-  ret
-
-BulletUpdate::
-  ld a, [wPlayerBulletAlive]
-  cp a, 0
-  ret z
-.isAlive:
-  ; Check offscreen
-  ld a, [wPlayerBulletX]
-  ld b, a 
-  call OffScreenXEnemies
-  cp a, 0
-  jr z, .onScreen
-.offScreen:
-  call ClearBullet
-  ret
-.onScreen:
-  ; Check if we can move
-  ldh a, [hGlobalTimer]
-  and PLAYER_BULLET_TIME
-  ret nz
-.move:
-  ld a, [wPlayerBulletRight]
-  cp a, 0
-  ld a, [wPlayerBulletX]
-  jr nz, .moveRight
-.moveLeft:
-  sub PLAYER_BULLET_SPEED
-  jr .endMove
-.moveRight:
-  add PLAYER_BULLET_SPEED
-.endMove:
-  ld [wPlayerBulletX], a
-  ld hl, wPlayerBulletOAM+1
-  ld [hl], a
   ret
 
 PlayerControls:

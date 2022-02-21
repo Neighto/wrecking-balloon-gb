@@ -200,16 +200,6 @@ Countdown::
     xor a ; ld a, 0
     ret
 
-UpdateSprites:
-    call PlayerUpdate
-    call BulletUpdate
-    call PointBalloonUpdate
-    call BalloonCactusUpdate
-    call BombUpdate
-    call BirdUpdate
-    call PorcupineUpdate
-    ret
-
 UpdateGameCountdown::
     call RefreshWindow
     call IncrementScrollOffset
@@ -236,7 +226,16 @@ UpdateGame::
 	ld [wPaused], a
     ret
 .isNotPaused:
-    call UpdateSprites
+
+.updateSprites:
+    call PlayerUpdate
+    call BulletUpdate
+    call PointBalloonUpdate
+    call BalloonCactusUpdate
+    ; call BombUpdate
+    ; call BirdUpdate
+    ; call PorcupineUpdate
+.rest:
     call LevelDataHandler
     call RefreshWindow
     call IncrementScrollOffset

@@ -67,6 +67,7 @@ StartGame::
 	call InitializeLevelVars
 	call InitializeEnemyStructVars
 	call InitializePlayer
+	call InitializeBullet
 	call SpawnPlayer
 	call SetPlayerPositionOpeningCutscene
 	call SpawnHandWave
@@ -97,13 +98,13 @@ SetupNextLevel::
 	jr z, .level3
 	; Don't reach this point
 .level1:
-	call SetLevel1Interrupts
-	call LoadLevel1Graphics
-	jr .endLevelSetup
+	; call SetLevel1Interrupts
+	; call LoadLevel1Graphics
+	; jr .endLevelSetup
 .level2:
-	call SetLevel2Interrupts
-	call LoadLevel2Graphics
-	jr .endLevelSetup
+	; call SetLevel2Interrupts
+	; call LoadLevel2Graphics
+	; jr .endLevelSetup
 .level3:
 	call SetLevel3Interrupts
 	call LoadLevel3Graphics
@@ -123,6 +124,7 @@ SetupNextLevel::
 	call InitializeBird
 	call InitializeBomb
 	call InitializePlayer
+	call InitializeBullet
 	call SpawnPlayer
 	call SpawnCountdown
 	ld hl, angryTheme
