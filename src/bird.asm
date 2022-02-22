@@ -1,4 +1,3 @@
-INCLUDE "points.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
@@ -27,6 +26,8 @@ BIRD_TILE_3_ALT EQU $20
 BIRD_DEAD_TILE_1 EQU $28
 BIRD_DEAD_TILE_2 EQU $2A
 BIRD_DEAD_TILE_3 EQU $2C
+
+BIRD_POINTS EQU 100
 
 SECTION "bird vars", WRAM0
     bird:: DS BIRD_DATA_SIZE

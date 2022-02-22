@@ -1,6 +1,6 @@
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
-INCLUDE "enemyNumber.inc"
+INCLUDE "enemyConstants.inc"
 
 LEVEL_UPDATE_REFRESH_TIME EQU %00001111
 
@@ -293,12 +293,6 @@ InitializeLevelVars::
 SpawnDataHandler:
     ; argument hl = source address
     ld a, [hli]
-    cp a, EMPTY
-    jr nz, .notEmpty
-    inc hl
-    inc hl
-    ret
-.notEmpty:
     ; Update enemy Y/X
     ld b, a
     ld a, [hli]

@@ -1,7 +1,6 @@
 INCLUDE "constants.inc"
 INCLUDE "macro.inc"
 INCLUDE "hardware.inc"
-INCLUDE "tileConstants.inc"
 
 MENU_MODES EQU 2
 MENU_CURSOR_TILE EQU $02
