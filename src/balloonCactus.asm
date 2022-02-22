@@ -2,10 +2,8 @@ INCLUDE "balloonConstants.inc"
 INCLUDE "constants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
+INCLUDE "enemyConstants.inc"
 
-BALLOON_CACTUS_STRUCT_SIZE EQU 15
-BALLOON_CACTUS_STRUCT_AMOUNT EQU 2
-BALLOON_CACTUS_DATA_SIZE EQU BALLOON_CACTUS_STRUCT_SIZE * BALLOON_CACTUS_STRUCT_AMOUNT
 BALLOON_CACTUS_OAM_SPRITES EQU 4
 BALLOON_CACTUS_OAM_BYTES EQU BALLOON_CACTUS_OAM_SPRITES * 4
 BALLOON_CACTUS_MOVE_TIME EQU %00000011
@@ -15,22 +13,13 @@ BALLOON_CACTUS_SCREAMING_TILE EQU $16
 
 ENEMY_CACTUS_POINTS EQU 15
 
-SECTION "balloon cactus vars", WRAM0
-    balloonCactus:: DS BALLOON_CACTUS_DATA_SIZE
-
 SECTION "balloon cactus", ROMX
-
-InitializeBalloonCactus::
-    push hl
-    push bc
-    RESET_IN_RANGE balloonCactus, BALLOON_CACTUS_DATA_SIZE
-    pop bc
-    pop hl
-    ret
 
 SetStruct:
     ; Argument hl = start of free enemy struct
     ld a, [wEnemyActive]
+    ld [hli], a
+    ld a, [wEnemyNumber]
     ld [hli], a
     ld a, [wEnemyY]
     ld [hli], a
@@ -67,9 +56,9 @@ SpawnBalloonCactus::
     push hl
     push de
     push bc
-    ld hl, balloonCactus
-    ld d, BALLOON_CACTUS_STRUCT_AMOUNT
-    ld e, BALLOON_CACTUS_STRUCT_SIZE
+    ld hl, wEnemies
+    ld d, NUMBER_OF_ENEMIES
+    ld e, ENEMY_STRUCT_SIZE
     call RequestRAMSpace ; hl now contains free RAM space address
     cp a, 0
     jp z, .end
@@ -89,6 +78,8 @@ SpawnBalloonCactus::
     ld [wEnemyActive], a
     ld [wEnemyAlive], a
     ld [wEnemyFallingSpeed], a
+    ld a, BALLOON_CACTUS
+    ld [wEnemyNumber], a
     ld a, [wEnemyY]
     add 16
     ld [wEnemyY2], a
@@ -405,18 +396,6 @@ CollisionBalloonCactus:
     ret
 
 BalloonCactusUpdate::
-    ld bc, BALLOON_CACTUS_STRUCT_AMOUNT
-    xor a ; ld a, 0
-    ld [wEnemyOffset], a
-.loop:
-    ; Get active state
-    SET_HL_TO_ADDRESS balloonCactus, wEnemyOffset
-    ld a, [hli]
-    ld [wEnemyActive], a
-    ; Check active
-    ld a, [wEnemyActive]
-    cp a, 0
-    jp z, .checkLoopSkipSet
     ; Get rest of struct
     ld a, [hli]
     ld [wEnemyY], a
@@ -446,7 +425,7 @@ BalloonCactusUpdate::
     ld [wEnemyFallingTimer], a
     ld a, [hl]
     ld [wEnemyDelayFallingTimer], a
-    ; Check if alive
+    ; Check alive
     ld a, [wEnemyAlive]
     cp a, 0
     jr z, .popped
@@ -483,14 +462,6 @@ BalloonCactusUpdate::
     jr z, .checkLoop
     call CactusFalling
 .checkLoop:
-    SET_HL_TO_ADDRESS balloonCactus, wEnemyOffset
+    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
-.checkLoopSkipSet:
-    ld a, [wEnemyOffset]
-    add a, BALLOON_CACTUS_STRUCT_SIZE
-    ld [wEnemyOffset], a    
-    dec bc
-    ld a, b
-    or a, c
-    jp nz, .loop
     ret

@@ -3,9 +3,6 @@ INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 
-POINT_BALLOON_STRUCT_SIZE EQU 9
-POINT_BALLOON_STRUCT_AMOUNT EQU 4
-POINT_BALLOON_DATA_SIZE EQU POINT_BALLOON_STRUCT_SIZE * POINT_BALLOON_STRUCT_AMOUNT
 POINT_BALLOON_OAM_SPRITES EQU 2
 POINT_BALLOON_OAM_BYTES EQU POINT_BALLOON_OAM_SPRITES * 4
 POINT_BALLOON_MOVE_TIME EQU %00000001
@@ -13,18 +10,7 @@ POINT_BALLOON_COLLISION_TIME EQU %00001000
 
 POINT_BALLOON_POINTS EQU 50
 
-SECTION "point balloon vars", WRAM0
-    pointBalloon:: DS POINT_BALLOON_DATA_SIZE
-
 SECTION "point balloon", ROMX
-
-InitializePointBalloon::
-    push hl
-    push bc
-    RESET_IN_RANGE pointBalloon, POINT_BALLOON_DATA_SIZE
-    pop bc
-    pop hl
-    ret
 
 SetStruct:
     ; Argument hl = start of free enemy struct
@@ -49,10 +35,7 @@ SetStruct:
     ret
 
 SpawnPointBalloon::
-    push af
     push hl
-    push de
-    push bc
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
     ld e, ENEMY_STRUCT_SIZE
@@ -99,10 +82,7 @@ SpawnPointBalloon::
     LD_HL_BC
     call SetStruct
 .end:
-    pop bc
-    pop de
     pop hl
-    pop af
     ret
 
 PopBalloonAnimation:

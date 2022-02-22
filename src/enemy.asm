@@ -2,6 +2,7 @@ INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 
 SECTION "enemy struct vars", WRAM0
+
     ; These must be in this order in each enemy
     wEnemyActive:: DB
     wEnemyNumber:: DB
@@ -47,6 +48,7 @@ InitializeEnemyStructVars::
     ret
 
 SECTION "enemy data vars", WRAM0
+
     wEnemies:: DS ENEMY_DATA_SIZE
     wEnemyOffset:: DB ; Offset for looping through enemy data
     wEnemyOffset2:: DB ; If we loop inside another enemy's data
@@ -80,17 +82,29 @@ UpdateEnemy::
     ; Check enemy number
     cp a, POINT_BALLOON
     jr z, .pointBalloon
+    cp a, BALLOON_CACTUS
+    jr z, .balloonCactus
+    cp a, BIRD
+    jr z, .bird
+    cp a, BOMB
+    jr z, .bomb
+    cp a, PORCUPINE
+    jr z, .porcupine
     jr .checkLoop
 .pointBalloon:
-    call PointBalloonUpdate ;;hl = after number
+    call PointBalloonUpdate
     jr .checkLoop
 .balloonCactus:
+    call BalloonCactusUpdate
     jr .checkLoop
 .bird:
+    call BirdUpdate
     jr .checkLoop
 .bomb:
+    call BombUpdate
     jr .checkLoop
 .porcupine:
+    call PorcupineUpdate
     jr .checkLoop
 .checkLoop:
     ld a, [wEnemyOffset]
@@ -103,7 +117,6 @@ UpdateEnemy::
     ret
 
 ; Functions every enemy should have (where Enemy is name of enemy)
-; InitializeEnemy
 ; SetStruct
 ; SpawnEnemy
 ; Clear
