@@ -21,6 +21,7 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/BalloonGeneric.2bpp"
     INCBIN "incbin/background/Man_Wave.2bpp"
     INCBIN "incbin/background/Man_Wave2.2bpp"
+    INCBIN "incbin/sprite/porcu.2bpp"
 GameSpriteTilesEnd::
 
 Level1Tiles::
@@ -36,10 +37,6 @@ RainCloudsTiles::
 RainCloudsTilesEnd::
 
 SECTION "tilesets 2", ROMX
-
-PorcupineTiles::
-    INCBIN "incbin/sprite/porcu.2bpp"
-PorcupineTilesEnd::
 
 OpeningCutsceneTiles::
     INCBIN "incbin/background/OpeningCutscene.2bpp"
