@@ -1,11 +1,8 @@
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
+INCLUDE "enemyConstants.inc"
 
-BIRD_STRUCT_SIZE EQU 9
-BIRD_STRUCT_AMOUNT EQU 2
-BIRD_DATA_SIZE EQU BIRD_STRUCT_SIZE * BIRD_STRUCT_AMOUNT
 BIRD_OAM_SPRITES EQU 3
-BIRD_OAM_BYTES EQU BIRD_OAM_SPRITES * 4
 BIRD_MOVE_TIME EQU %00000011
 BIRD_COLLISION_TIME EQU %00001000
 
@@ -29,22 +26,13 @@ BIRD_DEAD_TILE_3 EQU $2C
 
 BIRD_POINTS EQU 100
 
-SECTION "bird vars", WRAM0
-    bird:: DS BIRD_DATA_SIZE
-
 SECTION "bird", ROMX
-
-InitializeBird::
-    push hl
-    push bc
-    RESET_IN_RANGE bird, BIRD_DATA_SIZE
-    pop bc
-    pop hl
-    ret
 
 SetStruct:
     ; Argument hl = start of free enemy struct
     ld a, [wEnemyActive]
+    ld [hli], a
+    ld a, [wEnemyNumber]
     ld [hli], a
     ld a, [wEnemyY]
     ld [hli], a
@@ -65,18 +53,15 @@ SetStruct:
     ret
 
 SpawnBird::
-    push af
     push hl
-    push de
-    push bc
-    ld hl, bird
-    ld d, BIRD_STRUCT_AMOUNT
-    ld e, BIRD_STRUCT_SIZE
+    ld hl, wEnemies
+    ld d, NUMBER_OF_ENEMIES
+    ld e, ENEMY_STRUCT_SIZE
     call RequestRAMSpace ; hl now contains free RAM space address
     cp a, 0
     jp z, .end
 .availableSpace:
-    ld b, BIRD_OAM_BYTES
+    ld b, BIRD_OAM_SPRITES
 	call RequestOAMSpace ; b now contains OAM address
     cp a, 0
     jp z, .end
@@ -90,6 +75,8 @@ SpawnBird::
     ld a, 1
     ld [wEnemyActive], a
     ld [wEnemyAlive], a
+    ld a, BIRD
+    ld [wEnemyNumber], a
     ld a, [wEnemyX]
     cp a, SCRN_X / 2
     jr c, .isLeftside
@@ -160,10 +147,7 @@ SpawnBird::
     LD_HL_BC
     call SetStruct
 .end:
-    pop bc
-    pop de
     pop hl
-    pop af
     ret
 
 BirdRightsideFlap:
@@ -346,18 +330,6 @@ CollisionBird:
     ret
 
 BirdUpdate::
-    ld bc, BIRD_STRUCT_AMOUNT
-    xor a ; ld a, 0
-    ld [wEnemyOffset], a
-.loop:
-    ; Get active state
-    SET_HL_TO_ADDRESS bird, wEnemyOffset
-    ld a, [hli]
-    ld [wEnemyActive], a
-    ; Check active
-    ld a, [wEnemyActive]
-    cp a, 0
-    jr z, .checkLoop
     ; Get rest of struct
     ld a, [hli]
     ld [wEnemyY], a
@@ -413,13 +385,6 @@ BirdUpdate::
     jr nz, .checkLoop
     call BirdFall
 .checkLoop:
-    SET_HL_TO_ADDRESS bird, wEnemyOffset
+    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
-    ld a, [wEnemyOffset]
-    add a, BIRD_STRUCT_SIZE
-    ld [wEnemyOffset], a    
-    dec bc
-    ld a, b
-    or a, c
-    jp nz, .loop
     ret

@@ -5,7 +5,6 @@ INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 
 BALLOON_CACTUS_OAM_SPRITES EQU 4
-BALLOON_CACTUS_OAM_BYTES EQU BALLOON_CACTUS_OAM_SPRITES * 4
 BALLOON_CACTUS_MOVE_TIME EQU %00000011
 BALLOON_CACTUS_COLLISION_TIME EQU %00001000
 BALLOON_CACTUS_TILE EQU $14
@@ -52,10 +51,7 @@ SetStruct:
     ret
 
 SpawnBalloonCactus::
-    push af
     push hl
-    push de
-    push bc
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
     ld e, ENEMY_STRUCT_SIZE
@@ -131,10 +127,7 @@ SpawnBalloonCactus::
     LD_HL_BC
     call SetStruct
 .end:
-    pop bc
-    pop de
     pop hl
-    pop af
     ret
 
 ClearCactus:
@@ -228,42 +221,42 @@ PopBalloonAnimation:
 
 CactusFallingCollision:
     ; Costly and awkward operation but worth it for the fun
-    push bc
-.checkBird:
-    xor a ; ld a, 0
-    ld [wEnemyOffset2], a
-    ld bc, 2 ; BIRD_STRUCT_AMOUNT
-.birdLoop:
-    SET_HL_TO_ADDRESS bird, wEnemyOffset2+4 ; Alive
-    ld a, [hl]
-    cp a, 0
-    jr z, .checkBirdLoop
-.isAlive:
-    push bc
-    SET_HL_TO_ADDRESS wOAM+8, wEnemyOAM
-    LD_BC_HL
-    SET_HL_TO_ADDRESS bird+3, wEnemyOffset2 ; OAM
-    ld a, [hl]
-    ld hl, wOAM
-    ADD_TO_HL a
-    ld e, 8
-    call CollisionCheck
-    pop bc
-    cp a, 0
-    jr z, .checkBirdLoop
-.hitBird:
-    SET_HL_TO_ADDRESS bird+8, wEnemyOffset2 ; To Die
-    ld [hl], 1
-.checkBirdLoop:
-    ld a, [wEnemyOffset2]
-    add a, 9;BIRD_STRUCT_SIZE
-    ld [wEnemyOffset2], a
-    dec bc
-    ld a, b
-    or a, c
-    jr nz, .birdLoop
-.end:
-    pop bc
+;     push bc
+; .checkBird:
+;     xor a ; ld a, 0
+;     ld [wEnemyOffset2], a
+;     ld bc, 2 ; BIRD_STRUCT_AMOUNT
+; .birdLoop:
+;     SET_HL_TO_ADDRESS bird, wEnemyOffset2+4 ; Alive
+;     ld a, [hl]
+;     cp a, 0
+;     jr z, .checkBirdLoop
+; .isAlive:
+;     push bc
+;     SET_HL_TO_ADDRESS wOAM+8, wEnemyOAM
+;     LD_BC_HL
+;     SET_HL_TO_ADDRESS bird+3, wEnemyOffset2 ; OAM
+;     ld a, [hl]
+;     ld hl, wOAM
+;     ADD_TO_HL a
+;     ld e, 8
+;     call CollisionCheck
+;     pop bc
+;     cp a, 0
+;     jr z, .checkBirdLoop
+; .hitBird:
+;     SET_HL_TO_ADDRESS bird+8, wEnemyOffset2 ; To Die
+;     ld [hl], 1
+; .checkBirdLoop:
+;     ld a, [wEnemyOffset2]
+;     add a, 9;BIRD_STRUCT_SIZE
+;     ld [wEnemyOffset2], a
+;     dec bc
+;     ld a, b
+;     or a, c
+;     jr nz, .birdLoop
+; .end:
+;     pop bc
     ret
 
 CactusFalling:

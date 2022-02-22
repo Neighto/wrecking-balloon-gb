@@ -2,10 +2,8 @@ INCLUDE "balloonConstants.inc"
 INCLUDE "constants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
+INCLUDE "enemyConstants.inc"
 
-BOMB_STRUCT_SIZE EQU 8
-BOMB_STRUCT_AMOUNT EQU 4
-BOMB_DATA_SIZE EQU BOMB_STRUCT_SIZE * BOMB_STRUCT_AMOUNT
 BOMB_DEFAULT_SPEED EQU 1
 BOMB_OAM_SPRITES EQU 3
 BOMB_OAM_BYTES EQU BOMB_OAM_SPRITES * 4
@@ -15,22 +13,13 @@ BOMB_TILE EQU $22
 BOMB_EXPLOSION_TILE_1 EQU $24
 BOMB_EXPLOSION_TILE_2 EQU $26
 
-SECTION "bomb vars", WRAM0
-    bomb:: DS BOMB_DATA_SIZE
-
 SECTION "bomb", ROMX
-
-InitializeBomb::
-    push hl
-    push bc
-    RESET_IN_RANGE bomb, BOMB_DATA_SIZE
-    pop bc
-    pop hl
-    ret
 
 SetStruct:
     ; Argument hl = start of free enemy struct
     ld a, [wEnemyActive]
+    ld [hli], a
+    ld a, [wEnemyNumber]
     ld [hli], a
     ld a, [wEnemyY]
     ld [hli], a
@@ -49,15 +38,10 @@ SetStruct:
     ret
 
 SpawnBomb::
-    ; Argument b = Y spawn
-    ; Argument c = X spawn
-    push af
     push hl
-    push de
-    push bc
-    ld hl, bomb
-    ld d, BOMB_STRUCT_AMOUNT
-    ld e, BOMB_STRUCT_SIZE
+    ld hl, wEnemies
+    ld d, NUMBER_OF_ENEMIES
+    ld e, ENEMY_STRUCT_SIZE
     call RequestRAMSpace ; hl now contains free RAM space address
     cp a, 0
     jr z, .end
@@ -76,6 +60,8 @@ SpawnBomb::
     ld a, 1
     ld [wEnemyActive], a
     ld [wEnemyAlive], a
+    ld a, BOMB
+    ld [wEnemyNumber], a
 .balloonLeft:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     ld a, [wEnemyY]
@@ -110,10 +96,7 @@ SpawnBomb::
     LD_HL_BC
     call SetStruct
 .end:
-    pop bc
-    pop de
     pop hl
-    pop af
     ret
 
 Clear:
@@ -284,18 +267,6 @@ ExplosionAnimation:
     ret
 
 BombUpdate::
-    ld bc, BOMB_STRUCT_AMOUNT
-    xor a ; ld a, 0
-    ld [wEnemyOffset], a
-.loop:
-    ; Get active state
-    SET_HL_TO_ADDRESS bomb, wEnemyOffset
-    ld a, [hli]
-    ld [wEnemyActive], a
-    ; Check active
-    ld a, [wEnemyActive]
-    cp a, 0
-    jr z, .checkLoop
     ; Get rest of struct
     ld a, [hli]
     ld [wEnemyY], a
@@ -342,13 +313,6 @@ BombUpdate::
     jr z, .checkLoop
     call ExplosionAnimation
 .checkLoop:
-    SET_HL_TO_ADDRESS bomb, wEnemyOffset
+    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
-    ld a, [wEnemyOffset]
-    add a, BOMB_STRUCT_SIZE
-    ld [wEnemyOffset], a    
-    dec bc
-    ld a, b
-    or a, c
-    jp nz, .loop
     ret

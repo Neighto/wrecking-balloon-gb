@@ -2,6 +2,8 @@ INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 
 SECTION "enemy struct vars", WRAM0
+    ; NOTE: UPDATE ENEMY_STRUCT_SIZE in enemyConstants if we add vars here!
+    ; TODO: Can I define a public constant here that is EndStruct - StartStruct instead?
 
     ; These must be in this order in each enemy
     wEnemyActive:: DB
