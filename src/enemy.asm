@@ -1,5 +1,5 @@
 INCLUDE "macro.inc"
-INCLUDE "enemyNumber.inc"
+INCLUDE "enemyConstants.inc"
 
 SECTION "enemy struct vars", WRAM0
     ; These must be in this order in each enemy
@@ -78,8 +78,6 @@ UpdateEnemy::
     ld a, [hli]
     ld [wEnemyNumber], a
     ; Check enemy number
-    cp a, EMPTY ; REMOVE ME
-    ret z 
     cp a, POINT_BALLOON
     jr z, .pointBalloon
     jr .checkLoop

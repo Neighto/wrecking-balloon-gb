@@ -1,6 +1,5 @@
 INCLUDE "playerConstants.inc"
 INCLUDE "hardware.inc"
-INCLUDE "tileConstants.inc"
 INCLUDE "constants.inc"
 
 STAGE_CLEAR_PAUSE_LENGTH EQU 20

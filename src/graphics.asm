@@ -1,6 +1,5 @@
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
-INCLUDE "tileConstants.inc"
 INCLUDE "macro.inc"
 
 SECTION "graphics", ROM0

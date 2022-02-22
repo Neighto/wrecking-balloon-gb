@@ -1,6 +1,5 @@
-INCLUDE "points.inc"
 INCLUDE "balloonConstants.inc"
-INCLUDE "tileConstants.inc"
+INCLUDE "constants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
