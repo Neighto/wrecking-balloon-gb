@@ -178,59 +178,6 @@ ClearPlayerBalloon:
   ld [hl], a
   ret
 
-MoveRight:
-  INCREMENT_POS wPlayerX, [wPlayerSpeed]
-  INCREMENT_POS wPlayerX2, [wPlayerSpeed]
-.canCactusDriftLeft:
-  ldh a, [hGlobalTimer]
-  and	%00000001
-  ret nz
-  ld hl, wPlayerX
-  ld a, PLAYER_MAX_DRIFT_X
-  cpl
-  add [hl]
-  ld hl, wPlayerX2
-  cp a, [hl]
-  ret nc
-.cactusDriftLeft:
-  dec [hl]
-  ret
-
-MoveLeft:
-  DECREMENT_POS wPlayerX, [wPlayerSpeed]
-  DECREMENT_POS wPlayerX2, [wPlayerSpeed]
-.canCactusDriftRight:
-  ldh a, [hGlobalTimer]
-  and	%00000001
-  ret nz
-  ld hl, wPlayerX
-  ld a, PLAYER_MAX_DRIFT_X
-  add [hl]
-  ld hl, wPlayerX2
-  cp a, [hl]
-  ret c
-.cactusDriftRight:
-  inc [hl]
-  ret
-
-MoveDown:
-  INCREMENT_POS wPlayerY, [wPlayerSpeed]
-  INCREMENT_POS wPlayerY2, [wPlayerSpeed]
-.canCactusDriftUp:
-  ldh a, [hGlobalTimer]
-  and	%00000001
-  ret nz
-  ld hl, wPlayerY  
-  ld a, PLAYER_MAX_DRIFT_Y-16
-  cpl
-  add [hl]
-  ld hl, wPlayerY2
-  cp a, [hl]
-  ret nc
-.cactusDriftUp:
-  dec [hl]
-  ret
-
 PlayerControls:
   ; argument d = input directions down
   ; argument e = input directions pressed
@@ -239,7 +186,10 @@ PlayerControls:
 	ld a, d
   and PADF_RIGHT
 	jr z, .endRight
-  ; Check offscreen
+.setFacingRight:
+  ld a, 1
+  ld [wPlayerRight], a
+.checkOffscreenRight:
   ld a, c
   cp a, 0
   jr z, .moveRight
@@ -250,16 +200,31 @@ PlayerControls:
   cp a, 0
   jr nz, .endRight
 .moveRight:
-	call MoveRight
-  ld a, 1
-  ld [wPlayerRight], a
+  INCREMENT_POS wPlayerX, [wPlayerSpeed]
+  INCREMENT_POS wPlayerX2, [wPlayerSpeed]
+.canCactusDriftLeft:
+  ldh a, [hGlobalTimer]
+  and	%00000001
+  jr nz, .endRight
+  ld hl, wPlayerX
+  ld a, PLAYER_MAX_DRIFT_X
+  cpl
+  add [hl]
+  ld hl, wPlayerX2
+  cp a, [hl]
+  jr nc, .endRight
+.cactusDriftLeft:
+  dec [hl]
 .endRight:
 
 .left:
   ld a, d
   and PADF_LEFT
 	jr z, .endLeft
-  ; Check offscreen
+.setFacingLeft:
+  xor a ; ld a, 0
+  ld [wPlayerRight], a
+.checkOffscreenLeft:
   ld a, c
   cp a, 0
   jr z, .moveLeft
@@ -270,9 +235,20 @@ PlayerControls:
   cp a, 0
   jr nz, .endLeft
 .moveLeft:
-	call MoveLeft
-  xor a ; ld a, 0
-  ld [wPlayerRight], a
+  DECREMENT_POS wPlayerX, [wPlayerSpeed]
+  DECREMENT_POS wPlayerX2, [wPlayerSpeed]
+.canCactusDriftRight:
+  ldh a, [hGlobalTimer]
+  and	%00000001
+  jr nz, .endLeft
+  ld hl, wPlayerX
+  ld a, PLAYER_MAX_DRIFT_X
+  add [hl]
+  ld hl, wPlayerX2
+  cp a, [hl]
+  jr c, .endLeft
+.cactusDriftRight:
+  inc [hl]
 .endLeft:
 
 .up:
@@ -298,7 +274,7 @@ PlayerControls:
   ld a, d
   and PADF_DOWN
 	jr z, .endDown
-  ; Check offscreen
+.checkOffscreenDown:
   ld a, c
   cp a, 0
   jr z, .moveDown
@@ -309,7 +285,21 @@ PlayerControls:
   cp a, 0
   jr nz, .endDown
 .moveDown:
-	call MoveDown
+  INCREMENT_POS wPlayerY, [wPlayerSpeed]
+  INCREMENT_POS wPlayerY2, [wPlayerSpeed]
+.canCactusDriftUp:
+  ldh a, [hGlobalTimer]
+  and	%00000001
+  jr nz, .endDown
+  ld hl, wPlayerY  
+  ld a, PLAYER_MAX_DRIFT_Y-16
+  cpl
+  add [hl]
+  ld hl, wPlayerY2
+  cp a, [hl]
+  jr nc, .endDown
+.cactusDriftUp:
+  dec [hl]
 .endDown:
 
 .canCactusDriftCenterX:
@@ -380,7 +370,7 @@ PlayerControls:
 .endA:
 
 .BButton:
-  ld a, e
+  ld a, d
   and PADF_B
 	jr z, .endB
   ld a, [wPlayerBoost]
