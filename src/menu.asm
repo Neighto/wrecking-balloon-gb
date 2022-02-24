@@ -107,14 +107,14 @@ MenuInput:
 	ldh a, [hGlobalTimer]
 	and %00000011
 	jr nz, .end
-	call ReadInput	
+	call ReadController	
 .moveSelected:
 	ld a, [wControllerPressed]
-	call JOY_SELECT
+	and PADF_SELECT
 	; call nz, MoveCursor
 .selectMode:
 	ld a, [wControllerDown]
-	call JOY_START
+	and PADF_START
 	call nz, SelectMode
 .end:
 	ret

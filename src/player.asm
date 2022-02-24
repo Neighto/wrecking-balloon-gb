@@ -178,17 +178,6 @@ ClearPlayerBalloon:
   ld [hl], a
   ret
 
-RespawnPlayer:
-  xor a ; ld a, 0
-  ld [wPlayerRespawnTimer], a
-  call InitializePlayer
-  call InitializeBullet
-  call SpawnPlayer
-  ld a, INVINCIBLE_RESPAWN_TIME
-  ld [wPlayerInvincible], a
-  call StopSweepSound
-  ret
-
 MoveRight:
   INCREMENT_POS wPlayerX, [wPlayerSpeed]
   INCREMENT_POS wPlayerX2, [wPlayerSpeed]
@@ -242,36 +231,13 @@ MoveDown:
   dec [hl]
   ret
 
-ChargeBoost:
-  ld a, [wPlayerBoost]
-  cp a, PLAYER_BOOST_FULL
-  ret z
-.isCharging:
-  dec a
-  ld [wPlayerBoost], a
-  cp a, PLAYER_BOOST_EFFECT_ENDS
-  ret nc
-.resetBoost:
-  ld hl, wPlayerSpeed
-  ld [hl], PLAYER_DEFAULT_SPEED
-  ret
-
-ChargeAttack:
-  ld a, [wPlayerAttack]
-  cp a, PLAYER_ATTACK_FULL
-  ret z
-.isCharging:
-  dec a
-  ld [wPlayerAttack], a
-  ret
-
 PlayerControls:
   ; argument d = input directions down
   ; argument e = input directions pressed
   ; argument c = check boundaries (0 = no)
 .right:
 	ld a, d
-	call JOY_RIGHT
+  and PADF_RIGHT
 	jr z, .endRight
   ; Check offscreen
   ld a, c
@@ -291,7 +257,7 @@ PlayerControls:
 
 .left:
   ld a, d
-	call JOY_LEFT
+  and PADF_LEFT
 	jr z, .endLeft
   ; Check offscreen
   ld a, c
@@ -311,7 +277,7 @@ PlayerControls:
 
 .up:
   ld a, d
-	call JOY_UP
+  and PADF_UP
 	jr z, .endUp
   ; Check offscreen
   ld a, c
@@ -330,7 +296,7 @@ PlayerControls:
 
 .down:
   ld a, d
-	call JOY_DOWN
+  and PADF_DOWN
 	jr z, .endDown
   ; Check offscreen
   ld a, c
@@ -348,10 +314,10 @@ PlayerControls:
 
 .canCactusDriftCenterX:
   ld a, d
-	call JOY_RIGHT
+  and PADF_RIGHT
 	jr nz, .endDriftToCenterX
   ld a, d
-	call JOY_LEFT
+  and PADF_LEFT
   jr nz, .endDriftToCenterX
   ldh a, [hGlobalTimer]
   and	%00000001
@@ -370,10 +336,10 @@ PlayerControls:
 
 .canCactusDriftCenterY:
   ld a, d
-	call JOY_UP
+  and PADF_UP
 	jr nz, .endDriftToCenterY
   ld a, d
-	call JOY_DOWN
+  and PADF_DOWN
   jr nz, .endDriftToCenterY
   ldh a, [hGlobalTimer]
   and	%00000001
@@ -394,7 +360,7 @@ PlayerControls:
 
 .start:
   ld a, e
-  call JOY_START
+  and PADF_START
   jr z, .endStart
   ld a, 1
   ld [wPaused], a
@@ -402,7 +368,7 @@ PlayerControls:
 
 .AButton:
   ld a, d
-	call JOY_A
+	and PADF_A
 	jr z, .endA
   ld a, [wPlayerAttack]
   cp a, PLAYER_ATTACK_FULL
@@ -415,7 +381,7 @@ PlayerControls:
 
 .BButton:
   ld a, e
-	call JOY_B
+  and PADF_B
 	jr z, .endB
   ld a, [wPlayerBoost]
   cp a, PLAYER_BOOST_FULL
@@ -428,21 +394,13 @@ PlayerControls:
 .endB:
   ret
 
-MovePlayer::
-  ; See PlayerControls for arguments
+MovePlayerUpForCutscene::
+  ld d, %01000000
+  ld e, 0
+  ld c, 0
   call PlayerControls
   call UpdateBalloonPosition
   call UpdateCactusPosition
-  ret
-
-MovePlayerWithInput:
-  call ReadInput
-  ld a, [wControllerDown]
-  ld d, a
-  ld a, [wControllerPressed]
-  ld e, a
-  ld c, 1
-  call MovePlayer
   ret
 
 FallCactusDown:
@@ -540,60 +498,6 @@ CactusFalling:
 .end
   ret
 
-NoMoreLives:
-  call ClearSound
-  call StopSweepSound
-  ; Back to menu
-  jp Start ; change this so it leads to intermediate screen to say GAME OVER, maybe play small jingle + start to continue
-  ret
-
-PlayerUpdate::
-  ; Check alive
-  ld a, [wPlayerAlive]
-  cp a, 0
-  jr z, .popped
-.isAlive:
-  call InvincibleBlink
-  ; Check if we can move
-  ldh a, [hGlobalTimer]
-	and	PLAYER_MOVE_TIME
-	call z, MovePlayerWithInput
-  ; Check if we can charge boost
-  ldh a, [hGlobalTimer]
-	and	PLAYER_BOOST_TIME
-  call z, ChargeBoost
-  ; Check if we can charge attack
-  ldh a, [hGlobalTimer]
-	and	PLAYER_ATTACK_TIME
-  call z, ChargeAttack
-  ret
-.popped:
-  ; Can we respawn
-  ld a, [wPlayerRespawnTimer]
-  inc a
-  ld [wPlayerRespawnTimer], a
-  cp a, PLAYER_RESPAWN_TIME
-  jr z, .respawning
-.popping:
-  ld a, [wPlayerPopping]
-  cp a, 0
-  call nz, PopBalloonAnimation
-.falling:
-  ld a, [wPlayerFalling]
-  cp a, 0
-  call nz, CactusFalling
-  ret
-.respawning:
-  ld a, [wPlayerLives]
-  or a, 0
-  jr nz, .respawn
-.noMoreLives:
-  call NoMoreLives
-  ret
-.respawn:
-  call RespawnPlayer
-  ret
-
 DeathOfPlayer::
   ; Death
   xor a ; ld a, 0
@@ -618,6 +522,7 @@ DeathOfPlayer::
   call FallingSound
   ret
 
+  ; When player respawns and has some invincibility
 InvincibleBlink:
   ld a, [wPlayerInvincible]
   cp a, 0
@@ -625,20 +530,20 @@ InvincibleBlink:
 .isStillInvincible:
   dec a
   ld [wPlayerInvincible], a
-  ; At the end make sure we stop on default tileset
-  cp a, 3 ; TODO: Dangerous way to do this
-  jr c, .defaultPalette
+  ; If at the end make sure we stop on default tileset
+  cp a, 2
+  jr c, .noBlink
   cp a, INVINCIBLE_BLINK_FASTER_TIME
   ldh a, [hGlobalTimer]
   jr c, .blinkFast
 .blinkNormal:
 	and INVINCIBLE_BLINK_NORMAL_SPEED
-  jr z, .defaultPalette
+  jr z, .noBlink
   jr .blinkEnd
   ret
 .blinkFast:
 	and INVINCIBLE_BLINK_FAST_SPEED
-  jr z, .defaultPalette
+  jr z, .noBlink
 .blinkEnd:
   ld hl, wPlayerBalloonOAM+2
   ld [hl], PLAYER_BALLOON_INVINCIBLE_TILE
@@ -649,7 +554,7 @@ InvincibleBlink:
   ld hl, wPlayerCactusOAM+6
   ld [hl], PLAYER_CACTUS_INVINCIBLE_TILE
   ret
-.defaultPalette:
+.noBlink:
   ld hl, wPlayerBalloonOAM+2
   ld [hl], PLAYER_BALLOON_TILE
   ld hl, wPlayerBalloonOAM+6
@@ -659,3 +564,91 @@ InvincibleBlink:
   ld hl, wPlayerCactusOAM+6
   ld [hl], PLAYER_CACTUS_TILE
   ret
+
+PlayerUpdate::
+.checkAlive:
+  ld a, [wPlayerAlive]
+  cp a, 0
+  jr z, .popped
+.isAlive:
+  call InvincibleBlink
+
+.checkMove:
+  ldh a, [hGlobalTimer]
+	and	PLAYER_MOVE_TIME
+  jr nz, .endMove
+.canMove:
+  call ReadController
+  ld a, [wControllerDown]
+  ld d, a
+  ld a, [wControllerPressed]
+  ld e, a
+  ld c, 1
+  call PlayerControls
+  call UpdateBalloonPosition
+  call UpdateCactusPosition
+.endMove:
+
+.checkBoost:
+  ldh a, [hGlobalTimer]
+	and	PLAYER_BOOST_TIME
+  jr nz, .endBoost
+  ld a, [wPlayerBoost]
+  cp a, PLAYER_BOOST_FULL
+  jr z, .endBoost
+.isChargingBoost:
+  dec a
+  ld [wPlayerBoost], a
+  cp a, PLAYER_BOOST_EFFECT_ENDS
+  jr nc, .endBoost
+.resetBoost:
+  ld hl, wPlayerSpeed
+  ld [hl], PLAYER_DEFAULT_SPEED
+.endBoost:
+
+.checkAttack:
+  ldh a, [hGlobalTimer]
+	and	PLAYER_ATTACK_TIME
+  jr nz, .endAttack
+  ld a, [wPlayerAttack]
+  cp a, PLAYER_ATTACK_FULL
+  jr z, .endAttack
+.isChargingAttack:
+  dec a
+  ld [wPlayerAttack], a
+.endAttack:
+  ret
+
+.popped:
+
+.checkRespawn:
+  ld hl, wPlayerRespawnTimer
+  inc [hl]
+  ld a, [hl]
+  cp a, PLAYER_RESPAWN_TIME
+  jr z, .respawning
+.popping:
+  ld a, [wPlayerPopping]
+  cp a, 0
+  call nz, PopBalloonAnimation
+.falling:
+  ld a, [wPlayerFalling]
+  cp a, 0
+  call nz, CactusFalling
+  ret
+.respawning:
+  ld a, [wPlayerLives]
+  cp a, 0
+  jr z, .noMoreLives
+.respawn:
+  call StopSweepSound
+  call InitializePlayer
+  call InitializeBullet
+  call SpawnPlayer
+  ld a, INVINCIBLE_RESPAWN_TIME
+  ld [wPlayerInvincible], a
+  ret
+.noMoreLives:
+  call ClearSound
+  call StopSweepSound
+  jp Start ; change this so it leads to intermediate screen to say GAME OVER, maybe play small jingle + start to continue
