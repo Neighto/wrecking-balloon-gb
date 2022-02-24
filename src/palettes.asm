@@ -15,11 +15,17 @@ FADE_PALETTE2_2 EQU %10000001
 FADE_PALETTE2_3 EQU %01000000
 FADE_PALETTE2_4 EQU %00000000
 
+; Flicker
+TIME_UNTIL_FLICKER EQU 150
+FLICKER_PALETTE_BGP EQU %10110001
+FLICKER_PALETTE_OBP EQU %11111111
+
 SECTION "palettes vars", WRAM0
 	wFadeInFrame:: DB
 	wFadeOutFrame:: DB
 	wTriggerFadeIn:: DB
 	wTriggerFadeOut:: DB
+	wFlickerTimer:: DB
 
 SECTION "palettes", ROMX
 
@@ -35,11 +41,15 @@ InitializePalettes::
 	call ResetFading
 	ld a, MAIN_PALETTE
 	ldh [rBGP], a
-    ldh [rOCPD], a
-	ldh [rOBP1], a
+    ldh [rOCPD], a ; do we need this?
 	ldh [rOBP0], a
 	ld a, MAIN_PALETTE2
 	ldh [rOBP1], a
+	ret
+
+InitializeFlicker::
+	ld a, TIME_UNTIL_FLICKER
+	ld [wFlickerTimer], a
 	ret
 
 FadeOutPalettes::
@@ -150,4 +160,32 @@ FadeInPalettes::
 	ld [wFadeInFrame], a
 .end:
 	xor a ; ld a, 0
+	ret
+
+FlickerBackgroundPalette::
+	ld a, [wFlickerTimer]
+	dec a 
+	ld [wFlickerTimer], a
+	cp a, 20
+	jr z, .flickerOn
+	cp a, 10
+	jr z, .flickerOff
+	cp a, 5
+	jr z, .flickerOn
+	cp a, 0
+	jr z, .flickerEnd
+	ret
+.flickerOn:
+	ld a, FLICKER_PALETTE_BGP
+	ldh [rBGP], a
+	ld a, FLICKER_PALETTE_OBP
+	ldh [rOBP0], a
+	ldh [rOBP1], a
+	ret
+.flickerOff:
+	call InitializePalettes
+	ret
+.flickerEnd:
+	call InitializePalettes
+	call InitializeFlicker
 	ret

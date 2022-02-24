@@ -98,9 +98,9 @@ SetupNextLevel::
 	jr z, .level3
 	; Don't reach this point
 .level1:
-	call SetLevel1Interrupts
-	call LoadLevel1Graphics
-	jr .endLevelSetup
+	; call SetLevel1Interrupts
+	; call LoadLevel1Graphics
+	; jr .endLevelSetup
 .level2:
 	; call SetLevel2Interrupts
 	; call LoadLevel2Graphics
@@ -108,6 +108,7 @@ SetupNextLevel::
 .level3:
 	call SetLevel3Interrupts
 	call LoadLevel3Graphics
+	call InitializeFlicker
 	jr .endLevelSetup
 .level4:
 .level5:
@@ -128,11 +129,11 @@ SetupNextLevel::
 	call LCD_ON
 
 GameCountdownLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateGameCountdown
-	; call UpdateGlobalTimer
-	; jp GameCountdownLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateGameCountdown
+	call UpdateGlobalTimer
+	jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA

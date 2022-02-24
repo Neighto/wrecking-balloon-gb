@@ -217,9 +217,9 @@ UpdateGame::
 	jr z, .isNotPaused
 .isPaused:
     call ClearSound
-	call ReadInput
+	call ReadController
 	ld a, [wControllerPressed]
-	call JOY_START
+    and PADF_START
     ret z
 	xor a ; ld a, 0
 	ld [wPaused], a
@@ -230,13 +230,9 @@ UpdateGame::
     call PlayerUpdate
     call BulletUpdate
     call UpdateEnemy
-    ; call PointBalloonUpdate
-    ; call BalloonCactusUpdate
-    ; call BombUpdate
-    ; call BirdUpdate
-    ; call PorcupineUpdate
 .rest:
     call LevelDataHandler
+    ; call FlickerBackgroundPalette ; testing
     call RefreshWindow
     call IncrementScrollOffset
     call _hUGE_dosound

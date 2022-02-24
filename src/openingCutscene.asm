@@ -109,8 +109,5 @@ UpdatePark::
 .flyUp:
     ld a, 1
     ld [wPlayerSpeed], a
-    ld d, %01000000
-    ld e, 0
-    ld c, 0
-    call MovePlayer
+    call MovePlayerUpForCutscene
     ret
