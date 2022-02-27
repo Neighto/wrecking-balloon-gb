@@ -54,19 +54,17 @@ SECTION "enemy data vars", WRAM0
     wEnemies:: DS ENEMY_DATA_SIZE
     wEnemyOffset:: DB ; Offset for looping through enemy data
     wEnemyOffset2:: DB ; If we loop inside another enemy's data
+    wEnemyLoopIndex:: DB
 
 SECTION "enemy", ROM0
 
 InitializeEnemies::
-    push hl
-    push bc
     RESET_IN_RANGE wEnemies, ENEMY_DATA_SIZE
-    pop bc
-    pop hl
     ret
 
 UpdateEnemy::
-    ld bc, NUMBER_OF_ENEMIES
+    ld a, NUMBER_OF_ENEMIES
+    ld [wEnemyLoopIndex], a
     xor a ; ld a, 0
     ld [wEnemyOffset], a
 .loop:
@@ -112,9 +110,10 @@ UpdateEnemy::
     ld a, [wEnemyOffset]
     add a, ENEMY_STRUCT_SIZE
     ld [wEnemyOffset], a    
-    dec bc
-    ld a, b
-    or a, c
+    ld hl, wEnemyLoopIndex
+    dec [hl]
+    ld a, [hl]
+    cp a, 0
     jr nz, .loop
     ret
 

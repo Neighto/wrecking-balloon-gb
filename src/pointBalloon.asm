@@ -2,6 +2,7 @@ INCLUDE "balloonConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
+INCLUDE "constants.inc"
 
 POINT_BALLOON_OAM_SPRITES EQU 2
 POINT_BALLOON_OAM_BYTES EQU POINT_BALLOON_OAM_SPRITES * 4
@@ -148,27 +149,6 @@ Clear:
     call InitializeEnemyStructVars
     ret
 
-Move:
-    ; Move up
-    ld a, [wEnemyY]
-    dec a
-    ld [wEnemyY], a
-.balloonLeft:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ld a, [wEnemyY]
-    ld [hli], a
-    ld a, [wEnemyX]
-    ld [hli], a
-    inc l
-    inc l
-.balloonRight:
-    ld a, [wEnemyY]
-    ld [hli], a
-    ld a, [wEnemyX]
-    add 8
-    ld [hl], a
-    ret
-
 DeathOfPointBalloon:
     ; Death
     xor a ; ld a, 0
@@ -221,37 +201,61 @@ PointBalloonUpdate::
     ld [wEnemyPoppingFrame], a
     ld a, [hl]
     ld [wEnemyPoppingTimer], a
-    ; Check alive
+
+.checkAlive:
     ld a, [wEnemyAlive]
     cp a, 0
     jr z, .popped
 .isAlive:
-    ; Check if we can move
+
+.checkMove:
     ldh a, [hGlobalTimer]
     and	POINT_BALLOON_MOVE_TIME
-    call z, Move
-    ; Check if we can collide
+    jr nz, .endMove
+.canMove:
+    ld hl, wEnemyY
+    dec [hl]
+.balloonLeft:
+    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    ld [hli], a
+    inc l
+    inc l
+.balloonRight:
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    add 8
+    ld [hl], a
+.endMove:
+
+.checkCollision:
     ldh a, [hGlobalTimer]
     and	POINT_BALLOON_COLLISION_TIME
-    push bc
     call z, CollisionPointBalloon
-    ; Check offscreen
+.endCollision:
+
+.checkOffscreen:
     ld a, [wEnemyY]
     ld b, a
-    call OffScreenYEnemies
-    pop bc
-    cp a, 0
-    jr z, .checkLoop
-.offScreen:
+    ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr nc, .endOffscreen
+    ld a, SCRN_VY - OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr c, .endOffscreen
+.offscreen:
     call Clear
-    jr .checkLoop
+    jr .setStruct
+.endOffscreen:
+
 .popped:
-    ; Check if we need to play popping animation
     ld a, [wEnemyPopping]
     cp a, 0
-    jr z, .checkLoop
-    call PopBalloonAnimation
-.checkLoop:
+    call nz, PopBalloonAnimation
+.setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
     ret

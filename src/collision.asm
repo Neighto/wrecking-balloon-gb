@@ -3,7 +3,6 @@ INCLUDE "constants.inc"
 INCLUDE "macro.inc"
 
 COLLISION_UPDATE_TIME EQU %00000011
-OFF_SCREEN_ENEMY_BUFFER EQU 16
 
 SECTION "collision", ROM0
 
@@ -96,12 +95,10 @@ OffScreenXEnemies::
 OffScreenYEnemies::
     ; b = x value to check
     ; return a (1 = end of screen)
-    ld a, SCRN_Y
-    add OFF_SCREEN_ENEMY_BUFFER
+    ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
     cp a, b
     jr nc, .end
-    ld a, SCRN_VY
-    sub OFF_SCREEN_ENEMY_BUFFER
+    ld a, SCRN_VY - OFF_SCREEN_ENEMY_BUFFER
     cp a, b
     jr c, .end
     ld a, 1
