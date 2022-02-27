@@ -109,28 +109,3 @@ OffScreenYEnemies::
 .end:
     xor a ; ld a, 0
     ret
-
-OffScreenX::
-    ; b = x value to check
-    ; return a (1 = end of screen)
-    ld a, SCRN_X
-    cp a, b
-    jr nc, .end
-    ld a, 1
-    ret
-.end:
-    xor a ; ld a, 0
-    ret
-
-OffScreenY::
-    ; b = x value to check
-    ; return a (1 = end of screen)
-    ld a, SCRN_Y
-    sub WINDOW_LAYER_HEIGHT
-    cp a, b
-    jr nc, .end
-    ld a, 1
-    ret
-.end:
-    xor a ; ld a, 0
-    ret
