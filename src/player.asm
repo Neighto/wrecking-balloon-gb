@@ -1,6 +1,7 @@
 INCLUDE "hardware.inc"
 INCLUDE "playerConstants.inc"
 INCLUDE "balloonConstants.inc"
+INCLUDE "constants.inc"
 INCLUDE "macro.inc"
 
 SECTION "player vars", WRAM0
@@ -193,12 +194,12 @@ PlayerControls:
   ld a, c
   cp a, 0
   jr z, .moveRight
+.offscreenRight:
   ld a, [wPlayerX]
-  add 10
   ld b, a
-  call OffScreenX
-  cp a, 0
-  jr nz, .endRight
+  ld a, SCRN_X - 10
+  cp a, b
+  jr c, .endRight
 .moveRight:
   INCREMENT_POS wPlayerX, [wPlayerSpeed]
   INCREMENT_POS wPlayerX2, [wPlayerSpeed]
@@ -228,12 +229,13 @@ PlayerControls:
   ld a, c
   cp a, 0
   jr z, .moveLeft
+.offscreenLeft:
   ld a, [wPlayerX]
   sub 10
   ld b, a
-  call OffScreenX
-  cp a, 0
-  jr nz, .endLeft
+  ld a, SCRN_X
+  cp a, b
+  jr c, .endLeft
 .moveLeft:
   DECREMENT_POS wPlayerX, [wPlayerSpeed]
   DECREMENT_POS wPlayerX2, [wPlayerSpeed]
@@ -255,16 +257,17 @@ PlayerControls:
   ld a, d
   and PADF_UP
 	jr z, .endUp
-  ; Check offscreen
+.checkOffscreenUp:
   ld a, c
   cp a, 0
   jr z, .moveUp
+.offscreenUp:
   ld a, [wPlayerY]
   sub 18
   ld b, a
-  call OffScreenY
-  cp a, 0
-  jr nz, .endUp
+  ld a, SCRN_Y - WINDOW_LAYER_HEIGHT
+  cp a, b
+  jr c, .endUp
 .moveUp:
   DECREMENT_POS wPlayerY, [wPlayerSpeed]
   DECREMENT_POS wPlayerY2, [wPlayerSpeed]
@@ -278,12 +281,12 @@ PlayerControls:
   ld a, c
   cp a, 0
   jr z, .moveDown
+.offscreenDown:
   ld a, [wPlayerY]
-  add 16
   ld b, a
-  call OffScreenY
-  cp a, 0
-  jr nz, .endDown
+  ld a, SCRN_Y - 16 - WINDOW_LAYER_HEIGHT
+  cp a, b
+  jr c, .endDown
 .moveDown:
   INCREMENT_POS wPlayerY, [wPlayerSpeed]
   INCREMENT_POS wPlayerY2, [wPlayerSpeed]
@@ -471,21 +474,20 @@ CactusFalling:
   inc a
   ld [wPlayerFallingTimer], a
   and CACTUS_FALLING_TIME
-  jr nz, .end
-  ; Can we move cactus down
-  ld a, 160
+  ret nz
+.checkOffscreen:
+  ld a, SCRN_X
   ld hl, wPlayerY2
   cp a, [hl]
   jr c, .offScreen
+.moveDown:
   call FallCactusDown
   call UpdateCactusPosition
   ret
 .offScreen:
-  ; Reset variables
   ld hl, wPlayerFalling
   ld [hl], 0
   call ClearPlayerCactus
-.end
   ret
 
 CollisionWithPlayer::
