@@ -204,9 +204,6 @@ PlayerControls:
   INCREMENT_POS wPlayerX, [wPlayerSpeed]
   INCREMENT_POS wPlayerX2, [wPlayerSpeed]
 .canCactusDriftLeft:
-  ldh a, [hGlobalTimer]
-  and	%00000001
-  jr nz, .endRight
   ld hl, wPlayerX
   ld a, PLAYER_MAX_DRIFT_X
   cpl
@@ -240,9 +237,6 @@ PlayerControls:
   DECREMENT_POS wPlayerX, [wPlayerSpeed]
   DECREMENT_POS wPlayerX2, [wPlayerSpeed]
 .canCactusDriftRight:
-  ldh a, [hGlobalTimer]
-  and	%00000001
-  jr nz, .endLeft
   ld hl, wPlayerX
   ld a, PLAYER_MAX_DRIFT_X
   add [hl]
@@ -291,9 +285,6 @@ PlayerControls:
   INCREMENT_POS wPlayerY, [wPlayerSpeed]
   INCREMENT_POS wPlayerY2, [wPlayerSpeed]
 .canCactusDriftUp:
-  ldh a, [hGlobalTimer]
-  and	%00000001
-  jr nz, .endDown
   ld hl, wPlayerY  
   ld a, PLAYER_MAX_DRIFT_Y-16
   cpl
