@@ -76,17 +76,6 @@ CollisionCheck::
     xor a ; ld a, 0 ; Fail
     ret
 
-CollisionWithPlayer::
-    ; Check if player is invincible
-    ld a, [wPlayerInvincible]
-    cp a, 0
-    ret nz
-    ld a, [wPlayerAlive]
-    cp a, 0
-    ret z
-    call DeathOfPlayer
-    ret
-
 OffScreenXEnemies::
     ; b = x value to check
     ; return a (1 = end of screen)

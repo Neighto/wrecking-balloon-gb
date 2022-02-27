@@ -72,7 +72,7 @@ LoadLevel3Graphics::
 	call MEMCPY
 
 	ld bc, RainCloudsMap
-	ld hl, $9820
+	ld hl, _SCRN0
 	ld de, RainCloudsMapEnd - RainCloudsMap
 	ld a, $80
 	call MEMCPY_WITH_OFFSET
