@@ -44,9 +44,9 @@ ClearAllTiles::
     ret
 
 ClearMap::
-	RESET_IN_RANGE _SCRN0, $400
+	RESET_IN_RANGE _SCRN0, SCRN0_SIZE
 	ret
 
 ClearWindow::
-	RESET_IN_RANGE _SCRN1, $400
+	RESET_IN_RANGE _SCRN1, SCRN1_SIZE
 	ret

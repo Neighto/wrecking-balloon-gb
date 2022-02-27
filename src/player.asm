@@ -107,7 +107,7 @@ SetPlayerPositionOpeningDefault:
 
 SetPlayerPositionOpeningCutscene::
   ld b, PLAYER_START_X
-  ld c, PLAYER_START_Y - 30
+  ld c, PLAYER_START_Y
   call SetPlayerPosition
   ret
 
@@ -488,12 +488,18 @@ CactusFalling:
 .end
   ret
 
-DeathOfPlayer::
-  ; Death
+CollisionWithPlayer::
+  ; Check if player is invincible
+  ld a, [wPlayerInvincible]
+  cp a, 0
+  ret nz
+  ld a, [wPlayerAlive]
+  cp a, 0
+  ret z
+.deathOfPlayer:
   xor a ; ld a, 0
   ld hl, wPlayerAlive
   ld [hl], a
-  ; Remove life
   ld hl, wPlayerLives
   dec [hl]
   ; Animation trigger
@@ -508,16 +514,22 @@ DeathOfPlayer::
   ld hl, wPlayerCactusOAM+6
   ld [hl], PLAYER_CACTUS_SCREAMING_TILE
   ; Sound
-  call PopSound ; Conflicts with explosion sound
+  call PopSound
   call FallingSound
   ret
 
-  ; When player respawns and has some invincibility
-InvincibleBlink:
+PlayerUpdate::
+.checkAlive:
+  ld a, [wPlayerAlive]
+  cp a, 0
+  jp z, .popped
+.isAlive:
+
+.checkInvincible:
   ld a, [wPlayerInvincible]
   cp a, 0
-  ret z
-.isStillInvincible:
+  jr z, .endInvincible
+.isInvincible:
   dec a
   ld [wPlayerInvincible], a
   ; If at the end make sure we stop on default tileset
@@ -530,7 +542,6 @@ InvincibleBlink:
 	and INVINCIBLE_BLINK_NORMAL_SPEED
   jr z, .noBlink
   jr .blinkEnd
-  ret
 .blinkFast:
 	and INVINCIBLE_BLINK_FAST_SPEED
   jr z, .noBlink
@@ -543,7 +554,7 @@ InvincibleBlink:
   ld [hl], PLAYER_CACTUS_INVINCIBLE_TILE
   ld hl, wPlayerCactusOAM+6
   ld [hl], PLAYER_CACTUS_INVINCIBLE_TILE
-  ret
+  jr .endInvincible
 .noBlink:
   ld hl, wPlayerBalloonOAM+2
   ld [hl], PLAYER_BALLOON_TILE
@@ -553,15 +564,7 @@ InvincibleBlink:
   ld [hl], PLAYER_CACTUS_TILE
   ld hl, wPlayerCactusOAM+6
   ld [hl], PLAYER_CACTUS_TILE
-  ret
-
-PlayerUpdate::
-.checkAlive:
-  ld a, [wPlayerAlive]
-  cp a, 0
-  jr z, .popped
-.isAlive:
-  call InvincibleBlink
+.endInvincible:
 
 .checkMove:
   ldh a, [hGlobalTimer]

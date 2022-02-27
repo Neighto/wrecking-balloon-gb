@@ -96,7 +96,7 @@ UpdatePark::
 .moveUp:
     ld a, [wPlayerY]
     add 16
-    cp a, 60
+    cp a, 75
     ldh a, [hGlobalTimer]
     jr c, .flyUpFast
 .flyUpNormal:
