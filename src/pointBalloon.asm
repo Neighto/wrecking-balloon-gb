@@ -149,42 +149,6 @@ Clear:
     call InitializeEnemyStructVars
     ret
 
-DeathOfPointBalloon:
-    ; Death
-    xor a ; ld a, 0
-    ld [wEnemyAlive], a
-    ; Points
-    ld d, POINT_BALLOON_POINTS
-    call AddPoints
-    ; Animation trigger
-    ld a, 1 
-    ld [wEnemyPopping], a
-    ; Sound
-    call PopSound
-    ret
-
-CollisionPointBalloon:
-.checkHit:
-    ld bc, wPlayerCactusOAM
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ld e, 16
-    call CollisionCheck
-    cp a, 0
-    jr z, .checkHitByBullet
-    call DeathOfPointBalloon
-.checkHitByBullet:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    LD_BC_HL
-    ld hl, wPlayerBulletOAM
-    ld e, 4
-    call CollisionCheck
-    cp a, 0
-    jr z, .end
-    call DeathOfPointBalloon
-    call ClearBullet
-.end:
-    ret
-
 PointBalloonUpdate::
     ; Get rest of struct
     ld a, [hli]
@@ -205,7 +169,7 @@ PointBalloonUpdate::
 .checkAlive:
     ld a, [wEnemyAlive]
     cp a, 0
-    jr z, .popped
+    jp z, .popped
 .isAlive:
 
 .checkMove:
@@ -234,7 +198,34 @@ PointBalloonUpdate::
 .checkCollision:
     ldh a, [hGlobalTimer]
     and	POINT_BALLOON_COLLISION_TIME
-    call z, CollisionPointBalloon
+    jr nz, .endCollision
+.checkHit:
+    ld bc, wPlayerCactusOAM
+    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    ld e, 16
+    call CollisionCheck
+    cp a, 0
+    jr nz, .deathOfPointBalloon
+.checkHitByBullet:
+    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    LD_BC_HL
+    ld hl, wPlayerBulletOAM
+    ld e, 4
+    call CollisionCheck
+    cp a, 0
+    jr z, .endCollision
+    call ClearBullet
+.deathOfPointBalloon:
+    xor a ; ld a, 0
+    ld [wEnemyAlive], a
+    ; Points
+    ld d, POINT_BALLOON_POINTS
+    call AddPoints
+    ; Animation trigger
+    ld a, 1 
+    ld [wEnemyPopping], a
+    ; Sound
+    call PopSound
 .endCollision:
 
 .checkOffscreen:
