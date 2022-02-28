@@ -117,71 +117,6 @@ Clear:
     call InitializeEnemyStructVars
     ret
 
-Move:
-    ; Move up
-    ld hl, wEnemyY
-    ld a, BOMB_DEFAULT_SPEED
-    cpl
-    add [hl]
-    ld [hl], a
-.balloonLeft:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ld a, [wEnemyY]
-    ld [hli], a
-    ld a, [wEnemyX]
-    ld [hli], a
-    inc l
-    inc l
-.balloonRight:
-    ld a, [wEnemyY]
-    ld [hli], a
-    ld a, [wEnemyX]
-    add 8
-    ld [hli], a
-    inc l
-    inc l
-.bombSpace:
-    ld a, [wEnemyY]
-    ld [hli], a
-    ld a, [wEnemyX]
-    add 16
-    ld [hl], a
-    ret
-
-DeathOfBomb::
-    ; Death
-    xor a ; ld a, 0
-    ld [wEnemyAlive], a
-    ; Animation trigger
-    ld a, 1
-    ld [wEnemyPopping], a
-    ; Sound
-    ; call ExplosionSound ; conflicts with the other sound
-    ret
-
-CollisionBomb::
-.checkHit:
-    ld bc, wPlayerCactusOAM
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ld e, 16
-    call CollisionCheck
-    cp a, 0
-    jr z, .checkHitByBullet
-    call CollisionWithPlayer
-    call DeathOfBomb
-.checkHitByBullet:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    LD_BC_HL
-    ld hl, wPlayerBulletOAM
-    ld e, 4
-    call CollisionCheck
-    cp a, 0
-    jr z, .end
-    call DeathOfBomb
-    call ClearBullet
-.end:
-    ret
-
 ExplosionAnimation:
     ld a, [wEnemyPoppingFrame]
     cp a, 0
@@ -282,37 +217,98 @@ BombUpdate::
     ld [wEnemyPoppingFrame], a
     ld a, [hl]
     ld [wEnemyPoppingTimer], a
-    ; Check alive
+
+.checkAlive:
     ld a, [wEnemyAlive]
     cp a, 0
-    jr z, .popped
+    jp z, .popped
 .isAlive:
-    ; Check if we can move and collide
+
+.checkMove:
     ldh a, [hGlobalTimer]
     and	BOMB_MOVE_TIME
-    call z, Move
-    ; Check if we can collide
+    jr nz, .endMove
+.canMove:
+    ld hl, wEnemyY
+    ld a, BOMB_DEFAULT_SPEED
+    cpl
+    add [hl]
+    ld [hl], a
+.balloonLeft:
+    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    ld [hli], a
+    inc l
+    inc l
+.balloonRight:
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    add 8
+    ld [hli], a
+    inc l
+    inc l
+.bombSpace:
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    add 16
+    ld [hl], a
+.endMove:
+
+.checkCollision:
     ldh a, [hGlobalTimer]
     and	BOMB_COLLISION_TIME
-    push bc
-    call z, CollisionBomb
-    ; Check offscreen
+    jr nz, .endCollision
+.checkHit:
+    ld bc, wPlayerCactusOAM
+    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    ld e, 16
+    call CollisionCheck
+    cp a, 0
+    jr z, .checkHitByBullet
+    call CollisionWithPlayer
+    jr .deathOfBomb
+.checkHitByBullet:
+    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    LD_BC_HL
+    ld hl, wPlayerBulletOAM
+    ld e, 4
+    call CollisionCheck
+    cp a, 0
+    jr z, .endCollision
+    call ClearBullet
+.deathOfBomb:
+    xor a ; ld a, 0
+    ld [wEnemyAlive], a
+    ; Animation trigger
+    ld a, 1
+    ld [wEnemyPopping], a
+    ; Sound
+    ; call ExplosionSound ; conflicts with the other sound
+.endCollision:
+
+.checkOffscreen:
     ld a, [wEnemyY]
     ld b, a
-    call OffScreenYEnemies
-    pop bc
-    cp a, 0
-    jr z, .checkLoop
-.offScreen:
+    ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr nc, .endOffscreen
+    ld a, SCRN_VY - OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr c, .endOffscreen
+.offscreen:
     call Clear
-    jr .checkLoop
+    jr .setStruct
+.endOffscreen:
+    
 .popped:
-    ; Check if we need to play popping animation
     ld a, [wEnemyPopping]
     cp a, 0
-    jr z, .checkLoop
-    call ExplosionAnimation
-.checkLoop:
+    call nz, ExplosionAnimation
+.setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
     ret

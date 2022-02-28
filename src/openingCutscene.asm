@@ -1,5 +1,6 @@
 INCLUDE "macro.inc"
 INCLUDE "hardware.inc"
+INCLUDE "constants.inc"
 
 HAND_WAVE_START_X EQU 152
 HAND_WAVE_START_Y EQU 96
@@ -82,8 +83,13 @@ UpdatePark::
     ld a, [wPlayerY]
     add 4 ; Buffer for extra time before screen switch
     ld b, a
-    call OffScreenYEnemies
-    jr z, .skipFade
+    ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr nc, .skipFade
+    ld a, SCRN_VY - OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr c, .skipFade
+.offscreen:
     ld a, 1 
     ld [wTriggerFadeOut], a
     jr .skipFade
