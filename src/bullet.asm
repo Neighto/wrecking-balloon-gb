@@ -1,5 +1,6 @@
 INCLUDE "playerConstants.inc"
 INCLUDE "hardware.inc"
+INCLUDE "constants.inc"
 
 SECTION "bullet vars", WRAM0
     wPlayerBulletY:: DB
@@ -67,20 +68,26 @@ ClearBullet::
     ret
   
 BulletUpdate::
+.checkAlive:
     ld a, [wPlayerBulletAlive]
     cp a, 0
     ret z
 .isAlive:
-    ; Check offscreen
+
+.checkOffscreen:
     ld a, [wPlayerBulletX]
     ld b, a 
-    call OffScreenXEnemies
-    cp a, 0
-    jr z, .onScreen
-.offScreen:
+    ld a, SCRN_X + OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr nc, .endOffscreen
+    ld a, SCRN_VX - OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr c, .endOffscreen
+.offscreen:
     jp ClearBullet
-.onScreen:
-    ; Check if we can move
+.endOffscreen:
+
+.checkMove:
     ldh a, [hGlobalTimer]
     and PLAYER_BULLET_TIME
     ret nz
@@ -98,4 +105,5 @@ BulletUpdate::
     add PLAYER_BULLET_SPEED
     ld [wPlayerBulletX], a
     ld [wPlayerBulletOAM+1], a
+.endMove:
     ret

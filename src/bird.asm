@@ -1,6 +1,7 @@
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
+INCLUDE "constants.inc"
 
 BIRD_OAM_SPRITES EQU 3
 BIRD_MOVE_TIME EQU %00000011
@@ -249,7 +250,55 @@ UpdateBirdPosition:
     ld [hl], a
     ret
 
-Move:
+BirdFall:
+    INCREMENT_POS wEnemyY, 2
+    call UpdateBirdPosition
+.checkOffscreen:
+    ld a, [wEnemyY]
+    ld b, a
+    ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr nc, .endOffscreen
+    ld a, SCRN_VY - OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr c, .endOffscreen
+.offscreen:
+    xor a ; ld a, 0
+    ld [wEnemyFalling], a
+    call Clear
+.endOffscreen:
+    ret
+
+BirdUpdate::
+    ; Get rest of struct
+    ld a, [hli]
+    ld [wEnemyY], a
+    ld a, [hli]
+    ld [wEnemyX], a
+    ld a, [hli]
+    ld [wEnemyOAM], a
+    ld a, [hli]
+    ld [wEnemyAlive], a
+    ld a, [hli]
+    ld [wEnemyRightside], a
+    ld a, [hli]
+    ld [wEnemyFalling], a
+    ld a, [hli]
+    ld [wEnemyPoppingFrame], a ; flapping frame
+    ld a, [hl]
+    ld [wEnemyToDie], a
+
+.checkAlive:
+    ld a, [wEnemyAlive]
+    cp a, 0
+    jp z, .isDead
+.isAlive:
+
+.checkMove:
+    ldh a, [hGlobalTimer]
+    and	BIRD_MOVE_TIME
+    jr nz, .endMove
+.canMove:
     ld a, [wEnemyRightside]
     cp a, 0
     jr z, .isLeftside
@@ -263,31 +312,29 @@ Move:
 .moveDown:
     ldh a, [hGlobalTimer]
     and BIRD_SPRITE_DESCENDING_TIME
-    jr nz, .moveEnd
+    jr nz, .skipMoveDown
     INCREMENT_POS wEnemyY, BIRD_VERTICAL_SPEED
-.moveEnd:
+.skipMoveDown:
     call UpdateBirdPosition
-    ret
+.endMove:
 
-BirdFall:
-    push bc
-    INCREMENT_POS wEnemyY, 2
-    call UpdateBirdPosition
-.checkOffscreenY:
-    ld a, [wEnemyY]
-    ld b, a
-    call OffScreenYEnemies
+.checkCollision:
+    ldh a, [hGlobalTimer]
+    and	BIRD_COLLISION_TIME
+    jp nz, .endCollision
+.checkHitPlayer:
+    ld bc, wPlayerBalloonOAM
+    SET_HL_TO_ADDRESS wOAM+4, wEnemyOAM
+    ld e, 8
+    call CollisionCheck
     cp a, 0
-    jr z, .end
-    xor a ; ld a, 0
-    ld [wEnemyFalling], a
-    call Clear
-.end:
-    pop bc
-    ret
-
-DeathOfBird::
-    ; Death
+    call nz, CollisionWithPlayer
+    jr .endCollision
+.checkHitBySomething:
+    ld a, [wEnemyToDie]
+    cp a, 0
+    jr z, .endCollision
+.deathOfBird:
     xor a ; ld a, 0
     ld [wEnemyAlive], a
     ; Points
@@ -309,7 +356,7 @@ DeathOfBird::
     ld [hl], BIRD_DEAD_TILE_2
     SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
     ld [hl], BIRD_DEAD_TILE_3
-    ret
+    jr .endCollision
 .facingRight:
     SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
     ld [hl], BIRD_DEAD_TILE_3
@@ -317,74 +364,30 @@ DeathOfBird::
     ld [hl], BIRD_DEAD_TILE_2
     SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
     ld [hl], BIRD_DEAD_TILE_1
-    ret
+.endCollision:
 
-CollisionBird:
-.checkHitPlayer:
-    ld bc, wPlayerBalloonOAM
-    SET_HL_TO_ADDRESS wOAM+4, wEnemyOAM
-    ld e, 8
-    call CollisionCheck
-    cp a, 0
-    call nz, CollisionWithPlayer
-    ret
-
-BirdUpdate::
-    ; Get rest of struct
-    ld a, [hli]
-    ld [wEnemyY], a
-    ld a, [hli]
-    ld [wEnemyX], a
-    ld a, [hli]
-    ld [wEnemyOAM], a
-    ld a, [hli]
-    ld [wEnemyAlive], a
-    ld a, [hli]
-    ld [wEnemyRightside], a
-    ld a, [hli]
-    ld [wEnemyFalling], a
-    ld a, [hli]
-    ld [wEnemyPoppingFrame], a ; flapping frame
-    ld a, [hl]
-    ld [wEnemyToDie], a
-    ; Check if alive
-    ld a, [wEnemyAlive]
-    cp a, 0
-    jr z, .isDead
-.isAlive:
-    ; Check if we can move
-    ldh a, [hGlobalTimer]
-    and	BIRD_MOVE_TIME
-    call z, Move
-    ; Check if we can collide
-    ldh a, [hGlobalTimer]
-    and	BIRD_COLLISION_TIME
-    push bc
-    call z, CollisionBird
-    ; Check if we should die
-    ld a, [wEnemyToDie]
-    cp a, 0
-    call nz, DeathOfBird
-    ; Check offscreen
+.checkOffscreen:
     ld a, [wEnemyX]
     ld b, a
-    call OffScreenXEnemies
-    pop bc
-    cp a, 0
-    jr z, .checkLoop
-.offScreen:
+    ld a, SCRN_X + OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr nc, .endOffscreen
+    ld a, SCRN_VX - OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr c, .endOffscreen
+.offscreen:
     call Clear
-    jr z, .checkLoop
+    jr z, .setStruct
+.endOffscreen:
+
 .isDead:
-    ; Check if we need to play falling
     ld a, [wEnemyFalling]
     cp a, 0
-    jr z, .checkLoop
+    jr z, .setStruct
     ldh a, [hGlobalTimer]
     and BIRD_FALLING_WAIT_TIME
-    jr nz, .checkLoop
-    call BirdFall
-.checkLoop:
+    call z, BirdFall
+.setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
     ret

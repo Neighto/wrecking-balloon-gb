@@ -325,69 +325,6 @@ UpdateCactusPosition:
     ld [hl], a
     ret
 
-Move:
-    ld a, [wEnemyRightside]
-    cp a, 0
-    jr z, .isLeftside
-    DECREMENT_POS wEnemyX, 1
-    DECREMENT_POS wEnemyX2, 1
-    jr .updatePosition
-.isLeftside:
-    INCREMENT_POS wEnemyX, 1
-    INCREMENT_POS wEnemyX2, 1
-.updatePosition:
-    call UpdateBalloonPosition
-    call UpdateCactusPosition
-    ret
-
-DeathOfBalloonCactus:
-    ; Death
-    xor a ; ld a, 0
-    ld [wEnemyAlive], a
-    ; Points
-    ld d, ENEMY_CACTUS_POINTS
-    call AddPoints
-    ; Animation trigger
-    ld a, 1
-    ld [wEnemyPopping], a
-    ld [wEnemyFalling], a
-    ; Screaming cactus
-    SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
-    ld [hl], BALLOON_CACTUS_SCREAMING_TILE
-    SET_HL_TO_ADDRESS wOAM+14, wEnemyOAM
-    ld [hl], BALLOON_CACTUS_SCREAMING_TILE
-    ; Sound
-    call PopSound
-    ret
-    
-CollisionBalloonCactus:
-.checkHit:
-    ld bc, wPlayerCactusOAM
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ld e, 16
-    call CollisionCheck
-    cp a, 0
-    jr z, .checkHitByBullet
-    call DeathOfBalloonCactus
-.checkHitByBullet:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    LD_BC_HL
-    ld hl, wPlayerBulletOAM
-    ld e, 4
-    call CollisionCheck
-    cp a, 0
-    jr z, .checkHitPlayer
-    call DeathOfBalloonCactus
-    call ClearBullet
-.checkHitPlayer:
-    ld bc, wPlayerBalloonOAM
-    SET_HL_TO_ADDRESS wOAM+8, wEnemyOAM
-    ld e, 16
-    call CollisionCheck
-    cp a, 0
-    call nz, CollisionWithPlayer
-    ret
-
 BalloonCactusUpdate::
     ; Get rest of struct
     ld a, [hli]
@@ -418,43 +355,100 @@ BalloonCactusUpdate::
     ld [wEnemyFallingTimer], a
     ld a, [hl]
     ld [wEnemyDelayFallingTimer], a
-    ; Check alive
+
+.checkAlive:
     ld a, [wEnemyAlive]
     cp a, 0
-    jr z, .popped
+    jp z, .popped
 .isAlive:
-    ; Check if we can move
+
+.checkMove:
     ldh a, [hGlobalTimer]
     and	BALLOON_CACTUS_MOVE_TIME
-    call z, Move
-    ; Check if we can collide
+    jr nz, .endMove
+.canMove:
+    ld a, [wEnemyRightside]
+    cp a, 0
+    jr z, .isLeftside
+    DECREMENT_POS wEnemyX, 1
+    DECREMENT_POS wEnemyX2, 1
+    jr .updatePosition
+.isLeftside:
+    INCREMENT_POS wEnemyX, 1
+    INCREMENT_POS wEnemyX2, 1
+.updatePosition:
+    call UpdateBalloonPosition
+    call UpdateCactusPosition
+.endMove:
+
+.checkCollision:
     ldh a, [hGlobalTimer]
     and	BALLOON_CACTUS_COLLISION_TIME
-    push bc
-    call z, CollisionBalloonCactus
-    ; Check offscreen
+    jr nz, .endCollision
+.checkHitPlayer:
+    ld bc, wPlayerBalloonOAM
+    SET_HL_TO_ADDRESS wOAM+8, wEnemyOAM
+    ld e, 16
+    call CollisionCheck
+    cp a, 0
+    call nz, CollisionWithPlayer
+.checkHit:
+    ld bc, wPlayerCactusOAM
+    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    ld e, 16
+    call CollisionCheck
+    cp a, 0
+    jr nz, .deathOfBalloonCactus
+.checkHitByBullet:
+    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    LD_BC_HL
+    ld hl, wPlayerBulletOAM
+    ld e, 4
+    call CollisionCheck
+    cp a, 0
+    jr z, .endCollision
+    call ClearBullet
+.deathOfBalloonCactus:
+    xor a ; ld a, 0
+    ld [wEnemyAlive], a
+    ; Points
+    ld d, ENEMY_CACTUS_POINTS
+    call AddPoints
+    ; Animation trigger
+    ld a, 1
+    ld [wEnemyPopping], a
+    ld [wEnemyFalling], a
+    ; Screaming cactus
+    SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
+    ld [hl], BALLOON_CACTUS_SCREAMING_TILE
+    SET_HL_TO_ADDRESS wOAM+14, wEnemyOAM
+    ld [hl], BALLOON_CACTUS_SCREAMING_TILE
+    ; Sound
+    call PopSound
+.endCollision:
+
+.checkOffscreen:
     ld a, [wEnemyX]
     ld b, a
-    call OffScreenXEnemies
-    pop bc
-    cp a, 0
-    jr z, .checkLoop
-.offScreen:
+    ld a, SCRN_X + OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr nc, .endOffscreen
+    ld a, SCRN_VX - OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr c, .endOffscreen
+.offscreen:
     call Clear
-    jr .checkLoop
+    jr .setStruct
+.endOffscreen:
+
 .popped:
-    ; Check if we need to play popping animation
     ld a, [wEnemyPopping]
     cp a, 0
-    jr z, .notPopping
-    call PopBalloonAnimation
-.notPopping:
-    ; Check if we need to drop the cactus
+    call nz, PopBalloonAnimation
     ld a, [wEnemyFalling]
     cp a, 0
-    jr z, .checkLoop
-    call CactusFalling
-.checkLoop:
+    call nz, CactusFalling
+.setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
     ret
