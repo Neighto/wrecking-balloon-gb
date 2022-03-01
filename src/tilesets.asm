@@ -22,6 +22,8 @@ GameSpriteTiles::
     INCBIN "incbin/background/Man_Wave.2bpp"
     INCBIN "incbin/background/Man_Wave2.2bpp"
     INCBIN "incbin/sprite/porcu.2bpp"
+    INCBIN "incbin/sprite/PointBalloon.2bpp"
+    INCBIN "incbin/sprite/PointBalloon2.2bpp"
 GameSpriteTilesEnd::
 
 Level1Tiles::
