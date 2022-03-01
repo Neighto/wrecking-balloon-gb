@@ -74,11 +74,11 @@ StartGame::
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdatePark
-	call UpdateGlobalTimer
-	jp OpeningCutsceneLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdatePark
+	; call UpdateGlobalTimer
+	; jp OpeningCutsceneLoop
 
 SetupNextLevel::
 	call WaitVBlank

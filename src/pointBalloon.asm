@@ -8,6 +8,7 @@ POINT_BALLOON_OAM_SPRITES EQU 2
 POINT_BALLOON_OAM_BYTES EQU POINT_BALLOON_OAM_SPRITES * 4
 POINT_BALLOON_MOVE_TIME EQU %00000001
 POINT_BALLOON_COLLISION_TIME EQU %00001000
+POINT_BALLOON_TILE EQU $50
 
 POINT_BALLOON_POINTS EQU 50
 
@@ -66,7 +67,7 @@ SpawnPointBalloon::
     ld [hli], a
     ld a, [wEnemyX]
     ld [hli], a
-    ld [hl], ENEMY_BALLOON_TILE
+    ld [hl], POINT_BALLOON_TILE
     inc l
     ld [hl], OAMF_PAL1
 .balloonRight:
@@ -76,7 +77,7 @@ SpawnPointBalloon::
     ld a, [wEnemyX]
     add 8
     ld [hli], a
-    ld [hl], ENEMY_BALLOON_TILE
+    ld [hl], POINT_BALLOON_TILE
     inc l
     ld [hl], OAMF_PAL1 | OAMF_XFLIP
 .setStruct:
