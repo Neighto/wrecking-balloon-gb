@@ -83,7 +83,7 @@ SpawnCountdown::
 	ld b, 2
 	call RequestOAMSpace
     cp a, 0
-    jr z, .end
+    ret z
     ld a, b
 	ld [wCountdownOAM], a
 	SET_HL_TO_ADDRESS wOAM, wCountdownOAM
@@ -99,7 +99,6 @@ SpawnCountdown::
     ld a, COUNTDOWN_START_X+8
     ld [hli], a
     ld [hl], EMPTY_TILE
-.end:
 	ret
 
 UpdateGameCountdown::
