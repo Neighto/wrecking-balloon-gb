@@ -116,12 +116,3 @@ UpdateEnemy::
     cp a, 0
     jr nz, .loop
     ret
-
-; Functions every enemy should have (where Enemy is name of enemy)
-; SetStruct
-; SpawnEnemy
-; Clear
-; Move
-; DeathOfEnemy
-; CollisionEnemy
-; EnemyUpdate

@@ -17,7 +17,7 @@ Start::
 	call ResetScroll
 	call CopyDMARoutine
 	call LoadMenuOpeningGraphics
-	call InitializeGeneralVars
+	call InitializeLives
 	call InitializeParallaxScrolling
 	call InitializePalettes
 	call InitializeController
