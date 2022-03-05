@@ -1073,118 +1073,117 @@ ROMX bank #1:
     SLACK: $0aca bytes
 
 WRAM0 bank #0:
-  SECTION: $c000-$c000 ($0001 byte) ["general RAM vars"]
-           $c000 = wOAMGeneral1
-  SECTION: $c001-$c08b ($008b bytes) ["enemy data vars"]
-           $c001 = wEnemies
-           $c089 = wEnemyOffset
-           $c08a = wEnemyOffset2
-           $c08b = wEnemyLoopIndex
-  SECTION: $c08c-$c0d1 ($0046 bytes) ["Playback variables"]
-           $c08c = _start_vars
-           $c08c = order_cnt
-           $c08d = order1
-           $c08d = _start_song_descriptor_pointers
-           $c08f = order2
-           $c091 = order3
-           $c093 = order4
-           $c095 = duty_instruments
-           $c097 = wave_instruments
-           $c099 = noise_instruments
-           $c09b = routines
-           $c09d = waves
-           $c09f = mute_channels
-           $c09f = _end_song_descriptor_pointers
-           $c0a0 = pattern1
-           $c0a2 = pattern2
-           $c0a4 = pattern3
-           $c0a6 = pattern4
-           $c0a8 = ticks_per_row
-           $c0a9 = current_order
-           $c0aa = next_order
-           $c0ab = row_break
-           $c0ac = temp_note_value
-           $c0ae = row
-           $c0af = tick
-           $c0b0 = counter
-           $c0b1 = current_wave
-           $c0b1 = _hUGE_current_wave
-           $c0b2 = channel_period1
-           $c0b2 = channels
-           $c0b2 = channel1
-           $c0b4 = toneporta_target1
-           $c0b6 = channel_note1
-           $c0b7 = vibrato_tremolo_phase1
-           $c0b8 = envelope1
-           $c0b9 = highmask1
-           $c0ba = channel_period2
-           $c0ba = channel2
-           $c0bc = toneporta_target2
-           $c0be = channel_note2
-           $c0bf = vibrato_tremolo_phase2
-           $c0c0 = envelope2
-           $c0c1 = highmask2
-           $c0c2 = channel_period3
-           $c0c2 = channel3
-           $c0c4 = toneporta_target3
-           $c0c6 = channel_note3
-           $c0c7 = vibrato_tremolo_phase3
-           $c0c8 = envelope3
-           $c0c9 = highmask3
-           $c0ca = channel_period4
-           $c0ca = channel4
-           $c0cc = toneporta_target4
-           $c0ce = channel_note4
-           $c0cf = vibrato_tremolo_phase4
-           $c0d0 = envelope4
-           $c0d1 = highmask4
-           $c0d2 = _end_vars
-  SECTION: $c0d2-$c0e4 ($0013 bytes) ["player vars"]
-           $c0d2 = wPlayerY
-           $c0d3 = wPlayerX
-           $c0d4 = wPlayerY2
-           $c0d5 = wPlayerX2
-           $c0d6 = wPlayerAlive
-           $c0d7 = wPlayerPopping
-           $c0d8 = wPlayerPoppingFrame
-           $c0d9 = wPlayerPoppingTimer
-           $c0da = wPlayerFalling
-           $c0db = wPlayerFallSpeed
-           $c0dc = wPlayerFallingTimer
-           $c0dd = wPlayerDelayFallingTimer
-           $c0de = wPlayerRespawnTimer
-           $c0df = wPlayerSpeed
-           $c0e0 = wPlayerLives
-           $c0e1 = wPlayerRight
-           $c0e2 = wPlayerInvincible
-           $c0e3 = wPlayerBoost
-           $c0e4 = wPlayerAttack
-  SECTION: $c0e5-$c0f5 ($0011 bytes) ["enemy struct vars"]
-           $c0e5 = wEnemyActive
-           $c0e6 = wEnemyNumber
-           $c0e7 = wEnemyY
-           $c0e8 = wEnemyX
-           $c0e9 = wEnemyOAM
-           $c0ea = wEnemyAlive
-           $c0eb = wEnemyPopping
-           $c0ec = wEnemyPoppingFrame
-           $c0ed = wEnemyPoppingTimer
-           $c0ee = wEnemyRightside
-           $c0ef = wEnemyY2
-           $c0f0 = wEnemyX2
-           $c0f1 = wEnemyFalling
-           $c0f2 = wEnemyFallingSpeed
-           $c0f3 = wEnemyFallingTimer
-           $c0f4 = wEnemyDelayFallingTimer
-           $c0f5 = wEnemyToDie
-  SECTION: $c0f6-$c0fb ($0006 bytes) ["score vars"]
-           $c0f6 = wScore
-           $c0f9 = wTotal
-  SECTION: $c0fc-$c0ff ($0004 bytes) ["bullet vars"]
-           $c0fc = wPlayerBulletY
-           $c0fd = wPlayerBulletX
-           $c0fe = wPlayerBulletAlive
-           $c0ff = wPlayerBulletRight
+  SECTION: $c000-$c08a ($008b bytes) ["enemy data vars"]
+           $c000 = wEnemies
+           $c088 = wEnemyOffset
+           $c089 = wEnemyOffset2
+           $c08a = wEnemyLoopIndex
+  SECTION: $c08b-$c0d0 ($0046 bytes) ["Playback variables"]
+           $c08b = _start_vars
+           $c08b = order_cnt
+           $c08c = order1
+           $c08c = _start_song_descriptor_pointers
+           $c08e = order2
+           $c090 = order3
+           $c092 = order4
+           $c094 = duty_instruments
+           $c096 = wave_instruments
+           $c098 = noise_instruments
+           $c09a = routines
+           $c09c = waves
+           $c09e = mute_channels
+           $c09e = _end_song_descriptor_pointers
+           $c09f = pattern1
+           $c0a1 = pattern2
+           $c0a3 = pattern3
+           $c0a5 = pattern4
+           $c0a7 = ticks_per_row
+           $c0a8 = current_order
+           $c0a9 = next_order
+           $c0aa = row_break
+           $c0ab = temp_note_value
+           $c0ad = row
+           $c0ae = tick
+           $c0af = counter
+           $c0b0 = current_wave
+           $c0b0 = _hUGE_current_wave
+           $c0b1 = channel_period1
+           $c0b1 = channels
+           $c0b1 = channel1
+           $c0b3 = toneporta_target1
+           $c0b5 = channel_note1
+           $c0b6 = vibrato_tremolo_phase1
+           $c0b7 = envelope1
+           $c0b8 = highmask1
+           $c0b9 = channel_period2
+           $c0b9 = channel2
+           $c0bb = toneporta_target2
+           $c0bd = channel_note2
+           $c0be = vibrato_tremolo_phase2
+           $c0bf = envelope2
+           $c0c0 = highmask2
+           $c0c1 = channel_period3
+           $c0c1 = channel3
+           $c0c3 = toneporta_target3
+           $c0c5 = channel_note3
+           $c0c6 = vibrato_tremolo_phase3
+           $c0c7 = envelope3
+           $c0c8 = highmask3
+           $c0c9 = channel_period4
+           $c0c9 = channel4
+           $c0cb = toneporta_target4
+           $c0cd = channel_note4
+           $c0ce = vibrato_tremolo_phase4
+           $c0cf = envelope4
+           $c0d0 = highmask4
+           $c0d1 = _end_vars
+  SECTION: $c0d1-$c0e3 ($0013 bytes) ["player vars"]
+           $c0d1 = wPlayerY
+           $c0d2 = wPlayerX
+           $c0d3 = wPlayerY2
+           $c0d4 = wPlayerX2
+           $c0d5 = wPlayerAlive
+           $c0d6 = wPlayerPopping
+           $c0d7 = wPlayerPoppingFrame
+           $c0d8 = wPlayerPoppingTimer
+           $c0d9 = wPlayerFalling
+           $c0da = wPlayerFallSpeed
+           $c0db = wPlayerFallingTimer
+           $c0dc = wPlayerDelayFallingTimer
+           $c0dd = wPlayerRespawnTimer
+           $c0de = wPlayerSpeed
+           $c0df = wPlayerLives
+           $c0e0 = wPlayerRight
+           $c0e1 = wPlayerInvincible
+           $c0e2 = wPlayerBoost
+           $c0e3 = wPlayerAttack
+  SECTION: $c0e4-$c0f4 ($0011 bytes) ["enemy struct vars"]
+           $c0e4 = wEnemyActive
+           $c0e5 = wEnemyNumber
+           $c0e6 = wEnemyY
+           $c0e7 = wEnemyX
+           $c0e8 = wEnemyOAM
+           $c0e9 = wEnemyAlive
+           $c0ea = wEnemyPopping
+           $c0eb = wEnemyPoppingFrame
+           $c0ec = wEnemyPoppingTimer
+           $c0ed = wEnemyRightside
+           $c0ee = wEnemyY2
+           $c0ef = wEnemyX2
+           $c0f0 = wEnemyFalling
+           $c0f1 = wEnemyFallingSpeed
+           $c0f2 = wEnemyFallingTimer
+           $c0f3 = wEnemyDelayFallingTimer
+           $c0f4 = wEnemyToDie
+  SECTION: $c0f5-$c0fa ($0006 bytes) ["score vars"]
+           $c0f5 = wScore
+           $c0f8 = wTotal
+  SECTION: $c0fb-$c0ff ($0005 bytes) ["palettes vars"]
+           $c0fb = wFadeInFrame
+           $c0fc = wFadeOutFrame
+           $c0fd = wTriggerFadeIn
+           $c0fe = wTriggerFadeOut
+           $c0ff = wFlickerTimer
   SECTION: $c100-$c19f ($00a0 bytes) ["OAM vars"]
            $c100 = wPlayerCactusOAM
            $c108 = wPlayerBalloonOAM
@@ -1192,41 +1191,41 @@ WRAM0 bank #0:
            $c114 = OAMVars
            $c114 = wOAM
            $c1a0 = OAMVarsEnd
-  SECTION: $c1a0-$c1a4 ($0005 bytes) ["palettes vars"]
-           $c1a0 = wFadeInFrame
-           $c1a1 = wFadeOutFrame
-           $c1a2 = wTriggerFadeIn
-           $c1a3 = wTriggerFadeOut
-           $c1a4 = wFlickerTimer
-  SECTION: $c1a5-$c1a8 ($0004 bytes) ["scroll vars"]
-           $c1a5 = wParallaxClose
-           $c1a6 = wParallaxMiddle
-           $c1a7 = wParallaxFar
-           $c1a8 = wRain
-  SECTION: $c1a9-$c1ac ($0004 bytes) ["level vars"]
-           $c1a9 = wLevel
-           $c1aa = wLevelWaitCounter
-           $c1ab = wLevelDataAddress
-  SECTION: $c1ad-$c1af ($0003 bytes) ["stage clear vars"]
-           $c1ad = wStageClearTimer
-           $c1ae = wStageClearFrame
-           $c1af = wLivesToAdd
-  SECTION: $c1b0-$c1b2 ($0003 bytes) ["controller vars"]
-           $c1b0 = wControllerDown
-           $c1b1 = wControllerPressed
-           $c1b2 = wPaused
-  SECTION: $c1b3-$c1b5 ($0003 bytes) ["menu vars"]
-           $c1b3 = wMenuFrame
-           $c1b4 = wSelectedMode
-           $c1b5 = wMenuCursorOAM
-  SECTION: $c1b6-$c1b8 ($0003 bytes) ["interrupts vars"]
-           $c1b6 = wVBlankFlag
-           $c1b7 = wLCDInterrupt
-  SECTION: $c1b9-$c1ba ($0002 bytes) ["game vars"]
-           $c1b9 = wCountdownFrame
-           $c1ba = wCountdownOAM
-  SECTION: $c1bb-$c1bb ($0001 byte) ["opening cutscene vars"]
-           $c1bb = wHandWavingFrame
+  SECTION: $c1a0-$c1a3 ($0004 bytes) ["bullet vars"]
+           $c1a0 = wPlayerBulletY
+           $c1a1 = wPlayerBulletX
+           $c1a2 = wPlayerBulletAlive
+           $c1a3 = wPlayerBulletRight
+  SECTION: $c1a4-$c1a7 ($0004 bytes) ["scroll vars"]
+           $c1a4 = wParallaxClose
+           $c1a5 = wParallaxMiddle
+           $c1a6 = wParallaxFar
+           $c1a7 = wRain
+  SECTION: $c1a8-$c1ab ($0004 bytes) ["level vars"]
+           $c1a8 = wLevel
+           $c1a9 = wLevelWaitCounter
+           $c1aa = wLevelDataAddress
+  SECTION: $c1ac-$c1ae ($0003 bytes) ["stage clear vars"]
+           $c1ac = wStageClearTimer
+           $c1ad = wStageClearFrame
+           $c1ae = wLivesToAdd
+  SECTION: $c1af-$c1b1 ($0003 bytes) ["controller vars"]
+           $c1af = wControllerDown
+           $c1b0 = wControllerPressed
+           $c1b1 = wPaused
+  SECTION: $c1b2-$c1b4 ($0003 bytes) ["menu vars"]
+           $c1b2 = wMenuFrame
+           $c1b3 = wSelectedMode
+           $c1b4 = wMenuCursorOAM
+  SECTION: $c1b5-$c1b7 ($0003 bytes) ["interrupts vars"]
+           $c1b5 = wVBlankFlag
+           $c1b6 = wLCDInterrupt
+  SECTION: $c1b8-$c1b9 ($0002 bytes) ["game vars"]
+           $c1b8 = wCountdownFrame
+           $c1b9 = wCountdownOAM
+  SECTION: $c1ba-$c1bb ($0002 bytes) ["opening cutscene vars"]
+           $c1ba = wHandWavingFrame
+           $c1bb = wHandWaveOAM
     SLACK: $0e44 bytes
 
 HRAM bank #0:
