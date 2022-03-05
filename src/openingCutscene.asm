@@ -9,6 +9,7 @@ HAND_WAVE_TILE_2 EQU $40
 
 SECTION "opening cutscene vars", WRAM0
     wHandWavingFrame:: DB
+    wHandWaveOAM:: DB
 
 ; AKA park
 SECTION "opening cutscene", ROMX
@@ -35,8 +36,8 @@ SpawnHandWave::
     cp a, 0
     ret z
     ld a, b
-	ld [wOAMGeneral1], a
-	SET_HL_TO_ADDRESS wOAM, wOAMGeneral1
+	ld [wHandWaveOAM], a
+	SET_HL_TO_ADDRESS wOAM, wHandWaveOAM
     ld a, HAND_WAVE_START_Y
     ld [hli], a
     ld a, HAND_WAVE_START_X
@@ -46,7 +47,6 @@ SpawnHandWave::
     ld [hl], OAMF_PAL0
 	ret
 
-; NOTE if ram becomes a problem I could probably use modulo off global timer for frames
 HandWaveAnimation::
     ld a, [wHandWavingFrame]
     cp a, 0
@@ -55,7 +55,7 @@ HandWaveAnimation::
     ldh a, [hGlobalTimer]
     and 15
     jp nz, .end
-    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
+    SET_HL_TO_ADDRESS wOAM+2, wHandWaveOAM
     ld [hl], HAND_WAVE_TILE_2
     ld hl, wHandWavingFrame
     ld [hl], 1
@@ -64,7 +64,7 @@ HandWaveAnimation::
     ldh a, [hGlobalTimer]
     and 15
     jp nz, .end
-    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
+    SET_HL_TO_ADDRESS wOAM+2, wHandWaveOAM
     ld [hl], HAND_WAVE_TILE_1
     ld hl, wHandWavingFrame
     ld [hl], 0
