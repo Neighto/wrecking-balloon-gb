@@ -29,6 +29,11 @@ SECTION "player vars", WRAM0
 
 SECTION "player", ROM0
 
+InitializeLives::
+	ld a, 2
+	ld [wPlayerLives], a
+  ret
+
 InitializePlayer::
   xor a ; ld a, 0
   ld [wPlayerPopping], a
