@@ -116,7 +116,7 @@ MACRO SET_HL_TO_ADDRESS
     ADD_TO_HL [\2]
 ENDM
 
-; Level Data Macros
+; Level Macros
 
 ; Level Instructions
 LEVEL_SPAWN_KEY EQU 0 
@@ -124,7 +124,7 @@ LEVEL_WAIT_KEY EQU 1
 LEVEL_END_KEY EQU 2
 
 MACRO LEVEL_SPAWN
-    ; Enemy, Y, X
+    ; Enemy, Y, X, Difficulty
     DB LEVEL_SPAWN_KEY, \1, \2, \3
 ENDM
 

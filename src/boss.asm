@@ -17,7 +17,7 @@ PORCUPINE_TILE_5 EQU $4A
 PORCUPINE_TILE_6 EQU $4C
 PORCUPINE_TILE_7 EQU $4E
 
-SECTION "porcupine", ROMX
+SECTION "boss", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
@@ -35,7 +35,7 @@ SetStruct:
     ld [hl], a
     ret
 
-SpawnPorcupine::
+SpawnBoss::
     push hl
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
@@ -58,8 +58,6 @@ SpawnPorcupine::
     ld a, 1
     ld [wEnemyActive], a
     ld [wEnemyAlive], a
-    ld a, PORCUPINE 
-    ld [wEnemyNumber], a
 .topLeft:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     ld a, [wEnemyY]
@@ -149,7 +147,7 @@ SpawnPorcupine::
     pop hl
     ret
 
-PorcupineUpdate::
+BossUpdate::
     ; Get rest of struct
     ld a, [hli]
     ld [wEnemyY], a
@@ -159,18 +157,28 @@ PorcupineUpdate::
     ld [wEnemyOAM], a
     ld a, [hli]
     ld [wEnemyAlive], a    
-    ; Check alive
+
+.checkAlive:
     ld a, [wEnemyAlive]
     cp a, 0
     jr z, .isDead
 .isAlive:
-    ; Do stuff
-.offScreen:
-    ; call Clear
-    jr .checkLoop
+
+.checkMove:
+.canMove:
+.endMove:
+
+.checkCollision:
+.endCollision:
+
+.checkOffscreen:
+.offscreen:
+.endOffscreen:
+
+    jr .setStruct
 .isDead:
     ; Do stuff
-.checkLoop:
+.setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
     ret
