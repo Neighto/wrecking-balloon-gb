@@ -441,8 +441,8 @@ BossUpdate::
     and	PORCUPINE_MOVE_TIME
     jr nz, .endMove
 .canMove:
-    ; call Move
-    call MoveBall
+    call Move
+    ; call MoveBall
 .endMove:
 
 .checkCollision:

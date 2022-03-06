@@ -8,6 +8,10 @@ StageClearMap::
     INCBIN "incbin/background/StageClear.tilemap"
 StageClearMapEnd::
 
+GameOverMap::
+    INCBIN "incbin/background/GameOver.tilemap"
+GameOverMapEnd::
+
 Level1Map:: 
     INCBIN "incbin/background/City.tilemap"
 Level1MapEnd::

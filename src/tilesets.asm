@@ -49,6 +49,10 @@ StageClearTiles::
     INCBIN "incbin/background/StageClear.2bpp"
 StageClearTilesEnd::
 
+GameOverTiles::
+    INCBIN "incbin/background/GameOver.2bpp"
+GameOverTilesEnd::
+
 Level2Tiles::
     INCBIN "incbin/background/Desert.2bpp"
 Level2TilesEnd::
