@@ -11,7 +11,6 @@ SECTION "opening cutscene vars", WRAM0
     wHandWavingFrame:: DB
     wHandWaveOAM:: DB
 
-; AKA park
 SECTION "opening cutscene", ROMX
 
 InitializeOpeningCutscene::

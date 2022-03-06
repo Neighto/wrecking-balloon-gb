@@ -117,6 +117,12 @@ SetPlayerPositionOpeningCutscene::
   call SetPlayerPosition
   ret
 
+SetPlayerPositionEndingCutscene::
+  ld b, PLAYER_START_X
+  ld c, PLAYER_START_Y
+  call SetPlayerPosition
+  ret
+
 SpawnPlayer::
 .cactusLeft:
   ld hl, wPlayerCactusOAM

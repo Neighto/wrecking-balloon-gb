@@ -195,6 +195,10 @@ GameWon::
 	call LoadEndingCutsceneGraphics
 	call InitializePalettes
 	call InitializeEndingCutscene
+	call InitializePlayer
+	call SpawnPlayer
+	call SetPlayerPositionEndingCutscene
+	call SpawnHandClap
 	ld hl, menuTheme
 	call hUGE_init
 	call LCD_ON_NO_WINDOW
