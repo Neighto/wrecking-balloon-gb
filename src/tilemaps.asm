@@ -1,8 +1,8 @@
 SECTION "tilemaps", ROM0
 
-OpeningCutsceneMap::
-    INCBIN "incbin/background/OpeningCutscene.tilemap"
-OpeningCutsceneMapEnd::
+CutsceneMap::
+    INCBIN "incbin/background/Cutscenes.tilemap"
+CutsceneMapEnd::
     
 StageClearMap::
     INCBIN "incbin/background/StageClear.tilemap"
