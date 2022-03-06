@@ -82,4 +82,9 @@ UpdateEndingCutscene::
     ldh a, [hGlobalTimer]
     and HAND_CLAP_SPEED
     call z, MoveHands
+    ; Temp
+    call ReadController
+    ld a, [wControllerDown]
+    and PADF_START | PADF_A
+    jp nz, Start
     ret
