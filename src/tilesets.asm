@@ -41,9 +41,9 @@ RainCloudsTilesEnd::
 
 SECTION "tilesets 2", ROMX
 
-OpeningCutsceneTiles::
-    INCBIN "incbin/background/OpeningCutscene.2bpp"
-OpeningCutsceneTilesEnd::
+CutsceneTiles::
+    INCBIN "incbin/background/Cutscenes.2bpp"
+CutsceneTilesEnd::
 
 StageClearTiles::
     INCBIN "incbin/background/StageClear.2bpp"

@@ -19,12 +19,12 @@ InitializeOpeningCutscene::
 	ld [wHandWavingFrame], a
     ret
 
-LoadParkGraphics::
-	ld bc, OpeningCutsceneTiles
+LoadOpeningCutsceneGraphics::
+	ld bc, CutsceneTiles
 	ld hl, _VRAM9000
-	ld de, OpeningCutsceneTilesEnd - OpeningCutsceneTiles
+	ld de, CutsceneTilesEnd - CutsceneTiles
 	call MEMCPY
-	ld bc, OpeningCutsceneMap
+	ld bc, CutsceneMap
 	ld hl, _SCRN0
     ld d, SCRN_Y_B
 	call MEMCPY_SINGLE_SCREEN
@@ -71,7 +71,7 @@ HandWaveAnimation::
 .end:
 	ret
 
-UpdatePark::
+UpdateOpeningCutscene::
 .fadeIn:
     call FadeInPalettes
     cp a, 0
