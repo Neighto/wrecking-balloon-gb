@@ -640,6 +640,4 @@ PlayerUpdate::
   ld [wPlayerInvincible], a
   ret
 .noMoreLives:
-  call ClearSound
-  call StopSweepSound
-  jp Start ; change this so it leads to intermediate screen to say GAME OVER, maybe play small jingle + start to continue
+  jp GameOver
