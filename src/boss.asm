@@ -19,6 +19,11 @@ PORCUPINE_TILE_5 EQU $4A
 PORCUPINE_TILE_6 EQU $4C
 PORCUPINE_TILE_7 EQU $4E
 
+PORCUPINE_BALL_TILE_1 EQU $50
+PORCUPINE_BALL_TILE_2 EQU $52
+PORCUPINE_BALL_TILE_3 EQU $54
+PORCUPINE_BALL_TILE_4 EQU $56
+
 PORCUPINE_POINTS EQU 1
 
 SECTION "boss", ROMX
@@ -236,6 +241,94 @@ UpdateBossPosition:
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
     ret
 
+UpdateBossBallPosition:
+    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+.topLeft:
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    ld [hli], a
+    ld [hl], PORCUPINE_BALL_TILE_1
+    inc l
+    ld [hl], OAMF_PAL0
+.topMiddle:
+    inc l
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    add 8
+    ld [hli], a
+    ld [hl], PORCUPINE_BALL_TILE_2
+    inc l
+    ld [hl], OAMF_PAL0
+.topMiddle2:
+    inc l
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    add 16
+    ld [hli], a
+    ld [hl], PORCUPINE_BALL_TILE_3
+    inc l
+    ld [hl], OAMF_PAL0
+.topRight:
+    inc l
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    add 24
+    ld [hli], a
+    ld [hl], PORCUPINE_BALL_TILE_4
+    inc l
+    ld [hl], OAMF_PAL0
+.bottomLeft:
+    inc l
+    ld a, [wEnemyY]
+    add 16
+    ld [hli], a
+    ld a, [wEnemyX]
+    ld [hli], a
+    ld [hl], PORCUPINE_BALL_TILE_1
+    inc l
+    ld [hl], OAMF_PAL0 | OAMF_YFLIP
+.bottomMiddle:
+    inc l
+    ld a, [wEnemyY]
+    add 16
+    ld [hli], a
+    ld a, [wEnemyX]
+    add 8
+    ld [hli], a
+    ld [hl], PORCUPINE_BALL_TILE_2
+    inc l
+    ld [hl], OAMF_PAL0 | OAMF_YFLIP
+.bottomMiddle2:
+    inc l
+    ld a, [wEnemyY]
+    add 16
+    ld [hli], a
+    ld a, [wEnemyX]
+    add 16
+    ld [hli], a
+    ld [hl], PORCUPINE_BALL_TILE_2
+    inc l
+    ld [hl], OAMF_PAL0 | OAMF_YFLIP | OAMF_XFLIP
+.bottomRight:
+    inc l
+    ld a, [wEnemyY]
+    add 16
+    ld [hli], a
+    ld a, [wEnemyX]
+    add 24
+    ld [hli], a
+    ld [hl], PORCUPINE_BALL_TILE_1
+    inc l
+    ld [hl], OAMF_PAL0 | OAMF_YFLIP | OAMF_XFLIP
+.empty:
+    inc l
+    RESET_AT_HL 8
+    ret
+
 SpawnBoss::
     push hl
     ld hl, wEnemies
@@ -303,21 +396,22 @@ Move:
     xor a ; ld a, 0
     ld [wEnemyRightside], a
 .updatePosition:
-    call UpdateBossPosition
+    ; call UpdateBossPosition
+    call UpdateBossBallPosition
+    ret
+
+    ; he'll roll towards you
+    ; pop the balloon and he'll fall right away or blink
+    ; falls near the bottom of the screen then goes ball mode
+    ; avoid until done with the pattern;
+    ; repeat until donzo
+    ; any other moves?
+
+MoveBall:
+
     ret
 
 Clear:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    xor a ; ld a, 0
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     RESET_AT_HL PORCUPINE_OAM_BYTES
     call InitializeEnemyStructVars
@@ -347,7 +441,8 @@ BossUpdate::
     and	PORCUPINE_MOVE_TIME
     jr nz, .endMove
 .canMove:
-    call Move
+    ; call Move
+    call MoveBall
 .endMove:
 
 .checkCollision:
