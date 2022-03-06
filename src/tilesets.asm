@@ -21,7 +21,8 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/BalloonGeneric.2bpp"
     INCBIN "incbin/background/Man_Wave.2bpp"
     INCBIN "incbin/background/Man_Wave2.2bpp"
-    INCBIN "incbin/sprite/porcu.2bpp"
+    INCBIN "incbin/sprite/Boss.2bpp"
+    INCBIN "incbin/sprite/BossBall.2bpp"
     INCBIN "incbin/sprite/PointBalloon.2bpp"
     INCBIN "incbin/sprite/PointBalloon2.2bpp"
 GameSpriteTilesEnd::
