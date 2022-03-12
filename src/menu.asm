@@ -13,6 +13,7 @@ TITLE_HEIGHT_IN_TILES EQU 6
 SECTION "menu vars", WRAM0
 	wMenuFrame:: DB
 	wSelectedMode:: DB
+	wMenuCursorOAM:: DB
 
 SECTION "menu", ROMX
 
@@ -64,8 +65,8 @@ SpawnMenuCursor::
 	jr z, .end
 .availableSpace:
 	ld a, b
-	ld [wOAMGeneral1], a
-	SET_HL_TO_ADDRESS wOAM, wOAMGeneral1
+	ld [wMenuCursorOAM], a
+	SET_HL_TO_ADDRESS wOAM, wMenuCursorOAM
 	ld a, 104 ; y
 	ld [hli], a
 	ld a, 56 ; x
@@ -73,49 +74,6 @@ SpawnMenuCursor::
 	ld [hl], MENU_CURSOR_TILE
 	inc l
 	ld [hl], OAMF_PAL0
-.end:
-	ret
-
-BlinkMenuCursor::
-	; Check timer
-	ldh a, [hGlobalTimer]
-	and %00011111
-	jr z, .blink
-	ret
-.blink:
-	; Check what tile and flip it
-	SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-	ld a, [hl]
-	cp a, EMPTY_TILE
-	jr nz, .empty
-.show:
-	ld a, MENU_CURSOR_TILE
-	ld [hl], a
-	ret
-.empty:
-	ld a, EMPTY_TILE
-	ld [hl], a
-	ret
-
-SelectMode:
-	call CollectSound
-	ld a, 1 
-	ld [wTriggerFadeOut], a
-	ret
-
-MenuInput:
-	ldh a, [hGlobalTimer]
-	and %00000011
-	jr nz, .end
-	call ReadController	
-.moveSelected:
-	ld a, [wControllerPressed]
-	and PADF_SELECT
-	; call nz, MoveCursor
-.selectMode:
-	ld a, [wControllerDown]
-	and PADF_START
-	call nz, SelectMode
 .end:
 	ret
 
@@ -184,13 +142,39 @@ UpdateMenu::
 	cp a, 0
 	ret z
 .hasFadedIn:
-	call BlinkMenuCursor
 	call _hUGE_dosound
+	call IncrementScrollOffset
 	ld a, [wTriggerFadeOut]
 	cp a, 0
 	jr nz, .fadeOut
-	call MenuInput
-	call IncrementScrollOffset
+
+.blinkMenuCursor:
+	ldh a, [hGlobalTimer]
+	and %00011111
+	jr nz, .blinkMenuCursorEnd
+.blink:
+	SET_HL_TO_ADDRESS wOAM+2, wMenuCursorOAM
+	ld a, [hl]
+	cp a, EMPTY_TILE
+	jr nz, .empty
+.show:
+	ld a, MENU_CURSOR_TILE
+	ld [hl], a
+	jr .blinkMenuCursorEnd
+.empty:
+	ld a, EMPTY_TILE
+	ld [hl], a
+.blinkMenuCursorEnd:
+
+.menuInput:
+	call ReadController
+	ld a, [wControllerDown]
+	and PADF_START | PADF_A
+	ret z
+.start:
+	ld a, 1 
+	ld [wTriggerFadeOut], a
+	call CollectSound
 	ret
 .fadeOut:
 	call FadeOutPalettes

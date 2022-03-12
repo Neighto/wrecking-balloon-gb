@@ -21,6 +21,7 @@ SECTION "player vars", WRAM0
   wPlayerSpeed:: DB
   wPlayerLives:: DB
   wPlayerRight:: DB
+  wPlayerBobbedUp:: DB
 
   ; Operate like timers
   wPlayerInvincible:: DB
@@ -28,6 +29,11 @@ SECTION "player vars", WRAM0
   wPlayerAttack:: DB
 
 SECTION "player", ROM0
+
+InitializeLives::
+	ld a, 2
+	ld [wPlayerLives], a
+  ret
 
 InitializePlayer::
   xor a ; ld a, 0
@@ -41,6 +47,7 @@ InitializePlayer::
   ld [wPlayerInvincible], a
   ld [wPlayerBoost], a
   ld [wPlayerAttack], a
+  ld [wPlayerBobbedUp], a
 
   ld a, 1
   ld [wPlayerAlive], a
@@ -107,6 +114,12 @@ SetPlayerPositionOpeningDefault:
   ret
 
 SetPlayerPositionOpeningCutscene::
+  ld b, PLAYER_START_X
+  ld c, PLAYER_START_Y - 32
+  call SetPlayerPosition
+  ret
+
+SetPlayerPositionEndingCutscene::
   ld b, PLAYER_START_X
   ld c, PLAYER_START_Y
   call SetPlayerPosition
@@ -378,8 +391,8 @@ PlayerControls:
 .endB:
   ret
 
-MovePlayerUpForCutscene::
-  ld d, %01000000
+MovePlayerForCutscene::
+  ; d argument as input string
   ld e, 0
   ld c, 0
   call PlayerControls
@@ -635,6 +648,4 @@ PlayerUpdate::
   ld [wPlayerInvincible], a
   ret
 .noMoreLives:
-  call ClearSound
-  call StopSweepSound
-  jp Start ; change this so it leads to intermediate screen to say GAME OVER, maybe play small jingle + start to continue
+  jp GameOver

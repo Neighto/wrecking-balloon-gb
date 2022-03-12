@@ -260,8 +260,8 @@ SpawnDataHandler:
     jp z, SpawnBird
     cp a, BOMB
     jp z, SpawnBomb
-    cp a, PORCUPINE
-    jp z, SpawnPorcupine
+    cp a, BOSS
+    jp z, SpawnBoss
     ret
 
 LevelDataHandler::
@@ -284,6 +284,8 @@ LevelDataHandler::
     jr z, .wait
     cp a, LEVEL_END_KEY
     jr z, .end
+    cp a, GAME_WON_KEY
+    jr z, .won
     ret
 .spawn:
     ; Next instructions: enemy, y, x
@@ -320,4 +322,8 @@ LevelDataHandler::
     inc a
     ld [wLevel], a 
     jp StageClear
-    ret
+.won:
+    call FadeOutPalettes
+	cp a, 0
+    ret z
+    jp GameWon

@@ -17,6 +17,7 @@ COUNTDOWN_NEUTRAL_BALLOON_TILE EQU $3A
 
 SECTION "game vars", WRAM0
     wCountdownFrame:: DB
+    wCountdownOAM:: DB
 
 SECTION "game", ROM0
 
@@ -82,10 +83,10 @@ SpawnCountdown::
 	ld b, 2
 	call RequestOAMSpace
     cp a, 0
-    jr z, .end
+    ret z
     ld a, b
-	ld [wOAMGeneral1], a
-	SET_HL_TO_ADDRESS wOAM, wOAMGeneral1
+	ld [wCountdownOAM], a
+	SET_HL_TO_ADDRESS wOAM, wCountdownOAM
     ld a, COUNTDOWN_START_Y
     ld [hli], a
     ld a, COUNTDOWN_START_X
@@ -98,106 +99,7 @@ SpawnCountdown::
     ld a, COUNTDOWN_START_X+8
     ld [hli], a
     ld [hl], EMPTY_TILE
-.end:
 	ret
-
-Countdown::
-    ld a, [wCountdownFrame]
-    cp a, 7
-    jr c, .countdown
-.hasCountedDown:
-    ld a, 1
-    ret
-.countdown:
-    ld a, [wCountdownFrame]
-    cp a, 4
-    jr nc, .balloonPop
-    ldh a, [hGlobalTimer]
-    and COUNTDOWN_SPEED
-    jp nz, .end
-    jr .frames
-.balloonPop:
-    ldh a, [hGlobalTimer]
-    and COUNTDOWN_BALLOON_POP_SPEED
-    jp nz, .end
-.frames:
-    ld a, [wCountdownFrame]
-    cp a, 0
-    jp z, .frame0
-    cp a, 1
-    jp z, .frame1
-    cp a, 2
-    jp z, .frame2
-    cp a, 3
-    jp z, .frame3
-    cp a, 4
-    jp z, .frame4
-    cp a, 5
-    jp z, .frame5
-    cp a, 6
-    jp z, .remove
-    jp .end
-.frame0:
-    call PercussionSound
-    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], COUNTDOWN_3_TILE_1
-    SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
-    ld [hl], COUNTDOWN_3_TILE_2
-    jp .endFrame
-.frame1:
-    call PercussionSound
-    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], COUNTDOWN_2_TILE_1
-    SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
-    ld [hl], COUNTDOWN_2_TILE_2
-    jp .endFrame
-.frame2:
-    call PercussionSound
-    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], COUNTDOWN_1_TILE_1
-    SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
-    ld [hl], COUNTDOWN_1_TILE_2
-    jr .endFrame
-.frame3:
-    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], COUNTDOWN_NEUTRAL_BALLOON_TILE
-    SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
-    ld [hl], COUNTDOWN_NEUTRAL_BALLOON_TILE
-    inc l 
-    ld [hl], OAMF_XFLIP
-    jr .endFrame
-.frame4:
-    call PopSound
-    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], POP_BALLOON_FRAME_0_TILE
-    SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
-    ld [hl], POP_BALLOON_FRAME_0_TILE
-    jr .endFrame
-.frame5:
-    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
-    ld [hl], POP_BALLOON_FRAME_1_TILE
-    SET_HL_TO_ADDRESS wOAM+6, wOAMGeneral1
-    ld [hl], POP_BALLOON_FRAME_1_TILE
-    jr .endFrame
-.remove:
-    ; todo make erase func for oam
-    SET_HL_TO_ADDRESS wOAM, wOAMGeneral1
-    xor a ; ld a, 0
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-.endFrame:
-    ld a, [wCountdownFrame]
-    inc a 
-    ld [wCountdownFrame], a
-.end:
-    xor a ; ld a, 0
-    ret
 
 UpdateGameCountdown::
     call RefreshWindow
@@ -205,9 +107,108 @@ UpdateGameCountdown::
     call FadeInPalettes
 	cp a, 0
 	ret z
-    call Countdown
+.checkCountdownAnimation:
+    ld a, [wCountdownFrame]
+    cp a, 4
+    jr nc, .countdownBalloonPopSpeed
+.countdownSpeed:
+    ldh a, [hGlobalTimer]
+    and COUNTDOWN_SPEED
+    ret nz
+    jr .frames
+.countdownBalloonPopSpeed:
+    ldh a, [hGlobalTimer]
+    and COUNTDOWN_BALLOON_POP_SPEED
+    ret nz
+.frames:
+    ld a, [wCountdownFrame]
     cp a, 0
-    jp nz, GameLoop
+    jr nz, .frame0End
+.frame0:
+    inc a 
+    ld [wCountdownFrame], a
+    call PercussionSound
+    SET_HL_TO_ADDRESS wOAM+2, wCountdownOAM
+    ld [hl], COUNTDOWN_3_TILE_1
+    SET_HL_TO_ADDRESS wOAM+6, wCountdownOAM
+    ld [hl], COUNTDOWN_3_TILE_2
+    ret
+.frame0End:
+    cp a, 1
+    jr nz, .frame1End
+.frame1:
+    inc a 
+    ld [wCountdownFrame], a
+    call PercussionSound
+    SET_HL_TO_ADDRESS wOAM+2, wCountdownOAM
+    ld [hl], COUNTDOWN_2_TILE_1
+    SET_HL_TO_ADDRESS wOAM+6, wCountdownOAM
+    ld [hl], COUNTDOWN_2_TILE_2
+    ret
+.frame1End:
+    cp a, 2
+    jr nz, .frame2End
+.frame2:
+    inc a 
+    ld [wCountdownFrame], a
+    call PercussionSound
+    SET_HL_TO_ADDRESS wOAM+2, wCountdownOAM
+    ld [hl], COUNTDOWN_1_TILE_1
+    SET_HL_TO_ADDRESS wOAM+6, wCountdownOAM
+    ld [hl], COUNTDOWN_1_TILE_2
+    ret
+.frame2End:
+    cp a, 3
+    jr nz, .frame3End
+.frame3:
+    inc a 
+    ld [wCountdownFrame], a
+    SET_HL_TO_ADDRESS wOAM+2, wCountdownOAM
+    ld [hl], COUNTDOWN_NEUTRAL_BALLOON_TILE
+    SET_HL_TO_ADDRESS wOAM+6, wCountdownOAM
+    ld [hl], COUNTDOWN_NEUTRAL_BALLOON_TILE
+    inc l 
+    ld [hl], OAMF_XFLIP
+    ret
+.frame3End:
+    cp a, 4
+    jr nz, .frame4End
+.frame4:
+    inc a 
+    ld [wCountdownFrame], a
+    call PopSound
+    SET_HL_TO_ADDRESS wOAM+2, wCountdownOAM
+    ld [hl], POP_BALLOON_FRAME_0_TILE
+    SET_HL_TO_ADDRESS wOAM+6, wCountdownOAM
+    ld [hl], POP_BALLOON_FRAME_0_TILE
+    ret
+.frame4End:
+    cp a, 5
+    jr nz, .frame5End
+.frame5:
+    inc a 
+    ld [wCountdownFrame], a
+    SET_HL_TO_ADDRESS wOAM+2, wCountdownOAM
+    ld [hl], POP_BALLOON_FRAME_1_TILE
+    SET_HL_TO_ADDRESS wOAM+6, wCountdownOAM
+    ld [hl], POP_BALLOON_FRAME_1_TILE
+    ret
+.frame5End:
+.clear:
+    inc a 
+    ld [wCountdownFrame], a
+    SET_HL_TO_ADDRESS wOAM, wCountdownOAM
+    xor a ; ld a, 0
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+.gameLoop:
+    jp GameLoop
     ret
 
 UpdateGame::

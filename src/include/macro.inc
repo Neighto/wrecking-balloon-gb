@@ -19,11 +19,9 @@ MACRO DECREMENT_POS
 ENDM
 
 ; Use with caution: Overwrites hl and bc
-MACRO RESET_IN_RANGE
-    ; argument 1 is starting address
-    ; argument 2 is distance
-    ld hl, \1
-    ld bc, \2
+MACRO RESET_AT_HL
+    ; argument 1 is distance
+    ld bc, \1
     push af
 .loop\@:
     xor a ; ld a, 0
@@ -33,6 +31,14 @@ MACRO RESET_IN_RANGE
     or c
     jr nz, .loop\@
     pop af
+ENDM
+
+; Use with caution: Overwrites hl and bc
+MACRO RESET_IN_RANGE
+    ; argument 1 is starting address
+    ; argument 2 is distance
+    ld hl, \1
+    RESET_AT_HL \2
 ENDM
 
 ; Use with caution: Overwrites hl and bc, and d
@@ -122,9 +128,10 @@ ENDM
 LEVEL_SPAWN_KEY EQU 0 
 LEVEL_WAIT_KEY EQU 1
 LEVEL_END_KEY EQU 2
+GAME_WON_KEY EQU 3
 
 MACRO LEVEL_SPAWN
-    ; Enemy, Y, X
+    ; Enemy, Y, X, Difficulty
     DB LEVEL_SPAWN_KEY, \1, \2, \3, \4
 ENDM
 
@@ -136,4 +143,9 @@ ENDM
 MACRO LEVEL_END
     ; Stop reading
     DB LEVEL_END_KEY
+ENDM
+
+MACRO GAME_WON
+    ; Jump to end cutscene
+    DB GAME_WON_KEY
 ENDM

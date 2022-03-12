@@ -89,8 +89,8 @@ UpdateEnemy::
     jr z, .bird
     cp a, BOMB
     jr z, .bomb
-    cp a, PORCUPINE
-    jr z, .porcupine
+    cp a, BOSS
+    jr z, .boss
     jr .checkLoop
 .pointBalloon:
     call PointBalloonUpdate
@@ -104,8 +104,8 @@ UpdateEnemy::
 .bomb:
     call BombUpdate
     jr .checkLoop
-.porcupine:
-    call PorcupineUpdate
+.boss:
+    call BossUpdate
     jr .checkLoop
 .checkLoop:
     ld a, [wEnemyOffset]
