@@ -964,206 +964,209 @@ ROMX bank #1:
            $7352 = PointBalloonUpdate.popped
            $7352 = PointBalloonUpdate.endOffscreen
            $735a = PointBalloonUpdate.setStruct
-  SECTION: $736a-$748d ($0124 bytes) ["menu"]
-           $736a = InitializeMenu
-           $7376 = LoadMenuOpeningGraphics
-           $738e = LoadMenuGraphics
-           $73c0 = SpawnMenuCursor
-           $73c9 = SpawnMenuCursor.availableSpace
-           $73e4 = SpawnMenuCursor.end
-           $73e5 = UpdateMenuOpening
-           $7401 = UpdateMenuOpening.startSound
-           $7406 = UpdateMenuOpening.scrollUpTitle
-           $7412 = UpdateMenuOpening.endSound
-           $7417 = UpdateMenuOpening.scrollDownTitle
-           $7423 = UpdateMenuOpening.scrollUpTitle2
-           $742f = UpdateMenuOpening.fadeOut
-           $7435 = UpdateMenuOpening.next
-           $7439 = UpdateMenuOpening.endFrame
-           $7440 = UpdateMenuOpening.end
-           $7441 = UpdateMenu
-           $7441 = UpdateMenu.fadeIn
-           $7447 = UpdateMenu.hasFadedIn
-           $7454 = UpdateMenu.blinkMenuCursor
-           $745a = UpdateMenu.blink
-           $746b = UpdateMenu.show
-           $7470 = UpdateMenu.empty
-           $7473 = UpdateMenu.blinkMenuCursorEnd
-           $7473 = UpdateMenu.menuInput
-           $747c = UpdateMenu.start
-           $7485 = UpdateMenu.fadeOut
-  SECTION: $748e-$7595 ($0108 bytes) ["porcupine"]
-           $748e = SetStruct
-           $74a7 = SpawnPorcupine
-           $74b7 = SpawnPorcupine.availableSpace
-           $74c1 = SpawnPorcupine.availableOAMSpace
-           $74d7 = SpawnPorcupine.topLeft
-           $74f0 = SpawnPorcupine.topMiddle
-           $7500 = SpawnPorcupine.topMiddle2
-           $7510 = SpawnPorcupine.topRight
-           $7520 = SpawnPorcupine.bottomLeft
-           $7530 = SpawnPorcupine.bottomMiddle
-           $7542 = SpawnPorcupine.bottomMiddle2
-           $7554 = SpawnPorcupine.bottomRight
-           $7566 = SpawnPorcupine.setStruct
-           $756b = SpawnPorcupine.end
-           $756d = PorcupineUpdate
-           $7584 = PorcupineUpdate.offScreen
-           $7584 = PorcupineUpdate.isAlive
-           $7586 = PorcupineUpdate.isDead
-           $7586 = PorcupineUpdate.checkLoop
-  SECTION: $7596-$7693 ($00fe bytes) ["palettes"]
-           $7596 = ResetFading
-           $75a4 = InitializePalettes
-           $75b4 = InitializeFlicker
-           $75ba = FadeOutPalettes
-           $75c1 = FadeOutPalettes.hasFadedIn
-           $75c4 = FadeOutPalettes.fadeOut
-           $75e3 = FadeOutPalettes.fade1
-           $75eb = FadeOutPalettes.fade2
-           $75f3 = FadeOutPalettes.fade3
-           $75fb = FadeOutPalettes.fade4
-           $7601 = FadeOutPalettes.fadePalettes
-           $7607 = FadeOutPalettes.increaseFrame
-           $760e = FadeOutPalettes.end
-           $7610 = FadeInPalettes
-           $7617 = FadeInPalettes.hasFadedIn
-           $761a = FadeInPalettes.fadeIn
-           $7639 = FadeInPalettes.fade1
-           $7641 = FadeInPalettes.fade2
-           $7649 = FadeInPalettes.fade3
-           $7651 = FadeInPalettes.fade4
-           $7657 = FadeInPalettes.fadePalettes
-           $765d = FadeInPalettes.increaseFrame
-           $7664 = FadeInPalettes.end
-           $7666 = FlickerBackgroundPalette
-           $767e = FlickerBackgroundPalette.flickerOn
-           $7689 = FlickerBackgroundPalette.flickerOff
-           $768d = FlickerBackgroundPalette.flickerEnd
-  SECTION: $7694-$776e ($00db bytes) ["stage clear"]
-           $7694 = InitializeStageClear
-           $76a1 = LoadStageClearGraphics
-           $76b9 = RefreshAddLives
-           $76c8 = RefreshAddLives.hasLivesToAdd
-           $76d5 = RefreshStageClear
-           $76ed = UpdateStageClear
-           $771c = UpdateStageClear.pause
-           $772d = UpdateStageClear.copyFirstDigitToTotal
-           $7741 = UpdateStageClear.copyPointsToTotal
-           $7751 = UpdateStageClear.addGainedLives
-           $7767 = UpdateStageClear.endFrame
-  SECTION: $776f-$7848 ($00da bytes) ["opening cutscene"]
-           $776f = InitializeOpeningCutscene
-           $7774 = LoadOpeningCutsceneGraphics
-           $778c = SpawnHandWave
-           $77b0 = HandWaveAnimation
-           $77b7 = HandWaveAnimation.frame0
-           $77d2 = HandWaveAnimation.frame1
-           $77ec = HandWaveAnimation.end
-           $77ed = UpdateOpeningCutscene.fadeIn
-           $77ed = UpdateOpeningCutscene
-           $77f3 = UpdateOpeningCutscene.hasFadedIn
-           $780a = UpdateOpeningCutscene.offscreen
-           $7811 = UpdateOpeningCutscene.fadeOut
-           $7819 = UpdateOpeningCutscene.skipFade
-           $781c = UpdateOpeningCutscene.moveUp
-           $782e = UpdateOpeningCutscene.bobUp
-           $7839 = UpdateOpeningCutscene.bobDown
-           $7843 = UpdateOpeningCutscene.noBob
-  SECTION: $7849-$7902 ($00ba bytes) ["sound"]
-           $7849 = AUDIO_OFF
-           $784d = AUDIO_ON
-           $7852 = PopSound
-           $7865 = ExplosionSound
-           $7872 = WaveSound
-           $787f = FallingSound
-           $7894 = RisingSound
-           $78a9 = StopSweepSound
-           $78ae = CollectSound
-           $78c3 = WrongAnswerSound
-           $78da = PercussionSound
-           $78e7 = BassSound
-           $78f8 = ClearSound
-  SECTION: $7903-$79b6 ($00b4 bytes) ["memory"]
-           $7903 = MEMCPY
-           $7903 = MEMCPY.loop
-           $7907 = MEMCPY.checkLoop
-           $790c = MEMCPY_WITH_OFFSET
-           $790d = MEMCPY_WITH_OFFSET.loop
-           $7918 = MEMCPY_WITH_OFFSET.checkLoop
-           $791e = MEMCPY_SINGLE_SCREEN
-           $7920 = MEMCPY_SINGLE_SCREEN.loop
-           $7934 = MEMCPY_SINGLE_SCREEN.checkLoop
-           $793a = ClearOAM
-           $7941 = ClearOAM.loop_u3
-           $794a = ClearRAM
-           $7951 = ClearRAM.loop_u5
-           $795a = RequestOAMSpace
-           $7963 = RequestOAMSpace.loop
-           $797a = RequestOAMSpace.availableSpace
-           $797f = RequestOAMSpace.sufficientSpace
-           $798f = RequestOAMSpace.isNotZero4
-           $7990 = RequestOAMSpace.isNotZero3
-           $7991 = RequestOAMSpace.isNotZero2
-           $7992 = RequestOAMSpace.isNotZero1
-           $7994 = RequestOAMSpace.notEnoughSprites
-           $799c = RequestOAMSpace.end
-           $799f = RequestRAMSpace
-           $799f = RequestRAMSpace.loop
-           $79a4 = RequestRAMSpace.availableSpace
-           $79a8 = RequestRAMSpace.checkLoop
-           $79b5 = RequestRAMSpace.noFreeSpace
-           $79b6 = RequestRAMSpace.end
-  SECTION: $79b7-$7a49 ($0093 bytes) ["ending cutscene"]
-           $79b7 = InitializeEndingCutscene
-           $79bc = LoadEndingCutsceneGraphics
-           $79d4 = SpawnHandClap
-           $79ec = SpawnHandClap.leftHandClap
-           $79f8 = SpawnHandClap.rightHandClap
-           $7a04 = MoveHands
-           $7a17 = MoveHands.frame0
-           $7a27 = MoveHands.frame1
-           $7a37 = UpdateEndingCutscene
-  SECTION: $7a4a-$7ac5 ($007c bytes) ["score"]
-           $7a4a = InitializeScore
-           $7a52 = InitializeTotal
-           $7a5a = AddPoints
-           $7a61 = AddPoints.carry
-           $7a6a = DecrementPoints
-           $7a73 = DecrementPoints.carry
-           $7a7a = DecrementPoints.checkCapAtZero
-           $7a83 = DecrementPoints.noCap
-           $7a88 = IsScoreZero
-           $7a97 = AddTotal
-           $7a9a = AddTotal.saveFourthDigit
-           $7aa2 = AddTotal.toBCD
-           $7aa6 = AddTotal.carry
-           $7aaa = AddTotal.checkAddLife
-           $7ab4 = AddTotal.addLife
-           $7abf = AddTotal.checkLoop
-  SECTION: $7ac6-$7aff ($003a bytes) ["math"]
-           $7ac6 = MODULO
-           $7ac8 = MODULO.loop
-           $7acd = DIVISION
-           $7ad3 = DIVISION.loop
-           $7ad8 = DIVISION.end
-           $7adb = ToBCD
-           $7af1 = MULTIPLY
-           $7af3 = MULTIPLY.loop
-           $7afe = MULTIPLY.end
-  SECTION: $7b00-$7b31 ($0032 bytes) ["lcd"]
-           $7b00 = LCD_OFF
-           $7b07 = LCD_ON
-           $7b0e = LCD_ON_NO_WINDOW
-           $7b15 = WaitVBlank
-           $7b1c = WaitVBlank.loop
-           $7b27 = SetupWindow
-  SECTION: $7b32-$7b5b ($002a bytes) ["game over"]
-           $7b32 = LoadGameOverGraphics
-           $7b4a = UpdateGameOver
-  SECTION: $7b5c-$7b61 ($0006 bytes) ["timer"]
-           $7b5c = UpdateGlobalTimer
-    SLACK: $049e bytes
+  SECTION: $736a-$7496 ($012d bytes) ["opening cutscene"]
+           $736a = InitializeOpeningCutscene
+           $7377 = LoadOpeningCutsceneGraphics
+           $738f = SpawnHandWave
+           $73b3 = HandWaveAnimation
+           $73ba = HandWaveAnimation.frame0
+           $73d5 = HandWaveAnimation.frame1
+           $73ef = HandWaveAnimation.end
+           $73f0 = UpdateOpeningCutscene.canFlyUp
+           $73f0 = UpdateOpeningCutscene.checkWreckingBalloon
+           $73f0 = UpdateOpeningCutscene
+           $73fd = UpdateOpeningCutscene.endCanFlyUp
+           $7411 = UpdateOpeningCutscene.bobDown
+           $7419 = UpdateOpeningCutscene.bobUp
+           $7420 = UpdateOpeningCutscene.endWreckingBalloonCheck
+           $7423 = UpdateOpeningCutscene.updates
+           $7459 = UpdateOpeningCutscene.fadeIn
+           $7461 = UpdateOpeningCutscene.pause
+           $7472 = UpdateOpeningCutscene.triggerHandWave
+           $7489 = UpdateOpeningCutscene.fadeOut
+           $748f = UpdateOpeningCutscene.endFrame
+  SECTION: $7497-$75ba ($0124 bytes) ["menu"]
+           $7497 = InitializeMenu
+           $74a3 = LoadMenuOpeningGraphics
+           $74bb = LoadMenuGraphics
+           $74ed = SpawnMenuCursor
+           $74f6 = SpawnMenuCursor.availableSpace
+           $7511 = SpawnMenuCursor.end
+           $7512 = UpdateMenuOpening
+           $752e = UpdateMenuOpening.startSound
+           $7533 = UpdateMenuOpening.scrollUpTitle
+           $753f = UpdateMenuOpening.endSound
+           $7544 = UpdateMenuOpening.scrollDownTitle
+           $7550 = UpdateMenuOpening.scrollUpTitle2
+           $755c = UpdateMenuOpening.fadeOut
+           $7562 = UpdateMenuOpening.next
+           $7566 = UpdateMenuOpening.endFrame
+           $756d = UpdateMenuOpening.end
+           $756e = UpdateMenu
+           $756e = UpdateMenu.fadeIn
+           $7574 = UpdateMenu.hasFadedIn
+           $7581 = UpdateMenu.blinkMenuCursor
+           $7587 = UpdateMenu.blink
+           $7598 = UpdateMenu.show
+           $759d = UpdateMenu.empty
+           $75a0 = UpdateMenu.blinkMenuCursorEnd
+           $75a0 = UpdateMenu.menuInput
+           $75a9 = UpdateMenu.start
+           $75b2 = UpdateMenu.fadeOut
+  SECTION: $75bb-$76c2 ($0108 bytes) ["porcupine"]
+           $75bb = SetStruct
+           $75d4 = SpawnPorcupine
+           $75e4 = SpawnPorcupine.availableSpace
+           $75ee = SpawnPorcupine.availableOAMSpace
+           $7604 = SpawnPorcupine.topLeft
+           $761d = SpawnPorcupine.topMiddle
+           $762d = SpawnPorcupine.topMiddle2
+           $763d = SpawnPorcupine.topRight
+           $764d = SpawnPorcupine.bottomLeft
+           $765d = SpawnPorcupine.bottomMiddle
+           $766f = SpawnPorcupine.bottomMiddle2
+           $7681 = SpawnPorcupine.bottomRight
+           $7693 = SpawnPorcupine.setStruct
+           $7698 = SpawnPorcupine.end
+           $769a = PorcupineUpdate
+           $76b1 = PorcupineUpdate.offScreen
+           $76b1 = PorcupineUpdate.isAlive
+           $76b3 = PorcupineUpdate.isDead
+           $76b3 = PorcupineUpdate.checkLoop
+  SECTION: $76c3-$77c0 ($00fe bytes) ["palettes"]
+           $76c3 = ResetFading
+           $76d1 = InitializePalettes
+           $76e1 = InitializeFlicker
+           $76e7 = FadeOutPalettes
+           $76ee = FadeOutPalettes.hasFadedIn
+           $76f1 = FadeOutPalettes.fadeOut
+           $7710 = FadeOutPalettes.fade1
+           $7718 = FadeOutPalettes.fade2
+           $7720 = FadeOutPalettes.fade3
+           $7728 = FadeOutPalettes.fade4
+           $772e = FadeOutPalettes.fadePalettes
+           $7734 = FadeOutPalettes.increaseFrame
+           $773b = FadeOutPalettes.end
+           $773d = FadeInPalettes
+           $7744 = FadeInPalettes.hasFadedIn
+           $7747 = FadeInPalettes.fadeIn
+           $7766 = FadeInPalettes.fade1
+           $776e = FadeInPalettes.fade2
+           $7776 = FadeInPalettes.fade3
+           $777e = FadeInPalettes.fade4
+           $7784 = FadeInPalettes.fadePalettes
+           $778a = FadeInPalettes.increaseFrame
+           $7791 = FadeInPalettes.end
+           $7793 = FlickerBackgroundPalette
+           $77ab = FlickerBackgroundPalette.flickerOn
+           $77b6 = FlickerBackgroundPalette.flickerOff
+           $77ba = FlickerBackgroundPalette.flickerEnd
+  SECTION: $77c1-$789b ($00db bytes) ["stage clear"]
+           $77c1 = InitializeStageClear
+           $77ce = LoadStageClearGraphics
+           $77e6 = RefreshAddLives
+           $77f5 = RefreshAddLives.hasLivesToAdd
+           $7802 = RefreshStageClear
+           $781a = UpdateStageClear
+           $7849 = UpdateStageClear.pause
+           $785a = UpdateStageClear.copyFirstDigitToTotal
+           $786e = UpdateStageClear.copyPointsToTotal
+           $787e = UpdateStageClear.addGainedLives
+           $7894 = UpdateStageClear.endFrame
+  SECTION: $789c-$7955 ($00ba bytes) ["sound"]
+           $789c = AUDIO_OFF
+           $78a0 = AUDIO_ON
+           $78a5 = PopSound
+           $78b8 = ExplosionSound
+           $78c5 = WaveSound
+           $78d2 = FallingSound
+           $78e7 = RisingSound
+           $78fc = StopSweepSound
+           $7901 = CollectSound
+           $7916 = WrongAnswerSound
+           $792d = PercussionSound
+           $793a = BassSound
+           $794b = ClearSound
+  SECTION: $7956-$7a09 ($00b4 bytes) ["memory"]
+           $7956 = MEMCPY
+           $7956 = MEMCPY.loop
+           $795a = MEMCPY.checkLoop
+           $795f = MEMCPY_WITH_OFFSET
+           $7960 = MEMCPY_WITH_OFFSET.loop
+           $796b = MEMCPY_WITH_OFFSET.checkLoop
+           $7971 = MEMCPY_SINGLE_SCREEN
+           $7973 = MEMCPY_SINGLE_SCREEN.loop
+           $7987 = MEMCPY_SINGLE_SCREEN.checkLoop
+           $798d = ClearOAM
+           $7994 = ClearOAM.loop_u3
+           $799d = ClearRAM
+           $79a4 = ClearRAM.loop_u5
+           $79ad = RequestOAMSpace
+           $79b6 = RequestOAMSpace.loop
+           $79cd = RequestOAMSpace.availableSpace
+           $79d2 = RequestOAMSpace.sufficientSpace
+           $79e2 = RequestOAMSpace.isNotZero4
+           $79e3 = RequestOAMSpace.isNotZero3
+           $79e4 = RequestOAMSpace.isNotZero2
+           $79e5 = RequestOAMSpace.isNotZero1
+           $79e7 = RequestOAMSpace.notEnoughSprites
+           $79ef = RequestOAMSpace.end
+           $79f2 = RequestRAMSpace
+           $79f2 = RequestRAMSpace.loop
+           $79f7 = RequestRAMSpace.availableSpace
+           $79fb = RequestRAMSpace.checkLoop
+           $7a08 = RequestRAMSpace.noFreeSpace
+           $7a09 = RequestRAMSpace.end
+  SECTION: $7a0a-$7a9c ($0093 bytes) ["ending cutscene"]
+           $7a0a = InitializeEndingCutscene
+           $7a0f = LoadEndingCutsceneGraphics
+           $7a27 = SpawnHandClap
+           $7a3f = SpawnHandClap.leftHandClap
+           $7a4b = SpawnHandClap.rightHandClap
+           $7a57 = MoveHands
+           $7a6a = MoveHands.frame0
+           $7a7a = MoveHands.frame1
+           $7a8a = UpdateEndingCutscene
+  SECTION: $7a9d-$7b18 ($007c bytes) ["score"]
+           $7a9d = InitializeScore
+           $7aa5 = InitializeTotal
+           $7aad = AddPoints
+           $7ab4 = AddPoints.carry
+           $7abd = DecrementPoints
+           $7ac6 = DecrementPoints.carry
+           $7acd = DecrementPoints.checkCapAtZero
+           $7ad6 = DecrementPoints.noCap
+           $7adb = IsScoreZero
+           $7aea = AddTotal
+           $7aed = AddTotal.saveFourthDigit
+           $7af5 = AddTotal.toBCD
+           $7af9 = AddTotal.carry
+           $7afd = AddTotal.checkAddLife
+           $7b07 = AddTotal.addLife
+           $7b12 = AddTotal.checkLoop
+  SECTION: $7b19-$7b52 ($003a bytes) ["math"]
+           $7b19 = MODULO
+           $7b1b = MODULO.loop
+           $7b20 = DIVISION
+           $7b26 = DIVISION.loop
+           $7b2b = DIVISION.end
+           $7b2e = ToBCD
+           $7b44 = MULTIPLY
+           $7b46 = MULTIPLY.loop
+           $7b51 = MULTIPLY.end
+  SECTION: $7b53-$7b84 ($0032 bytes) ["lcd"]
+           $7b53 = LCD_OFF
+           $7b5a = LCD_ON
+           $7b61 = LCD_ON_NO_WINDOW
+           $7b68 = WaitVBlank
+           $7b6f = WaitVBlank.loop
+           $7b7a = SetupWindow
+  SECTION: $7b85-$7bae ($002a bytes) ["game over"]
+           $7b85 = LoadGameOverGraphics
+           $7b9d = UpdateGameOver
+  SECTION: $7baf-$7bb4 ($0006 bytes) ["timer"]
+           $7baf = UpdateGlobalTimer
+    SLACK: $044b bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c092 ($0093 bytes) ["enemy data vars"]
@@ -1300,31 +1303,33 @@ WRAM0 bank #0:
            $c1b3 = wLevel
            $c1b4 = wLevelWaitCounter
            $c1b5 = wLevelDataAddress
-  SECTION: $c1b7-$c1b9 ($0003 bytes) ["stage clear vars"]
-           $c1b7 = wStageClearTimer
-           $c1b8 = wStageClearFrame
-           $c1b9 = wLivesToAdd
-  SECTION: $c1ba-$c1bc ($0003 bytes) ["controller vars"]
-           $c1ba = wControllerDown
-           $c1bb = wControllerPressed
-           $c1bc = wPaused
-  SECTION: $c1bd-$c1bf ($0003 bytes) ["menu vars"]
-           $c1bd = wMenuFrame
-           $c1be = wSelectedMode
-           $c1bf = wMenuCursorOAM
-  SECTION: $c1c0-$c1c2 ($0003 bytes) ["interrupts vars"]
-           $c1c0 = wVBlankFlag
-           $c1c1 = wLCDInterrupt
-  SECTION: $c1c3-$c1c4 ($0002 bytes) ["game vars"]
-           $c1c3 = wCountdownFrame
-           $c1c4 = wCountdownOAM
-  SECTION: $c1c5-$c1c6 ($0002 bytes) ["ending cutscene vars"]
-           $c1c5 = wHandClappingFrame
-           $c1c6 = wHandClapOAM
-  SECTION: $c1c7-$c1c8 ($0002 bytes) ["opening cutscene vars"]
-           $c1c7 = wHandWavingFrame
-           $c1c8 = wHandWaveOAM
-    SLACK: $0e38 bytes
+  SECTION: $c1b7-$c1ba ($0004 bytes) ["opening cutscene vars"]
+           $c1b7 = wHandWavingFrame
+           $c1b8 = wHandWaveOAM
+           $c1b9 = wOpeningCutsceneFrame
+           $c1ba = wOpeningCutsceneTimer
+  SECTION: $c1bb-$c1bd ($0003 bytes) ["stage clear vars"]
+           $c1bb = wStageClearTimer
+           $c1bc = wStageClearFrame
+           $c1bd = wLivesToAdd
+  SECTION: $c1be-$c1c0 ($0003 bytes) ["controller vars"]
+           $c1be = wControllerDown
+           $c1bf = wControllerPressed
+           $c1c0 = wPaused
+  SECTION: $c1c1-$c1c3 ($0003 bytes) ["menu vars"]
+           $c1c1 = wMenuFrame
+           $c1c2 = wSelectedMode
+           $c1c3 = wMenuCursorOAM
+  SECTION: $c1c4-$c1c6 ($0003 bytes) ["interrupts vars"]
+           $c1c4 = wVBlankFlag
+           $c1c5 = wLCDInterrupt
+  SECTION: $c1c7-$c1c8 ($0002 bytes) ["game vars"]
+           $c1c7 = wCountdownFrame
+           $c1c8 = wCountdownOAM
+  SECTION: $c1c9-$c1ca ($0002 bytes) ["ending cutscene vars"]
+           $c1c9 = wHandClappingFrame
+           $c1ca = wHandClapOAM
+    SLACK: $0e36 bytes
 
 HRAM bank #0:
   SECTION: $ff80-$ff87 ($0008 bytes) ["OAM DMA"]
@@ -1335,6 +1340,6 @@ HRAM bank #0:
 
 USED:
     ROM0: $2f7a bytes in 1 bank
-    ROMX: $3b62 bytes in 1 bank
-    WRAM0: $01c8 bytes in 1 bank
+    ROMX: $3bb5 bytes in 1 bank
+    WRAM0: $01ca bytes in 1 bank
     HRAM: $0009 bytes in 1 bank

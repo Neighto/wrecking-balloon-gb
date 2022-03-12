@@ -2,6 +2,7 @@ INCLUDE "playerConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 
+STAGE_CLEAR_UPDATE_TIME EQU %00000011
 STAGE_CLEAR_PAUSE_LENGTH EQU 20
 
 PLUS_TILE EQU $FF
@@ -72,7 +73,7 @@ UpdateStageClear::
     call RefreshStageClear
 
     ldh a, [hGlobalTimer]
-    and %00000011
+    and STAGE_CLEAR_UPDATE_TIME
     cp a, 0
     ret nz
     ld a, [wStageClearFrame]
