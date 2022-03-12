@@ -25,6 +25,8 @@ SECTION "enemy struct vars", WRAM0
     wEnemyFallingTimer:: DB
     wEnemyDelayFallingTimer:: DB
     wEnemyToDie:: DB ; If enemy set to die from external file
+    wEnemyDifficulty:: DB
+    ; TODO clean these up to be more generic and helpful
 
 SECTION "enemy struct", ROM0
 
@@ -32,7 +34,6 @@ InitializeEnemyStructVars::
     push af
     xor a ; ld a, 0
     ld [wEnemyActive], a
-    ld [wEnemyNumber], a
     ld [wEnemyOAM], a
     ld [wEnemyAlive], a
     ld [wEnemyPopping], a
@@ -116,12 +117,3 @@ UpdateEnemy::
     cp a, 0
     jr nz, .loop
     ret
-
-; Functions every enemy should have (where Enemy is name of enemy)
-; SetStruct
-; SpawnEnemy
-; Clear
-; Move
-; DeathOfEnemy
-; CollisionEnemy
-; EnemyUpdate

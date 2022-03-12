@@ -60,8 +60,6 @@ SpawnBomb::
     ld a, 1
     ld [wEnemyActive], a
     ld [wEnemyAlive], a
-    ld a, BOMB
-    ld [wEnemyNumber], a
 .balloonLeft:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     ld a, [wEnemyY]

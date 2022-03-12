@@ -58,8 +58,6 @@ SpawnPorcupine::
     ld a, 1
     ld [wEnemyActive], a
     ld [wEnemyAlive], a
-    ld a, PORCUPINE 
-    ld [wEnemyNumber], a
 .topLeft:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     ld a, [wEnemyY]
