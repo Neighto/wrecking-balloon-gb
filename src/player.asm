@@ -21,6 +21,7 @@ SECTION "player vars", WRAM0
   wPlayerSpeed:: DB
   wPlayerLives:: DB
   wPlayerRight:: DB
+  wPlayerBobbedUp:: DB
 
   ; Operate like timers
   wPlayerInvincible:: DB
@@ -46,6 +47,7 @@ InitializePlayer::
   ld [wPlayerInvincible], a
   ld [wPlayerBoost], a
   ld [wPlayerAttack], a
+  ld [wPlayerBobbedUp], a
 
   ld a, 1
   ld [wPlayerAlive], a
@@ -113,7 +115,7 @@ SetPlayerPositionOpeningDefault:
 
 SetPlayerPositionOpeningCutscene::
   ld b, PLAYER_START_X
-  ld c, PLAYER_START_Y
+  ld c, PLAYER_START_Y - 32
   call SetPlayerPosition
   ret
 
@@ -389,8 +391,8 @@ PlayerControls:
 .endB:
   ret
 
-MovePlayerUpForCutscene::
-  ld d, %01000000
+MovePlayerForCutscene::
+  ; d argument as input string
   ld e, 0
   ld c, 0
   call PlayerControls

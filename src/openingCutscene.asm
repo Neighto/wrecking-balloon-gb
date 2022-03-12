@@ -99,20 +99,45 @@ UpdateOpeningCutscene::
 .skipFade:
     call HandWaveAnimation
 .moveUp:
-    ld a, [wPlayerY]
-    add 16
-    cp a, 75
+    ; Bob up and down
     ldh a, [hGlobalTimer]
-    jr c, .flyUpFast
-.flyUpNormal:
-    and %00000111
-    ret nz
-    jr .flyUp
-.flyUpFast:
-    and %00000001
-    ret nz
-.flyUp:
+    and %00111111
+    jr nz, .noBob
     ld a, 1
     ld [wPlayerSpeed], a
-    call MovePlayerUpForCutscene
+    ld a, [wPlayerBobbedUp]
+    cp a, 0
+    jr nz, .bobDown
+.bobUp:
+    ld a, 1
+    ld [wPlayerBobbedUp], a
+    ld d, %01000000
+    call MovePlayerForCutscene
+    ret
+.bobDown:
+    xor a ; ld a, 0
+    ld [wPlayerBobbedUp], a
+    ld d, %10000000
+    call MovePlayerForCutscene
+    ret
+.noBob:
+    ld d, %00000000
+    call MovePlayerForCutscene
+
+;     ld a, [wPlayerY]
+;     add 16
+;     cp a, 75
+;     ldh a, [hGlobalTimer]
+;     jr c, .flyUpFast
+; .flyUpNormal:
+;     and %00000111
+;     ret nz
+;     jr .flyUp
+; .flyUpFast:
+;     and %00000001
+;     ret nz
+; .flyUp:
+;     ld a, 1
+;     ld [wPlayerSpeed], a
+;     call MovePlayerUpForCutscene
     ret
