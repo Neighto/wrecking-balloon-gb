@@ -9,8 +9,8 @@ HAND_WAVE_TILE_2 EQU $40
 
 SECTION "opening cutscene vars", WRAM0
     wHandWavingFrame:: DB
+    wHandWaveOAM:: DB
 
-; AKA park
 SECTION "opening cutscene", ROMX
 
 InitializeOpeningCutscene::
@@ -18,12 +18,12 @@ InitializeOpeningCutscene::
 	ld [wHandWavingFrame], a
     ret
 
-LoadParkGraphics::
-	ld bc, OpeningCutsceneTiles
+LoadOpeningCutsceneGraphics::
+	ld bc, CutsceneTiles
 	ld hl, _VRAM9000
-	ld de, OpeningCutsceneTilesEnd - OpeningCutsceneTiles
+	ld de, CutsceneTilesEnd - CutsceneTiles
 	call MEMCPY
-	ld bc, OpeningCutsceneMap
+	ld bc, CutsceneMap
 	ld hl, _SCRN0
     ld d, SCRN_Y_B
 	call MEMCPY_SINGLE_SCREEN
@@ -35,8 +35,8 @@ SpawnHandWave::
     cp a, 0
     ret z
     ld a, b
-	ld [wOAMGeneral1], a
-	SET_HL_TO_ADDRESS wOAM, wOAMGeneral1
+	ld [wHandWaveOAM], a
+	SET_HL_TO_ADDRESS wOAM, wHandWaveOAM
     ld a, HAND_WAVE_START_Y
     ld [hli], a
     ld a, HAND_WAVE_START_X
@@ -46,7 +46,6 @@ SpawnHandWave::
     ld [hl], OAMF_PAL0
 	ret
 
-; NOTE if ram becomes a problem I could probably use modulo off global timer for frames
 HandWaveAnimation::
     ld a, [wHandWavingFrame]
     cp a, 0
@@ -55,7 +54,7 @@ HandWaveAnimation::
     ldh a, [hGlobalTimer]
     and 15
     jp nz, .end
-    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
+    SET_HL_TO_ADDRESS wOAM+2, wHandWaveOAM
     ld [hl], HAND_WAVE_TILE_2
     ld hl, wHandWavingFrame
     ld [hl], 1
@@ -64,14 +63,14 @@ HandWaveAnimation::
     ldh a, [hGlobalTimer]
     and 15
     jp nz, .end
-    SET_HL_TO_ADDRESS wOAM+2, wOAMGeneral1
+    SET_HL_TO_ADDRESS wOAM+2, wHandWaveOAM
     ld [hl], HAND_WAVE_TILE_1
     ld hl, wHandWavingFrame
     ld [hl], 0
 .end:
 	ret
 
-UpdatePark::
+UpdateOpeningCutscene::
 .fadeIn:
     call FadeInPalettes
     cp a, 0
@@ -100,20 +99,45 @@ UpdatePark::
 .skipFade:
     call HandWaveAnimation
 .moveUp:
-    ld a, [wPlayerY]
-    add 16
-    cp a, 75
+    ; Bob up and down
     ldh a, [hGlobalTimer]
-    jr c, .flyUpFast
-.flyUpNormal:
-    and %00000111
-    ret nz
-    jr .flyUp
-.flyUpFast:
-    and %00000001
-    ret nz
-.flyUp:
+    and %00111111
+    jr nz, .noBob
     ld a, 1
     ld [wPlayerSpeed], a
-    call MovePlayerUpForCutscene
+    ld a, [wPlayerBobbedUp]
+    cp a, 0
+    jr nz, .bobDown
+.bobUp:
+    ld a, 1
+    ld [wPlayerBobbedUp], a
+    ld d, %01000000
+    call MovePlayerForCutscene
+    ret
+.bobDown:
+    xor a ; ld a, 0
+    ld [wPlayerBobbedUp], a
+    ld d, %10000000
+    call MovePlayerForCutscene
+    ret
+.noBob:
+    ld d, %00000000
+    call MovePlayerForCutscene
+
+;     ld a, [wPlayerY]
+;     add 16
+;     cp a, 75
+;     ldh a, [hGlobalTimer]
+;     jr c, .flyUpFast
+; .flyUpNormal:
+;     and %00000111
+;     ret nz
+;     jr .flyUp
+; .flyUpFast:
+;     and %00000001
+;     ret nz
+; .flyUp:
+;     ld a, 1
+;     ld [wPlayerSpeed], a
+;     call MovePlayerUpForCutscene
     ret

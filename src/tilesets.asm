@@ -19,11 +19,13 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/Bubble2.2bpp"
     INCBIN "incbin/sprite/Bubble3.2bpp"
     INCBIN "incbin/sprite/BalloonGeneric.2bpp"
-    INCBIN "incbin/background/Man_Wave.2bpp"
-    INCBIN "incbin/background/Man_Wave2.2bpp"
-    INCBIN "incbin/sprite/porcu.2bpp"
+    INCBIN "incbin/sprite/ManWave.2bpp"
+    INCBIN "incbin/sprite/ManWave2.2bpp"
+    INCBIN "incbin/sprite/Boss.2bpp"
+    INCBIN "incbin/sprite/BossBall.2bpp"
     INCBIN "incbin/sprite/PointBalloon.2bpp"
     INCBIN "incbin/sprite/PointBalloon2.2bpp"
+    INCBIN "incbin/sprite/ManClap.2bpp"
 GameSpriteTilesEnd::
 
 Level1Tiles::
@@ -40,13 +42,17 @@ RainCloudsTilesEnd::
 
 SECTION "tilesets 2", ROMX
 
-OpeningCutsceneTiles::
-    INCBIN "incbin/background/OpeningCutscene.2bpp"
-OpeningCutsceneTilesEnd::
+CutsceneTiles::
+    INCBIN "incbin/background/Cutscenes.2bpp"
+CutsceneTilesEnd::
 
 StageClearTiles::
     INCBIN "incbin/background/StageClear.2bpp"
 StageClearTilesEnd::
+
+GameOverTiles::
+    INCBIN "incbin/background/GameOver.2bpp"
+GameOverTilesEnd::
 
 Level2Tiles::
     INCBIN "incbin/background/Desert.2bpp"

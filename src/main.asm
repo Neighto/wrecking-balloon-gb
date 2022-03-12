@@ -17,7 +17,7 @@ Start::
 	call ResetScroll
 	call CopyDMARoutine
 	call LoadMenuOpeningGraphics
-	call InitializeGeneralVars
+	call InitializeLives
 	call InitializeParallaxScrolling
 	call InitializePalettes
 	call InitializeController
@@ -60,7 +60,7 @@ StartGame::
 	call SetOpeningCutsceneInterrupts
 	call LoadGameSpriteTiles
 	call LoadWindow
-	call LoadParkGraphics
+	call LoadOpeningCutsceneGraphics
 	call ResetFading
 	call InitializeOpeningCutscene
 	call InitializeTotal
@@ -74,11 +74,11 @@ StartGame::
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdatePark
-	; call UpdateGlobalTimer
-	; jp OpeningCutsceneLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateOpeningCutscene
+	call UpdateGlobalTimer
+	jp OpeningCutsceneLoop
 
 SetupNextLevel::
 	call WaitVBlank
@@ -158,7 +158,53 @@ StageClear::
 	call LCD_ON_NO_WINDOW
 StageClearLoop:
 	call WaitVBlank
-	call OAMDMA
 	call UpdateStageClear
 	call UpdateGlobalTimer
 	jp StageClearLoop
+
+GameOver::
+	call WaitVBlank
+	call LCD_OFF
+	call ResetScroll
+	call ClearMap
+	call ClearOAM
+	call ClearRAM
+	call ClearSound
+	call InitializeInterrupts
+	call LoadGameOverGraphics
+	call InitializePalettes
+	call InitializeStageClear
+	ld hl, menuTheme
+	call hUGE_init
+	call LCD_ON_NO_WINDOW
+GameOverLoop:
+	call WaitVBlank
+	call UpdateGameOver
+	call UpdateGlobalTimer
+	jp GameOverLoop
+
+GameWon::
+	call WaitVBlank
+	call LCD_OFF
+	call ResetScroll
+	call ClearMap
+	call ClearOAM
+	call ClearRAM
+	call ClearSound
+	call InitializeInterrupts
+	call LoadEndingCutsceneGraphics
+	call InitializePalettes
+	call InitializeEndingCutscene
+	call InitializePlayer
+	call SpawnPlayer
+	call SetPlayerPositionEndingCutscene
+	call SpawnHandClap
+	ld hl, menuTheme
+	call hUGE_init
+	call LCD_ON_NO_WINDOW
+GameWonLoop:
+	call WaitVBlank
+	call OAMDMA
+	call UpdateEndingCutscene
+	call UpdateGlobalTimer
+	jp GameWonLoop
