@@ -8,7 +8,9 @@ POINT_BALLOON_OAM_SPRITES EQU 2
 POINT_BALLOON_OAM_BYTES EQU POINT_BALLOON_OAM_SPRITES * 4
 POINT_BALLOON_MOVE_TIME EQU %00000001
 POINT_BALLOON_COLLISION_TIME EQU %00001000
-POINT_BALLOON_TILE EQU $50
+POINT_BALLOON_EASY_TILE EQU $3A
+POINT_BALLOON_MEDIUM_TILE EQU $50
+POINT_BALLOON_HARD_TILE EQU $52
 
 POINT_BALLOON_POINTS EQU 50
 
@@ -33,6 +35,8 @@ SetStruct:
     ld a, [wEnemyPoppingFrame]
     ld [hli], a
     ld a, [wEnemyPoppingTimer]
+    ld [hli], a
+    ld a, [wEnemyDifficulty]
     ld [hl], a
     ret
 
@@ -59,15 +63,32 @@ SpawnPointBalloon::
     ld a, 1
     ld [wEnemyActive], a
     ld [wEnemyAlive], a
-    ld a, POINT_BALLOON
-    ld [wEnemyNumber], a
-.balloonLeft:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+
+.difficulty:
+    ld a, [wEnemyDifficulty]
+.easy:
+    cp a, EASY
+    jr nz, .medium
+    ld d, POINT_BALLOON_EASY_TILE
+    jr .endDifficulty
+.medium:
+    cp a, MEDIUM
+    jr nz, .hard
+    ld d, POINT_BALLOON_MEDIUM_TILE
+    jr .endDifficulty
+.hard:
+    cp a, HARD
+    jr nz, .endDifficulty
+    ld d, POINT_BALLOON_HARD_TILE
+.endDifficulty:
+
+.balloonLeft:
     ld a, [wEnemyY]
     ld [hli], a
     ld a, [wEnemyX]
     ld [hli], a
-    ld [hl], POINT_BALLOON_TILE
+    ld [hl], d
     inc l
     ld [hl], OAMF_PAL1
 .balloonRight:
@@ -77,7 +98,7 @@ SpawnPointBalloon::
     ld a, [wEnemyX]
     add 8
     ld [hli], a
-    ld [hl], POINT_BALLOON_TILE
+    ld [hl], d
     inc l
     ld [hl], OAMF_PAL1 | OAMF_XFLIP
 .setStruct:
@@ -164,8 +185,10 @@ PointBalloonUpdate::
     ld [wEnemyPopping], a
     ld a, [hli]
     ld [wEnemyPoppingFrame], a
-    ld a, [hl]
+    ld a, [hli]
     ld [wEnemyPoppingTimer], a
+    ld a, [hl]
+    ld [wEnemyDifficulty], a
 
 .checkAlive:
     ld a, [wEnemyAlive]

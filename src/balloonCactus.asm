@@ -74,8 +74,6 @@ SpawnBalloonCactus::
     ld [wEnemyActive], a
     ld [wEnemyAlive], a
     ld [wEnemyFallingSpeed], a
-    ld a, BALLOON_CACTUS
-    ld [wEnemyNumber], a
     ld a, [wEnemyY]
     add 16
     ld [wEnemyY2], a

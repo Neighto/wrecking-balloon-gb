@@ -76,8 +76,6 @@ SpawnBird::
     ld a, 1
     ld [wEnemyActive], a
     ld [wEnemyAlive], a
-    ld a, BIRD
-    ld [wEnemyNumber], a
     ld a, [wEnemyX]
     cp a, SCRN_X / 2
     jr c, .isLeftside
