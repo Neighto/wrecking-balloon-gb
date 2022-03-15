@@ -9,8 +9,8 @@ POINT_BALLOON_OAM_BYTES EQU POINT_BALLOON_OAM_SPRITES * 4
 POINT_BALLOON_MOVE_TIME EQU %00000001
 POINT_BALLOON_COLLISION_TIME EQU %00001000
 POINT_BALLOON_EASY_TILE EQU $3A
-POINT_BALLOON_MEDIUM_TILE EQU $50
-POINT_BALLOON_HARD_TILE EQU $52
+POINT_BALLOON_MEDIUM_TILE EQU $56
+POINT_BALLOON_HARD_TILE EQU $58
 
 POINT_BALLOON_POINTS EQU 50
 
@@ -90,7 +90,7 @@ SpawnPointBalloon::
     ld [hli], a
     ld [hl], d
     inc l
-    ld [hl], OAMF_PAL1
+    ld [hl], OAMF_PAL0
 .balloonRight:
     inc l
     ld a, [wEnemyY]
@@ -100,7 +100,7 @@ SpawnPointBalloon::
     ld [hli], a
     ld [hl], d
     inc l
-    ld [hl], OAMF_PAL1 | OAMF_XFLIP
+    ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .setStruct:
     LD_HL_BC
     call SetStruct
@@ -202,6 +202,23 @@ PointBalloonUpdate::
     jr nz, .endMove
 .canMove:
     ld hl, wEnemyY
+    ld a, [wEnemyDifficulty]
+.moveEasy:
+    cp a, EASY
+    jr nz, .moveMedium
+    dec [hl]
+    jr .balloonLeft
+.moveMedium:
+    cp a, MEDIUM
+    jr nz, .moveHard
+    dec [hl]
+    dec [hl]
+    jr .balloonLeft
+.moveHard:
+    cp a, HARD
+    jr nz, .balloonLeft
+    dec [hl]
+    dec [hl]
     dec [hl]
 .balloonLeft:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
