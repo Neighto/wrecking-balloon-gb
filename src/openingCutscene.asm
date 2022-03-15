@@ -137,6 +137,8 @@ UpdateOpeningCutscene::
     cp a, 7
     jr z, .pause
     cp a, 8
+    jr z, .pause
+    cp a, 9
     jr z, .fadeOut
     jp SetupNextLevel
 .fadeIn:
