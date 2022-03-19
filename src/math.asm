@@ -34,45 +34,41 @@ MODULO::
 DIVISION::
     ; simple division formula
     ; takes 'a' argument as number being divided
-    ; takes 'd' argument as divider
-    ; uses 'c' as counter
+    ; takes 'b' argument as divider
     ; returns 'a' as solution
-    push bc
     ld c, 0
-    cp a, d
+    cp a, b
     jr c, .end
 .loop:
-    sub a, d
+    sub a, b
     inc c
-    cp a, d
+    cp a, b
     jr nc, .loop
 .end:
     ld a, c
-    pop bc
     ret
 
 ToBCD::
     ; takes 'a' argument as non-BCD number
-    ; uses 'b' 'c' as holder
     ; returns 'a' as BCD number
-    ld b, a ; save a
+    ; Example: a = 32, 32 % 10 = 2, (32 % 100) / 10 = 3 => % 0011 0010 
+    ld h, a ; save a
     ld d, 10
     call MODULO
-    ld c, a ; 
-    ld a, b ; refresh a
+    ld l, a ; 
+    ld a, h ; refresh a
     ld d, 100
     call MODULO
-    ld d, 10
+    ld b, 10
     call DIVISION
     swap a
-    or c
+    or l
     ret
 
 MULTIPLY::
     ; simple multiply formula
     ; argument 'b'
     ; argument 'c'
-    ; uses 'a' and 'd' as counter
     ; returns 'a' as solution
     xor a ; ld a, 0
     ld d, a
