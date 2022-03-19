@@ -2,14 +2,15 @@ INCLUDE "hardware.inc"
 
 SECTION "game over", ROMX
 
-TOTAL_SC_INDEX_ONE_ADDRESS EQU $998F
+GAME_OVER_DISTANCE_FROM_TOP_IN_TILES EQU 18
+TOTAL_SC_INDEX_ONE_ADDRESS EQU $994F
 
 LoadGameOverGraphics::
-	ld bc, GameOverTiles
+	ld bc, StageEndTiles
 	ld hl, _VRAM9000
-	ld de, GameOverTilesEnd - GameOverTiles
+	ld de, StageEndTilesEnd - StageEndTiles
 	call MEMCPY
-	ld bc, GameOverMap
+	ld bc, StageEndMap + SCRN_X_B * GAME_OVER_DISTANCE_FROM_TOP_IN_TILES
 	ld hl, _SCRN0
     ld d, SCRN_Y_B
 	call MEMCPY_SINGLE_SCREEN
