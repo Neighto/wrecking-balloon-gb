@@ -129,11 +129,11 @@ SetupNextLevel::
 	call LCD_ON
 
 GameCountdownLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateGameCountdown
-	call UpdateGlobalTimer
-	jp GameCountdownLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateGameCountdown
+	; call UpdateGlobalTimer
+	; jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA
@@ -173,9 +173,10 @@ GameOver::
 	call InitializeInterrupts
 	call LoadGameOverGraphics
 	call InitializePalettes
+	call InitializeGameOver
 	call InitializeStageClear
-	ld hl, menuTheme
-	call hUGE_init
+	; ld hl, gameOverTheme
+	; call hUGE_init
 	call LCD_ON_NO_WINDOW
 GameOverLoop:
 	call WaitVBlank

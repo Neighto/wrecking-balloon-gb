@@ -17,7 +17,7 @@ LoadGameOverGraphics::
     ret
 
 InitializeGameOver::
-    
+    call AddScoreToTotal
     ret
 
 UpdateGameOver::
