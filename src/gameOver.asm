@@ -16,6 +16,10 @@ LoadGameOverGraphics::
 	call MEMCPY_SINGLE_SCREEN
     ret
 
+InitializeGameOver::
+    
+    ret
+
 UpdateGameOver::
     ; call _hUGE_dosound
     ld hl, TOTAL_SC_INDEX_ONE_ADDRESS

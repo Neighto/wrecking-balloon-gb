@@ -28,9 +28,9 @@ InitializeTotal::
 AddPoints::
     ; d = points to receive (must be 1 byte BCD [max 99])
     ; Warning no CAP at max points
-    ld hl, wScore ; 1st byte of score
     ld a, d
     call ToBCD ; a is now BCD
+    ld hl, wScore ; 1st byte of score
     ; Now update hl and if there's a carry add to hl+1
 .carry:
     add a, [hl]
@@ -43,10 +43,10 @@ AddPoints::
 
 DecrementPoints::
     ; d = points to remove (must be 1 byte BCD [max 99])
-    ld hl, wScore
-    ld e, SCORE_SIZE
     ld a, d
     call ToBCD
+    ld hl, wScore
+    ld e, SCORE_SIZE
 .carry:
     dec e
     ld d, a
@@ -81,7 +81,6 @@ IsScoreZero::
 
 AddTotal::
     ; d = points to receive (must be 1 byte BCD [max 99])
-    ld hl, wTotal
 .saveFourthDigit:
     ld a, [wTotal+1]
     swap a
@@ -90,6 +89,7 @@ AddTotal::
 .toBCD:
     ld a, d
     call ToBCD
+    ld hl, wTotal
 .carry:
     add a, [hl]
     daa
