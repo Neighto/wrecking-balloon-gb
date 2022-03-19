@@ -6,10 +6,10 @@ STAGE_CLEAR_UPDATE_TIME EQU %00000011
 STAGE_CLEAR_PAUSE_LENGTH EQU 20
 
 PLUS_TILE EQU $FF
-SCORE_SC_INDEX_ONE_ADDRESS EQU $992F
-TOTAL_SC_INDEX_ONE_ADDRESS EQU $996F
-LIVES_SC_ADDRESS EQU $99AC
-LIVES_TO_ADD_SC_ADDRESS EQU $99AE
+SCORE_SC_INDEX_ONE_ADDRESS EQU $990F
+TOTAL_SC_INDEX_ONE_ADDRESS EQU $994F
+LIVES_SC_ADDRESS EQU $998C
+LIVES_TO_ADD_SC_ADDRESS EQU $998E
 
 SECTION "stage clear vars", WRAM0
     wStageClearTimer:: DB
@@ -27,11 +27,11 @@ InitializeStageClear::
     ret
 
 LoadStageClearGraphics::
-	ld bc, StageClearTiles
+	ld bc, StageEndTiles
 	ld hl, _VRAM9000
-	ld de, StageClearTilesEnd - StageClearTiles
+	ld de, StageEndTilesEnd - StageEndTiles
 	call MEMCPY
-	ld bc, StageClearMap
+	ld bc, StageEndMap
 	ld hl, _SCRN0
     ld d, SCRN_Y_B
 	call MEMCPY_SINGLE_SCREEN

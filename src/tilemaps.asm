@@ -4,13 +4,9 @@ CutsceneMap::
     INCBIN "incbin/background/Cutscenes.tilemap"
 CutsceneMapEnd::
     
-StageClearMap::
-    INCBIN "incbin/background/StageClear.tilemap"
-StageClearMapEnd::
-
-GameOverMap::
-    INCBIN "incbin/background/GameOver.tilemap"
-GameOverMapEnd::
+StageEndMap::
+    INCBIN "incbin/background/StageEnd.tilemap"
+StageEndMapEnd::
 
 Level1Map:: 
     INCBIN "incbin/background/City.tilemap"
