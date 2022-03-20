@@ -21,7 +21,7 @@ InitializeGameOver::
     ret
 
 UpdateGameOver::
-    ; call _hUGE_dosound
+    call _hUGE_dosound_with_end
     ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
 	call RefreshTotal
     call ReadController

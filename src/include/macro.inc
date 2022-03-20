@@ -1,3 +1,5 @@
+; General Macros
+
 MACRO INCREMENT_POS
     ; argument 1 is address
     ; argument 2 is amount
@@ -148,4 +150,18 @@ ENDM
 MACRO GAME_WON
     ; Jump to end cutscene
     DB GAME_WON_KEY
+ENDM
+
+; Music Macros
+
+; Music Instructions
+NOTE_KEY EQU 0
+NOTE_END_KEY EQU 1
+
+MACRO NOTE
+    DB NOTE_KEY, \1
+ENDM
+
+MACRO NOTE_END
+    DB NOTE_END_KEY
 ENDM

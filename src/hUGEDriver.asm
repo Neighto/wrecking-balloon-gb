@@ -1293,6 +1293,25 @@ checkMute: MACRO
     jp nz, \2
 ENDM
 
+_hUGE_dosound_with_end::
+    ; Use if we don't want to loop song and song data includes STOP_SONG
+    loadShort pattern1, b, c
+    call _load_note_data
+    cp a, STOP_SONG
+    ret z
+    loadShort pattern2, b, c
+    call _load_note_data
+    cp a, STOP_SONG
+    ret z
+    loadShort pattern3, b, c
+    call _load_note_data
+    cp a, STOP_SONG
+    ret z
+    loadShort pattern4, b, c
+    call _load_note_data
+    cp a, STOP_SONG
+    ret z
+
 _hUGE_dosound_banked::
 _hUGE_dosound::
     ld a, [tick]
@@ -1650,6 +1669,8 @@ _newrow:
     ld b, a
     cp PATTERN_LENGTH
     jr nz, _noreset
+
+    ; Set song pattern_length?
 
     ld b, 0
 _neworder:
