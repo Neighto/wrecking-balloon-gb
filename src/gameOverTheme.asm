@@ -1,6 +1,6 @@
 include "hUGE.inc"
 
-SECTION "Song Data3", ROMX
+SECTION "game over theme", ROMX
 
 gameOverTheme::
 db 7

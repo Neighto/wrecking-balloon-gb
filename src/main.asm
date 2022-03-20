@@ -27,10 +27,10 @@ Start::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	; call WaitVBlank
-	; call UpdateMenuOpening
-	; call UpdateGlobalTimer
-	; jp MenuLoopOpening
+	call WaitVBlank
+	call UpdateMenuOpening
+	call UpdateGlobalTimer
+	jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
 	call WaveSound
@@ -42,11 +42,11 @@ StartMenu::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateMenu
-	; call UpdateGlobalTimer
-	; jp MenuLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateMenu
+	call UpdateGlobalTimer
+	jp MenuLoop
 
 StartGame::
 	call WaitVBlank
@@ -74,11 +74,11 @@ StartGame::
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateOpeningCutscene
-	; call UpdateGlobalTimer
-	; jp OpeningCutsceneLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateOpeningCutscene
+	call UpdateGlobalTimer
+	jp OpeningCutsceneLoop
 
 SetupNextLevel::
 	call WaitVBlank
@@ -100,15 +100,21 @@ SetupNextLevel::
 .level1:
 	call SetLevel1Interrupts
 	call LoadLevel1Graphics
+	ld hl, angryTheme
+	call hUGE_init
 	jr .endLevelSetup
 .level2:
 	call SetLevel2Interrupts
 	call LoadLevel2Graphics
+	ld hl, angryTheme
+	call hUGE_init
 	jr .endLevelSetup
 .level3:
 	call SetLevel3Interrupts
 	call LoadLevel3Graphics
 	call InitializeFlicker
+	ld hl, angryTheme
+	call hUGE_init
 	jr .endLevelSetup
 .level4:
 .level5:
@@ -124,8 +130,6 @@ SetupNextLevel::
 	call InitializeBullet
 	call SpawnPlayer
 	call SpawnCountdown
-	ld hl, angryTheme
-	call hUGE_init
 	call LCD_ON
 
 GameCountdownLoop:
