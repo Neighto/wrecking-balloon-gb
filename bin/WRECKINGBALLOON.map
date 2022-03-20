@@ -306,7 +306,7 @@ ROM0 bank #0:
            $2872 = LevelDataHandler.waitEnd
            $2880 = LevelDataHandler.end
            $2890 = LevelDataHandler.won
-  SECTION: $2899-$2aa0 ($0208 bytes) ["rom"]
+  SECTION: $2899-$2a9d ($0205 bytes) ["rom"]
            $2899 = Start
            $28d6 = MenuLoopOpening
            $28e2 = StartMenu
@@ -326,151 +326,151 @@ ROM0 bank #0:
            $29ed = StageClear
            $2a17 = StageClearLoop
            $2a23 = GameOver
-           $2a50 = GameOverLoop
-           $2a5c = GameWon
-           $2a92 = GameWonLoop
-  SECTION: $2aa1-$2c9f ($01ff bytes) ["game"]
-           $2aa1 = InitializeGame
-           $2aa9 = LoadGameSpriteTiles
-           $2ab6 = LoadLevel1Graphics
-           $2ad0 = LoadLevel2Graphics
-           $2ae9 = LoadLevel3Graphics
-           $2b1b = SpawnCountdown
-           $2b46 = UpdateGameCountdown
-           $2b52 = UpdateGameCountdown.checkCountdownAnimation
-           $2b59 = UpdateGameCountdown.countdownSpeed
-           $2b60 = UpdateGameCountdown.countdownBalloonPopSpeed
-           $2b65 = UpdateGameCountdown.frames
-           $2b6c = UpdateGameCountdown.frame0
-           $2b90 = UpdateGameCountdown.frame0End
-           $2b94 = UpdateGameCountdown.frame1
-           $2bb8 = UpdateGameCountdown.frame1End
-           $2bbc = UpdateGameCountdown.frame2
-           $2be0 = UpdateGameCountdown.frame2End
-           $2be4 = UpdateGameCountdown.frame3
-           $2c08 = UpdateGameCountdown.frame3End
-           $2c0c = UpdateGameCountdown.frame4
-           $2c30 = UpdateGameCountdown.frame4End
-           $2c34 = UpdateGameCountdown.frame5
-           $2c55 = UpdateGameCountdown.frame5End
-           $2c55 = UpdateGameCountdown.clear
-           $2c6e = UpdateGameCountdown.gameLoop
-           $2c72 = UpdateGame
-           $2c72 = UpdateGame.tryToUnpause
-           $2c79 = UpdateGame.isPaused
-           $2c8a = UpdateGame.isNotPaused
-           $2c8a = UpdateGame.updateSprites
-           $2c93 = UpdateGame.rest
-  SECTION: $2ca0-$2e3b ($019c bytes) ["interrupts"]
-           $2ca0 = InitializeInterrupts
-           $2cb6 = VBlankInterrupt
-           $2cc6 = LCDInterrupt
-           $2cd0 = LCDInterruptEnd
-           $2cd4 = MenuLCDInterrupt
-           $2ce4 = MenuLCDInterrupt.reset
-           $2ced = MenuLCDInterrupt.far
-           $2cf8 = MenuLCDInterrupt.close
-           $2d01 = MenuLCDInterrupt.end
-           $2d04 = SetMenuInterrupts
-           $2d12 = OpeningCutsceneLCDInterrupt
-           $2d1e = OpeningCutsceneLCDInterrupt.hide
-           $2d29 = OpeningCutsceneLCDInterrupt.show
-           $2d32 = OpeningCutsceneLCDInterrupt.end
-           $2d35 = SetOpeningCutsceneInterrupts
-           $2d43 = Level1LCDInterrupt
-           $2d57 = Level1LCDInterrupt.reset
-           $2d65 = Level1LCDInterrupt.far
-           $2d70 = Level1LCDInterrupt.middle
-           $2d7b = Level1LCDInterrupt.close2
-           $2d84 = Level1LCDInterrupt.end
-           $2d87 = SetLevel1Interrupts
-           $2d95 = Level2LCDInterrupt
-           $2da9 = Level2LCDInterrupt.reset
-           $2db7 = Level2LCDInterrupt.far
-           $2dc2 = Level2LCDInterrupt.middle
-           $2dcd = Level2LCDInterrupt.close
-           $2dd6 = Level2LCDInterrupt.end
-           $2dd9 = SetLevel2Interrupts
-           $2de7 = Level3LCDInterrupt
-           $2dfb = Level3LCDInterrupt.reset
-           $2e09 = Level3LCDInterrupt.close
-           $2e14 = Level3LCDInterrupt.middle
-           $2e1f = Level3LCDInterrupt.rain
-           $2e2b = Level3LCDInterrupt.end
-           $2e2e = SetLevel3Interrupts
-  SECTION: $2e3c-$2f47 ($010c bytes) ["window"]
-           $2e3c = RefreshScore
-           $2e6c = RefreshTotal
-           $2e9e = LoadWindow.loadTiles
-           $2e9e = LoadWindow
-           $2eaa = LoadWindow.drawMap
-           $2ec4 = RefreshWindow
-           $2ec9 = RefreshWindow.refreshScore
-           $2ecf = RefreshWindow.refreshLives
-           $2ed7 = RefreshWindow.refreshBoostBar
-           $2ee1 = RefreshWindow.isBoostCharging
-           $2eed = RefreshWindow.isBoostEmpty
-           $2ef4 = RefreshWindow.isBoost25Percent
-           $2efc = RefreshWindow.isBoost50Percent
-           $2f04 = RefreshWindow.isBoost75Percent
-           $2f0c = RefreshWindow.isBoostReady
-           $2f11 = RefreshWindow.refreshAttackBar
-           $2f1b = RefreshWindow.isAttackCharging
-           $2f27 = RefreshWindow.isAttackEmpty
-           $2f2d = RefreshWindow.isAttack25Percent
-           $2f34 = RefreshWindow.isAttack50Percent
-           $2f3b = RefreshWindow.isAttack75Percent
-           $2f42 = RefreshWindow.isAttackReady
-  SECTION: $2f48-$2fc5 ($007e bytes) ["graphics"]
-           $2f48 = AddBGTiles8800Method
-           $2f52 = AddBGTiles8800Method.tilesFitBlock
-           $2f57 = AddBGTiles8800Method.tilesExceedBlock
-           $2f71 = AddBGTiles8800Method.end
-           $2f74 = ClearAllTiles
-           $2f7d = ClearAllTiles.loop_u5
-           $2f8c = ClearAllTiles.loop_u7
-           $2f9b = ClearAllTiles.loop_u9
-           $2fa6 = ClearMap
-           $2fad = ClearMap.loop_u11
-           $2fb6 = ClearWindow
-           $2fbd = ClearWindow.loop_u13
-  SECTION: $2fc6-$303a ($0075 bytes) ["enemy"]
-           $2fc6 = InitializeEnemies
-           $2fcd = InitializeEnemies.loop_u2
-           $2fd6 = UpdateEnemy
-           $2fdf = UpdateEnemy.loop
-           $3010 = UpdateEnemy.pointBalloon
-           $3015 = UpdateEnemy.balloonCactus
-           $301a = UpdateEnemy.bird
-           $301f = UpdateEnemy.bomb
-           $3024 = UpdateEnemy.boss
-           $3029 = UpdateEnemy.checkLoop
-  SECTION: $303b-$307e ($0044 bytes) ["scroll"]
-           $303b = InitializeParallaxScrolling
-           $3049 = IncrementScrollOffset
-           $304c = IncrementScrollOffset.close
-           $3054 = IncrementScrollOffset.middle
-           $305d = IncrementScrollOffset.far
-           $3066 = IncrementScrollOffset.endParallax
-           $3066 = IncrementScrollOffset.rain
-           $3073 = IncrementScrollOffset.resetRain
-           $3079 = ResetScroll
-  SECTION: $307f-$30b1 ($0033 bytes) ["controller"]
-           $307f = InitializeController
-           $308a = ReadController
-           $308a = ReadController.dPad
-           $3098 = ReadController.buttons
-           $30a5 = ReadController.setControllerVars
-  SECTION: $30b2-$30df ($002e bytes) ["enemy struct"]
-           $30b2 = InitializeEnemyStructVars
-  SECTION: $30e0-$30fd ($001e bytes) ["OAM DMA routine"]
-           $30e0 = CopyDMARoutine
-           $30e7 = CopyDMARoutine.copy
-           $30ee = DMARoutine
-           $30f2 = DMARoutine.wait
-           $30f6 = DMARoutineEnd
-           $30f6 = OAMDMA
-    SLACK: $0f2c bytes
+           $2a4d = GameOverLoop
+           $2a59 = GameWon
+           $2a8f = GameWonLoop
+  SECTION: $2a9e-$2c9c ($01ff bytes) ["game"]
+           $2a9e = InitializeGame
+           $2aa6 = LoadGameSpriteTiles
+           $2ab3 = LoadLevel1Graphics
+           $2acd = LoadLevel2Graphics
+           $2ae6 = LoadLevel3Graphics
+           $2b18 = SpawnCountdown
+           $2b43 = UpdateGameCountdown
+           $2b4f = UpdateGameCountdown.checkCountdownAnimation
+           $2b56 = UpdateGameCountdown.countdownSpeed
+           $2b5d = UpdateGameCountdown.countdownBalloonPopSpeed
+           $2b62 = UpdateGameCountdown.frames
+           $2b69 = UpdateGameCountdown.frame0
+           $2b8d = UpdateGameCountdown.frame0End
+           $2b91 = UpdateGameCountdown.frame1
+           $2bb5 = UpdateGameCountdown.frame1End
+           $2bb9 = UpdateGameCountdown.frame2
+           $2bdd = UpdateGameCountdown.frame2End
+           $2be1 = UpdateGameCountdown.frame3
+           $2c05 = UpdateGameCountdown.frame3End
+           $2c09 = UpdateGameCountdown.frame4
+           $2c2d = UpdateGameCountdown.frame4End
+           $2c31 = UpdateGameCountdown.frame5
+           $2c52 = UpdateGameCountdown.frame5End
+           $2c52 = UpdateGameCountdown.clear
+           $2c6b = UpdateGameCountdown.gameLoop
+           $2c6f = UpdateGame
+           $2c6f = UpdateGame.tryToUnpause
+           $2c76 = UpdateGame.isPaused
+           $2c87 = UpdateGame.isNotPaused
+           $2c87 = UpdateGame.updateSprites
+           $2c90 = UpdateGame.rest
+  SECTION: $2c9d-$2e38 ($019c bytes) ["interrupts"]
+           $2c9d = InitializeInterrupts
+           $2cb3 = VBlankInterrupt
+           $2cc3 = LCDInterrupt
+           $2ccd = LCDInterruptEnd
+           $2cd1 = MenuLCDInterrupt
+           $2ce1 = MenuLCDInterrupt.reset
+           $2cea = MenuLCDInterrupt.far
+           $2cf5 = MenuLCDInterrupt.close
+           $2cfe = MenuLCDInterrupt.end
+           $2d01 = SetMenuInterrupts
+           $2d0f = OpeningCutsceneLCDInterrupt
+           $2d1b = OpeningCutsceneLCDInterrupt.hide
+           $2d26 = OpeningCutsceneLCDInterrupt.show
+           $2d2f = OpeningCutsceneLCDInterrupt.end
+           $2d32 = SetOpeningCutsceneInterrupts
+           $2d40 = Level1LCDInterrupt
+           $2d54 = Level1LCDInterrupt.reset
+           $2d62 = Level1LCDInterrupt.far
+           $2d6d = Level1LCDInterrupt.middle
+           $2d78 = Level1LCDInterrupt.close2
+           $2d81 = Level1LCDInterrupt.end
+           $2d84 = SetLevel1Interrupts
+           $2d92 = Level2LCDInterrupt
+           $2da6 = Level2LCDInterrupt.reset
+           $2db4 = Level2LCDInterrupt.far
+           $2dbf = Level2LCDInterrupt.middle
+           $2dca = Level2LCDInterrupt.close
+           $2dd3 = Level2LCDInterrupt.end
+           $2dd6 = SetLevel2Interrupts
+           $2de4 = Level3LCDInterrupt
+           $2df8 = Level3LCDInterrupt.reset
+           $2e06 = Level3LCDInterrupt.close
+           $2e11 = Level3LCDInterrupt.middle
+           $2e1c = Level3LCDInterrupt.rain
+           $2e28 = Level3LCDInterrupt.end
+           $2e2b = SetLevel3Interrupts
+  SECTION: $2e39-$2f44 ($010c bytes) ["window"]
+           $2e39 = RefreshScore
+           $2e69 = RefreshTotal
+           $2e9b = LoadWindow.loadTiles
+           $2e9b = LoadWindow
+           $2ea7 = LoadWindow.drawMap
+           $2ec1 = RefreshWindow
+           $2ec6 = RefreshWindow.refreshScore
+           $2ecc = RefreshWindow.refreshLives
+           $2ed4 = RefreshWindow.refreshBoostBar
+           $2ede = RefreshWindow.isBoostCharging
+           $2eea = RefreshWindow.isBoostEmpty
+           $2ef1 = RefreshWindow.isBoost25Percent
+           $2ef9 = RefreshWindow.isBoost50Percent
+           $2f01 = RefreshWindow.isBoost75Percent
+           $2f09 = RefreshWindow.isBoostReady
+           $2f0e = RefreshWindow.refreshAttackBar
+           $2f18 = RefreshWindow.isAttackCharging
+           $2f24 = RefreshWindow.isAttackEmpty
+           $2f2a = RefreshWindow.isAttack25Percent
+           $2f31 = RefreshWindow.isAttack50Percent
+           $2f38 = RefreshWindow.isAttack75Percent
+           $2f3f = RefreshWindow.isAttackReady
+  SECTION: $2f45-$2fc2 ($007e bytes) ["graphics"]
+           $2f45 = AddBGTiles8800Method
+           $2f4f = AddBGTiles8800Method.tilesFitBlock
+           $2f54 = AddBGTiles8800Method.tilesExceedBlock
+           $2f6e = AddBGTiles8800Method.end
+           $2f71 = ClearAllTiles
+           $2f7a = ClearAllTiles.loop_u5
+           $2f89 = ClearAllTiles.loop_u7
+           $2f98 = ClearAllTiles.loop_u9
+           $2fa3 = ClearMap
+           $2faa = ClearMap.loop_u11
+           $2fb3 = ClearWindow
+           $2fba = ClearWindow.loop_u13
+  SECTION: $2fc3-$3037 ($0075 bytes) ["enemy"]
+           $2fc3 = InitializeEnemies
+           $2fca = InitializeEnemies.loop_u2
+           $2fd3 = UpdateEnemy
+           $2fdc = UpdateEnemy.loop
+           $300d = UpdateEnemy.pointBalloon
+           $3012 = UpdateEnemy.balloonCactus
+           $3017 = UpdateEnemy.bird
+           $301c = UpdateEnemy.bomb
+           $3021 = UpdateEnemy.boss
+           $3026 = UpdateEnemy.checkLoop
+  SECTION: $3038-$307b ($0044 bytes) ["scroll"]
+           $3038 = InitializeParallaxScrolling
+           $3046 = IncrementScrollOffset
+           $3049 = IncrementScrollOffset.close
+           $3051 = IncrementScrollOffset.middle
+           $305a = IncrementScrollOffset.far
+           $3063 = IncrementScrollOffset.endParallax
+           $3063 = IncrementScrollOffset.rain
+           $3070 = IncrementScrollOffset.resetRain
+           $3076 = ResetScroll
+  SECTION: $307c-$30ae ($0033 bytes) ["controller"]
+           $307c = InitializeController
+           $3087 = ReadController
+           $3087 = ReadController.dPad
+           $3095 = ReadController.buttons
+           $30a2 = ReadController.setControllerVars
+  SECTION: $30af-$30dc ($002e bytes) ["enemy struct"]
+           $30af = InitializeEnemyStructVars
+  SECTION: $30dd-$30fa ($001e bytes) ["OAM DMA routine"]
+           $30dd = CopyDMARoutine
+           $30e4 = CopyDMARoutine.copy
+           $30eb = DMARoutine
+           $30ef = DMARoutine.wait
+           $30f3 = DMARoutineEnd
+           $30f3 = OAMDMA
+    SLACK: $0f2f bytes
 
 ROMX bank #1:
   SECTION: $4000-$541f ($1420 bytes) ["tilesets 2"]
@@ -1260,7 +1260,7 @@ HRAM bank #0:
     SLACK: $0076 bytes
 
 USED:
-    ROM0: $30d4 bytes in 1 bank
+    ROM0: $30d1 bytes in 1 bank
     ROMX: $38ca bytes in 1 bank
     WRAM0: $01ca bytes in 1 bank
     HRAM: $0009 bytes in 1 bank
