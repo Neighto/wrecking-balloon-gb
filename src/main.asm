@@ -178,7 +178,6 @@ GameOver::
 	call LoadGameOverGraphics
 	call InitializePalettes
 	call InitializeGameOver
-	call InitializeStageClear
 	ld hl, gameOverTheme
 	call hUGE_init
 	call LCD_ON_NO_WINDOW
