@@ -27,10 +27,10 @@ Start::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	; call WaitVBlank
-	; call UpdateMenuOpening
-	; call UpdateGlobalTimer
-	; jp MenuLoopOpening
+	call WaitVBlank
+	call UpdateMenuOpening
+	call UpdateGlobalTimer
+	jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
 	call WaveSound
@@ -40,13 +40,14 @@ StartMenu::
 	call LoadMenuGraphics
 	call SpawnMenuCursor
 	call LCD_ON_NO_WINDOW
+
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateMenu
-	; call UpdateGlobalTimer
-	; jp MenuLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateMenu
+	call UpdateGlobalTimer
+	jp MenuLoop
 
 StartGame::
 	call WaitVBlank
@@ -74,11 +75,11 @@ StartGame::
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateOpeningCutscene
-	; call UpdateGlobalTimer
-	; jp OpeningCutsceneLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateOpeningCutscene
+	call UpdateGlobalTimer
+	jp OpeningCutsceneLoop
 
 SetupNextLevel::
 	call WaitVBlank
@@ -129,11 +130,11 @@ SetupNextLevel::
 	call LCD_ON
 
 GameCountdownLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateGameCountdown
-	; call UpdateGlobalTimer
-	; jp GameCountdownLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateGameCountdown
+	call UpdateGlobalTimer
+	jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA
@@ -175,8 +176,8 @@ GameOver::
 	call InitializePalettes
 	call InitializeGameOver
 	call InitializeStageClear
-	; ld hl, gameOverTheme
-	; call hUGE_init
+	ld hl, gameOverTheme
+	call hUGE_init
 	call LCD_ON_NO_WINDOW
 GameOverLoop:
 	call WaitVBlank

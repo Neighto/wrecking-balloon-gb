@@ -78,3 +78,5 @@ A#8 EQU 70
 B_8 EQU 71
 LAST_NOTE EQU 72
 ___ EQU 90 ; the default "no note" value
+
+STOP_SONG EQU 100
