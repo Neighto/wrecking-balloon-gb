@@ -31,7 +31,7 @@ SECTION "player vars", WRAM0
 SECTION "player", ROM0
 
 InitializeLives::
-	ld a, 2
+	ld a, PLAYER_START_LIVES
 	ld [wPlayerLives], a
   ret
 

@@ -24,6 +24,7 @@ InitializeStageClear::
     xor a ; ld a, 0
     ld [wStageClearFrame], a
     ld [wLivesToAdd], a
+    call RefreshStageClear
     ret
 
 LoadStageClearGraphics::

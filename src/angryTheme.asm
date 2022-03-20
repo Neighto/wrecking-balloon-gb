@@ -1,6 +1,6 @@
 include "src/include/hUGE.inc"
 
-SECTION "Song Data2", ROMX
+SECTION "angry theme", ROMX
 
 angryTheme::
 db 6
