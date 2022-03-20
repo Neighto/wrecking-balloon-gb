@@ -115,7 +115,7 @@ SetPlayerPositionOpeningDefault:
 
 SetPlayerPositionOpeningCutscene::
   ld b, PLAYER_START_X
-  ld c, PLAYER_START_Y - 32
+  ld c, 52
   call SetPlayerPosition
   ret
 
