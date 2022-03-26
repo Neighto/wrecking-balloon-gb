@@ -27,10 +27,10 @@ Start::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	call WaitVBlank
-	call UpdateMenuOpening
-	call UpdateGlobalTimer
-	jp MenuLoopOpening
+	; call WaitVBlank
+	; call UpdateMenuOpening
+	; call UpdateGlobalTimer
+	; jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
 	call WaveSound
@@ -71,6 +71,17 @@ StartGame::
 	call SpawnPlayer
 	call SetPlayerPositionOpeningCutscene
 	call SpawnHandWave
+	ld hl, menuTheme
+	call hUGE_init
+	ld b, 0
+	ld c, 1
+	call hUGE_mute_channel
+	ld b, 1
+	ld c, 1
+	call hUGE_mute_channel
+	ld b, 3
+	ld c, 1
+	call hUGE_mute_channel
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
@@ -159,6 +170,12 @@ StageClear::
 	call InitializeStageClear
 	ld hl, menuTheme
 	call hUGE_init
+	ld b, 2
+	ld c, 1
+	call hUGE_mute_channel
+	ld b, 3
+	ld c, 1
+	call hUGE_mute_channel
 	call LCD_ON_NO_WINDOW
 StageClearLoop:
 	call WaitVBlank
