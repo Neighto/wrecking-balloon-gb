@@ -110,6 +110,7 @@ UpdateOpeningCutscene::
     ld d, %01000000
 .endWreckingBalloonCheck:
     call MovePlayerForCutscene
+    call _hUGE_dosound
     
 .updates:
     ldh a, [hGlobalTimer]
