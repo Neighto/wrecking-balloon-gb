@@ -26,7 +26,6 @@ SECTION "level data", ROM0
 
 Level1:
     LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B, EASY
-    LEVEL_END ; testing
     LEVEL_WAIT 8
     LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_A, MEDIUM
     LEVEL_SPAWN BALLOON_CACTUS, SPAWN_Y_B, SCRN_X, EASY
@@ -325,35 +324,6 @@ LevelDataHandler::
     ld a, [wLevel] 
     inc a
     ld [wLevel], a 
-
-    ld d, 80; testong
-    call AddPoints
-    ld d, 80; testong
-    call AddPoints
-    ld d, 80; testong
-    call AddPoints
-    ld d, 80; testong
-    call AddPoints
-    ld d, 80; testong
-    call AddPoints
-    ld d, 80; testong
-    call AddPoints
-    ld d, 80; testong
-    call AddPoints
-    ld d, 80; testong
-    call AddPoints
-    ld d, 80; testong
-    call AddPoints
-    ld d, 80; testong
-    call AddPoints
-    ld d, 80; testong
-    call AddPoints
-    ld d, 80; testong
-    call AddPoints
-    ld d, 80; testong
-    call AddPoints
-
-
     jp StageClear
 .won:
     call FadeOutPalettes
