@@ -138,18 +138,39 @@ PercussionSound::
   ld [rNR44], a
   ret
 
-BassSound::
+BassSoundA::
   ; Sound on/off
   ld a, %10000000
   ld [rNR30], a
   ; Sound length
-  ld a, %11110000
+  ld a, %11110010
   ld [rNR31], a
   ; Select output level
-  ld a, %00100000 ; 100% volume
+  ld a, %00100000
   ld [rNR32], a
+  ; Frequency's lower data
+  ld a, %00001000
+  ld [rNR33], a
   ; Frequency's higher data
-  ld a, %11000011
+  ld a, %11000101
+  ld [rNR34], a
+  ret
+
+BassSoundB::
+  ; Sound on/off
+  ld a, %10000000
+  ld [rNR30], a
+  ; Sound length
+  ld a, %11110010
+  ld [rNR31], a
+  ; Select output level
+  ld a, %00100000
+  ld [rNR32], a
+  ; Frequency's lower data
+  ld a, %00101000
+  ld [rNR33], a
+  ; Frequency's higher data
+  ld a, %11000101
   ld [rNR34], a
   ret
 

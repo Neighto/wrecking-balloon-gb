@@ -2,19 +2,20 @@ INCLUDE "playerConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 
-STAGE_CLEAR_UPDATE_TIME EQU %00000011
-STAGE_CLEAR_PAUSE_LENGTH EQU 20
+STAGE_CLEAR_UPDATE_TIME EQU %00000010
+STAGE_CLEAR_PAUSE_LENGTH EQU 40
 
 PLUS_TILE EQU $FF
-SCORE_SC_INDEX_ONE_ADDRESS EQU $990F
-TOTAL_SC_INDEX_ONE_ADDRESS EQU $994F
-LIVES_SC_ADDRESS EQU $998C
-LIVES_TO_ADD_SC_ADDRESS EQU $998E
+SCORE_SC_INDEX_ONE_ADDRESS EQU $98EF
+TOTAL_SC_INDEX_ONE_ADDRESS EQU $992F
+LIVES_SC_ADDRESS EQU $996C
+LIVES_TO_ADD_SC_ADDRESS EQU $996E
 
 SECTION "stage clear vars", WRAM0
     wStageClearTimer:: DB
     wStageClearFrame:: DB
     wLivesToAdd:: DB
+    wPointSound:: DB
 
 SECTION "stage clear", ROMX
 
@@ -24,6 +25,7 @@ InitializeStageClear::
     xor a ; ld a, 0
     ld [wStageClearFrame], a
     ld [wLivesToAdd], a
+    ld [wPointSound], a
     call RefreshStageClear
     ret
 
@@ -42,7 +44,7 @@ RefreshAddLives::
 	ld a, [wLivesToAdd]
 	cp a, 0
 	jr nz, .hasLivesToAdd
-	ld a, EMPTY_TILE
+	ld a, DARK_GREY_BKG_TILE
 	ld hl, LIVES_TO_ADD_SC_ADDRESS
 	ld [hli], a
 	ld [hl], a
@@ -68,6 +70,22 @@ RefreshStageClear::
 
 	call RefreshAddLives
 	ret
+
+PointSound::
+	ld a, [wPointSound]
+	cp a, 0
+	jr nz, .soundB
+.soundA:
+	ld a, 1
+	ld [wPointSound], a
+	call BassSoundA
+	jr .endPointSound
+.soundB:
+	ld a, 0
+	ld [wPointSound], a
+	call BassSoundB
+.endPointSound:
+    ret
 
 UpdateStageClear::
     call _hUGE_dosound
@@ -120,6 +138,7 @@ UpdateStageClear::
     call AddTotal
     ld d, 10
     call DecrementPoints
+    call PointSound
     ret
 .addGainedLives:
     ld a, [wLivesToAdd]
@@ -132,6 +151,7 @@ UpdateStageClear::
     ret nc
     inc a
     ld [wPlayerLives], a
+    call CollectSound
     ret
 .endFrame:
     ld a, [wStageClearFrame]

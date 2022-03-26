@@ -42,11 +42,11 @@ StartMenu::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateMenu
-	call UpdateGlobalTimer
-	jp MenuLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateMenu
+	; call UpdateGlobalTimer
+	; jp MenuLoop
 
 StartGame::
 	call WaitVBlank
@@ -85,11 +85,11 @@ StartGame::
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateOpeningCutscene
-	call UpdateGlobalTimer
-	jp OpeningCutsceneLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateOpeningCutscene
+	; call UpdateGlobalTimer
+	; jp OpeningCutsceneLoop
 
 SetupNextLevel::
 	call WaitVBlank
@@ -144,11 +144,11 @@ SetupNextLevel::
 	call LCD_ON
 
 GameCountdownLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateGameCountdown
-	call UpdateGlobalTimer
-	jp GameCountdownLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateGameCountdown
+	; call UpdateGlobalTimer
+	; jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA
@@ -170,10 +170,10 @@ StageClear::
 	call InitializeStageClear
 	ld hl, menuTheme
 	call hUGE_init
-	ld b, 2
+	ld b, 3
 	ld c, 1
 	call hUGE_mute_channel
-	ld b, 3
+	ld b, 2
 	ld c, 1
 	call hUGE_mute_channel
 	call LCD_ON_NO_WINDOW
