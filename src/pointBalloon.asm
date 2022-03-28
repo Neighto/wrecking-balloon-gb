@@ -8,11 +8,16 @@ POINT_BALLOON_OAM_SPRITES EQU 2
 POINT_BALLOON_OAM_BYTES EQU POINT_BALLOON_OAM_SPRITES * 4
 POINT_BALLOON_MOVE_TIME EQU %00000001
 POINT_BALLOON_COLLISION_TIME EQU %00001000
-POINT_BALLOON_EASY_TILE EQU $3A
-POINT_BALLOON_MEDIUM_TILE EQU $56
-POINT_BALLOON_HARD_TILE EQU $58
 
-POINT_BALLOON_POINTS EQU 50
+POINT_BALLOON_EASY_TILE EQU $3A
+POINT_BALLOON_EASY_POINTS EQU 25
+
+POINT_BALLOON_MEDIUM_TILE EQU $56
+POINT_BALLOON_MEDIUM_POINTS EQU 50
+
+POINT_BALLOON_HARD_TILE EQU $3A
+POINT_BALLOON_HARD_POINTS EQU 80
+
 
 SECTION "point balloon", ROMX
 
@@ -71,16 +76,19 @@ SpawnPointBalloon::
     cp a, EASY
     jr nz, .medium
     ld d, POINT_BALLOON_EASY_TILE
+    ld e, OAMF_PAL0
     jr .endDifficulty
 .medium:
     cp a, MEDIUM
     jr nz, .hard
     ld d, POINT_BALLOON_MEDIUM_TILE
+    ld e, OAMF_PAL0
     jr .endDifficulty
 .hard:
     cp a, HARD
     jr nz, .endDifficulty
     ld d, POINT_BALLOON_HARD_TILE
+    ld e, OAMF_PAL1
 .endDifficulty:
 
 .balloonLeft:
@@ -88,19 +96,21 @@ SpawnPointBalloon::
     ld [hli], a
     ld a, [wEnemyX]
     ld [hli], a
-    ld [hl], d
-    inc l
-    ld [hl], OAMF_PAL0
+    ld a, d
+    ld [hli], a
+    ld a, e
+    ld [hli], a
 .balloonRight:
-    inc l
     ld a, [wEnemyY]
     ld [hli], a
     ld a, [wEnemyX]
     add 8
     ld [hli], a
-    ld [hl], d
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+    ld a, d
+    ld [hli], a
+    ld a, e
+    or a, OAMF_XFLIP
+    ld [hl], a
 .setStruct:
     LD_HL_BC
     call SetStruct
@@ -260,7 +270,23 @@ PointBalloonUpdate::
     xor a ; ld a, 0
     ld [wEnemyAlive], a
     ; Points
-    ld d, POINT_BALLOON_POINTS
+.difficultyPoints:
+    ld a, [wEnemyDifficulty]
+.easyPoints:
+    cp a, EASY
+    jr nz, .mediumPoints
+    ld d, POINT_BALLOON_EASY_POINTS
+    jr .endDifficultyPoints
+.mediumPoints:
+    cp a, MEDIUM
+    jr nz, .hardPoints
+    ld d, POINT_BALLOON_MEDIUM_POINTS
+    jr .endDifficultyPoints
+.hardPoints:
+    cp a, HARD
+    jr nz, .endDifficultyPoints
+    ld d, POINT_BALLOON_HARD_POINTS
+.endDifficultyPoints:
     call AddPoints
     ; Animation trigger
     ld a, 1 
