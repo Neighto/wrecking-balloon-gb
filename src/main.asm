@@ -109,11 +109,11 @@ SetupNextLevel::
 	jr z, .level3
 	; Don't reach this point
 .level1:
-	; call SetLevel1Interrupts
-	; call LoadLevel1Graphics
-	; ld hl, angryTheme
-	; call hUGE_init
-	; jr .endLevelSetup
+	call SetLevel1Interrupts
+	call LoadLevel1Graphics
+	ld hl, angryTheme
+	call hUGE_init
+	jr .endLevelSetup
 .level2:
 	call SetLevel2Interrupts
 	call LoadLevel2Graphics
@@ -144,11 +144,11 @@ SetupNextLevel::
 	call LCD_ON
 
 GameCountdownLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateGameCountdown
-	call UpdateGlobalTimer
-	jp GameCountdownLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateGameCountdown
+	; call UpdateGlobalTimer
+	; jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA
