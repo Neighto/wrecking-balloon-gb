@@ -204,6 +204,7 @@ PointBalloonUpdate::
 .checkHit:
     ld bc, wPlayerCactusOAM
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    ; ld d, 16
     ld e, 16
     call CollisionCheck
     cp a, 0
@@ -212,6 +213,7 @@ PointBalloonUpdate::
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     LD_BC_HL
     ld hl, wPlayerBulletOAM
+    ; ld d, 16
     ld e, 4
     call CollisionCheck
     cp a, 0

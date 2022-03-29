@@ -168,6 +168,7 @@ ProjectileUpdate::
 .checkHit:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM ; FIX THIS IS WAY TOO BIG FOR COLLISION
+    ; ld d, 16
     ld e, 8
     call CollisionCheck
     cp a, 0
