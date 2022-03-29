@@ -70,28 +70,28 @@ SpawnPointBalloon::
     ld [wEnemyAlive], a
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
 
-.difficulty:
+.difficultyVisual:
     ld a, [wEnemyDifficulty]
-.easy:
+.easyVisual:
     cp a, EASY
-    jr nz, .medium
+    jr nz, .mediumVisual
     ld d, POINT_BALLOON_EASY_TILE
     ld e, OAMF_PAL0
-    jr .endDifficulty
-.medium:
+    jr .endDifficultyVisual
+.mediumVisual:
     cp a, MEDIUM
-    jr nz, .hard
+    jr nz, .hardVisual
     ld d, POINT_BALLOON_MEDIUM_TILE
     ld e, OAMF_PAL0
-    jr .endDifficulty
-.hard:
+    jr .endDifficultyVisual
+.hardVisual:
     cp a, HARD
-    jr nz, .endDifficulty
+    jr nz, .endDifficultyVisual
     ld d, POINT_BALLOON_HARD_TILE
     ld e, OAMF_PAL1
-.endDifficulty:
+.endDifficultyVisual:
 
-.balloonLeft:
+.balloonLeftOAM:
     ld a, [wEnemyY]
     ld [hli], a
     ld a, [wEnemyX]
@@ -100,7 +100,7 @@ SpawnPointBalloon::
     ld [hli], a
     ld a, e
     ld [hli], a
-.balloonRight:
+.balloonRightOAM:
     ld a, [wEnemyY]
     ld [hli], a
     ld a, [wEnemyX]
@@ -116,55 +116,6 @@ SpawnPointBalloon::
     call SetStruct
 .end:
     pop hl
-    ret
-
-PopBalloonAnimation:
-    ld a, [wEnemyPoppingFrame]
-    cp a, 0
-    jr z, .frame0
-    ld a, [wEnemyPoppingTimer]
-	inc	a
-	ld [wEnemyPoppingTimer], a
-    and POPPING_BALLOON_ANIMATION_SPEED
-    ret nz
-.canSwitchFrames:
-    ld a, [wEnemyPoppingFrame]
-    cp a, 1
-    jr z, .frame1
-    cp a, 2
-    jr z, .clear
-    ret
-.frame0:
-    ; Popped left - frame 0
-    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
-    ld [hl], POP_BALLOON_FRAME_0_TILE
-    inc l
-    ld [hl], OAMF_PAL0
-    ; Popped right - frame 0
-    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
-    ld [hl], POP_BALLOON_FRAME_0_TILE
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
-    jr .endFrame
-.frame1:
-    ; Popped left - frame 1
-    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
-    ld [hl], POP_BALLOON_FRAME_1_TILE
-    inc l
-    ld [hl], OAMF_PAL0
-    ; Popped right - frame 1
-    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
-    ld [hl], POP_BALLOON_FRAME_1_TILE
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
-    jr .endFrame
-.clear:
-    call Clear
-    ret
-.endFrame:
-    ld a, [wEnemyPoppingFrame]
-    inc a 
-    ld [wEnemyPoppingFrame], a
     ret
 
 Clear:
@@ -217,20 +168,20 @@ PointBalloonUpdate::
     cp a, EASY
     jr nz, .moveMedium
     dec [hl]
-    jr .balloonLeft
+    jr .balloonLeftOAM
 .moveMedium:
     cp a, MEDIUM
     jr nz, .moveHard
     dec [hl]
     dec [hl]
-    jr .balloonLeft
+    jr .balloonLeftOAM
 .moveHard:
     cp a, HARD
-    jr nz, .balloonLeft
+    jr nz, .balloonLeftOAM
     dec [hl]
     dec [hl]
     dec [hl]
-.balloonLeft:
+.balloonLeftOAM:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     ld a, [wEnemyY]
     ld [hli], a
@@ -238,7 +189,7 @@ PointBalloonUpdate::
     ld [hli], a
     inc l
     inc l
-.balloonRight:
+.balloonRightOAM:
     ld a, [wEnemyY]
     ld [hli], a
     ld a, [wEnemyX]
@@ -308,11 +259,17 @@ PointBalloonUpdate::
     call Clear
     jr .setStruct
 .endOffscreen:
+    jr .setStruct
 
 .popped:
     ld a, [wEnemyPopping]
     cp a, 0
-    call nz, PopBalloonAnimation
+    jr z, .clear
+.animating:
+    call PopBalloonAnimation
+    jr .setStruct
+.clear:
+    call Clear
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct

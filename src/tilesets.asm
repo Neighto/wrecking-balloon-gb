@@ -24,8 +24,8 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/Boss.2bpp"
     INCBIN "incbin/sprite/BossBall.2bpp"
     INCBIN "incbin/sprite/PointBalloon.2bpp"
-    INCBIN "incbin/sprite/PointBalloon2.2bpp"
     INCBIN "incbin/sprite/ManClap.2bpp"
+    INCBIN "incbin/sprite/EnemyCactus2.2bpp"
 GameSpriteTilesEnd::
 
 Level1Tiles::

@@ -1,5 +1,8 @@
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
+INCLUDE "hardware.inc"
+INCLUDE "constants.inc"
+INCLUDE "balloonConstants.inc"
 
 SECTION "enemy struct vars", WRAM0
     ; NOTE: UPDATE ENEMY_STRUCT_SIZE in enemyConstants if we add vars here!
@@ -116,4 +119,147 @@ UpdateEnemy::
     ld a, [hl]
     cp a, 0
     jr nz, .loop
+    ret
+
+SECTION "enemy animations", ROM0
+
+PopBalloonAnimation::
+    ld a, [wEnemyPoppingFrame]
+    cp a, 0
+    jr z, .frame0
+    ld a, [wEnemyPoppingTimer]
+	inc	a
+	ld [wEnemyPoppingTimer], a
+    and POPPING_BALLOON_ANIMATION_SPEED
+    ret nz
+.canSwitchFrames:
+    ld a, [wEnemyPoppingFrame]
+    cp a, 1
+    jr z, .frame1
+    cp a, 2
+    jr z, .clear
+    ret
+.frame0:
+    ; Popped left - frame 0
+    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
+    ld [hl], POP_BALLOON_FRAME_0_TILE
+    inc l
+    ld [hl], OAMF_PAL0
+    ; Popped right - frame 0
+    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
+    ld [hl], POP_BALLOON_FRAME_0_TILE
+    inc l
+    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+    jr .endFrame
+.frame1:
+    ; Popped left - frame 1
+    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
+    ld [hl], POP_BALLOON_FRAME_1_TILE
+    inc l
+    ld [hl], OAMF_PAL0
+    ; Popped right - frame 1
+    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
+    ld [hl], POP_BALLOON_FRAME_1_TILE
+    inc l
+    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+    jr .endFrame
+.clear:
+    ; Remove sprites
+    ; SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
+    ; ld [hl], EMPTY_TILE
+    ; SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
+    ; ld [hl], EMPTY_TILE
+    ; ; Reset variables
+    xor a
+    ld [wEnemyPopping], a
+    ret
+.endFrame:
+    ld a, [wEnemyPoppingFrame]
+    inc a 
+    ld [wEnemyPoppingFrame], a
+    ret
+
+ExplosionAnimation::
+    ld a, [wEnemyPoppingFrame]
+    cp a, 0
+    jr z, .frame0
+    ld a, [wEnemyPoppingTimer]
+	inc	a
+	ld [wEnemyPoppingTimer], a
+    and POPPING_BALLOON_ANIMATION_SPEED
+    ret nz
+.canSwitchFrames:
+    ld a, [wEnemyPoppingFrame]
+    cp a, 1
+    jp z, .frame1
+    cp a, 2
+    jp z, .frame2
+    cp a, 3
+    jp z, .frame3
+    cp a, 4
+    jp z, .clear
+    ret
+.frame0:
+    ; Popped left - frame 0
+    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
+    ld [hl], POP_BALLOON_FRAME_0_TILE
+    inc l
+    ld [hl], %00000000
+    ; Popped right - frame 0
+    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
+    ld [hl], POP_BALLOON_FRAME_0_TILE
+    inc l
+    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+    jp .endFrame
+.frame1:
+    ; Explosion left
+    SET_HL_TO_ADDRESS wOAM+1, wEnemyOAM
+    ld a, [wEnemyX]
+    sub 4
+    ld [hli], a
+    ld a, BOMB_EXPLOSION_TILE_1
+    ld [hl], a
+    ; Explosion middle
+    SET_HL_TO_ADDRESS wOAM+5, wEnemyOAM
+    ld a, [wEnemyX]
+    add 4
+    ld [hli], a
+    ld a, BOMB_EXPLOSION_TILE_2
+    ld [hl], a
+    ; Explosion right
+    SET_HL_TO_ADDRESS wOAM+9, wEnemyOAM
+    ld a, [wEnemyX]
+    add 12
+    ld [hli], a
+    ld a, BOMB_EXPLOSION_TILE_1
+    ld [hli], a
+    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+    jr .endFrame
+.frame2:
+    ; Flip palette
+    SET_HL_TO_ADDRESS wOAM+3, wEnemyOAM
+    ld [hl], OAMF_PAL1
+    SET_HL_TO_ADDRESS wOAM+7, wEnemyOAM
+    ld [hl], OAMF_PAL1
+    SET_HL_TO_ADDRESS wOAM+11, wEnemyOAM
+    ld [hl], OAMF_PAL1 | OAMF_XFLIP
+    jr .endFrame
+.frame3:
+    ; Flip palette
+    SET_HL_TO_ADDRESS wOAM+3, wEnemyOAM
+    ld [hl], OAMF_PAL0
+    SET_HL_TO_ADDRESS wOAM+7, wEnemyOAM
+    ld [hl], OAMF_PAL0
+    SET_HL_TO_ADDRESS wOAM+11, wEnemyOAM
+    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+    jr .endFrame
+.clear:
+    xor a
+    ld [wEnemyPopping], a
+    ret 
+.endFrame:
+    ld a, [wEnemyPoppingFrame]
+    inc a 
+    ld [wEnemyPoppingFrame], a
+.end:
     ret

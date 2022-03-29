@@ -416,7 +416,7 @@ FallCactusDown:
   INCREMENT_POS wPlayerY2, [wPlayerFallSpeed]
   ret
 
-PopBalloonAnimation:
+PopPlayerBalloonAnimation:
   ld a, [wPlayerPoppingFrame]
   cp a, 0
   jr z, .frame0
@@ -461,10 +461,6 @@ PopBalloonAnimation:
   call ClearPlayerBalloon
   ; Reset variables
   ld hl, wPlayerPopping
-  ld [hl], a
-  ld hl, wPlayerPoppingTimer
-  ld [hl], a
-  ld hl, wPlayerPoppingFrame
   ld [hl], a
   ret
 .endFrame:
@@ -629,7 +625,7 @@ PlayerUpdate::
 .popping:
   ld a, [wPlayerPopping]
   cp a, 0
-  call nz, PopBalloonAnimation
+  call nz, PopPlayerBalloonAnimation
 .falling:
   ld a, [wPlayerFalling]
   cp a, 0
