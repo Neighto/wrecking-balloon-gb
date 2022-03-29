@@ -228,6 +228,7 @@ CactusFallingCollision:
 ;     ld hl, wOAM
 ;     ADD_TO_HL a
 ;     ld e, 8
+    ; ld d, 16
 ;     call CollisionCheck
 ;     pop bc
 ;     cp a, 0
@@ -421,6 +422,7 @@ BalloonCactusUpdate::
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM+12, wEnemyOAM
+    ; ld d, 16
     ld e, 16
     call CollisionCheck
     cp a, 0
@@ -428,6 +430,7 @@ BalloonCactusUpdate::
 .checkHit:
     ld bc, wPlayerCactusOAM
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    ; ld d, 16
     ld e, 16
     call CollisionCheck
     cp a, 0
@@ -440,6 +443,7 @@ BalloonCactusUpdate::
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     LD_BC_HL
     ld hl, wPlayerBulletOAM
+    ; ld d, 16
     ld e, 4
     call CollisionCheck
     cp a, 0

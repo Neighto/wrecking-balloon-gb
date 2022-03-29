@@ -323,6 +323,7 @@ BirdUpdate::
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM+4, wEnemyOAM
+    ; ld d, 16
     ld e, 8
     call CollisionCheck
     cp a, 0

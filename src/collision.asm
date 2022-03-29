@@ -7,66 +7,67 @@ COLLISION_UPDATE_TIME EQU %00000011
 SECTION "collision", ROM0
 
 CollisionCheck::
-    ; bc = argument for target colliding with player cactus
+    ; bc = argument for colliding target (16x16 pixels)
     ; hl = argument for collider
-    ; d = unused
-    ; e = argument for Y size check (ex: 16 for 16 pixels high)
+    ; d = argument for X size check (ex: 8 for 8 pixels long collider)
+    ; e = argument for Y size check (ex: 16 for 16 pixels high collider)
     ; a = return result (0 = no collision)
 
-    ; CHECK Y
+.checkY:
     ld a, [bc]
     cp a, [hl]
-    jr nc, .tryOtherY
-    ; cactus_y[hl] > balloon_y[a]
+    jr nc, .tryColliderY
+    ; Target y < collider y
     add 16
     cp a, [hl]
-    jr c, .tryOtherY
-    ; cactus_y[hl] < balloon_y'[a']
-    jr .checkX
+    jr nc, .checkX
+    ; Target y' < collider y
+    jr .noCollision
 
-.tryOtherY:
-    ; Also check OR cactus_y'
+.tryColliderY:
     ld a, [hl]
-    add a, e
-    ld e, a ; We no longer need e
-
-    ld a, [bc]
-    cp a, e
-    jr nc, .noCollision
-    ; cactus_y'[c'] > balloon_y[a]
-    add 16
-    cp a, e
-    jr c, .noCollision
-    ; cactus_y'[c'] < balloon_y'[a']
-
-.checkX:
-    ; CHECK X
-    inc l ; collider+1
-    inc c ; target+1
-    ld a, [bc]
-    cp a, [hl]
-    jr nc, .tryOtherX
-    ; cactus_x[hl] > balloon_x[a]
-    add 16
-    cp a, [hl]
-    jr c, .tryOtherX
-    ; cactus_x[hl] < balloon_x'[a']
-    jr .collision
-
-.tryOtherX:
-    ; Also check OR cactus_x'
-    ld a, [hl]
-    add 16
+    add a, e ; e no longer needed for Y size check after this
     ld e, a
 
     ld a, [bc]
     cp a, e
     jr nc, .noCollision
-    ; cactus_x'[c'] > balloon_x[a]
+    ; Target y < collider y'
     add 16
     cp a, e
     jr c, .noCollision
-    ; cactus_x'[c'] < balloon_x'[a']
+    ; Target y' <= collider y'
+
+.checkX:
+    inc l ; collider+1
+    inc c ; target+1
+    ld a, [bc]
+    cp a, [hl]
+    jr nc, .tryColliderX
+    ; Target x < collider x
+    add 16
+    cp a, [hl]
+    jr nc, .collision
+    ; Target x' < collider x
+    jr .noCollision
+
+.tryColliderX:
+    ld a, [hl]
+    ; add a, d ; d no longer needed for X size check after this
+    add 16
+    ld e, a
+    ; ld d, a
+
+    ld a, [bc]
+    cp a, e
+    ; cp a, d
+    jr nc, .noCollision
+    ; Target x < collider x'
+    add 16
+    cp a, e
+    ; cp a, d
+    jr c, .noCollision
+    ; Target x' <= collider x'
 
 .collision:
     ld a, 1 ; Success
