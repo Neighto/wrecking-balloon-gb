@@ -153,7 +153,7 @@ GameLoop::
 	call WaitVBlank
 	call OAMDMA
 	call UpdateGame
-	call UpdateGlobalTimer
+	call UpdateGlobalTimer ; MOVE INSIDE SO PAUSE DOESNT SCREW IT UP
 	jp GameLoop
 
 StageClear::

@@ -92,6 +92,8 @@ UpdateEnemy::
     jr z, .bird
     cp a, BOMB
     jr z, .bomb
+    cp a, PROJECTILE
+    jr z, .projectile
     cp a, BOSS
     jr z, .boss
     jr .checkLoop
@@ -106,6 +108,9 @@ UpdateEnemy::
     jr .checkLoop
 .bomb:
     call BombUpdate
+    jr .checkLoop
+.projectile:
+    call ProjectileUpdate
     jr .checkLoop
 .boss:
     call BossUpdate

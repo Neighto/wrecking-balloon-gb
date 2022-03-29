@@ -26,6 +26,7 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/PointBalloon.2bpp"
     INCBIN "incbin/sprite/ManClap.2bpp"
     INCBIN "incbin/sprite/EnemyCactus2.2bpp"
+    INCBIN "incbin/sprite/Projectile.2bpp"
 GameSpriteTilesEnd::
 
 Level1Tiles::
