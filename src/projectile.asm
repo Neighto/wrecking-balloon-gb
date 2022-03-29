@@ -22,9 +22,9 @@ SetStruct:
     ld [hli], a
     ld a, [wEnemyOAM]
     ld [hli], a
-    ld a, [wEnemyY2] ; To Point Y
+    ld a, [wEnemyY2] ; Add to Y
     ld [hli], a
-    ld a, [wEnemyX2] ; To Point X
+    ld a, [wEnemyX2] ; Add to X
     ld [hl], a
     ret
 
@@ -50,13 +50,40 @@ SpawnProjectile::
     LD_BC_DE
     ld a, 1
     ld [wEnemyActive], a
+.setupY2:
     ld a, [wPlayerY]
-    add a, 8
+    ld d, a
+    ld a, [wEnemyY]
+    cp a, d
+    jr c, .down
+.up:
+    ld a, -1
+    jr .endY
+; .middleY:
+;     xor a ; ld a, 0
+;     jr .endY
+.down:
+    ld a, 1
+.endY:
     ld [wEnemyY2], a
+.endSetupY2:
+.setupX2:
     ld a, [wPlayerX]
-    add a, 8
+    ld d, a
+    ld a, [wEnemyX]
+    cp a, d
+    jr c, .right
+.left:
+    ld a, -1
+    jr .endX
+; .middleX:
+;     xor a ; ld a, 0
+;     jr .endX
+.right:
+    ld a, 1
+.endX:
     ld [wEnemyX2], a
-
+.endSetupX2:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
 .projectileOAM:
     ld a, [wEnemyY]
@@ -120,24 +147,18 @@ ProjectileUpdate::
 .canMove:
 .projectileOAM:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-
-    ; ld a, [wEnemyY2] ; To Y
-    ; cp a, [hl]
-    ; ld a, [wEnemyY]
-    ; dec a
-    ; ld [wEnemyY], a
-    ; ld [hl], a
-    inc l
-
+    ld a, [wEnemyY]
+    ld b, a
+    ld a, [wEnemyY2]
+    add a, b
+    ld [wEnemyY], a
+    ld [hli], a
     ld a, [wEnemyX]
-    dec a
+    ld b, a
+    ld a, [wEnemyX2]
+    add a, b
     ld [wEnemyX], a
     ld [hl], a
-
-    ; ld a, [wEnemyY]
-    ; ld [hli], a
-    ; ld a, [wEnemyX]
-    ; ld [hl], a
 .endMove:
 
 .checkCollision:
@@ -146,7 +167,7 @@ ProjectileUpdate::
     jr nz, .endCollision
 .checkHit:
     ld bc, wPlayerBalloonOAM
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, wEnemyOAM ; FIX THIS IS WAY TOO BIG FOR COLLISION
     ld e, 8
     call CollisionCheck
     cp a, 0

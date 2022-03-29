@@ -414,110 +414,120 @@ ROM0 bank #0:
            $2f39 = ExplosionAnimation.clear
            $2f3e = ExplosionAnimation.endFrame
            $2f45 = ExplosionAnimation.end
-  SECTION: $2f46-$3077 ($0132 bytes) ["enemy projectile"]
+  SECTION: $2f46-$309c ($0157 bytes) ["enemy projectile"]
            $2f46 = SetStruct
            $2f63 = SpawnProjectile
            $2f72 = SpawnProjectile.availableSpace
            $2f7b = SpawnProjectile.availableOAMSpace
-           $2faa = SpawnProjectile.projectileOAM
-           $2fb7 = SpawnProjectile.setStruct
-           $2fbc = SpawnProjectile.end
-           $2fbe = Clear
-           $2fd3 = ProjectileUpdate
-           $2fe8 = ProjectileUpdate.checkFlicker
-           $2fee = ProjectileUpdate.canFlicker
-           $2fff = ProjectileUpdate.palette0
-           $3003 = ProjectileUpdate.palette1
-           $3005 = ProjectileUpdate.endFlicker
-           $3005 = ProjectileUpdate.checkMove
-           $300b = ProjectileUpdate.canMove
-           $300b = ProjectileUpdate.projectileOAM
-           $3020 = ProjectileUpdate.endMove
-           $3020 = ProjectileUpdate.checkCollision
-           $3026 = ProjectileUpdate.checkHit
-           $303e = ProjectileUpdate.deathOfProjectile
-           $3046 = ProjectileUpdate.endCollision
-           $3046 = ProjectileUpdate.checkOffscreenY
-           $3054 = ProjectileUpdate.offscreenY
-           $3057 = ProjectileUpdate.endOffscreenY
-           $3057 = ProjectileUpdate.checkOffscreenX
-           $3065 = ProjectileUpdate.offscreenX
-           $3068 = ProjectileUpdate.setStruct
-           $3068 = ProjectileUpdate.endOffscreenX
-  SECTION: $3078-$3183 ($010c bytes) ["window"]
-           $3078 = RefreshScore
-           $30a8 = RefreshTotal
-           $30da = LoadWindow.loadTiles
-           $30da = LoadWindow
-           $30e6 = LoadWindow.drawMap
-           $3100 = RefreshWindow
-           $3105 = RefreshWindow.refreshScore
-           $310b = RefreshWindow.refreshLives
-           $3113 = RefreshWindow.refreshBoostBar
-           $311d = RefreshWindow.isBoostCharging
-           $3129 = RefreshWindow.isBoostEmpty
-           $3130 = RefreshWindow.isBoost25Percent
-           $3138 = RefreshWindow.isBoost50Percent
-           $3140 = RefreshWindow.isBoost75Percent
-           $3148 = RefreshWindow.isBoostReady
-           $314d = RefreshWindow.refreshAttackBar
-           $3157 = RefreshWindow.isAttackCharging
-           $3163 = RefreshWindow.isAttackEmpty
-           $3169 = RefreshWindow.isAttack25Percent
-           $3170 = RefreshWindow.isAttack50Percent
-           $3177 = RefreshWindow.isAttack75Percent
-           $317e = RefreshWindow.isAttackReady
-  SECTION: $3184-$3201 ($007e bytes) ["graphics"]
-           $3184 = AddBGTiles8800Method
-           $318e = AddBGTiles8800Method.tilesFitBlock
-           $3193 = AddBGTiles8800Method.tilesExceedBlock
-           $31ad = AddBGTiles8800Method.end
-           $31b0 = ClearAllTiles
-           $31b9 = ClearAllTiles.loop_u5
-           $31c8 = ClearAllTiles.loop_u7
-           $31d7 = ClearAllTiles.loop_u9
-           $31e2 = ClearMap
-           $31e9 = ClearMap.loop_u11
-           $31f2 = ClearWindow
-           $31f9 = ClearWindow.loop_u13
-  SECTION: $3202-$327f ($007e bytes) ["enemy"]
-           $3202 = InitializeEnemies
-           $3209 = InitializeEnemies.loop_u2
-           $3212 = UpdateEnemy
-           $321b = UpdateEnemy.loop
-           $3250 = UpdateEnemy.pointBalloon
-           $3255 = UpdateEnemy.balloonCactus
-           $325a = UpdateEnemy.bird
-           $325f = UpdateEnemy.bomb
-           $3264 = UpdateEnemy.projectile
-           $3269 = UpdateEnemy.boss
-           $326e = UpdateEnemy.checkLoop
-  SECTION: $3280-$32c3 ($0044 bytes) ["scroll"]
-           $3280 = InitializeParallaxScrolling
-           $328e = IncrementScrollOffset
-           $3291 = IncrementScrollOffset.close
-           $3299 = IncrementScrollOffset.middle
-           $32a2 = IncrementScrollOffset.far
-           $32ab = IncrementScrollOffset.endParallax
-           $32ab = IncrementScrollOffset.rain
-           $32b8 = IncrementScrollOffset.resetRain
-           $32be = ResetScroll
-  SECTION: $32c4-$32f6 ($0033 bytes) ["controller"]
-           $32c4 = InitializeController
-           $32cf = ReadController
-           $32cf = ReadController.dPad
-           $32dd = ReadController.buttons
-           $32ea = ReadController.setControllerVars
-  SECTION: $32f7-$3324 ($002e bytes) ["enemy struct"]
-           $32f7 = InitializeEnemyStructVars
-  SECTION: $3325-$3342 ($001e bytes) ["OAM DMA routine"]
-           $3325 = CopyDMARoutine
-           $332c = CopyDMARoutine.copy
-           $3333 = DMARoutine
-           $3337 = DMARoutine.wait
-           $333b = DMARoutineEnd
-           $333b = OAMDMA
-    SLACK: $0ce7 bytes
+           $2f8e = SpawnProjectile.setupY2
+           $2f98 = SpawnProjectile.up
+           $2f9c = SpawnProjectile.down
+           $2f9e = SpawnProjectile.endY
+           $2fa1 = SpawnProjectile.setupX2
+           $2fa1 = SpawnProjectile.endSetupY2
+           $2fab = SpawnProjectile.left
+           $2faf = SpawnProjectile.right
+           $2fb1 = SpawnProjectile.endX
+           $2fb4 = SpawnProjectile.endSetupX2
+           $2fc0 = SpawnProjectile.projectileOAM
+           $2fcd = SpawnProjectile.setStruct
+           $2fd2 = SpawnProjectile.end
+           $2fd4 = Clear
+           $2fe9 = ProjectileUpdate
+           $2ffe = ProjectileUpdate.checkFlicker
+           $3004 = ProjectileUpdate.canFlicker
+           $3015 = ProjectileUpdate.palette0
+           $3019 = ProjectileUpdate.palette1
+           $301b = ProjectileUpdate.endFlicker
+           $301b = ProjectileUpdate.checkMove
+           $3021 = ProjectileUpdate.canMove
+           $3021 = ProjectileUpdate.projectileOAM
+           $3045 = ProjectileUpdate.endMove
+           $3045 = ProjectileUpdate.checkCollision
+           $304b = ProjectileUpdate.checkHit
+           $3063 = ProjectileUpdate.deathOfProjectile
+           $306b = ProjectileUpdate.endCollision
+           $306b = ProjectileUpdate.checkOffscreenY
+           $3079 = ProjectileUpdate.offscreenY
+           $307c = ProjectileUpdate.endOffscreenY
+           $307c = ProjectileUpdate.checkOffscreenX
+           $308a = ProjectileUpdate.offscreenX
+           $308d = ProjectileUpdate.setStruct
+           $308d = ProjectileUpdate.endOffscreenX
+  SECTION: $309d-$31a8 ($010c bytes) ["window"]
+           $309d = RefreshScore
+           $30cd = RefreshTotal
+           $30ff = LoadWindow.loadTiles
+           $30ff = LoadWindow
+           $310b = LoadWindow.drawMap
+           $3125 = RefreshWindow
+           $312a = RefreshWindow.refreshScore
+           $3130 = RefreshWindow.refreshLives
+           $3138 = RefreshWindow.refreshBoostBar
+           $3142 = RefreshWindow.isBoostCharging
+           $314e = RefreshWindow.isBoostEmpty
+           $3155 = RefreshWindow.isBoost25Percent
+           $315d = RefreshWindow.isBoost50Percent
+           $3165 = RefreshWindow.isBoost75Percent
+           $316d = RefreshWindow.isBoostReady
+           $3172 = RefreshWindow.refreshAttackBar
+           $317c = RefreshWindow.isAttackCharging
+           $3188 = RefreshWindow.isAttackEmpty
+           $318e = RefreshWindow.isAttack25Percent
+           $3195 = RefreshWindow.isAttack50Percent
+           $319c = RefreshWindow.isAttack75Percent
+           $31a3 = RefreshWindow.isAttackReady
+  SECTION: $31a9-$3226 ($007e bytes) ["graphics"]
+           $31a9 = AddBGTiles8800Method
+           $31b3 = AddBGTiles8800Method.tilesFitBlock
+           $31b8 = AddBGTiles8800Method.tilesExceedBlock
+           $31d2 = AddBGTiles8800Method.end
+           $31d5 = ClearAllTiles
+           $31de = ClearAllTiles.loop_u5
+           $31ed = ClearAllTiles.loop_u7
+           $31fc = ClearAllTiles.loop_u9
+           $3207 = ClearMap
+           $320e = ClearMap.loop_u11
+           $3217 = ClearWindow
+           $321e = ClearWindow.loop_u13
+  SECTION: $3227-$32a4 ($007e bytes) ["enemy"]
+           $3227 = InitializeEnemies
+           $322e = InitializeEnemies.loop_u2
+           $3237 = UpdateEnemy
+           $3240 = UpdateEnemy.loop
+           $3275 = UpdateEnemy.pointBalloon
+           $327a = UpdateEnemy.balloonCactus
+           $327f = UpdateEnemy.bird
+           $3284 = UpdateEnemy.bomb
+           $3289 = UpdateEnemy.projectile
+           $328e = UpdateEnemy.boss
+           $3293 = UpdateEnemy.checkLoop
+  SECTION: $32a5-$32e8 ($0044 bytes) ["scroll"]
+           $32a5 = InitializeParallaxScrolling
+           $32b3 = IncrementScrollOffset
+           $32b6 = IncrementScrollOffset.close
+           $32be = IncrementScrollOffset.middle
+           $32c7 = IncrementScrollOffset.far
+           $32d0 = IncrementScrollOffset.endParallax
+           $32d0 = IncrementScrollOffset.rain
+           $32dd = IncrementScrollOffset.resetRain
+           $32e3 = ResetScroll
+  SECTION: $32e9-$331b ($0033 bytes) ["controller"]
+           $32e9 = InitializeController
+           $32f4 = ReadController
+           $32f4 = ReadController.dPad
+           $3302 = ReadController.buttons
+           $330f = ReadController.setControllerVars
+  SECTION: $331c-$3349 ($002e bytes) ["enemy struct"]
+           $331c = InitializeEnemyStructVars
+  SECTION: $334a-$3367 ($001e bytes) ["OAM DMA routine"]
+           $334a = CopyDMARoutine
+           $3351 = CopyDMARoutine.copy
+           $3358 = DMARoutine
+           $335c = DMARoutine.wait
+           $3360 = DMARoutineEnd
+           $3360 = OAMDMA
+    SLACK: $0cc2 bytes
 
 ROMX bank #1:
   SECTION: $4000-$54cf ($14d0 bytes) ["tilesets 2"]
@@ -1334,7 +1344,7 @@ HRAM bank #0:
     SLACK: $0076 bytes
 
 USED:
-    ROM0: $3319 bytes in 1 bank
+    ROM0: $333e bytes in 1 bank
     ROMX: $38f9 bytes in 1 bank
     WRAM0: $01cb bytes in 1 bank
     HRAM: $0009 bytes in 1 bank
