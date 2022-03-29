@@ -228,7 +228,7 @@ CactusFallingCollision:
 ;     ld hl, wOAM
 ;     ADD_TO_HL a
 ;     ld e, 8
-    ; ld d, 16
+;     ld d, 16
 ;     call CollisionCheck
 ;     pop bc
 ;     cp a, 0
@@ -422,7 +422,7 @@ BalloonCactusUpdate::
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM+12, wEnemyOAM
-    ; ld d, 16
+    ld d, 16
     ld e, 16
     call CollisionCheck
     cp a, 0
@@ -430,7 +430,7 @@ BalloonCactusUpdate::
 .checkHit:
     ld bc, wPlayerCactusOAM
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ; ld d, 16
+    ld d, 16
     ld e, 16
     call CollisionCheck
     cp a, 0
@@ -443,7 +443,7 @@ BalloonCactusUpdate::
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     LD_BC_HL
     ld hl, wPlayerBulletOAM
-    ; ld d, 16
+    ld d, 16
     ld e, 4
     call CollisionCheck
     cp a, 0
@@ -495,8 +495,8 @@ BalloonCactusUpdate::
     jr c, .endOffscreen
 .offscreen:
     call ClearBalloon
-    call ClearCactus
     call ClearExtraSpace
+    call ClearCactus
     call InitializeEnemyStructVars
     jr .setStruct
 .endOffscreen:
@@ -517,8 +517,17 @@ BalloonCactusUpdate::
     call ExplosionAnimation
     jr .endPopped
 .clearPopping:
-    call ClearBalloon
-    call ClearExtraSpace
+    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
+    xor a ; ld a, 0
+    ld [hli], a
+    inc [hl]
+    inc [hl]
+    inc [hl]
+    ld [hli], a
+    inc [hl]
+    inc [hl]
+    inc [hl]
+    ld [hl], a
 .endPopped:
 
 .falling:
@@ -529,8 +538,9 @@ BalloonCactusUpdate::
     call CactusFalling
     jr .endFalling
 .clearFalling:
-    call ClearCactus
+    call ClearBalloon
     call ClearExtraSpace
+    call ClearCactus
     call InitializeEnemyStructVars
 .endFalling:
 

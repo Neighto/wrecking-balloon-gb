@@ -53,19 +53,15 @@ CollisionCheck::
 
 .tryColliderX:
     ld a, [hl]
-    ; add a, d ; d no longer needed for X size check after this
-    add 16
-    ld e, a
-    ; ld d, a
+    add a, d ; d no longer needed for X size check after this
+    ld d, a
 
     ld a, [bc]
-    cp a, e
-    ; cp a, d
+    cp a, d
     jr nc, .noCollision
     ; Target x < collider x'
     add 16
-    cp a, e
-    ; cp a, d
+    cp a, d
     jr c, .noCollision
     ; Target x' <= collider x'
 
