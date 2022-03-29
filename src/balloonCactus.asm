@@ -10,6 +10,8 @@ BALLOON_CACTUS_COLLISION_TIME EQU %00001000
 BALLOON_CACTUS_SCREAMING_TILE EQU $16
 BALLOON_CACTUS_TILE EQU $14
 
+PROJECTILE_RESPAWN_TIME EQU %01111111
+
 BALLOON_CACTUS_EASY_TILE EQU ENEMY_BALLOON_TILE
 BALLOON_CACTUS_EASY_POINTS EQU 15
 
@@ -531,4 +533,28 @@ BalloonCactusUpdate::
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
+
+; Handle spawning projectile AFTER SetStruct because it messes up the struct
+.checkProjectile:
+    ldh a, [hGlobalTimer]
+    and	PROJECTILE_RESPAWN_TIME
+    jr nz, .endProjectile
+    ld a, [wEnemyAlive]
+    cp a, 0
+    jr z, .endProjectile
+    ld a, [wEnemyDifficulty]
+    cp a, EASY 
+    jr nz, .endProjectile
+.spawnProjectile:
+    ld a, PROJECTILE
+    ld [wEnemyNumber], a
+    ld a, [wEnemyY]
+    add a, 4
+    ld [wEnemyY], a
+    ld a, [wEnemyX]
+    add a, 4
+    ld [wEnemyX], a ; TODO actually this should be projected to offscreen
+
+    call SpawnProjectile
+.endProjectile:
     ret
