@@ -137,6 +137,14 @@ SpawnBalloonCactus::
     ld a, e
     or a, OAMF_XFLIP
     ld [hli], a
+.extraSpaceOAM:
+    ld a, 1
+    ld [hli], a
+    ld [hli], a
+    ld a, EMPTY_TILE
+    ld [hli], a
+    ld [hl], OAMF_PAL0
+    inc l
 .cactusLeftOAM:
     ld a, [wEnemyY2]
     ld [hli], a
@@ -155,33 +163,12 @@ SpawnBalloonCactus::
     ld [hl], BALLOON_CACTUS_TILE
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
-.extraSpaceOAM:
-    inc l
-    ld a, 1
-    ld [hli], a
-    ld [hli], a
-    ld a, EMPTY_TILE
-    ld [hli], a
-    ld [hl], OAMF_PAL0
 .setStruct:
     LD_HL_BC
     call SetStruct
 .end:
     pop hl
     ret
-
-ClearCactus:
-    SET_HL_TO_ADDRESS wOAM+8, wEnemyOAM
-    xor a ; ld a, 0
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hl], a
-    ret 
 
 ClearBalloon:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
@@ -197,13 +184,26 @@ ClearBalloon:
     ret
 
 ClearExtraSpace:
-    SET_HL_TO_ADDRESS wOAM+16, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+8, wEnemyOAM
     xor a ; ld a, 0
     ld [hli], a
     ld [hli], a
     ld [hli], a
     ld [hl], a
     ret
+
+ClearCactus:
+    SET_HL_TO_ADDRESS wOAM+12, wEnemyOAM
+    xor a ; ld a, 0
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hl], a
+    ret 
 
 CactusFallingCollision:
     ; Costly and awkward operation but worth it for the fun
@@ -219,7 +219,7 @@ CactusFallingCollision:
 ;     jr z, .checkBirdLoop
 ; .isAlive:
 ;     push bc
-;     SET_HL_TO_ADDRESS wOAM+8, wEnemyOAM
+;     SET_HL_TO_ADDRESS wOAM+12, wEnemyOAM
 ;     LD_BC_HL
 ;     SET_HL_TO_ADDRESS bird+3, wEnemyOffset2 ; OAM
 ;     ld a, [hl]
@@ -231,7 +231,7 @@ CactusFallingCollision:
 ;     cp a, 0
 ;     jr z, .checkBirdLoop
 ; .hitBird:
-;     SET_HL_TO_ADDRESS bird+8, wEnemyOffset2 ; To Die
+;     SET_HL_TO_ADDRESS bird+12, wEnemyOffset2 ; To Die
 ;     ld [hl], 1
 ; .checkBirdLoop:
 ;     ld a, [wEnemyOffset2]
@@ -279,7 +279,7 @@ CactusFalling:
     ret
 
 UpdateBalloonPosition:
-.balloonLeft:
+.balloonLeftOAM:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     ld a, [wEnemyY]
     ld [hli], a
@@ -287,24 +287,32 @@ UpdateBalloonPosition:
     ld [hli], a
     inc l
     inc l
-.balloonRight:
+.balloonRightOAM:
     ld a, [wEnemyY]
     ld [hli], a
     ld a, [wEnemyX]
     add 8
+    ld [hli], a
+    inc l
+    inc l
+.extraSpaceOAM: ; change if we need to use this for bullet too...
+    ld a, [wEnemyY]
+    ld [hli], a
+    ld a, [wEnemyX]
+    add 16
     ld [hl], a
     ret
 
 UpdateCactusPosition:
-.cactusLeft:
-    SET_HL_TO_ADDRESS wOAM+8, wEnemyOAM
+.cactusLeftOAM:
+    SET_HL_TO_ADDRESS wOAM+12, wEnemyOAM
     ld a, [wEnemyY2]
     ld [hli], a
     ld a, [wEnemyX2]
     ld [hli], a
     inc l
     inc l
-.cactusRight:
+.cactusRightOAM:
     ld a, [wEnemyY2]
     ld [hli], a
     ld a, [wEnemyX2]
@@ -407,10 +415,10 @@ BalloonCactusUpdate::
 .checkCollision:
     ldh a, [hGlobalTimer]
     and	BALLOON_CACTUS_COLLISION_TIME
-    jr nz, .endCollision
+    jp nz, .endCollision
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
-    SET_HL_TO_ADDRESS wOAM+8, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+12, wEnemyOAM
     ld e, 16
     call CollisionCheck
     cp a, 0
@@ -421,7 +429,11 @@ BalloonCactusUpdate::
     ld e, 16
     call CollisionCheck
     cp a, 0
-    jr nz, .deathOfBalloonCactus
+    jr z, .checkHitByBullet
+    ld a, [wEnemyDifficulty]
+    cp a, HARD 
+    call z, CollisionWithPlayer
+    jr .deathOfBalloonCactus
 .checkHitByBullet:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     LD_BC_HL
@@ -435,16 +447,32 @@ BalloonCactusUpdate::
     xor a ; ld a, 0
     ld [wEnemyAlive], a
     ; Points
+.difficultyPoints:
+    ld a, [wEnemyDifficulty]
+.easyPoints:
+    cp a, EASY
+    jr nz, .mediumPoints
     ld d, BALLOON_CACTUS_EASY_POINTS
+    jr .endDifficultyPoints
+.mediumPoints:
+    cp a, MEDIUM
+    jr nz, .hardPoints
+    ld d, BALLOON_CACTUS_MEDIUM_POINTS
+    jr .endDifficultyPoints
+.hardPoints:
+    cp a, HARD
+    jr nz, .endDifficultyPoints
+    ld d, BALLOON_CACTUS_HARD_POINTS
+.endDifficultyPoints:
     call AddPoints
     ; Animation trigger
     ld a, 1
     ld [wEnemyPopping], a
     ld [wEnemyFalling], a
     ; Screaming cactus
-    SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
-    ld [hl], BALLOON_CACTUS_SCREAMING_TILE
     SET_HL_TO_ADDRESS wOAM+14, wEnemyOAM
+    ld [hl], BALLOON_CACTUS_SCREAMING_TILE
+    SET_HL_TO_ADDRESS wOAM+18, wEnemyOAM
     ld [hl], BALLOON_CACTUS_SCREAMING_TILE
     ; Sound
     call PopSound
@@ -473,10 +501,18 @@ BalloonCactusUpdate::
     cp a, 0
     jr z, .clearPopping
 .animatePopping:
+    ld a, [wEnemyDifficulty]
+    cp a, HARD
+    jr z, .bombBalloon
+.normalBalloon:
     call PopBalloonAnimation
+    jr .endPopped
+.bombBalloon:
+    call ExplosionAnimation
     jr .endPopped
 .clearPopping:
     call ClearBalloon
+    call ClearExtraSpace
 .endPopped:
 
 .falling:

@@ -164,12 +164,6 @@ PopBalloonAnimation::
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
     jr .endFrame
 .clear:
-    ; Remove sprites
-    ; SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
-    ; ld [hl], EMPTY_TILE
-    ; SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
-    ; ld [hl], EMPTY_TILE
-    ; ; Reset variables
     xor a
     ld [wEnemyPopping], a
     ret
