@@ -96,6 +96,8 @@ UpdateEnemy::
     jr z, .projectile
     cp a, BOSS
     jr z, .boss
+    cp a, ANVIL
+    jr z, .anvil
     jr .checkLoop
 .pointBalloon:
     call PointBalloonUpdate
@@ -114,6 +116,9 @@ UpdateEnemy::
     jr .checkLoop
 .boss:
     call BossUpdate
+    jr .checkLoop
+.anvil:
+    call AnvilUpdate
     jr .checkLoop
 .checkLoop:
     ld a, [wEnemyOffset]
