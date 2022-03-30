@@ -8,6 +8,7 @@ BOSS EQU 6
 ANVIL EQU 7
 
 ; Enemy difficulty
+NONE EQU 0
 EASY EQU 1
 MEDIUM EQU 2
 HARD EQU 3

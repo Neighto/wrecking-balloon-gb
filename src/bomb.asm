@@ -32,6 +32,8 @@ SetStruct:
     ld a, [wEnemyPoppingFrame]
     ld [hli], a
     ld a, [wEnemyPoppingTimer]
+    ld [hli], a
+    ld a, [wEnemyDifficulty]
     ld [hl], a
     ret
 
@@ -126,8 +128,10 @@ BombUpdate::
     ld [wEnemyPopping], a
     ld a, [hli]
     ld [wEnemyPoppingFrame], a
-    ld a, [hl]
+    ld a, [hli]
     ld [wEnemyPoppingTimer], a
+    ld a, [hl]
+    ld [wEnemyDifficulty], a
 
 .checkAlive:
     ld a, [wEnemyAlive]
