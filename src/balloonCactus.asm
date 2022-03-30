@@ -207,7 +207,7 @@ ClearCactus:
     ld [hl], a
     ret 
 
-CactusFallingCollision:
+; CactusFallingCollision:
     ; Costly and awkward operation but worth it for the fun
 ;     push bc
 ; .checkBird:
@@ -246,40 +246,7 @@ CactusFallingCollision:
 ;     jr nz, .birdLoop
 ; .end:
 ;     pop bc
-    ret
-
-CactusFalling:
-    ld a, [wEnemyFallingTimer]
-    inc a
-    ld [wEnemyFallingTimer], a
-    and CACTUS_FALLING_TIME
-    ret nz
-    ; Check offscreen
-    ld a, SCRN_X
-    ld hl, wEnemyY2
-    cp a, [hl]
-    jr c, .offScreen
-.falling:
-    call CactusFallingCollision
-
-    ld a, [wEnemyDelayFallingTimer]
-    inc a
-    ld [wEnemyDelayFallingTimer], a
-    cp a, CACTUS_DELAY_FALLING_TIME
-    jr c, .skipAcceleration
-    xor a ; ld a, 0
-    ld [wEnemyDelayFallingTimer], a
-    ld a, [wEnemyFallingSpeed]
-    add a, a
-    ld [wEnemyFallingSpeed], a
-.skipAcceleration:
-    INCREMENT_POS wEnemyY2, [wEnemyFallingSpeed]
-    call UpdateCactusPosition
-    ret
-.offScreen:
-    xor a
-    ld [wEnemyFalling], a
-    ret
+    ; ret
 
 UpdateBalloonPosition:
 .balloonLeftOAM:
@@ -527,6 +494,10 @@ BalloonCactusUpdate::
     inc [hl]
     inc [hl]
     inc [hl]
+    ld [hli], a
+    inc [hl]
+    inc [hl]
+    inc [hl]
     ld [hl], a
 .endPopped:
 
@@ -535,7 +506,36 @@ BalloonCactusUpdate::
     cp a, 0
     jr z, .clearFalling
 .animateFalling:
-    call CactusFalling
+    ld hl, wEnemyFallingTimer
+    inc [hl]
+    ld a, [hl]
+    and CACTUS_FALLING_TIME
+    jr nz, .endFalling
+    ; Check offscreen
+    ld a, SCRN_X
+    ld hl, wEnemyY2
+    cp a, [hl]
+    jr c, .offScreen
+.canFall:
+    ; call CactusFallingCollision
+    ld hl, wEnemyDelayFallingTimer
+    inc [hl]
+    ld a, [hl]
+    cp a, CACTUS_DELAY_FALLING_TIME
+    jr c, .skipAcceleration
+.accelerate:
+    xor a ; ld a, 0
+    ld [wEnemyDelayFallingTimer], a
+    ld a, [wEnemyFallingSpeed]
+    add a, a
+    ld [wEnemyFallingSpeed], a
+.skipAcceleration:
+    INCREMENT_POS wEnemyY2, [wEnemyFallingSpeed]
+    call UpdateCactusPosition
+    jr .endFalling
+.offScreen:
+    xor a
+    ld [wEnemyFalling], a
     jr .endFalling
 .clearFalling:
     call ClearBalloon
