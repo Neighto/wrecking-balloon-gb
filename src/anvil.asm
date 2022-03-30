@@ -55,6 +55,7 @@ SpawnAnvil::
     LD_BC_DE
     ld a, 1
     ld [wEnemyActive], a
+    ld [wEnemyFallingSpeed], a
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
 
 .anvilLeftOAM:
@@ -112,13 +113,26 @@ AnvilUpdate::
     ld a, [hl]
     ld [wEnemyDelayFallingTimer], a
 
-.checkMove:
-    ldh a, [hGlobalTimer]
-    and	ANVIL_MOVE_TIME
-    jr nz, .endMove
-.canMove:
-    ld hl, wEnemyY
+.fallingSpeed:
+    ld hl, wEnemyFallingTimer
     inc [hl]
+    ld a, [hl]
+    and CACTUS_FALLING_TIME
+    jr nz, .endFallingSpeed
+.canFall:
+    ld hl, wEnemyDelayFallingTimer
+    inc [hl]
+    ld a, [hl]
+    cp a, CACTUS_DELAY_FALLING_TIME
+    jr c, .skipAcceleration
+.accelerate:
+    xor a ; ld a, 0
+    ld [wEnemyDelayFallingTimer], a
+    ld a, [wEnemyFallingSpeed]
+    add a, a
+    ld [wEnemyFallingSpeed], a
+.skipAcceleration:
+    INCREMENT_POS wEnemyY, [wEnemyFallingSpeed]
 .anvilLeftOAM:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     ld a, [wEnemyY]
@@ -129,7 +143,7 @@ AnvilUpdate::
 .anvilRightOAM:
     ld a, [wEnemyY]
     ld [hl], a
-.endMove:
+.endFallingSpeed:
 
 .checkCollision:
     ldh a, [hGlobalTimer]
