@@ -1,6 +1,7 @@
 INCLUDE "playerConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
+INCLUDE "macro.inc"
 
 STAGE_CLEAR_UPDATE_TIME EQU %00000010
 STAGE_CLEAR_PAUSE_LENGTH EQU 40
@@ -88,6 +89,7 @@ PointSound::
     ret
 
 UpdateStageClear::
+    UPDATE_GLOBAL_TIMER
     call _hUGE_dosound
     call RefreshStageClear
 

@@ -81,6 +81,8 @@ HandWaveAnimation::
 	ret
 
 UpdateOpeningCutscene::
+    UPDATE_GLOBAL_TIMER
+
 .checkWreckingBalloon:
 .canFlyUp:
     ldh a, [hGlobalTimer]

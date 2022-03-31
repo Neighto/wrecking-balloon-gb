@@ -152,16 +152,10 @@ MACRO GAME_WON
     DB GAME_WON_KEY
 ENDM
 
-; Music Macros
+; Timer
 
-; Music Instructions
-NOTE_KEY EQU 0
-NOTE_END_KEY EQU 1
-
-MACRO NOTE
-    DB NOTE_KEY, \1
-ENDM
-
-MACRO NOTE_END
-    DB NOTE_END_KEY
+MACRO UPDATE_GLOBAL_TIMER
+    ldh a, [hGlobalTimer]
+    inc	a
+    ldh [hGlobalTimer], a
 ENDM

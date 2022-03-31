@@ -29,7 +29,6 @@ Start::
 MenuLoopOpening:
 	; call WaitVBlank
 	; call UpdateMenuOpening
-	; call UpdateGlobalTimer
 	; jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
@@ -45,7 +44,6 @@ MenuLoop:
 	; call WaitVBlank
 	; call OAMDMA
 	; call UpdateMenu
-	; call UpdateGlobalTimer
 	; jp MenuLoop
 
 StartGame::
@@ -88,7 +86,6 @@ OpeningCutsceneLoop:
 	; call WaitVBlank
 	; call OAMDMA
 	; call UpdateOpeningCutscene
-	; call UpdateGlobalTimer
 	; jp OpeningCutsceneLoop
 
 SetupNextLevel::
@@ -147,13 +144,11 @@ GameCountdownLoop:
 	; call WaitVBlank
 	; call OAMDMA
 	; call UpdateGameCountdown
-	; call UpdateGlobalTimer
 	; jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA
 	call UpdateGame
-	call UpdateGlobalTimer ; MOVE INSIDE SO PAUSE DOESNT SCREW IT UP
 	jp GameLoop
 
 StageClear::
@@ -180,7 +175,6 @@ StageClear::
 StageClearLoop:
 	call WaitVBlank
 	call UpdateStageClear
-	call UpdateGlobalTimer
 	jp StageClearLoop
 
 GameOver::
@@ -201,7 +195,6 @@ GameOver::
 GameOverLoop:
 	call WaitVBlank
 	call UpdateGameOver
-	call UpdateGlobalTimer
 	jp GameOverLoop
 
 GameWon::
@@ -227,5 +220,4 @@ GameWonLoop:
 	call WaitVBlank
 	call OAMDMA
 	call UpdateEndingCutscene
-	call UpdateGlobalTimer
 	jp GameWonLoop
