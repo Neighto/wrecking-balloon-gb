@@ -31,25 +31,25 @@ SECTION "bird", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ld a, [wEnemyActive]
+    ldh a, [wEnemyActive]
     ld [hli], a
-    ld a, [wEnemyNumber]
+    ldh a, [wEnemyNumber]
     ld [hli], a
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     ld [hli], a
-    ld a, [wEnemyOAM]
+    ldh a, [wEnemyOAM]
     ld [hli], a
-    ld a, [wEnemyAlive]
+    ldh a, [wEnemyAlive]
     ld [hli], a
-    ld a, [wEnemyRightside]
+    ldh a, [wEnemyRightside]
     ld [hli], a
-    ld a, [wEnemyFalling]
+    ldh a, [wEnemyFalling]
     ld [hli], a
-    ld a, [wEnemyPoppingFrame]
+    ldh a, [wEnemyPoppingFrame]
     ld [hli], a
-    ld a, [wEnemyToDie]
+    ldh a, [wEnemyToDie]
     ld [hl], a
     ret
 
@@ -71,12 +71,12 @@ SpawnBird::
     call InitializeEnemyStructVars
     call SetStruct
     ld a, b
-    ld [wEnemyOAM], a
+    ldh [wEnemyOAM], a
     LD_BC_DE
     ld a, 1
-    ld [wEnemyActive], a
-    ld [wEnemyAlive], a
-    ld a, [wEnemyX]
+    ldh [wEnemyActive], a
+    ldh [wEnemyAlive], a
+    ldh a, [wEnemyX]
     cp a, SCRN_X / 2
     jr c, .isLeftside
 .isRightside:
@@ -84,18 +84,18 @@ SpawnBird::
     ld [wEnemyRightside], a
 .birdLeft:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     ld [hli], a
     ld [hl], BIRD_TILE_1
     inc l
     ld [hl], OAMF_PAL0
 .birdMiddle:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     add 8
     ld [hli], a
     ld [hl], BIRD_TILE_2
@@ -103,9 +103,9 @@ SpawnBird::
     ld [hl], OAMF_PAL0
 .birdRight:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     add 16
     ld [hli], a
     ld [hl], BIRD_TILE_3
@@ -115,18 +115,18 @@ SpawnBird::
 .isLeftside:
 .leftBirdLeft:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     ld [hli], a
     ld [hl], BIRD_TILE_3
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .leftBirdMiddle:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     add 8
     ld [hli], a
     ld [hl], BIRD_TILE_2
@@ -134,9 +134,9 @@ SpawnBird::
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .leftBirdRight:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     add 16
     ld [hli], a
     ld [hl], BIRD_TILE_1
@@ -150,7 +150,7 @@ SpawnBird::
     ret
 
 BirdRightsideFlap:
-    ld a, [wEnemyPoppingFrame]
+    ldh a, [wEnemyPoppingFrame]
     cp a, 0
     jr nz, .flapping
 .soaring:
@@ -178,7 +178,7 @@ BirdRightsideFlap:
     ret
 
 BirdLeftsideFlap:
-    ld a, [wEnemyPoppingFrame]
+    ldh a, [wEnemyPoppingFrame]
     cp a, 0
     jr nz, .flapping
 .soaring:
@@ -226,24 +226,24 @@ Clear:
 UpdateBirdPosition:
 .birdLeft:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     ld [hli], a
     inc l
     inc l
 .birdMiddle:
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     add 8
     ld [hli], a
     inc l
     inc l
 .birdRight:
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     add 16
     ld [hl], a
     ret
@@ -252,7 +252,7 @@ BirdFall:
     INCREMENT_POS wEnemyY, 2
     call UpdateBirdPosition
 .checkOffscreen:
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld b, a
     ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
     cp a, b
@@ -262,7 +262,7 @@ BirdFall:
     jr c, .endOffscreen
 .offscreen:
     xor a ; ld a, 0
-    ld [wEnemyFalling], a
+    ldh [wEnemyFalling], a
     call Clear
 .endOffscreen:
     ret
@@ -270,24 +270,24 @@ BirdFall:
 BirdUpdate::
     ; Get rest of struct
     ld a, [hli]
-    ld [wEnemyY], a
+    ldh [wEnemyY], a
     ld a, [hli]
-    ld [wEnemyX], a
+    ldh [wEnemyX], a
     ld a, [hli]
-    ld [wEnemyOAM], a
+    ldh [wEnemyOAM], a
     ld a, [hli]
-    ld [wEnemyAlive], a
+    ldh [wEnemyAlive], a
     ld a, [hli]
-    ld [wEnemyRightside], a
+    ldh [wEnemyRightside], a
     ld a, [hli]
-    ld [wEnemyFalling], a
+    ldh [wEnemyFalling], a
     ld a, [hli]
-    ld [wEnemyPoppingFrame], a ; flapping frame
+    ldh [wEnemyPoppingFrame], a ; flapping frame
     ld a, [hl]
-    ld [wEnemyToDie], a
+    ldh [wEnemyToDie], a
 
 .checkAlive:
-    ld a, [wEnemyAlive]
+    ldh a, [wEnemyAlive]
     cp a, 0
     jp z, .isDead
 .isAlive:
@@ -297,7 +297,7 @@ BirdUpdate::
     and	BIRD_MOVE_TIME
     jr nz, .endMove
 .canMove:
-    ld a, [wEnemyRightside]
+    ldh a, [wEnemyRightside]
     cp a, 0
     jr z, .isLeftside
 .isRightside:
@@ -330,22 +330,22 @@ BirdUpdate::
     call nz, CollisionWithPlayer
     jr .endCollision
 .checkHitBySomething:
-    ld a, [wEnemyToDie]
+    ldh a, [wEnemyToDie]
     cp a, 0
     jr z, .endCollision
 .deathOfBird:
     xor a ; ld a, 0
-    ld [wEnemyAlive], a
+    ldh [wEnemyAlive], a
     ; Points
     ld d, BIRD_POINTS
     call AddPoints
     ; Animation trigger
     ld a, 1
-    ld [wEnemyFalling], a
+    ldh [wEnemyFalling], a
     ; Sound
     call ExplosionSound
     ; Screaming bird
-    ld a, [wEnemyRightside]
+    ldh a, [wEnemyRightside]
     cp a, 0
     jr z, .facingRight
 .facingLeft:
@@ -366,7 +366,7 @@ BirdUpdate::
 .endCollision:
 
 .checkOffscreen:
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     ld b, a
     ld a, SCRN_X + OFF_SCREEN_ENEMY_BUFFER
     cp a, b
@@ -380,7 +380,7 @@ BirdUpdate::
 .endOffscreen:
 
 .isDead:
-    ld a, [wEnemyFalling]
+    ldh a, [wEnemyFalling]
     cp a, 0
     jr z, .setStruct
     ldh a, [hGlobalTimer]

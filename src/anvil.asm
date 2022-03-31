@@ -15,21 +15,21 @@ SECTION "anvil", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ld a, [wEnemyActive]
+    ldh a, [wEnemyActive]
     ld [hli], a
-    ld a, [wEnemyNumber]
+    ldh a, [wEnemyNumber]
     ld [hli], a
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     ld [hli], a
-    ld a, [wEnemyOAM]
+    ldh a, [wEnemyOAM]
     ld [hli], a
-    ld a, [wEnemyFallingSpeed]
+    ldh a, [wEnemyFallingSpeed]
     ld [hli], a
-    ld a, [wEnemyFallingTimer]
+    ldh a, [wEnemyFallingTimer]
     ld [hli], a
-    ld a, [wEnemyDelayFallingTimer]
+    ldh a, [wEnemyDelayFallingTimer]
     ld [hl], a
     ret
 
@@ -51,15 +51,15 @@ SpawnAnvil::
     call InitializeEnemyStructVars
     call SetStruct
     ld a, b
-    ld [wEnemyOAM], a
+    ldh [wEnemyOAM], a
     LD_BC_DE
     ld a, 1
-    ld [wEnemyActive], a
-    ld [wEnemyFallingSpeed], a
+    ldh [wEnemyActive], a
+    ldh [wEnemyFallingSpeed], a
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
 
 .anvilLeftOAM:
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
     ld a, [wEnemyX]
     ld [hli], a
@@ -68,7 +68,7 @@ SpawnAnvil::
     ld a, OAMF_PAL0
     ld [hli], a
 .anvilRightOAM:
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
     ld a, [wEnemyX]
     add 8
@@ -101,47 +101,47 @@ Clear:
 AnvilUpdate::
     ; Get rest of struct
     ld a, [hli]
-    ld [wEnemyY], a
+    ldh [wEnemyY], a
     ld a, [hli]
-    ld [wEnemyX], a
+    ldh [wEnemyX], a
     ld a, [hli]
-    ld [wEnemyOAM], a
+    ldh [wEnemyOAM], a
     ld a, [hli]
-    ld [wEnemyFallingSpeed], a
+    ldh [wEnemyFallingSpeed], a
     ld a, [hli]
-    ld [wEnemyFallingTimer], a
+    ldh [wEnemyFallingTimer], a
     ld a, [hl]
-    ld [wEnemyDelayFallingTimer], a
+    ldh [wEnemyDelayFallingTimer], a
 
 .fallingSpeed:
-    ld hl, wEnemyFallingTimer
+    ld hl, wEnemyFallingTimer ; TODO now that it's in hram classic way might be faster
     inc [hl]
     ld a, [hl]
     and CACTUS_FALLING_TIME
     jr nz, .endFallingSpeed
 .canFall:
-    ld hl, wEnemyDelayFallingTimer
+    ld hl, wEnemyDelayFallingTimer ; same here
     inc [hl]
     ld a, [hl]
     cp a, CACTUS_DELAY_FALLING_TIME
     jr c, .skipAcceleration
 .accelerate:
     xor a ; ld a, 0
-    ld [wEnemyDelayFallingTimer], a
-    ld a, [wEnemyFallingSpeed]
+    ldh [wEnemyDelayFallingTimer], a
+    ldh a, [wEnemyFallingSpeed]
     add a, a
-    ld [wEnemyFallingSpeed], a
+    ldh [wEnemyFallingSpeed], a
 .skipAcceleration:
     INCREMENT_POS wEnemyY, [wEnemyFallingSpeed]
 .anvilLeftOAM:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
     inc l
     inc l
     inc l
 .anvilRightOAM:
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hl], a
 .endFallingSpeed:
 
@@ -170,7 +170,7 @@ AnvilUpdate::
 .endCollision:
 
 .checkOffscreen:
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld b, a
     ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
     cp a, b

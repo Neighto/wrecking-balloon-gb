@@ -4,7 +4,7 @@ INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 INCLUDE "balloonConstants.inc"
 
-SECTION "enemy struct vars", WRAM0
+SECTION "enemy struct vars", HRAM
     ; NOTE: UPDATE ENEMY_STRUCT_SIZE in enemyConstants if we add vars here!
     ; TODO: Can I define a public constant here that is EndStruct - StartStruct instead?
 
@@ -36,20 +36,20 @@ SECTION "enemy struct", ROM0
 InitializeEnemyStructVars::
     push af
     xor a ; ld a, 0
-    ld [wEnemyActive], a
-    ld [wEnemyOAM], a
-    ld [wEnemyAlive], a
-    ld [wEnemyPopping], a
-    ld [wEnemyPoppingFrame], a
-    ld [wEnemyPoppingTimer], a
-    ld [wEnemyRightside], a
-    ld [wEnemyY2], a
-    ld [wEnemyX2], a
-    ld [wEnemyFalling], a 
-    ld [wEnemyFallingSpeed], a 
-    ld [wEnemyFallingTimer], a
-    ld [wEnemyDelayFallingTimer], a
-    ld [wEnemyToDie], a
+    ldh [wEnemyActive], a
+    ldh [wEnemyOAM], a
+    ldh [wEnemyAlive], a
+    ldh [wEnemyPopping], a
+    ldh [wEnemyPoppingFrame], a
+    ldh [wEnemyPoppingTimer], a
+    ldh [wEnemyRightside], a
+    ldh [wEnemyY2], a
+    ldh [wEnemyX2], a
+    ldh [wEnemyFalling], a 
+    ldh [wEnemyFallingSpeed], a 
+    ldh [wEnemyFallingTimer], a
+    ldh [wEnemyDelayFallingTimer], a
+    ldh [wEnemyToDie], a
     pop af
     ret
 
@@ -75,14 +75,14 @@ UpdateEnemy::
     ; Get active state
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     ld a, [hli]
-    ld [wEnemyActive], a
+    ldh [wEnemyActive], a
     ; Check active
-    ld a, [wEnemyActive]
+    ldh a, [wEnemyActive]
     cp a, 0
     jr z, .checkLoop
     ; Get enemy number
     ld a, [hli]
-    ld [wEnemyNumber], a
+    ldh [wEnemyNumber], a
     ; Check enemy number
     cp a, POINT_BALLOON
     jr z, .pointBalloon
@@ -134,16 +134,16 @@ UpdateEnemy::
 SECTION "enemy animations", ROM0
 
 PopBalloonAnimation::
-    ld a, [wEnemyPoppingFrame]
+    ldh a, [wEnemyPoppingFrame]
     cp a, 0
     jr z, .frame0
-    ld a, [wEnemyPoppingTimer]
+    ldh a, [wEnemyPoppingTimer]
 	inc	a
-	ld [wEnemyPoppingTimer], a
+	ldh [wEnemyPoppingTimer], a
     and POPPING_BALLOON_ANIMATION_SPEED
     ret nz
 .canSwitchFrames:
-    ld a, [wEnemyPoppingFrame]
+    ldh a, [wEnemyPoppingFrame]
     cp a, 1
     jr z, .frame1
     cp a, 2
@@ -175,25 +175,25 @@ PopBalloonAnimation::
     jr .endFrame
 .clear:
     xor a
-    ld [wEnemyPopping], a
+    ldh [wEnemyPopping], a
     ret
 .endFrame:
-    ld a, [wEnemyPoppingFrame]
+    ldh a, [wEnemyPoppingFrame]
     inc a 
-    ld [wEnemyPoppingFrame], a
+    ldh [wEnemyPoppingFrame], a
     ret
 
 ExplosionAnimation::
-    ld a, [wEnemyPoppingFrame]
+    ldh a, [wEnemyPoppingFrame]
     cp a, 0
     jr z, .frame0
-    ld a, [wEnemyPoppingTimer]
+    ldh a, [wEnemyPoppingTimer]
 	inc	a
-	ld [wEnemyPoppingTimer], a
+	ldh [wEnemyPoppingTimer], a
     and POPPING_BALLOON_ANIMATION_SPEED
     ret nz
 .canSwitchFrames:
-    ld a, [wEnemyPoppingFrame]
+    ldh a, [wEnemyPoppingFrame]
     cp a, 1
     jp z, .frame1
     cp a, 2
@@ -218,21 +218,21 @@ ExplosionAnimation::
 .frame1:
     ; Explosion left
     SET_HL_TO_ADDRESS wOAM+1, wEnemyOAM
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     sub 4
     ld [hli], a
     ld a, BOMB_EXPLOSION_TILE_1
     ld [hl], a
     ; Explosion middle
     SET_HL_TO_ADDRESS wOAM+5, wEnemyOAM
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     add 4
     ld [hli], a
     ld a, BOMB_EXPLOSION_TILE_2
     ld [hl], a
     ; Explosion right
     SET_HL_TO_ADDRESS wOAM+9, wEnemyOAM
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     add 12
     ld [hli], a
     ld a, BOMB_EXPLOSION_TILE_1
@@ -259,11 +259,10 @@ ExplosionAnimation::
     jr .endFrame
 .clear:
     xor a
-    ld [wEnemyPopping], a
+    ldh [wEnemyPopping], a
     ret 
 .endFrame:
-    ld a, [wEnemyPoppingFrame]
+    ldh a, [wEnemyPoppingFrame]
     inc a 
-    ld [wEnemyPoppingFrame], a
-.end:
+    ldh [wEnemyPoppingFrame], a
     ret

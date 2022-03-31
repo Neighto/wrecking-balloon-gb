@@ -25,39 +25,39 @@ SECTION "balloon cactus", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ld a, [wEnemyActive]
+    ldh a, [wEnemyActive]
     ld [hli], a
-    ld a, [wEnemyNumber]
+    ldh a, [wEnemyNumber]
     ld [hli], a
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     ld [hli], a
-    ld a, [wEnemyOAM]
+    ldh a, [wEnemyOAM]
     ld [hli], a
-    ld a, [wEnemyAlive]
+    ldh a, [wEnemyAlive]
     ld [hli], a
-    ld a, [wEnemyPopping]
+    ldh a, [wEnemyPopping]
     ld [hli], a
-    ld a, [wEnemyPoppingFrame]
+    ldh a, [wEnemyPoppingFrame]
     ld [hli], a
-    ld a, [wEnemyPoppingTimer]
+    ldh a, [wEnemyPoppingTimer]
     ld [hli], a
-    ld a, [wEnemyRightside]
+    ldh a, [wEnemyRightside]
     ld [hli], a
-    ld a, [wEnemyY2]
+    ldh a, [wEnemyY2]
     ld [hli], a
-    ld a, [wEnemyX2]
+    ldh a, [wEnemyX2]
     ld [hli], a
-    ld a, [wEnemyFalling]
+    ldh a, [wEnemyFalling]
     ld [hli], a
-    ld a, [wEnemyFallingSpeed]
+    ldh a, [wEnemyFallingSpeed]
     ld [hli], a
-    ld a, [wEnemyFallingTimer]
+    ldh a, [wEnemyFallingTimer]
     ld [hli], a
-    ld a, [wEnemyDelayFallingTimer]
+    ldh a, [wEnemyDelayFallingTimer]
     ld [hli], a
-    ld a, [wEnemyDifficulty]
+    ldh a, [wEnemyDifficulty]
     ld [hl], a
     ret
 
@@ -79,27 +79,27 @@ SpawnBalloonCactus::
     call InitializeEnemyStructVars
     call SetStruct
     ld a, b
-    ld [wEnemyOAM], a
+    ldh [wEnemyOAM], a
     LD_BC_DE
     ld a, 1
-    ld [wEnemyActive], a
-    ld [wEnemyAlive], a
-    ld [wEnemyFallingSpeed], a
-    ld a, [wEnemyY]
+    ldh [wEnemyActive], a
+    ldh [wEnemyAlive], a
+    ldh [wEnemyFallingSpeed], a
+    ldh a, [wEnemyY]
     add 16
-    ld [wEnemyY2], a
-    ld a, [wEnemyX]
-    ld [wEnemyX2], a
+    ldh [wEnemyY2], a
+    ldh a, [wEnemyX]
+    ldh [wEnemyX2], a
 
 .updateFacing:
     cp a, SCRN_X / 2
     jr c, .isLeftside
-    ld [wEnemyRightside], a
+    ldh [wEnemyRightside], a
 .isLeftside:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
 
 .difficultyVisual:
-    ld a, [wEnemyDifficulty]
+    ldh a, [wEnemyDifficulty]
 .easyVisual:
     cp a, EASY
     jr nz, .mediumVisual
@@ -120,18 +120,18 @@ SpawnBalloonCactus::
 .endDifficultyVisual:
 
 .balloonLeftOAM:
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     ld [hli], a
     ld a, d
     ld [hli], a
     ld a, e
     ld [hli], a
 .balloonRightOAM:
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     add 8
     ld [hli], a
     ld a, d
@@ -148,18 +148,18 @@ SpawnBalloonCactus::
     ld [hl], OAMF_PAL0
     inc l
 .cactusLeftOAM:
-    ld a, [wEnemyY2]
+    ldh a, [wEnemyY2]
     ld [hli], a
-    ld a, [wEnemyX2]
+    ldh a, [wEnemyX2]
     ld [hli], a
     ld [hl], BALLOON_CACTUS_TILE
     inc l
     ld [hl], OAMF_PAL0
 .cactusRightOAM:
     inc l
-    ld a, [wEnemyY2]
+    ldh a, [wEnemyY2]
     ld [hli], a
-    ld a, [wEnemyX2]
+    ldh a, [wEnemyX2]
     add 8
     ld [hli], a
     ld [hl], BALLOON_CACTUS_TILE
@@ -251,24 +251,24 @@ ClearCactus:
 UpdateBalloonPosition:
 .balloonLeftOAM:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     ld [hli], a
     inc l
     inc l
 .balloonRightOAM:
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     add 8
     ld [hli], a
     inc l
     inc l
 .extraSpaceOAM: ; change if we need to use this for bullet too...
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     add 16
     ld [hl], a
     ret
@@ -276,16 +276,16 @@ UpdateBalloonPosition:
 UpdateCactusPosition:
 .cactusLeftOAM:
     SET_HL_TO_ADDRESS wOAM+12, wEnemyOAM
-    ld a, [wEnemyY2]
+    ldh a, [wEnemyY2]
     ld [hli], a
-    ld a, [wEnemyX2]
+    ldh a, [wEnemyX2]
     ld [hli], a
     inc l
     inc l
 .cactusRightOAM:
-    ld a, [wEnemyY2]
+    ldh a, [wEnemyY2]
     ld [hli], a
-    ld a, [wEnemyX2]
+    ldh a, [wEnemyX2]
     add 8
     ld [hl], a
     ret
@@ -293,38 +293,38 @@ UpdateCactusPosition:
 BalloonCactusUpdate::
     ; Get rest of struct
     ld a, [hli]
-    ld [wEnemyY], a
+    ldh [wEnemyY], a
     ld a, [hli]
-    ld [wEnemyX], a
+    ldh [wEnemyX], a
     ld a, [hli]
-    ld [wEnemyOAM], a
+    ldh [wEnemyOAM], a
     ld a, [hli]
-    ld [wEnemyAlive], a
+    ldh [wEnemyAlive], a
     ld a, [hli]
-    ld [wEnemyPopping], a
+    ldh [wEnemyPopping], a
     ld a, [hli]
-    ld [wEnemyPoppingFrame], a
+    ldh [wEnemyPoppingFrame], a
     ld a, [hli]
-    ld [wEnemyPoppingTimer], a
+    ldh [wEnemyPoppingTimer], a
     ld a, [hli]
-    ld [wEnemyRightside], a
+    ldh [wEnemyRightside], a
     ld a, [hli]
-    ld [wEnemyY2], a
+    ldh [wEnemyY2], a
     ld a, [hli]
-    ld [wEnemyX2], a
+    ldh [wEnemyX2], a
     ld a, [hli]
-    ld [wEnemyFalling], a 
+    ldh [wEnemyFalling], a 
     ld a, [hli]
-    ld [wEnemyFallingSpeed], a 
+    ldh [wEnemyFallingSpeed], a 
     ld a, [hli]
-    ld [wEnemyFallingTimer], a
+    ldh [wEnemyFallingTimer], a
     ld a, [hli]
-    ld [wEnemyDelayFallingTimer], a
+    ldh [wEnemyDelayFallingTimer], a
     ld a, [hl]
-    ld [wEnemyDifficulty], a
+    ldh [wEnemyDifficulty], a
 
 .checkAlive:
-    ld a, [wEnemyAlive]
+    ldh a, [wEnemyAlive]
     cp a, 0
     jp z, .popped
 .isAlive:
@@ -336,7 +336,7 @@ BalloonCactusUpdate::
 .canMove:
 
 .moveVertical:
-    ld a, [wEnemyDifficulty]
+    ldh a, [wEnemyDifficulty]
 .easyMove:
     cp a, EASY
     jr nz, .mediumMove
@@ -346,7 +346,7 @@ BalloonCactusUpdate::
     cp a, MEDIUM
     jr nz, .hardMove
     ; Follow player, maybe add random?
-    ld a, [wEnemyY2]
+    ldh a, [wEnemyY2]
     ld hl, wPlayerY
     cp a, [hl]
     jr z, .endMoveVertical
@@ -366,7 +366,7 @@ BalloonCactusUpdate::
 .endMoveVertical:
 
 .moveHorizontal:
-    ld a, [wEnemyRightside]
+    ldh a, [wEnemyRightside]
     cp a, 0
     jr z, .isLeftside
     DECREMENT_POS wEnemyX, 1
@@ -402,7 +402,7 @@ BalloonCactusUpdate::
     call CollisionCheck
     cp a, 0
     jr z, .checkHitByBullet
-    ld a, [wEnemyDifficulty]
+    ldh a, [wEnemyDifficulty]
     cp a, HARD 
     call z, CollisionWithPlayer
     jr .deathOfBalloonCactus
@@ -421,7 +421,7 @@ BalloonCactusUpdate::
     ld [wEnemyAlive], a
     ; Points
 .difficultyPoints:
-    ld a, [wEnemyDifficulty]
+    ldh a, [wEnemyDifficulty]
 .easyPoints:
     cp a, EASY
     jr nz, .mediumPoints
@@ -440,8 +440,8 @@ BalloonCactusUpdate::
     call AddPoints
     ; Animation trigger
     ld a, 1
-    ld [wEnemyPopping], a
-    ld [wEnemyFalling], a
+    ldh [wEnemyPopping], a
+    ldh [wEnemyFalling], a
     ; Screaming cactus
     SET_HL_TO_ADDRESS wOAM+14, wEnemyOAM
     ld [hl], BALLOON_CACTUS_SCREAMING_TILE
@@ -452,7 +452,7 @@ BalloonCactusUpdate::
 .endCollision:
 
 .checkOffscreen:
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     ld b, a
     ld a, SCRN_X + OFF_SCREEN_ENEMY_BUFFER
     cp a, b
@@ -470,7 +470,7 @@ BalloonCactusUpdate::
     jr .setStruct
 
 .popped:
-    ld a, [wEnemyPopping]
+    ldh a, [wEnemyPopping]
     cp a, 0
     jr z, .clearPopping
 .animatePopping:
@@ -494,15 +494,11 @@ BalloonCactusUpdate::
     inc hl
     inc hl
     inc hl
-    ld [hli], a
-    inc hl
-    inc hl
-    inc hl
     ld [hl], a
 .endPopped:
 
 .falling:
-    ld a, [wEnemyFalling]
+    ldh a, [wEnemyFalling]
     cp a, 0
     jr z, .clearFalling
 .animateFalling:
@@ -553,21 +549,21 @@ BalloonCactusUpdate::
     ldh a, [hGlobalTimer]
     and	PROJECTILE_RESPAWN_TIME
     jr nz, .endProjectile
-    ld a, [wEnemyAlive]
+    ldh a, [wEnemyAlive]
     cp a, 0
     jr z, .endProjectile
-    ld a, [wEnemyDifficulty]
+    ldh a, [wEnemyDifficulty]
     cp a, EASY 
     jr nz, .endProjectile
 .spawnProjectile:
     ld a, PROJECTILE
-    ld [wEnemyNumber], a
-    ld a, [wEnemyY]
+    ldh [wEnemyNumber], a
+    ldh a, [wEnemyY]
     add a, 4
-    ld [wEnemyY], a
-    ld a, [wEnemyX]
+    ldh [wEnemyY], a
+    ldh a, [wEnemyX]
     add a, 4
-    ld [wEnemyX], a ; TODO actually this should be projected to offscreen
+    ldh [wEnemyX], a
 
     call SpawnProjectile
 .endProjectile:

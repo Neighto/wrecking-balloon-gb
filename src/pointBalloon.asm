@@ -23,25 +23,25 @@ SECTION "point balloon", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ld a, [wEnemyActive]
+    ldh a, [wEnemyActive]
     ld [hli], a
-    ld a, [wEnemyNumber]
+    ldh a, [wEnemyNumber]
     ld [hli], a
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     ld [hli], a
-    ld a, [wEnemyOAM]
+    ldh a, [wEnemyOAM]
     ld [hli], a
-    ld a, [wEnemyAlive]
+    ldh a, [wEnemyAlive]
     ld [hli], a
-    ld a, [wEnemyPopping]
+    ldh a, [wEnemyPopping]
     ld [hli], a
-    ld a, [wEnemyPoppingFrame]
+    ldh a, [wEnemyPoppingFrame]
     ld [hli], a
-    ld a, [wEnemyPoppingTimer]
+    ldh a, [wEnemyPoppingTimer]
     ld [hli], a
-    ld a, [wEnemyDifficulty]
+    ldh a, [wEnemyDifficulty]
     ld [hl], a
     ret
 
@@ -66,12 +66,12 @@ SpawnPointBalloon::
     ld [wEnemyOAM], a
     LD_BC_DE
     ld a, 1
-    ld [wEnemyActive], a
-    ld [wEnemyAlive], a
+    ldh [wEnemyActive], a
+    ldh [wEnemyAlive], a
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
 
 .difficultyVisual:
-    ld a, [wEnemyDifficulty]
+    ldh a, [wEnemyDifficulty]
 .easyVisual:
     cp a, EASY
     jr nz, .mediumVisual
@@ -92,18 +92,18 @@ SpawnPointBalloon::
 .endDifficultyVisual:
 
 .balloonLeftOAM:
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     ld [hli], a
     ld a, d
     ld [hli], a
     ld a, e
     ld [hli], a
 .balloonRightOAM:
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     add 8
     ld [hli], a
     ld a, d
@@ -135,24 +135,24 @@ Clear:
 PointBalloonUpdate::
     ; Get rest of struct
     ld a, [hli]
-    ld [wEnemyY], a
+    ldh [wEnemyY], a
     ld a, [hli]
-    ld [wEnemyX], a
+    ldh [wEnemyX], a
     ld a, [hli]
-    ld [wEnemyOAM], a
+    ldh [wEnemyOAM], a
     ld a, [hli]
-    ld [wEnemyAlive], a
+    ldh [wEnemyAlive], a
     ld a, [hli]
-    ld [wEnemyPopping], a
+    ldh [wEnemyPopping], a
     ld a, [hli]
-    ld [wEnemyPoppingFrame], a
+    ldh [wEnemyPoppingFrame], a
     ld a, [hli]
-    ld [wEnemyPoppingTimer], a
+    ldh [wEnemyPoppingTimer], a
     ld a, [hl]
-    ld [wEnemyDifficulty], a
+    ldh [wEnemyDifficulty], a
 
 .checkAlive:
-    ld a, [wEnemyAlive]
+    ldh a, [wEnemyAlive]
     cp a, 0
     jp z, .popped
 .isAlive:
@@ -163,7 +163,7 @@ PointBalloonUpdate::
     jr nz, .endMove
 .canMove:
     ld hl, wEnemyY
-    ld a, [wEnemyDifficulty]
+    ldh a, [wEnemyDifficulty]
 .moveEasy:
     cp a, EASY
     jr nz, .moveMedium
@@ -183,16 +183,16 @@ PointBalloonUpdate::
     dec [hl]
 .balloonLeftOAM:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX] ; Do not need to update X for point balloon
     ld [hli], a
     inc l
     inc l
 .balloonRightOAM:
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     add 8
     ld [hl], a
 .endMove:
@@ -221,10 +221,10 @@ PointBalloonUpdate::
     call ClearBullet
 .deathOfPointBalloon:
     xor a ; ld a, 0
-    ld [wEnemyAlive], a
+    ldh [wEnemyAlive], a
     ; Points
 .difficultyPoints:
-    ld a, [wEnemyDifficulty]
+    ldh a, [wEnemyDifficulty]
 .easyPoints:
     cp a, EASY
     jr nz, .mediumPoints
@@ -243,13 +243,13 @@ PointBalloonUpdate::
     call AddPoints
     ; Animation trigger
     ld a, 1 
-    ld [wEnemyPopping], a
+    ldh [wEnemyPopping], a
     ; Sound
     call PopSound
 .endCollision:
 
 .checkOffscreen:
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld b, a
     ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
     cp a, b
@@ -264,7 +264,7 @@ PointBalloonUpdate::
     jr .setStruct
 
 .popped:
-    ld a, [wEnemyPopping]
+    ldh a, [wEnemyPopping]
     cp a, 0
     jr z, .clear
 .animating:

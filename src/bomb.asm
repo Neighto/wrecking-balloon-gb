@@ -15,25 +15,25 @@ SECTION "bomb", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ld a, [wEnemyActive]
+    ldh a, [wEnemyActive]
     ld [hli], a
-    ld a, [wEnemyNumber]
+    ldh a, [wEnemyNumber]
     ld [hli], a
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     ld [hli], a
-    ld a, [wEnemyOAM]
+    ldh a, [wEnemyOAM]
     ld [hli], a
-    ld a, [wEnemyAlive]
+    ldh a, [wEnemyAlive]
     ld [hli], a
-    ld a, [wEnemyPopping]
+    ldh a, [wEnemyPopping]
     ld [hli], a
-    ld a, [wEnemyPoppingFrame]
+    ldh a, [wEnemyPoppingFrame]
     ld [hli], a
-    ld a, [wEnemyPoppingTimer]
+    ldh a, [wEnemyPoppingTimer]
     ld [hli], a
-    ld a, [wEnemyDifficulty]
+    ldh a, [wEnemyDifficulty]
     ld [hl], a
     ret
 
@@ -55,16 +55,16 @@ SpawnBomb::
     call InitializeEnemyStructVars
     call SetStruct
     ld a, b
-    ld [wEnemyOAM], a
+    ldh [wEnemyOAM], a
     LD_BC_DE
     ld a, 1
-    ld [wEnemyActive], a
-    ld [wEnemyAlive], a
+    ldh [wEnemyActive], a
+    ldh [wEnemyAlive], a
 .balloonLeft:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     ld [hli], a
     ld a, BOMB_TILE
     ld [hl], a
@@ -72,9 +72,9 @@ SpawnBomb::
     ld [hl], OAMF_PAL0
 .balloonRight:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     add 8
     ld [hli], a
     ld a, BOMB_TILE
@@ -117,24 +117,24 @@ Clear:
 BombUpdate::
     ; Get rest of struct
     ld a, [hli]
-    ld [wEnemyY], a
+    ldh [wEnemyY], a
     ld a, [hli]
-    ld [wEnemyX], a
+    ldh [wEnemyX], a
     ld a, [hli]
-    ld [wEnemyOAM], a
+    ldh [wEnemyOAM], a
     ld a, [hli]
-    ld [wEnemyAlive], a
+    ldh [wEnemyAlive], a
     ld a, [hli]
-    ld [wEnemyPopping], a
+    ldh [wEnemyPopping], a
     ld a, [hli]
-    ld [wEnemyPoppingFrame], a
+    ldh [wEnemyPoppingFrame], a
     ld a, [hli]
-    ld [wEnemyPoppingTimer], a
+    ldh [wEnemyPoppingTimer], a
     ld a, [hl]
-    ld [wEnemyDifficulty], a
+    ldh [wEnemyDifficulty], a
 
 .checkAlive:
-    ld a, [wEnemyAlive]
+    ldh a, [wEnemyAlive]
     cp a, 0
     jp z, .popped
 .isAlive:
@@ -151,24 +151,24 @@ BombUpdate::
     ld [hl], a
 .balloonLeft:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     ld [hli], a
     inc l
     inc l
 .balloonRight:
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     add 8
     ld [hli], a
     inc l
     inc l
 .bombSpace:
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [wEnemyX]
     add 16
     ld [hl], a
 .endMove:
@@ -199,16 +199,16 @@ BombUpdate::
     call ClearBullet
 .deathOfBomb:
     xor a ; ld a, 0
-    ld [wEnemyAlive], a
+    ldh [wEnemyAlive], a
     ; Animation trigger
     ld a, 1
-    ld [wEnemyPopping], a
+    ldh [wEnemyPopping], a
     ; Sound
     call ExplosionSound ; conflicts with the pop sound
 .endCollision:
 
 .checkOffscreen:
-    ld a, [wEnemyY]
+    ldh a, [wEnemyY]
     ld b, a
     ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
     cp a, b
@@ -223,7 +223,7 @@ BombUpdate::
     jr .setStruct
     
 .popped:
-    ld a, [wEnemyPopping]
+    ldh a, [wEnemyPopping]
     cp a, 0
     jr z, .clear
 .animating:
