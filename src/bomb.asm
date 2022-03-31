@@ -9,7 +9,15 @@ BOMB_OAM_SPRITES EQU 3
 BOMB_OAM_BYTES EQU BOMB_OAM_SPRITES * 4
 BOMB_MOVE_TIME EQU %00000001
 BOMB_COLLISION_TIME EQU %00001000
-BOMB_TILE EQU $22
+
+BOMB_EASY_TILE EQU $22
+BOMB_EASY_POINTS EQU 10
+
+BOMB_MEDIUM_TILE EQU $62
+BOMB_MEDIUM_POINTS EQU 20
+
+BOMB_HARD_TILE EQU $62
+BOMB_HARD_POINTS EQU 30
 
 SECTION "bomb", ROMX
 
@@ -60,29 +68,50 @@ SpawnBomb::
     ld a, 1
     ldh [wEnemyActive], a
     ldh [wEnemyAlive], a
-.balloonLeft:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+
+.difficultyVisual:
+    ldh a, [wEnemyDifficulty]
+.easyVisual:
+    cp a, EASY
+    jr nz, .mediumVisual
+    ld d, BOMB_EASY_TILE
+    ld e, OAMF_PAL0
+    jr .endDifficultyVisual
+.mediumVisual:
+    cp a, MEDIUM
+    jr nz, .hardVisual
+    ld d, BOMB_MEDIUM_TILE
+    ld e, OAMF_PAL0
+    jr .endDifficultyVisual
+.hardVisual:
+    cp a, HARD
+    jr nz, .endDifficultyVisual
+    ld d, BOMB_HARD_TILE
+    ld e, OAMF_PAL0
+.endDifficultyVisual:
+
+.balloonLeft:
     ldh a, [wEnemyY]
     ld [hli], a
     ldh a, [wEnemyX]
     ld [hli], a
-    ld a, BOMB_TILE
-    ld [hl], a
-    inc l
-    ld [hl], OAMF_PAL0
+    ld a, d
+    ld [hli], a
+    ld a, e
+    ld [hli], a
 .balloonRight:
-    inc l
     ldh a, [wEnemyY]
     ld [hli], a
     ldh a, [wEnemyX]
     add 8
     ld [hli], a
-    ld a, BOMB_TILE
-    ld [hl], a
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+    ld a, d
+    ld [hli], a
+    ld a, e
+    or a, OAMF_XFLIP
+    ld [hli], a
 .bombSpace:
-    inc l
     ld a, 1
     ld [hli], a
     ld [hli], a
@@ -200,6 +229,25 @@ BombUpdate::
 .deathOfBomb:
     xor a ; ld a, 0
     ldh [wEnemyAlive], a
+    ; Points
+.difficultyPoints:
+    ldh a, [wEnemyDifficulty]
+.easyPoints:
+    cp a, EASY
+    jr nz, .mediumPoints
+    ld d, BOMB_EASY_POINTS
+    jr .endDifficultyPoints
+.mediumPoints:
+    cp a, MEDIUM
+    jr nz, .hardPoints
+    ld d, BOMB_MEDIUM_POINTS
+    jr .endDifficultyPoints
+.hardPoints:
+    cp a, HARD
+    jr nz, .endDifficultyPoints
+    ld d, BOMB_HARD_POINTS
+.endDifficultyPoints:
+    call AddPoints
     ; Animation trigger
     ld a, 1
     ldh [wEnemyPopping], a
