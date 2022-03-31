@@ -487,17 +487,17 @@ BalloonCactusUpdate::
     SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
     xor a ; ld a, 0
     ld [hli], a
-    inc [hl]
-    inc [hl]
-    inc [hl]
+    inc hl
+    inc hl
+    inc hl
     ld [hli], a
-    inc [hl]
-    inc [hl]
-    inc [hl]
+    inc hl
+    inc hl
+    inc hl
     ld [hli], a
-    inc [hl]
-    inc [hl]
-    inc [hl]
+    inc hl
+    inc hl
+    inc hl
     ld [hl], a
 .endPopped:
 

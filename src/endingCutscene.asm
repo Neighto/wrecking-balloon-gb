@@ -79,6 +79,7 @@ MoveHands:
     ret
 
 UpdateEndingCutscene::
+    UPDATE_GLOBAL_TIMER
     ldh a, [hGlobalTimer]
     and HAND_CLAP_SPEED
     call z, MoveHands

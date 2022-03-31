@@ -102,6 +102,7 @@ SpawnCountdown::
 	ret
 
 UpdateGameCountdown::
+    UPDATE_GLOBAL_TIMER
     call RefreshWindow
     call IncrementScrollOffset
     call FadeInPalettes
@@ -212,6 +213,7 @@ UpdateGameCountdown::
     ret
 
 UpdateGame::
+
 .tryToUnpause:
     ld a, [wPaused]
 	cp a, 0
@@ -232,6 +234,7 @@ UpdateGame::
     call BulletUpdate
     call UpdateEnemy
 .rest:
+    UPDATE_GLOBAL_TIMER
     call LevelDataHandler
     ; call FlickerBackgroundPalette ; testing
     call RefreshWindow

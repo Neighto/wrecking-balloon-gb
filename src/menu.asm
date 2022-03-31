@@ -78,6 +78,8 @@ SpawnMenuCursor::
 	ret
 
 UpdateMenuOpening::
+	UPDATE_GLOBAL_TIMER
+
 	ld a, [wMenuFrame]
 	cp a, 0
 	jr z, .startSound
@@ -137,6 +139,8 @@ UpdateMenuOpening::
 	ret
 
 UpdateMenu::
+	UPDATE_GLOBAL_TIMER
+
 .fadeIn:
 	call FadeInPalettes
 	cp a, 0
