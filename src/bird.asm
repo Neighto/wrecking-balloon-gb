@@ -45,11 +45,11 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyDirectionLeft]
     ld [hli], a
-    ldh a, [wEnemyFalling]
+    ldh a, [hEnemyDying]
     ld [hli], a
     ldh a, [hEnemyAnimationFrame]
     ld [hli], a
-    ldh a, [wEnemyToDie]
+    ldh a, [hEnemyParam1] ; Enemy Marked to Die
     ld [hl], a
     ret
 
@@ -81,7 +81,7 @@ SpawnBird::
     jr c, .isLeftside
 .isRightside:
     ld a, 1
-    ld [hEnemyDirectionLeft], a
+    ldh [hEnemyDirectionLeft], a
 .birdLeft:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ldh a, [hEnemyY]
@@ -262,7 +262,7 @@ BirdFall:
     jr c, .endOffscreen
 .offscreen:
     xor a ; ld a, 0
-    ldh [wEnemyFalling], a
+    ldh [hEnemyDying], a
     call Clear
 .endOffscreen:
     ret
@@ -280,11 +280,11 @@ BirdUpdate::
     ld a, [hli]
     ldh [hEnemyDirectionLeft], a
     ld a, [hli]
-    ldh [wEnemyFalling], a
+    ldh [hEnemyDying], a
     ld a, [hli]
     ldh [hEnemyAnimationFrame], a
     ld a, [hl]
-    ldh [wEnemyToDie], a
+    ldh [hEnemyParam1], a
 
 .checkAlive:
     ldh a, [hEnemyAlive]
@@ -330,7 +330,7 @@ BirdUpdate::
     call nz, CollisionWithPlayer
     jr .endCollision
 .checkHitBySomething:
-    ldh a, [wEnemyToDie]
+    ldh a, [hEnemyParam1]
     cp a, 0
     jr z, .endCollision
 .deathOfBird:
@@ -341,7 +341,7 @@ BirdUpdate::
     call AddPoints
     ; Animation trigger
     ld a, 1
-    ldh [wEnemyFalling], a
+    ldh [hEnemyDying], a
     ; Sound
     call ExplosionSound
     ; Screaming bird
@@ -380,7 +380,7 @@ BirdUpdate::
 .endOffscreen:
 
 .isDead:
-    ldh a, [wEnemyFalling]
+    ldh a, [hEnemyDying]
     cp a, 0
     jr z, .setStruct
     ldh a, [hGlobalTimer]
