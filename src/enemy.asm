@@ -16,16 +16,16 @@ SECTION "enemy struct vars", HRAM
     hEnemyY:: DB
     hEnemyX:: DB
     hEnemyOAM:: DB
-    wEnemyAlive:: DB
-    wEnemyDifficulty:: DB
-    wEnemyY2:: DB
-    wEnemyX2:: DB
+    hEnemyAlive:: DB
+    hEnemyDifficulty:: DB
+    hEnemyY2:: DB
+    hEnemyX2:: DB
     hEnemyDying:: DB
     hEnemyAnimationFrame:: DB
     hEnemyAnimationTimer:: DB
     hEnemyDirectionLeft:: DB
+    wEnemySpeed:: DB
     wEnemyFalling:: DB
-    wEnemyFallingSpeed:: DB ; wEnemySpeed
     wEnemyFallingTimer:: DB
     wEnemyDelayFallingTimer:: DB ; wEnemyParam1, 2, 3
     wEnemyToDie:: DB ; If enemy set to die from external file
@@ -38,15 +38,15 @@ InitializeEnemyStructVars::
     xor a ; ld a, 0
     ldh [hEnemyActive], a
     ldh [hEnemyOAM], a
-    ldh [wEnemyAlive], a
+    ldh [hEnemyAlive], a
     ldh [hEnemyDying], a
     ldh [hEnemyAnimationFrame], a
     ldh [hEnemyAnimationTimer], a
     ldh [hEnemyDirectionLeft], a
-    ldh [wEnemyY2], a
-    ldh [wEnemyX2], a
+    ldh [hEnemyY2], a
+    ldh [hEnemyX2], a
     ldh [wEnemyFalling], a 
-    ldh [wEnemyFallingSpeed], a 
+    ldh [wEnemySpeed], a 
     ldh [wEnemyFallingTimer], a
     ldh [wEnemyDelayFallingTimer], a
     ldh [wEnemyToDie], a

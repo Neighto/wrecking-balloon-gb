@@ -33,7 +33,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyOAM]
     ld [hli], a
-    ldh a, [wEnemyAlive]
+    ldh a, [hEnemyAlive]
     ld [hli], a
     ldh a, [hEnemyDying]
     ld [hli], a
@@ -41,7 +41,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyAnimationTimer]
     ld [hli], a
-    ldh a, [wEnemyDifficulty]
+    ldh a, [hEnemyDifficulty]
     ld [hl], a
     ret
 
@@ -67,11 +67,11 @@ SpawnBomb::
     LD_BC_DE
     ld a, 1
     ldh [hEnemyActive], a
-    ldh [wEnemyAlive], a
+    ldh [hEnemyAlive], a
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
 .difficultyVisual:
-    ldh a, [wEnemyDifficulty]
+    ldh a, [hEnemyDifficulty]
 .easyVisual:
     cp a, EASY
     jr nz, .mediumVisual
@@ -152,7 +152,7 @@ BombUpdate::
     ld a, [hli]
     ldh [hEnemyOAM], a
     ld a, [hli]
-    ldh [wEnemyAlive], a
+    ldh [hEnemyAlive], a
     ld a, [hli]
     ldh [hEnemyDying], a
     ld a, [hli]
@@ -160,10 +160,10 @@ BombUpdate::
     ld a, [hli]
     ldh [hEnemyAnimationTimer], a
     ld a, [hl]
-    ldh [wEnemyDifficulty], a
+    ldh [hEnemyDifficulty], a
 
 .checkAlive:
-    ldh a, [wEnemyAlive]
+    ldh a, [hEnemyAlive]
     cp a, 0
     jp z, .popped
 .isAlive:
@@ -228,10 +228,10 @@ BombUpdate::
     call ClearBullet
 .deathOfBomb:
     xor a ; ld a, 0
-    ldh [wEnemyAlive], a
+    ldh [hEnemyAlive], a
     ; Points
 .difficultyPoints:
-    ldh a, [wEnemyDifficulty]
+    ldh a, [hEnemyDifficulty]
 .easyPoints:
     cp a, EASY
     jr nz, .mediumPoints

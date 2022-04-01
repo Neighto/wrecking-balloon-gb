@@ -265,7 +265,7 @@ SpawnDataHandler:
     ldh [hEnemyX], a
     ld a, [hli]
     ; Update difficulty
-    ld [wEnemyDifficulty], a
+    ld [hEnemyDifficulty], a
     ld a, b
     ; Spawns
     cp a, POINT_BALLOON
