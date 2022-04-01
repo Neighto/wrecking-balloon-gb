@@ -31,23 +31,23 @@ SECTION "bird", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ldh a, [wEnemyActive]
+    ldh a, [hEnemyActive]
     ld [hli], a
-    ldh a, [wEnemyNumber]
+    ldh a, [hEnemyNumber]
     ld [hli], a
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
-    ldh a, [wEnemyOAM]
+    ldh a, [hEnemyOAM]
     ld [hli], a
     ldh a, [wEnemyAlive]
     ld [hli], a
-    ldh a, [wEnemyRightside]
+    ldh a, [hEnemyDirectionLeft]
     ld [hli], a
     ldh a, [wEnemyFalling]
     ld [hli], a
-    ldh a, [wEnemyPoppingFrame]
+    ldh a, [hEnemyAnimationFrame]
     ld [hli], a
     ldh a, [wEnemyToDie]
     ld [hl], a
@@ -71,31 +71,31 @@ SpawnBird::
     call InitializeEnemyStructVars
     call SetStruct
     ld a, b
-    ldh [wEnemyOAM], a
+    ldh [hEnemyOAM], a
     LD_BC_DE
     ld a, 1
-    ldh [wEnemyActive], a
+    ldh [hEnemyActive], a
     ldh [wEnemyAlive], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     cp a, SCRN_X / 2
     jr c, .isLeftside
 .isRightside:
     ld a, 1
-    ld [wEnemyRightside], a
+    ld [hEnemyDirectionLeft], a
 .birdLeft:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ldh a, [wEnemyY]
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
     ld [hl], BIRD_TILE_1
     inc l
     ld [hl], OAMF_PAL0
 .birdMiddle:
     inc l
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 8
     ld [hli], a
     ld [hl], BIRD_TILE_2
@@ -103,9 +103,9 @@ SpawnBird::
     ld [hl], OAMF_PAL0
 .birdRight:
     inc l
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 16
     ld [hli], a
     ld [hl], BIRD_TILE_3
@@ -114,19 +114,19 @@ SpawnBird::
     jr .setStruct
 .isLeftside:
 .leftBirdLeft:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ldh a, [wEnemyY]
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
     ld [hl], BIRD_TILE_3
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .leftBirdMiddle:
     inc l
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 8
     ld [hli], a
     ld [hl], BIRD_TILE_2
@@ -134,9 +134,9 @@ SpawnBird::
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .leftBirdRight:
     inc l
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 16
     ld [hli], a
     ld [hl], BIRD_TILE_1
@@ -150,63 +150,63 @@ SpawnBird::
     ret
 
 BirdRightsideFlap:
-    ldh a, [wEnemyPoppingFrame]
+    ldh a, [hEnemyAnimationFrame]
     cp a, 0
     jr nz, .flapping
 .soaring:
     ldh a, [hGlobalTimer]
     and BIRD_SOARING_TIME
     ret nz
-    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
     ld [hl], BIRD_TILE_2_ALT
-    SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+10, hEnemyOAM
     ld [hl], BIRD_TILE_3_ALT
-    ld hl, wEnemyPoppingFrame
+    ld hl, hEnemyAnimationFrame
     ld [hl], 1
     ret
 .flapping:
     ldh a, [hGlobalTimer]
     and BIRD_FLAPPING_TIME
     ret nz
-    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
     ld [hl], BIRD_TILE_2
-    SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+10, hEnemyOAM
     ld [hl], BIRD_TILE_3
-    ld hl, wEnemyPoppingFrame
+    ld hl, hEnemyAnimationFrame
     ld [hl], 0
-    DECREMENT_POS wEnemyY, BIRD_FLAP_UP_SPEED
+    DECREMENT_POS hEnemyY, BIRD_FLAP_UP_SPEED
     ret
 
 BirdLeftsideFlap:
-    ldh a, [wEnemyPoppingFrame]
+    ldh a, [hEnemyAnimationFrame]
     cp a, 0
     jr nz, .flapping
 .soaring:
     ldh a, [hGlobalTimer]
     and BIRD_SOARING_TIME
     ret nz
-    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
     ld [hl], BIRD_TILE_2_ALT
-    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM
     ld [hl], BIRD_TILE_3_ALT
-    ld hl, wEnemyPoppingFrame
+    ld hl, hEnemyAnimationFrame
     ld [hl], 1
     ret
 .flapping:
     ldh a, [hGlobalTimer]
     and BIRD_FLAPPING_TIME
     ret nz
-    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
     ld [hl], BIRD_TILE_2
-    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM
     ld [hl], BIRD_TILE_3
-    ld hl, wEnemyPoppingFrame
+    ld hl, hEnemyAnimationFrame
     ld [hl], 0
-    DECREMENT_POS wEnemyY, BIRD_FLAP_UP_SPEED
+    DECREMENT_POS hEnemyY, BIRD_FLAP_UP_SPEED
     ret
 
 Clear:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     xor a ; ld a, 0
     ld [hli], a
     ld [hli], a
@@ -225,34 +225,34 @@ Clear:
 
 UpdateBirdPosition:
 .birdLeft:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ldh a, [wEnemyY]
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
     inc l
     inc l
 .birdMiddle:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 8
     ld [hli], a
     inc l
     inc l
 .birdRight:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 16
     ld [hl], a
     ret
 
 BirdFall:
-    INCREMENT_POS wEnemyY, 2
+    INCREMENT_POS hEnemyY, 2
     call UpdateBirdPosition
 .checkOffscreen:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld b, a
     ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
     cp a, b
@@ -270,19 +270,19 @@ BirdFall:
 BirdUpdate::
     ; Get rest of struct
     ld a, [hli]
-    ldh [wEnemyY], a
+    ldh [hEnemyY], a
     ld a, [hli]
-    ldh [wEnemyX], a
+    ldh [hEnemyX], a
     ld a, [hli]
-    ldh [wEnemyOAM], a
+    ldh [hEnemyOAM], a
     ld a, [hli]
     ldh [wEnemyAlive], a
     ld a, [hli]
-    ldh [wEnemyRightside], a
+    ldh [hEnemyDirectionLeft], a
     ld a, [hli]
     ldh [wEnemyFalling], a
     ld a, [hli]
-    ldh [wEnemyPoppingFrame], a ; flapping frame
+    ldh [hEnemyAnimationFrame], a
     ld a, [hl]
     ldh [wEnemyToDie], a
 
@@ -297,21 +297,21 @@ BirdUpdate::
     and	BIRD_MOVE_TIME
     jr nz, .endMove
 .canMove:
-    ldh a, [wEnemyRightside]
+    ldh a, [hEnemyDirectionLeft]
     cp a, 0
     jr z, .isLeftside
 .isRightside:
-    DECREMENT_POS wEnemyX, BIRD_HORIZONTAL_SPEED
+    DECREMENT_POS hEnemyX, BIRD_HORIZONTAL_SPEED
     call BirdRightsideFlap
     jr .moveDown
 .isLeftside:
-    INCREMENT_POS wEnemyX, BIRD_HORIZONTAL_SPEED
+    INCREMENT_POS hEnemyX, BIRD_HORIZONTAL_SPEED
     call BirdLeftsideFlap
 .moveDown:
     ldh a, [hGlobalTimer]
     and BIRD_SPRITE_DESCENDING_TIME
     jr nz, .skipMoveDown
-    INCREMENT_POS wEnemyY, BIRD_VERTICAL_SPEED
+    INCREMENT_POS hEnemyY, BIRD_VERTICAL_SPEED
 .skipMoveDown:
     call UpdateBirdPosition
 .endMove:
@@ -322,7 +322,7 @@ BirdUpdate::
     jp nz, .endCollision
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
-    SET_HL_TO_ADDRESS wOAM+4, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+4, hEnemyOAM
     ld d, 24
     ld e, 8
     call CollisionCheck
@@ -345,28 +345,28 @@ BirdUpdate::
     ; Sound
     call ExplosionSound
     ; Screaming bird
-    ldh a, [wEnemyRightside]
+    ldh a, [hEnemyDirectionLeft]
     cp a, 0
     jr z, .facingRight
 .facingLeft:
-    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM
     ld [hl], BIRD_DEAD_TILE_1
-    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
     ld [hl], BIRD_DEAD_TILE_2
-    SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+10, hEnemyOAM
     ld [hl], BIRD_DEAD_TILE_3
     jr .endCollision
 .facingRight:
-    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM
     ld [hl], BIRD_DEAD_TILE_3
-    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
     ld [hl], BIRD_DEAD_TILE_2
-    SET_HL_TO_ADDRESS wOAM+10, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+10, hEnemyOAM
     ld [hl], BIRD_DEAD_TILE_1
 .endCollision:
 
 .checkOffscreen:
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld b, a
     ld a, SCRN_X + OFF_SCREEN_ENEMY_BUFFER
     cp a, b

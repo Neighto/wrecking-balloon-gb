@@ -11,13 +11,13 @@ PORCUPINE_COLLISION_TIME EQU %00001000
 
 PORCUPINE_HP EQU 2
 
-PORCUPINE_TILE_1 EQU $42
-PORCUPINE_TILE_2 EQU $44
-PORCUPINE_TILE_3 EQU $46
-PORCUPINE_TILE_4 EQU $48
-PORCUPINE_TILE_5 EQU $4A
-PORCUPINE_TILE_6 EQU $4C
-PORCUPINE_TILE_7 EQU $4E
+PORCUPINE_TILE_1 EQU $40
+PORCUPINE_TILE_2 EQU $42
+PORCUPINE_TILE_3 EQU $44
+PORCUPINE_TILE_4 EQU $46
+PORCUPINE_TILE_5 EQU $48
+PORCUPINE_TILE_6 EQU $4A
+PORCUPINE_TILE_7 EQU $4C
 
 PORCUPINE_BALL_TILE_1 EQU $50
 PORCUPINE_BALL_TILE_2 EQU $52
@@ -30,29 +30,29 @@ SECTION "boss", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ld a, [wEnemyActive]
+    ldh a, [hEnemyActive]
     ld [hli], a
-    ld a, [wEnemyNumber]
+    ldh a, [hEnemyNumber]
     ld [hli], a
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
-    ld a, [wEnemyOAM]
+    ldh a, [hEnemyOAM]
     ld [hli], a
-    ld a, [wEnemyAlive]
+    ldh a, [wEnemyAlive]
     ld [hli], a
-    ld a, [wEnemyRightside]
+    ldh a, [hEnemyDirectionLeft]
     ld [hl], a
     ret
 
 UpdateBossPosition:
 .balloonLeft:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ld a, [wEnemyY]
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ldh a, [hEnemyY]
     sub 15
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 8
     ld [hli], a
     ld [hl], $22
@@ -60,10 +60,10 @@ UpdateBossPosition:
     ld [hl], OAMF_PAL0
     inc l
 .balloonRight:
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     sub 15
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 16
     ld [hli], a
     ld [hl], $22
@@ -71,23 +71,23 @@ UpdateBossPosition:
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
     inc l
 .checkFacing:
-    ld a, [wEnemyRightside]
+    ldh a, [hEnemyDirectionLeft]
     cp a, 0
     jp nz, .facingLeft
 .facingRight:
 .facingRightTopLeft:
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
     ld [hl], PORCUPINE_TILE_1
     inc l
     ld [hl], OAMF_PAL0
 .facingRightTopMiddle:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 8
     ld [hli], a
     ld [hl], PORCUPINE_TILE_3
@@ -95,9 +95,9 @@ UpdateBossPosition:
     ld [hl], OAMF_PAL0
 .facingRightTopMiddle2:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 16
     ld [hli], a
     ld [hl], PORCUPINE_TILE_5
@@ -105,9 +105,9 @@ UpdateBossPosition:
     ld [hl], OAMF_PAL0
 .facingRightTopRight:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 24
     ld [hli], a
     ld [hl], PORCUPINE_TILE_7
@@ -115,20 +115,20 @@ UpdateBossPosition:
     ld [hl], OAMF_PAL0
 .facingRightBottomLeft:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     add 16
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
     ld [hl], PORCUPINE_TILE_2
     inc l
     ld [hl], OAMF_PAL0
 .facingRightBottomMiddle:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     add 16
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 8
     ld [hli], a
     ld [hl], PORCUPINE_TILE_4
@@ -136,10 +136,10 @@ UpdateBossPosition:
     ld [hl], OAMF_PAL0
 .facingRightBottomMiddle2:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     add 16
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 16
     ld [hli], a
     ld [hl], PORCUPINE_TILE_6
@@ -147,10 +147,10 @@ UpdateBossPosition:
     ld [hl], OAMF_PAL0
 .facingRightBottomRight:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     add 16
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 24
     ld [hli], a
     ld [hl], EMPTY_TILE
@@ -159,18 +159,18 @@ UpdateBossPosition:
     ret
 .facingLeft:
 .facingLeftTopLeft:
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
     ld [hl], PORCUPINE_TILE_7
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .facingLeftTopMiddle:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 8
     ld [hli], a
     ld [hl], PORCUPINE_TILE_5
@@ -178,9 +178,9 @@ UpdateBossPosition:
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .facingLeftTopMiddle2:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 16
     ld [hli], a
     ld [hl], PORCUPINE_TILE_3
@@ -188,9 +188,9 @@ UpdateBossPosition:
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .facingLeftTopRight:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 24
     ld [hli], a
     ld [hl], PORCUPINE_TILE_1
@@ -198,20 +198,20 @@ UpdateBossPosition:
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .facingLeftBottomLeft:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     add 16
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
     ld [hl], EMPTY_TILE
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .facingLeftBottomMiddle:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     add 16
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 8
     ld [hli], a
     ld [hl], PORCUPINE_TILE_6
@@ -219,10 +219,10 @@ UpdateBossPosition:
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .facingLeftBottomMiddle2:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     add 16
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 16
     ld [hli], a
     ld [hl], PORCUPINE_TILE_4
@@ -230,10 +230,10 @@ UpdateBossPosition:
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .facingLeftBottomRight:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     add 16
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 24
     ld [hli], a
     ld [hl], PORCUPINE_TILE_2
@@ -242,20 +242,20 @@ UpdateBossPosition:
     ret
 
 UpdateBossBallPosition:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 .topLeft:
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
     ld [hl], PORCUPINE_BALL_TILE_1
     inc l
     ld [hl], OAMF_PAL0
 .topMiddle:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 8
     ld [hli], a
     ld [hl], PORCUPINE_BALL_TILE_2
@@ -263,9 +263,9 @@ UpdateBossBallPosition:
     ld [hl], OAMF_PAL0
 .topMiddle2:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 16
     ld [hli], a
     ld [hl], PORCUPINE_BALL_TILE_3
@@ -273,9 +273,9 @@ UpdateBossBallPosition:
     ld [hl], OAMF_PAL0
 .topRight:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 24
     ld [hli], a
     ld [hl], PORCUPINE_BALL_TILE_4
@@ -283,20 +283,20 @@ UpdateBossBallPosition:
     ld [hl], OAMF_PAL0
 .bottomLeft:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     add 16
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
     ld [hl], PORCUPINE_BALL_TILE_1
     inc l
     ld [hl], OAMF_PAL0 | OAMF_YFLIP
 .bottomMiddle:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     add 16
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 8
     ld [hli], a
     ld [hl], PORCUPINE_BALL_TILE_2
@@ -304,10 +304,10 @@ UpdateBossBallPosition:
     ld [hl], OAMF_PAL0 | OAMF_YFLIP
 .bottomMiddle2:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     add 16
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 16
     ld [hli], a
     ld [hl], PORCUPINE_BALL_TILE_2
@@ -315,10 +315,10 @@ UpdateBossBallPosition:
     ld [hl], OAMF_PAL0 | OAMF_YFLIP | OAMF_XFLIP
 .bottomRight:
     inc l
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     add 16
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 24
     ld [hli], a
     ld [hl], PORCUPINE_BALL_TILE_1
@@ -347,14 +347,14 @@ SpawnBoss::
     call InitializeEnemyStructVars
     call SetStruct
     ld a, b
-    ld [wEnemyOAM], a
+    ldh [hEnemyOAM], a
     LD_BC_DE
     ld a, 1
-    ld [wEnemyActive], a
+    ldh [hEnemyActive], a
     ld a, PORCUPINE_HP
-    ld [wEnemyAlive], a
+    ldh [wEnemyAlive], a
     ld a, BOSS
-    ld [wEnemyNumber], a
+    ldh [hEnemyNumber], a
     call UpdateBossPosition
 .setStruct:
     LD_HL_BC
@@ -368,36 +368,36 @@ Move:
 .moveVertical:
     ld a, [wPlayerY]
     ld b, a
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     cp a, b
     jr nc, .moveDown
 .moveUp:
     inc a
-    ld [wEnemyY], a
+    ldh [hEnemyY], a
     jr .moveHorizontal
 .moveDown:
     dec a
-    ld [wEnemyY], a
+    ldh [hEnemyY], a
 .moveHorizontal:
     ld a, [wPlayerX]
     ld b, a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     cp a, b
     jr c, .moveRight
 .moveLeft:
     dec a
-    ld [wEnemyX], a
+    ldh [hEnemyX], a
     ld a, 1
-    ld [wEnemyRightside], a
+    ldh [hEnemyDirectionLeft], a
     jr .updatePosition
 .moveRight:
     inc a
-    ld [wEnemyX], a
+    ldh [hEnemyX], a
     xor a ; ld a, 0
-    ld [wEnemyRightside], a
+    ldh [hEnemyDirectionLeft], a
 .updatePosition:
-    ; call UpdateBossPosition
-    call UpdateBossBallPosition
+    call UpdateBossPosition
+    ; call UpdateBossBallPosition
     ret
 
     ; he'll roll towards you
@@ -412,7 +412,7 @@ MoveBall:
     ret
 
 Clear:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     RESET_AT_HL PORCUPINE_OAM_BYTES
     call InitializeEnemyStructVars
     ret
@@ -420,18 +420,18 @@ Clear:
 BossUpdate::
     ; Get rest of struct
     ld a, [hli]
-    ld [wEnemyY], a
+    ldh [hEnemyY], a
     ld a, [hli]
-    ld [wEnemyX], a
+    ldh [hEnemyX], a
     ld a, [hli]
-    ld [wEnemyOAM], a
+    ldh [hEnemyOAM], a
     ld a, [hli]
-    ld [wEnemyAlive], a
+    ldh [wEnemyAlive], a
     ld a, [hl]
-    ld [wEnemyRightside], a
+    ldh [hEnemyDirectionLeft], a
 
 .checkAlive:
-    ld a, [wEnemyAlive]
+    ldh a, [wEnemyAlive]
     cp a, 0
     jr z, .isDead
 .isAlive:
@@ -450,7 +450,7 @@ BossUpdate::
     and	PORCUPINE_COLLISION_TIME
     jr nz, .endCollision
 .checkHitByBullet:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     LD_BC_HL
     ld hl, wPlayerBulletOAM
     ld d, 16
@@ -459,9 +459,9 @@ BossUpdate::
     cp a, 0
     jr z, .endCollision
     call ClearBullet
-    ld a, [wEnemyAlive]
+    ldh a, [wEnemyAlive]
     dec a
-    ld [wEnemyAlive], a
+    ldh [wEnemyAlive], a
 .endCollision:
 
 .checkOffscreen:

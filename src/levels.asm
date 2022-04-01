@@ -25,9 +25,13 @@ SECTION "level data", ROM0
 ; LEVEL INSTRUCTIONS *************************************
 
 Level1:
+    ; LEVEL_SPAWN BOSS, 30, 30, NONE
+    ; LEVEL_WAIT 100
+
     LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B, EASY
     LEVEL_WAIT 8
     LEVEL_SPAWN BOMB, OFFSCREEN_BOTTOM_Y, SPAWN_X_D, MEDIUM
+
 
     LEVEL_SPAWN ANVIL, 0, SPAWN_X_B, NONE ; TESTING
     LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_A, MEDIUM
@@ -252,13 +256,13 @@ SpawnDataHandler:
     ; Argument hl = source address
     ld a, [hli]
     ; Update enemy number
-    ldh [wEnemyNumber], a
+    ldh [hEnemyNumber], a
     ld b, a
     ; Update enemy Y/X
     ld a, [hli]
-    ldh [wEnemyY], a
+    ldh [hEnemyY], a
     ld a, [hli]
-    ldh [wEnemyX], a
+    ldh [hEnemyX], a
     ld a, [hli]
     ; Update difficulty
     ld [wEnemyDifficulty], a

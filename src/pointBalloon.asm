@@ -23,23 +23,23 @@ SECTION "point balloon", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ldh a, [wEnemyActive]
+    ldh a, [hEnemyActive]
     ld [hli], a
-    ldh a, [wEnemyNumber]
+    ldh a, [hEnemyNumber]
     ld [hli], a
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
-    ldh a, [wEnemyOAM]
+    ldh a, [hEnemyOAM]
     ld [hli], a
     ldh a, [wEnemyAlive]
     ld [hli], a
-    ldh a, [wEnemyPopping]
+    ldh a, [hEnemyDying]
     ld [hli], a
-    ldh a, [wEnemyPoppingFrame]
+    ldh a, [hEnemyAnimationFrame]
     ld [hli], a
-    ldh a, [wEnemyPoppingTimer]
+    ldh a, [hEnemyAnimationTimer]
     ld [hli], a
     ldh a, [wEnemyDifficulty]
     ld [hl], a
@@ -63,12 +63,12 @@ SpawnPointBalloon::
     call InitializeEnemyStructVars
     call SetStruct
     ld a, b
-    ld [wEnemyOAM], a
+    ld [hEnemyOAM], a
     LD_BC_DE
     ld a, 1
-    ldh [wEnemyActive], a
+    ldh [hEnemyActive], a
     ldh [wEnemyAlive], a
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
 .difficultyVisual:
     ldh a, [wEnemyDifficulty]
@@ -92,18 +92,18 @@ SpawnPointBalloon::
 .endDifficultyVisual:
 
 .balloonLeftOAM:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
     ld a, d
     ld [hli], a
     ld a, e
     ld [hli], a
 .balloonRightOAM:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 8
     ld [hli], a
     ld a, d
@@ -119,7 +119,7 @@ SpawnPointBalloon::
     ret
 
 Clear:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     xor a ; ld a, 0
     ld [hli], a
     ld [hli], a
@@ -135,19 +135,19 @@ Clear:
 PointBalloonUpdate::
     ; Get rest of struct
     ld a, [hli]
-    ldh [wEnemyY], a
+    ldh [hEnemyY], a
     ld a, [hli]
-    ldh [wEnemyX], a
+    ldh [hEnemyX], a
     ld a, [hli]
-    ldh [wEnemyOAM], a
+    ldh [hEnemyOAM], a
     ld a, [hli]
     ldh [wEnemyAlive], a
     ld a, [hli]
-    ldh [wEnemyPopping], a
+    ldh [hEnemyDying], a
     ld a, [hli]
-    ldh [wEnemyPoppingFrame], a
+    ldh [hEnemyAnimationFrame], a
     ld a, [hli]
-    ldh [wEnemyPoppingTimer], a
+    ldh [hEnemyAnimationTimer], a
     ld a, [hl]
     ldh [wEnemyDifficulty], a
 
@@ -162,7 +162,7 @@ PointBalloonUpdate::
     and	POINT_BALLOON_MOVE_TIME
     jr nz, .endMove
 .canMove:
-    ld hl, wEnemyY
+    ld hl, hEnemyY
     ldh a, [wEnemyDifficulty]
 .moveEasy:
     cp a, EASY
@@ -182,17 +182,17 @@ PointBalloonUpdate::
     dec [hl]
     dec [hl]
 .balloonLeftOAM:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ldh a, [wEnemyY]
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX] ; Do not need to update X for point balloon
+    ldh a, [hEnemyX] ; Do not need to update X for point balloon
     ld [hli], a
     inc l
     inc l
 .balloonRightOAM:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 8
     ld [hl], a
 .endMove:
@@ -203,14 +203,14 @@ PointBalloonUpdate::
     jr nz, .endCollision
 .checkHit:
     ld bc, wPlayerCactusOAM
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ld d, 16
     ld e, 16
     call CollisionCheck
     cp a, 0
     jr nz, .deathOfPointBalloon
 .checkHitByBullet:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     LD_BC_HL
     ld hl, wPlayerBulletOAM
     ld d, 16
@@ -243,13 +243,13 @@ PointBalloonUpdate::
     call AddPoints
     ; Animation trigger
     ld a, 1 
-    ldh [wEnemyPopping], a
+    ldh [hEnemyDying], a
     ; Sound
     call PopSound
 .endCollision:
 
 .checkOffscreen:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld b, a
     ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
     cp a, b
@@ -264,7 +264,7 @@ PointBalloonUpdate::
     jr .setStruct
 
 .popped:
-    ldh a, [wEnemyPopping]
+    ldh a, [hEnemyDying]
     cp a, 0
     jr z, .clear
 .animating:

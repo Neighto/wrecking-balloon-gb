@@ -23,23 +23,23 @@ SECTION "bomb", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ldh a, [wEnemyActive]
+    ldh a, [hEnemyActive]
     ld [hli], a
-    ldh a, [wEnemyNumber]
+    ldh a, [hEnemyNumber]
     ld [hli], a
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
-    ldh a, [wEnemyOAM]
+    ldh a, [hEnemyOAM]
     ld [hli], a
     ldh a, [wEnemyAlive]
     ld [hli], a
-    ldh a, [wEnemyPopping]
+    ldh a, [hEnemyDying]
     ld [hli], a
-    ldh a, [wEnemyPoppingFrame]
+    ldh a, [hEnemyAnimationFrame]
     ld [hli], a
-    ldh a, [wEnemyPoppingTimer]
+    ldh a, [hEnemyAnimationTimer]
     ld [hli], a
     ldh a, [wEnemyDifficulty]
     ld [hl], a
@@ -63,12 +63,12 @@ SpawnBomb::
     call InitializeEnemyStructVars
     call SetStruct
     ld a, b
-    ldh [wEnemyOAM], a
+    ldh [hEnemyOAM], a
     LD_BC_DE
     ld a, 1
-    ldh [wEnemyActive], a
+    ldh [hEnemyActive], a
     ldh [wEnemyAlive], a
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
 .difficultyVisual:
     ldh a, [wEnemyDifficulty]
@@ -92,18 +92,18 @@ SpawnBomb::
 .endDifficultyVisual:
 
 .balloonLeftOAM:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
     ld a, d
     ld [hli], a
     ld a, e
     ld [hli], a
 .balloonRightOAM:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 8
     ld [hli], a
     ld a, d
@@ -126,7 +126,7 @@ SpawnBomb::
     ret
 
 Clear:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     xor a ; ld a, 0
     ld [hli], a
     ld [hli], a
@@ -146,19 +146,19 @@ Clear:
 BombUpdate::
     ; Get rest of struct
     ld a, [hli]
-    ldh [wEnemyY], a
+    ldh [hEnemyY], a
     ld a, [hli]
-    ldh [wEnemyX], a
+    ldh [hEnemyX], a
     ld a, [hli]
-    ldh [wEnemyOAM], a
+    ldh [hEnemyOAM], a
     ld a, [hli]
     ldh [wEnemyAlive], a
     ld a, [hli]
-    ldh [wEnemyPopping], a
+    ldh [hEnemyDying], a
     ld a, [hli]
-    ldh [wEnemyPoppingFrame], a
+    ldh [hEnemyAnimationFrame], a
     ld a, [hli]
-    ldh [wEnemyPoppingTimer], a
+    ldh [hEnemyAnimationTimer], a
     ld a, [hl]
     ldh [wEnemyDifficulty], a
 
@@ -173,31 +173,31 @@ BombUpdate::
     and	BOMB_MOVE_TIME
     jr nz, .endMove
 .canMove:
-    ld hl, wEnemyY
+    ld hl, hEnemyY
     ld a, BOMB_DEFAULT_SPEED
     cpl
     add [hl]
     ld [hl], a
 .balloonLeftOAM:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ldh a, [wEnemyY]
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
     inc l
     inc l
 .balloonRightOAM:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 8
     ld [hli], a
     inc l
     inc l
 .bombSpaceOAM:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 16
     ld [hl], a
 .endMove:
@@ -208,7 +208,7 @@ BombUpdate::
     jr nz, .endCollision
 .checkHit:
     ld bc, wPlayerCactusOAM
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ld d, 16
     ld e, 16
     call CollisionCheck
@@ -217,7 +217,7 @@ BombUpdate::
     call CollisionWithPlayer
     jr .deathOfBomb
 .checkHitByBullet:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     LD_BC_HL
     ld hl, wPlayerBulletOAM
     ld d, 8
@@ -250,13 +250,13 @@ BombUpdate::
     call AddPoints
     ; Animation trigger
     ld a, 1
-    ldh [wEnemyPopping], a
+    ldh [hEnemyDying], a
     ; Sound
     call ExplosionSound ; conflicts with the pop sound
 .endCollision:
 
 .checkOffscreen:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld b, a
     ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
     cp a, b
@@ -271,7 +271,7 @@ BombUpdate::
     jr .setStruct
     
 .popped:
-    ldh a, [wEnemyPopping]
+    ldh a, [hEnemyDying]
     cp a, 0
     jr z, .clear
 .animating:
