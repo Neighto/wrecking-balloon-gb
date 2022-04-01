@@ -85,7 +85,7 @@ UpdateEndingCutscene::
     call z, MoveHands
     ; Temp
     call ReadController
-    ld a, [wControllerDown]
+    ldh a, [hControllerDown]
     and PADF_START | PADF_A
     jp nz, Start
     ret

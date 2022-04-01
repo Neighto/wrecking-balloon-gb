@@ -126,7 +126,7 @@ SetPlayerPositionEndingCutscene::
   ret
 
 SpawnPlayer::
-.cactusLeft:
+.cactusLeftOAM:
   ld hl, wPlayerCactusOAM
   ld a, [wPlayerY2]
   ld [hli], a
@@ -135,7 +135,7 @@ SpawnPlayer::
   ld [hl], PLAYER_CACTUS_TILE
   inc l
   ld [hl], OAMF_PAL0
-.cactusRight:
+.cactusRightOAM:
   inc l
   ld a, [wPlayerY2]
   ld [hli], a
@@ -145,7 +145,7 @@ SpawnPlayer::
   ld [hl], PLAYER_CACTUS_TILE
   inc l
   ld [hl], OAMF_PAL0 | OAMF_XFLIP
-.balloonLeft:
+.balloonLeftOAM:
   ld hl, wPlayerBalloonOAM
   ld a, [wPlayerY]
   ld [hli], a
@@ -154,7 +154,7 @@ SpawnPlayer::
   ld [hl], PLAYER_BALLOON_TILE
   inc l
   ld [hl], OAMF_PAL1
-.balloonRight:
+.balloonRightOAM:
   inc l
   ld a, [wPlayerY]
   ld [hli], a
@@ -360,7 +360,7 @@ PlayerControls:
   and PADF_START
   jr z, .endStart
   ld a, 1
-  ld [wPaused], a
+  ldh [hPaused], a
 .endStart:
 
 .AButton:
@@ -574,9 +574,9 @@ PlayerUpdate::
   jr nz, .endMove
 .canMove:
   call ReadController
-  ld a, [wControllerDown]
+  ldh a, [hControllerDown]
   ld d, a
-  ld a, [wControllerPressed]
+  ldh a, [hControllerPressed]
   ld e, a
   ld c, 1
   call PlayerControls

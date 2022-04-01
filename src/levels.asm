@@ -252,13 +252,13 @@ SpawnDataHandler:
     ; Argument hl = source address
     ld a, [hli]
     ; Update enemy number
-    ld [wEnemyNumber], a
+    ldh [wEnemyNumber], a
     ld b, a
     ; Update enemy Y/X
     ld a, [hli]
-    ld [wEnemyY], a
+    ldh [wEnemyY], a
     ld a, [hli]
-    ld [wEnemyX], a
+    ldh [wEnemyX], a
     ld a, [hli]
     ; Update difficulty
     ld [wEnemyDifficulty], a

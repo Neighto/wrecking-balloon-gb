@@ -265,7 +265,7 @@ UpdateBalloonPosition:
     ld [hli], a
     inc l
     inc l
-.extraSpaceOAM: ; change if we need to use this for bullet too...
+.extraSpaceOAM:
     ldh a, [wEnemyY]
     ld [hli], a
     ldh a, [wEnemyX]

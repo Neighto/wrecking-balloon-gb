@@ -27,7 +27,7 @@ UpdateGameOver::
     ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
 	call RefreshTotal
     call ReadController
-    ld a, [wControllerDown]
+    ldh a, [hControllerDown]
     and PADF_START | PADF_A
     jp nz, Start
     ret

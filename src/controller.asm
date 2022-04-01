@@ -1,18 +1,18 @@
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 
-SECTION "controller vars", WRAM0
-	wControllerDown:: DB
-	wControllerPressed:: DB
-	wPaused:: DB
+SECTION "controller vars", HRAM
+	hControllerDown:: DB
+	hControllerPressed:: DB
+	hPaused:: DB
 
 SECTION "controller", ROM0
 
 InitializeController::
 	xor a ; ld a, 0
-	ld [wPaused], a
-	ld [wControllerDown], a
-	ld [wControllerPressed], a
+	ldh [hPaused], a
+	ldh [hControllerDown], a
+	ldh [hControllerPressed], a
 	ret
 
 ReadController::
@@ -37,10 +37,10 @@ ReadController::
 	or b 
 	ld b, a ; Button info stored in b high bits
 .setControllerVars:
-	ld a, [wControllerDown]
+	ldh a, [hControllerDown]
 	cpl
 	and b
-	ld [wControllerPressed], a
+	ldh [hControllerPressed], a
 	ld a, b
-	ld [wControllerDown], a
+	ldh [hControllerDown], a
 	ret
