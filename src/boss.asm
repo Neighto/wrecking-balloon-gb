@@ -40,7 +40,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyOAM]
     ld [hli], a
-    ldh a, [wEnemyAlive]
+    ldh a, [hEnemyAlive]
     ld [hli], a
     ldh a, [hEnemyDirectionLeft]
     ld [hl], a
@@ -352,7 +352,7 @@ SpawnBoss::
     ld a, 1
     ldh [hEnemyActive], a
     ld a, PORCUPINE_HP
-    ldh [wEnemyAlive], a
+    ldh [hEnemyAlive], a
     ld a, BOSS
     ldh [hEnemyNumber], a
     call UpdateBossPosition
@@ -426,12 +426,12 @@ BossUpdate::
     ld a, [hli]
     ldh [hEnemyOAM], a
     ld a, [hli]
-    ldh [wEnemyAlive], a
+    ldh [hEnemyAlive], a
     ld a, [hl]
     ldh [hEnemyDirectionLeft], a
 
 .checkAlive:
-    ldh a, [wEnemyAlive]
+    ldh a, [hEnemyAlive]
     cp a, 0
     jr z, .isDead
 .isAlive:
@@ -459,9 +459,9 @@ BossUpdate::
     cp a, 0
     jr z, .endCollision
     call ClearBullet
-    ldh a, [wEnemyAlive]
+    ldh a, [hEnemyAlive]
     dec a
-    ldh [wEnemyAlive], a
+    ldh [hEnemyAlive], a
 .endCollision:
 
 .checkOffscreen:

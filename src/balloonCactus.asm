@@ -35,7 +35,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyOAM]
     ld [hli], a
-    ldh a, [wEnemyAlive]
+    ldh a, [hEnemyAlive]
     ld [hli], a
     ldh a, [hEnemyDying]
     ld [hli], a
@@ -45,19 +45,19 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyDirectionLeft]
     ld [hli], a
-    ldh a, [wEnemyY2]
+    ldh a, [hEnemyY2]
     ld [hli], a
-    ldh a, [wEnemyX2]
+    ldh a, [hEnemyX2]
     ld [hli], a
     ldh a, [wEnemyFalling]
     ld [hli], a
-    ldh a, [wEnemyFallingSpeed]
+    ldh a, [wEnemySpeed]
     ld [hli], a
     ldh a, [wEnemyFallingTimer]
     ld [hli], a
     ldh a, [wEnemyDelayFallingTimer]
     ld [hli], a
-    ldh a, [wEnemyDifficulty]
+    ldh a, [hEnemyDifficulty]
     ld [hl], a
     ret
 
@@ -83,13 +83,13 @@ SpawnBalloonCactus::
     LD_BC_DE
     ld a, 1
     ldh [hEnemyActive], a
-    ldh [wEnemyAlive], a
-    ldh [wEnemyFallingSpeed], a
+    ldh [hEnemyAlive], a
+    ldh [wEnemySpeed], a
     ldh a, [hEnemyY]
     add 16
-    ldh [wEnemyY2], a
+    ldh [hEnemyY2], a
     ldh a, [hEnemyX]
-    ldh [wEnemyX2], a
+    ldh [hEnemyX2], a
 
 .updateFacing:
     cp a, SCRN_X / 2
@@ -99,7 +99,7 @@ SpawnBalloonCactus::
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
 .difficultyVisual:
-    ldh a, [wEnemyDifficulty]
+    ldh a, [hEnemyDifficulty]
 .easyVisual:
     cp a, EASY
     jr nz, .mediumVisual
@@ -148,18 +148,18 @@ SpawnBalloonCactus::
     ld [hl], OAMF_PAL0
     inc l
 .cactusLeftOAM:
-    ldh a, [wEnemyY2]
+    ldh a, [hEnemyY2]
     ld [hli], a
-    ldh a, [wEnemyX2]
+    ldh a, [hEnemyX2]
     ld [hli], a
     ld [hl], BALLOON_CACTUS_TILE
     inc l
     ld [hl], OAMF_PAL0
 .cactusRightOAM:
     inc l
-    ldh a, [wEnemyY2]
+    ldh a, [hEnemyY2]
     ld [hli], a
-    ldh a, [wEnemyX2]
+    ldh a, [hEnemyX2]
     add 8
     ld [hli], a
     ld [hl], BALLOON_CACTUS_TILE
@@ -276,16 +276,16 @@ UpdateBalloonPosition:
 UpdateCactusPosition:
 .cactusLeftOAM:
     SET_HL_TO_ADDRESS wOAM+12, hEnemyOAM
-    ldh a, [wEnemyY2]
+    ldh a, [hEnemyY2]
     ld [hli], a
-    ldh a, [wEnemyX2]
+    ldh a, [hEnemyX2]
     ld [hli], a
     inc l
     inc l
 .cactusRightOAM:
-    ldh a, [wEnemyY2]
+    ldh a, [hEnemyY2]
     ld [hli], a
-    ldh a, [wEnemyX2]
+    ldh a, [hEnemyX2]
     add 8
     ld [hl], a
     ret
@@ -299,7 +299,7 @@ BalloonCactusUpdate::
     ld a, [hli]
     ldh [hEnemyOAM], a
     ld a, [hli]
-    ldh [wEnemyAlive], a
+    ldh [hEnemyAlive], a
     ld a, [hli]
     ldh [hEnemyDying], a
     ld a, [hli]
@@ -309,22 +309,22 @@ BalloonCactusUpdate::
     ld a, [hli]
     ldh [hEnemyDirectionLeft], a
     ld a, [hli]
-    ldh [wEnemyY2], a
+    ldh [hEnemyY2], a
     ld a, [hli]
-    ldh [wEnemyX2], a
+    ldh [hEnemyX2], a
     ld a, [hli]
     ldh [wEnemyFalling], a 
     ld a, [hli]
-    ldh [wEnemyFallingSpeed], a 
+    ldh [wEnemySpeed], a 
     ld a, [hli]
     ldh [wEnemyFallingTimer], a
     ld a, [hli]
     ldh [wEnemyDelayFallingTimer], a
     ld a, [hl]
-    ldh [wEnemyDifficulty], a
+    ldh [hEnemyDifficulty], a
 
 .checkAlive:
-    ldh a, [wEnemyAlive]
+    ldh a, [hEnemyAlive]
     cp a, 0
     jp z, .popped
 .isAlive:
@@ -336,7 +336,7 @@ BalloonCactusUpdate::
 .canMove:
 
 .moveVertical:
-    ldh a, [wEnemyDifficulty]
+    ldh a, [hEnemyDifficulty]
 .easyMove:
     cp a, EASY
     jr nz, .mediumMove
@@ -346,18 +346,18 @@ BalloonCactusUpdate::
     cp a, MEDIUM
     jr nz, .hardMove
     ; Follow player, maybe add random?
-    ldh a, [wEnemyY2]
+    ldh a, [hEnemyY2]
     ld hl, wPlayerY
     cp a, [hl]
     jr z, .endMoveVertical
     jr c, .moveDown
 .moveUp:
     DECREMENT_POS hEnemyY, 1
-    DECREMENT_POS wEnemyY2, 1
+    DECREMENT_POS hEnemyY2, 1
     jr .endMoveVertical
 .moveDown:
     INCREMENT_POS hEnemyY, 1
-    INCREMENT_POS wEnemyY2, 1
+    INCREMENT_POS hEnemyY2, 1
     jr .endMoveVertical
 .hardMove:
     cp a, HARD
@@ -370,11 +370,11 @@ BalloonCactusUpdate::
     cp a, 0
     jr z, .isLeftside
     DECREMENT_POS hEnemyX, 1
-    DECREMENT_POS wEnemyX2, 1
+    DECREMENT_POS hEnemyX2, 1
     jr .endMoveHorizontal
 .isLeftside:
     INCREMENT_POS hEnemyX, 1
-    INCREMENT_POS wEnemyX2, 1
+    INCREMENT_POS hEnemyX2, 1
 .endMoveHorizontal:
 
 .updatePosition:
@@ -402,7 +402,7 @@ BalloonCactusUpdate::
     call CollisionCheck
     cp a, 0
     jr z, .checkHitByBullet
-    ldh a, [wEnemyDifficulty]
+    ldh a, [hEnemyDifficulty]
     cp a, HARD 
     call z, CollisionWithPlayer
     jr .deathOfBalloonCactus
@@ -418,10 +418,10 @@ BalloonCactusUpdate::
     call ClearBullet
 .deathOfBalloonCactus:
     xor a ; ld a, 0
-    ld [wEnemyAlive], a
+    ld [hEnemyAlive], a
     ; Points
 .difficultyPoints:
-    ldh a, [wEnemyDifficulty]
+    ldh a, [hEnemyDifficulty]
 .easyPoints:
     cp a, EASY
     jr nz, .mediumPoints
@@ -474,7 +474,7 @@ BalloonCactusUpdate::
     cp a, 0
     jr z, .clearPopping
 .animatePopping:
-    ld a, [wEnemyDifficulty]
+    ld a, [hEnemyDifficulty]
     cp a, HARD
     jr z, .bombBalloon
 .normalBalloon:
@@ -509,7 +509,7 @@ BalloonCactusUpdate::
     jr nz, .endFalling
     ; Check offscreen
     ld a, SCRN_X
-    ld hl, wEnemyY2
+    ld hl, hEnemyY2
     cp a, [hl]
     jr c, .offScreen
 .canFall:
@@ -522,11 +522,11 @@ BalloonCactusUpdate::
 .accelerate:
     xor a ; ld a, 0
     ld [wEnemyDelayFallingTimer], a
-    ld a, [wEnemyFallingSpeed]
+    ld a, [wEnemySpeed]
     add a, a
-    ld [wEnemyFallingSpeed], a
+    ld [wEnemySpeed], a
 .skipAcceleration:
-    INCREMENT_POS wEnemyY2, [wEnemyFallingSpeed]
+    INCREMENT_POS hEnemyY2, [wEnemySpeed]
     call UpdateCactusPosition
     jr .endFalling
 .offScreen:
@@ -549,10 +549,10 @@ BalloonCactusUpdate::
     ldh a, [hGlobalTimer]
     and	PROJECTILE_RESPAWN_TIME
     jr nz, .endProjectile
-    ldh a, [wEnemyAlive]
+    ldh a, [hEnemyAlive]
     cp a, 0
     jr z, .endProjectile
-    ldh a, [wEnemyDifficulty]
+    ldh a, [hEnemyDifficulty]
     cp a, EASY 
     jr nz, .endProjectile
 .spawnProjectile:

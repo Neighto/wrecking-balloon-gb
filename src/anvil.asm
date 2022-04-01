@@ -25,7 +25,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyOAM]
     ld [hli], a
-    ldh a, [wEnemyFallingSpeed]
+    ldh a, [wEnemySpeed]
     ld [hli], a
     ldh a, [wEnemyFallingTimer]
     ld [hli], a
@@ -55,7 +55,7 @@ SpawnAnvil::
     LD_BC_DE
     ld a, 1
     ldh [hEnemyActive], a
-    ldh [wEnemyFallingSpeed], a
+    ldh [wEnemySpeed], a
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
 .anvilLeftOAM:
@@ -107,32 +107,32 @@ AnvilUpdate::
     ld a, [hli]
     ldh [hEnemyOAM], a
     ld a, [hli]
-    ldh [wEnemyFallingSpeed], a
+    ldh [wEnemySpeed], a
     ld a, [hli]
     ldh [wEnemyFallingTimer], a
     ld a, [hl]
     ldh [wEnemyDelayFallingTimer], a
 
 .fallingSpeed:
-    ld hl, wEnemyFallingTimer ; TODO now that it's in hram classic way might be faster
-    inc [hl]
-    ld a, [hl]
+    ldh a, [wEnemyFallingTimer]
+    inc a
+    ldh [wEnemyFallingTimer], a
     and CACTUS_FALLING_TIME
     jr nz, .endFallingSpeed
 .canFall:
-    ld hl, wEnemyDelayFallingTimer ; same here
-    inc [hl]
-    ld a, [hl]
+    ldh a, [wEnemyDelayFallingTimer]
+    inc a
+    ldh [wEnemyDelayFallingTimer], a
     cp a, CACTUS_DELAY_FALLING_TIME
     jr c, .skipAcceleration
 .accelerate:
     xor a ; ld a, 0
     ldh [wEnemyDelayFallingTimer], a
-    ldh a, [wEnemyFallingSpeed]
+    ldh a, [wEnemySpeed]
     add a, a
-    ldh [wEnemyFallingSpeed], a
+    ldh [wEnemySpeed], a
 .skipAcceleration:
-    INCREMENT_POS hEnemyY, [wEnemyFallingSpeed]
+    INCREMENT_POS hEnemyY, [wEnemySpeed]
 .anvilLeftOAM:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ldh a, [hEnemyY]
@@ -150,7 +150,7 @@ AnvilUpdate::
     and	ANVIL_COLLISION_TIME
     jr nz, .endCollision
 .checkHit:
-    ld bc, wPlayerBalloonOAM ; Cactus too?
+    ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ld d, 16
     ld e, 16

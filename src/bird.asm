@@ -41,7 +41,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyOAM]
     ld [hli], a
-    ldh a, [wEnemyAlive]
+    ldh a, [hEnemyAlive]
     ld [hli], a
     ldh a, [hEnemyDirectionLeft]
     ld [hli], a
@@ -75,7 +75,7 @@ SpawnBird::
     LD_BC_DE
     ld a, 1
     ldh [hEnemyActive], a
-    ldh [wEnemyAlive], a
+    ldh [hEnemyAlive], a
     ldh a, [hEnemyX]
     cp a, SCRN_X / 2
     jr c, .isLeftside
@@ -276,7 +276,7 @@ BirdUpdate::
     ld a, [hli]
     ldh [hEnemyOAM], a
     ld a, [hli]
-    ldh [wEnemyAlive], a
+    ldh [hEnemyAlive], a
     ld a, [hli]
     ldh [hEnemyDirectionLeft], a
     ld a, [hli]
@@ -287,7 +287,7 @@ BirdUpdate::
     ldh [wEnemyToDie], a
 
 .checkAlive:
-    ldh a, [wEnemyAlive]
+    ldh a, [hEnemyAlive]
     cp a, 0
     jp z, .isDead
 .isAlive:
@@ -335,7 +335,7 @@ BirdUpdate::
     jr z, .endCollision
 .deathOfBird:
     xor a ; ld a, 0
-    ldh [wEnemyAlive], a
+    ldh [hEnemyAlive], a
     ; Points
     ld d, BIRD_POINTS
     call AddPoints
