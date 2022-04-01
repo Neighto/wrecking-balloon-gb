@@ -215,17 +215,17 @@ UpdateGameCountdown::
 UpdateGame::
 
 .tryToUnpause:
-    ld a, [wPaused]
+    ldh a, [hPaused]
 	cp a, 0
 	jr z, .isNotPaused
 .isPaused:
     call ClearSound
 	call ReadController
-	ld a, [wControllerPressed]
+	ldh a, [hControllerPressed]
     and PADF_START
     ret z
 	xor a ; ld a, 0
-	ld [wPaused], a
+	ldh [hPaused], a
     ret
 .isNotPaused:
 

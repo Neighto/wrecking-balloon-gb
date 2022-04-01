@@ -172,7 +172,7 @@ UpdateMenu::
 
 .menuInput:
 	call ReadController
-	ld a, [wControllerDown]
+	ldh a, [hControllerDown]
 	and PADF_START | PADF_A
 	ret z
 .start:

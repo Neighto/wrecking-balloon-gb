@@ -91,7 +91,7 @@ SpawnBomb::
     ld e, OAMF_PAL0
 .endDifficultyVisual:
 
-.balloonLeft:
+.balloonLeftOAM:
     ldh a, [wEnemyY]
     ld [hli], a
     ldh a, [wEnemyX]
@@ -100,7 +100,7 @@ SpawnBomb::
     ld [hli], a
     ld a, e
     ld [hli], a
-.balloonRight:
+.balloonRightOAM:
     ldh a, [wEnemyY]
     ld [hli], a
     ldh a, [wEnemyX]
@@ -111,7 +111,7 @@ SpawnBomb::
     ld a, e
     or a, OAMF_XFLIP
     ld [hli], a
-.bombSpace:
+.bombSpaceOAM:
     ld a, 1
     ld [hli], a
     ld [hli], a
@@ -178,7 +178,7 @@ BombUpdate::
     cpl
     add [hl]
     ld [hl], a
-.balloonLeft:
+.balloonLeftOAM:
     SET_HL_TO_ADDRESS wOAM, wEnemyOAM
     ldh a, [wEnemyY]
     ld [hli], a
@@ -186,7 +186,7 @@ BombUpdate::
     ld [hli], a
     inc l
     inc l
-.balloonRight:
+.balloonRightOAM:
     ldh a, [wEnemyY]
     ld [hli], a
     ldh a, [wEnemyX]
@@ -194,7 +194,7 @@ BombUpdate::
     ld [hli], a
     inc l
     inc l
-.bombSpace:
+.bombSpaceOAM:
     ldh a, [wEnemyY]
     ld [hli], a
     ldh a, [wEnemyX]
