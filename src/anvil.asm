@@ -15,15 +15,15 @@ SECTION "anvil", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ldh a, [wEnemyActive]
+    ldh a, [hEnemyActive]
     ld [hli], a
-    ldh a, [wEnemyNumber]
+    ldh a, [hEnemyNumber]
     ld [hli], a
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
-    ldh a, [wEnemyOAM]
+    ldh a, [hEnemyOAM]
     ld [hli], a
     ldh a, [wEnemyFallingSpeed]
     ld [hli], a
@@ -51,26 +51,26 @@ SpawnAnvil::
     call InitializeEnemyStructVars
     call SetStruct
     ld a, b
-    ldh [wEnemyOAM], a
+    ldh [hEnemyOAM], a
     LD_BC_DE
     ld a, 1
-    ldh [wEnemyActive], a
+    ldh [hEnemyActive], a
     ldh [wEnemyFallingSpeed], a
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
 .anvilLeftOAM:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ld a, [hEnemyX]
     ld [hli], a
     ld a, ANVIL_TILE_1
     ld [hli], a
     ld a, OAMF_PAL0
     ld [hli], a
 .anvilRightOAM:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 8
     ld [hli], a
     ld a, ANVIL_TILE_2
@@ -85,7 +85,7 @@ SpawnAnvil::
     ret
 
 Clear:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     xor a ; ld a, 0
     ld [hli], a
     ld [hli], a
@@ -101,11 +101,11 @@ Clear:
 AnvilUpdate::
     ; Get rest of struct
     ld a, [hli]
-    ldh [wEnemyY], a
+    ldh [hEnemyY], a
     ld a, [hli]
-    ldh [wEnemyX], a
+    ldh [hEnemyX], a
     ld a, [hli]
-    ldh [wEnemyOAM], a
+    ldh [hEnemyOAM], a
     ld a, [hli]
     ldh [wEnemyFallingSpeed], a
     ld a, [hli]
@@ -132,16 +132,16 @@ AnvilUpdate::
     add a, a
     ldh [wEnemyFallingSpeed], a
 .skipAcceleration:
-    INCREMENT_POS wEnemyY, [wEnemyFallingSpeed]
+    INCREMENT_POS hEnemyY, [wEnemyFallingSpeed]
 .anvilLeftOAM:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ldh a, [wEnemyY]
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ldh a, [hEnemyY]
     ld [hli], a
     inc l
     inc l
     inc l
 .anvilRightOAM:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hl], a
 .endFallingSpeed:
 
@@ -151,14 +151,14 @@ AnvilUpdate::
     jr nz, .endCollision
 .checkHit:
     ld bc, wPlayerBalloonOAM ; Cactus too?
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ld d, 16
     ld e, 16
     call CollisionCheck
     cp a, 0
     call nz, CollisionWithPlayer
 .checkHitByBullet:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     LD_BC_HL
     ld hl, wPlayerBulletOAM
     ld d, 16
@@ -170,7 +170,7 @@ AnvilUpdate::
 .endCollision:
 
 .checkOffscreen:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld b, a
     ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
     cp a, b

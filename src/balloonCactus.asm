@@ -25,25 +25,25 @@ SECTION "balloon cactus", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ldh a, [wEnemyActive]
+    ldh a, [hEnemyActive]
     ld [hli], a
-    ldh a, [wEnemyNumber]
+    ldh a, [hEnemyNumber]
     ld [hli], a
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
-    ldh a, [wEnemyOAM]
+    ldh a, [hEnemyOAM]
     ld [hli], a
     ldh a, [wEnemyAlive]
     ld [hli], a
-    ldh a, [wEnemyPopping]
+    ldh a, [hEnemyDying]
     ld [hli], a
-    ldh a, [wEnemyPoppingFrame]
+    ldh a, [hEnemyAnimationFrame]
     ld [hli], a
-    ldh a, [wEnemyPoppingTimer]
+    ldh a, [hEnemyAnimationTimer]
     ld [hli], a
-    ldh a, [wEnemyRightside]
+    ldh a, [hEnemyDirectionLeft]
     ld [hli], a
     ldh a, [wEnemyY2]
     ld [hli], a
@@ -79,24 +79,24 @@ SpawnBalloonCactus::
     call InitializeEnemyStructVars
     call SetStruct
     ld a, b
-    ldh [wEnemyOAM], a
+    ldh [hEnemyOAM], a
     LD_BC_DE
     ld a, 1
-    ldh [wEnemyActive], a
+    ldh [hEnemyActive], a
     ldh [wEnemyAlive], a
     ldh [wEnemyFallingSpeed], a
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     add 16
     ldh [wEnemyY2], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     ldh [wEnemyX2], a
 
 .updateFacing:
     cp a, SCRN_X / 2
     jr c, .isLeftside
-    ldh [wEnemyRightside], a
+    ldh [hEnemyDirectionLeft], a
 .isLeftside:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
 .difficultyVisual:
     ldh a, [wEnemyDifficulty]
@@ -120,18 +120,18 @@ SpawnBalloonCactus::
 .endDifficultyVisual:
 
 .balloonLeftOAM:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
     ld a, d
     ld [hli], a
     ld a, e
     ld [hli], a
 .balloonRightOAM:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 8
     ld [hli], a
     ld a, d
@@ -173,7 +173,7 @@ SpawnBalloonCactus::
     ret
 
 ClearBalloon:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     xor a ; ld a, 0
     ld [hli], a
     ld [hli], a
@@ -186,7 +186,7 @@ ClearBalloon:
     ret
 
 ClearExtraSpace:
-    SET_HL_TO_ADDRESS wOAM+8, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+8, hEnemyOAM
     xor a ; ld a, 0
     ld [hli], a
     ld [hli], a
@@ -195,7 +195,7 @@ ClearExtraSpace:
     ret
 
 ClearCactus:
-    SET_HL_TO_ADDRESS wOAM+12, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+12, hEnemyOAM
     xor a ; ld a, 0
     ld [hli], a
     ld [hli], a
@@ -221,7 +221,7 @@ ClearCactus:
 ;     jr z, .checkBirdLoop
 ; .isAlive:
 ;     push bc
-;     SET_HL_TO_ADDRESS wOAM+12, wEnemyOAM
+;     SET_HL_TO_ADDRESS wOAM+12, hEnemyOAM
 ;     LD_BC_HL
 ;     SET_HL_TO_ADDRESS bird+3, wEnemyOffset2 ; OAM
 ;     ld a, [hl]
@@ -250,32 +250,32 @@ ClearCactus:
 
 UpdateBalloonPosition:
 .balloonLeftOAM:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ldh a, [wEnemyY]
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
     inc l
     inc l
 .balloonRightOAM:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 8
     ld [hli], a
     inc l
     inc l
 .extraSpaceOAM:
-    ldh a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     add 16
     ld [hl], a
     ret
 
 UpdateCactusPosition:
 .cactusLeftOAM:
-    SET_HL_TO_ADDRESS wOAM+12, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+12, hEnemyOAM
     ldh a, [wEnemyY2]
     ld [hli], a
     ldh a, [wEnemyX2]
@@ -293,21 +293,21 @@ UpdateCactusPosition:
 BalloonCactusUpdate::
     ; Get rest of struct
     ld a, [hli]
-    ldh [wEnemyY], a
+    ldh [hEnemyY], a
     ld a, [hli]
-    ldh [wEnemyX], a
+    ldh [hEnemyX], a
     ld a, [hli]
-    ldh [wEnemyOAM], a
+    ldh [hEnemyOAM], a
     ld a, [hli]
     ldh [wEnemyAlive], a
     ld a, [hli]
-    ldh [wEnemyPopping], a
+    ldh [hEnemyDying], a
     ld a, [hli]
-    ldh [wEnemyPoppingFrame], a
+    ldh [hEnemyAnimationFrame], a
     ld a, [hli]
-    ldh [wEnemyPoppingTimer], a
+    ldh [hEnemyAnimationTimer], a
     ld a, [hli]
-    ldh [wEnemyRightside], a
+    ldh [hEnemyDirectionLeft], a
     ld a, [hli]
     ldh [wEnemyY2], a
     ld a, [hli]
@@ -352,11 +352,11 @@ BalloonCactusUpdate::
     jr z, .endMoveVertical
     jr c, .moveDown
 .moveUp:
-    DECREMENT_POS wEnemyY, 1
+    DECREMENT_POS hEnemyY, 1
     DECREMENT_POS wEnemyY2, 1
     jr .endMoveVertical
 .moveDown:
-    INCREMENT_POS wEnemyY, 1
+    INCREMENT_POS hEnemyY, 1
     INCREMENT_POS wEnemyY2, 1
     jr .endMoveVertical
 .hardMove:
@@ -366,14 +366,14 @@ BalloonCactusUpdate::
 .endMoveVertical:
 
 .moveHorizontal:
-    ldh a, [wEnemyRightside]
+    ldh a, [hEnemyDirectionLeft]
     cp a, 0
     jr z, .isLeftside
-    DECREMENT_POS wEnemyX, 1
+    DECREMENT_POS hEnemyX, 1
     DECREMENT_POS wEnemyX2, 1
     jr .endMoveHorizontal
 .isLeftside:
-    INCREMENT_POS wEnemyX, 1
+    INCREMENT_POS hEnemyX, 1
     INCREMENT_POS wEnemyX2, 1
 .endMoveHorizontal:
 
@@ -388,7 +388,7 @@ BalloonCactusUpdate::
     jp nz, .endCollision
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
-    SET_HL_TO_ADDRESS wOAM+12, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+12, hEnemyOAM
     ld d, 16
     ld e, 16
     call CollisionCheck
@@ -396,7 +396,7 @@ BalloonCactusUpdate::
     call nz, CollisionWithPlayer
 .checkHit:
     ld bc, wPlayerCactusOAM
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ld d, 16
     ld e, 16
     call CollisionCheck
@@ -407,7 +407,7 @@ BalloonCactusUpdate::
     call z, CollisionWithPlayer
     jr .deathOfBalloonCactus
 .checkHitByBullet:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     LD_BC_HL
     ld hl, wPlayerBulletOAM
     ld d, 16
@@ -440,19 +440,19 @@ BalloonCactusUpdate::
     call AddPoints
     ; Animation trigger
     ld a, 1
-    ldh [wEnemyPopping], a
+    ldh [hEnemyDying], a
     ldh [wEnemyFalling], a
     ; Screaming cactus
-    SET_HL_TO_ADDRESS wOAM+14, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+14, hEnemyOAM
     ld [hl], BALLOON_CACTUS_SCREAMING_TILE
-    SET_HL_TO_ADDRESS wOAM+18, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+18, hEnemyOAM
     ld [hl], BALLOON_CACTUS_SCREAMING_TILE
     ; Sound
     call PopSound
 .endCollision:
 
 .checkOffscreen:
-    ldh a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld b, a
     ld a, SCRN_X + OFF_SCREEN_ENEMY_BUFFER
     cp a, b
@@ -470,7 +470,7 @@ BalloonCactusUpdate::
     jr .setStruct
 
 .popped:
-    ldh a, [wEnemyPopping]
+    ldh a, [hEnemyDying]
     cp a, 0
     jr z, .clearPopping
 .animatePopping:
@@ -484,7 +484,7 @@ BalloonCactusUpdate::
     call ExplosionAnimation
     jr .endPopped
 .clearPopping:
-    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM
     xor a ; ld a, 0
     ld [hli], a
     inc hl
@@ -557,13 +557,13 @@ BalloonCactusUpdate::
     jr nz, .endProjectile
 .spawnProjectile:
     ld a, PROJECTILE
-    ldh [wEnemyNumber], a
-    ldh a, [wEnemyY]
+    ldh [hEnemyNumber], a
+    ldh a, [hEnemyY]
     add a, 4
-    ldh [wEnemyY], a
-    ldh a, [wEnemyX]
+    ldh [hEnemyY], a
+    ldh a, [hEnemyX]
     add a, 4
-    ldh [wEnemyX], a
+    ldh [hEnemyX], a
 
     call SpawnProjectile
 .endProjectile:

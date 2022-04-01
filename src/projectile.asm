@@ -12,19 +12,19 @@ SECTION "enemy projectile", ROM0
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ld a, [wEnemyActive]
+    ldh a, [hEnemyActive]
     ld [hli], a
-    ld a, [wEnemyNumber]
+    ldh a, [hEnemyNumber]
     ld [hli], a
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
-    ld a, [wEnemyOAM]
+    ldh a, [hEnemyOAM]
     ld [hli], a
-    ld a, [wEnemyY2] ; Add to Y
+    ldh a, [wEnemyY2] ; Add to Y
     ld [hli], a
-    ld a, [wEnemyX2] ; Add to X
+    ldh a, [wEnemyX2] ; Add to X
     ld [hl], a
     ret
 
@@ -46,14 +46,14 @@ SpawnProjectile::
     call InitializeEnemyStructVars
     call SetStruct
     ld a, b
-    ld [wEnemyOAM], a
+    ldh [hEnemyOAM], a
     LD_BC_DE
     ld a, 1
-    ld [wEnemyActive], a
+    ldh [hEnemyActive], a
 .setupY2:
     ld a, [wPlayerY]
     ld d, a
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     cp a, d
     jr c, .down
 .up:
@@ -65,12 +65,12 @@ SpawnProjectile::
 .down:
     ld a, 1
 .endY:
-    ld [wEnemyY2], a
+    ldh [wEnemyY2], a
 .endSetupY2:
 .setupX2:
     ld a, [wPlayerX]
     ld d, a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     cp a, d
     jr c, .right
 .left:
@@ -82,13 +82,13 @@ SpawnProjectile::
 .right:
     ld a, 1
 .endX:
-    ld [wEnemyX2], a
+    ldh [wEnemyX2], a
 .endSetupX2:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 .projectileOAM:
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
     ld a, PROJECTILE_TILE
     ld [hli], a
@@ -101,7 +101,7 @@ SpawnProjectile::
     ret
   
 Clear:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     xor a ; ld a, 0
     ld [hli], a
     ld [hli], a
@@ -113,15 +113,15 @@ Clear:
 ProjectileUpdate::
     ; Get rest of struct
     ld a, [hli]
-    ld [wEnemyY], a
+    ldh [hEnemyY], a
     ld a, [hli]
-    ld [wEnemyX], a
+    ldh [hEnemyX], a
     ld a, [hli]
-    ld [wEnemyOAM], a
+    ldh [hEnemyOAM], a
     ld a, [hli]
-    ld [wEnemyY2], a
+    ldh [wEnemyY2], a
     ld a, [hli]
-    ld [wEnemyX2], a
+    ldh [wEnemyX2], a
     ld a, [hl]
 
 .checkFlicker:
@@ -129,7 +129,7 @@ ProjectileUpdate::
     and	%00000111
     jr nz, .endFlicker
 .canFlicker:
-    SET_HL_TO_ADDRESS wOAM+3, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+3, hEnemyOAM
     ld a, [hl]
     cp a, OAMF_PAL0
     jr z, .palette1
@@ -146,18 +146,18 @@ ProjectileUpdate::
     jr nz, .endMove
 .canMove:
 .projectileOAM:
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM
-    ld a, [wEnemyY]
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ldh a, [hEnemyY]
     ld b, a
-    ld a, [wEnemyY2]
+    ldh a, [wEnemyY2]
     add a, b
-    ld [wEnemyY], a
+    ldh [hEnemyY], a
     ld [hli], a
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld b, a
-    ld a, [wEnemyX2]
+    ldh a, [wEnemyX2]
     add a, b
-    ld [wEnemyX], a
+    ldh [hEnemyX], a
     ld [hl], a
 .endMove:
 
@@ -167,7 +167,7 @@ ProjectileUpdate::
     jr nz, .endCollision
 .checkHit:
     ld bc, wPlayerBalloonOAM
-    SET_HL_TO_ADDRESS wOAM, wEnemyOAM ; FIX THIS IS WAY TOO BIG FOR COLLISION
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ld d, 8
     ld e, 8
     call CollisionCheck
@@ -180,7 +180,7 @@ ProjectileUpdate::
 .endCollision:
 
 .checkOffscreenY:
-    ld a, [wEnemyY]
+    ldh a, [hEnemyY]
     ld b, a
     ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
     cp a, b
@@ -192,7 +192,7 @@ ProjectileUpdate::
     call Clear
 .endOffscreenY:
 .checkOffscreenX:
-    ld a, [wEnemyX]
+    ldh a, [hEnemyX]
     ld b, a
     ld a, SCRN_X + OFF_SCREEN_ENEMY_BUFFER
     cp a, b

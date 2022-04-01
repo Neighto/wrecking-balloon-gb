@@ -9,26 +9,26 @@ SECTION "enemy struct vars", HRAM
     ; TODO: Can I define a public constant here that is EndStruct - StartStruct instead?
 
     ; These must be in this order in each enemy
-    wEnemyActive:: DB
-    wEnemyNumber:: DB
+    hEnemyActive:: DB
+    hEnemyNumber:: DB
 
     ; These can be in any order
-    wEnemyY:: DB
-    wEnemyX:: DB
-    wEnemyOAM:: DB
+    hEnemyY:: DB
+    hEnemyX:: DB
+    hEnemyOAM:: DB
     wEnemyAlive:: DB
-    wEnemyPopping:: DB
-    wEnemyPoppingFrame:: DB ; rename to general anims
-    wEnemyPoppingTimer:: DB
-    wEnemyRightside:: DB
+    wEnemyDifficulty:: DB
     wEnemyY2:: DB
     wEnemyX2:: DB
+    hEnemyDying:: DB
+    hEnemyAnimationFrame:: DB
+    hEnemyAnimationTimer:: DB
+    hEnemyDirectionLeft:: DB
     wEnemyFalling:: DB
-    wEnemyFallingSpeed:: DB
+    wEnemyFallingSpeed:: DB ; wEnemySpeed
     wEnemyFallingTimer:: DB
-    wEnemyDelayFallingTimer:: DB
+    wEnemyDelayFallingTimer:: DB ; wEnemyParam1, 2, 3
     wEnemyToDie:: DB ; If enemy set to die from external file
-    wEnemyDifficulty:: DB
     ; TODO clean these up to be more generic and helpful
 
 SECTION "enemy struct", ROM0
@@ -36,13 +36,13 @@ SECTION "enemy struct", ROM0
 InitializeEnemyStructVars::
     push af
     xor a ; ld a, 0
-    ldh [wEnemyActive], a
-    ldh [wEnemyOAM], a
+    ldh [hEnemyActive], a
+    ldh [hEnemyOAM], a
     ldh [wEnemyAlive], a
-    ldh [wEnemyPopping], a
-    ldh [wEnemyPoppingFrame], a
-    ldh [wEnemyPoppingTimer], a
-    ldh [wEnemyRightside], a
+    ldh [hEnemyDying], a
+    ldh [hEnemyAnimationFrame], a
+    ldh [hEnemyAnimationTimer], a
+    ldh [hEnemyDirectionLeft], a
     ldh [wEnemyY2], a
     ldh [wEnemyX2], a
     ldh [wEnemyFalling], a 
@@ -75,14 +75,14 @@ UpdateEnemy::
     ; Get active state
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     ld a, [hli]
-    ldh [wEnemyActive], a
+    ldh [hEnemyActive], a
     ; Check active
-    ldh a, [wEnemyActive]
+    ldh a, [hEnemyActive]
     cp a, 0
     jr z, .checkLoop
     ; Get enemy number
     ld a, [hli]
-    ldh [wEnemyNumber], a
+    ldh [hEnemyNumber], a
     ; Check enemy number
     cp a, POINT_BALLOON
     jr z, .pointBalloon
@@ -134,16 +134,16 @@ UpdateEnemy::
 SECTION "enemy animations", ROM0
 
 PopBalloonAnimation::
-    ldh a, [wEnemyPoppingFrame]
+    ldh a, [hEnemyAnimationFrame]
     cp a, 0
     jr z, .frame0
-    ldh a, [wEnemyPoppingTimer]
+    ldh a, [hEnemyAnimationTimer]
 	inc	a
-	ldh [wEnemyPoppingTimer], a
+	ldh [hEnemyAnimationTimer], a
     and POPPING_BALLOON_ANIMATION_SPEED
     ret nz
 .canSwitchFrames:
-    ldh a, [wEnemyPoppingFrame]
+    ldh a, [hEnemyAnimationFrame]
     cp a, 1
     jr z, .frame1
     cp a, 2
@@ -151,49 +151,49 @@ PopBalloonAnimation::
     ret
 .frame0:
     ; Popped left - frame 0
-    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM
     ld [hl], POP_BALLOON_FRAME_0_TILE
     inc l
     ld [hl], OAMF_PAL0
     ; Popped right - frame 0
-    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
     ld [hl], POP_BALLOON_FRAME_0_TILE
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
     jr .endFrame
 .frame1:
     ; Popped left - frame 1
-    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM
     ld [hl], POP_BALLOON_FRAME_1_TILE
     inc l
     ld [hl], OAMF_PAL0
     ; Popped right - frame 1
-    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
     ld [hl], POP_BALLOON_FRAME_1_TILE
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
     jr .endFrame
 .clear:
     xor a
-    ldh [wEnemyPopping], a
+    ldh [hEnemyDying], a
     ret
 .endFrame:
-    ldh a, [wEnemyPoppingFrame]
+    ldh a, [hEnemyAnimationFrame]
     inc a 
-    ldh [wEnemyPoppingFrame], a
+    ldh [hEnemyAnimationFrame], a
     ret
 
 ExplosionAnimation::
-    ldh a, [wEnemyPoppingFrame]
+    ldh a, [hEnemyAnimationFrame]
     cp a, 0
     jr z, .frame0
-    ldh a, [wEnemyPoppingTimer]
+    ldh a, [hEnemyAnimationTimer]
 	inc	a
-	ldh [wEnemyPoppingTimer], a
+	ldh [hEnemyAnimationTimer], a
     and POPPING_BALLOON_ANIMATION_SPEED
     ret nz
 .canSwitchFrames:
-    ldh a, [wEnemyPoppingFrame]
+    ldh a, [hEnemyAnimationFrame]
     cp a, 1
     jp z, .frame1
     cp a, 2
@@ -205,34 +205,34 @@ ExplosionAnimation::
     ret
 .frame0:
     ; Popped left - frame 0
-    SET_HL_TO_ADDRESS wOAM+2, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM
     ld [hl], POP_BALLOON_FRAME_0_TILE
     inc l
     ld [hl], %00000000
     ; Popped right - frame 0
-    SET_HL_TO_ADDRESS wOAM+6, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
     ld [hl], POP_BALLOON_FRAME_0_TILE
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
     jp .endFrame
 .frame1:
     ; Explosion left
-    SET_HL_TO_ADDRESS wOAM+1, wEnemyOAM
-    ldh a, [wEnemyX]
+    SET_HL_TO_ADDRESS wOAM+1, hEnemyOAM
+    ldh a, [hEnemyX]
     sub 4
     ld [hli], a
     ld a, BOMB_EXPLOSION_TILE_1
     ld [hl], a
     ; Explosion middle
-    SET_HL_TO_ADDRESS wOAM+5, wEnemyOAM
-    ldh a, [wEnemyX]
+    SET_HL_TO_ADDRESS wOAM+5, hEnemyOAM
+    ldh a, [hEnemyX]
     add 4
     ld [hli], a
     ld a, BOMB_EXPLOSION_TILE_2
     ld [hl], a
     ; Explosion right
-    SET_HL_TO_ADDRESS wOAM+9, wEnemyOAM
-    ldh a, [wEnemyX]
+    SET_HL_TO_ADDRESS wOAM+9, hEnemyOAM
+    ldh a, [hEnemyX]
     add 12
     ld [hli], a
     ld a, BOMB_EXPLOSION_TILE_1
@@ -241,28 +241,28 @@ ExplosionAnimation::
     jr .endFrame
 .frame2:
     ; Flip palette
-    SET_HL_TO_ADDRESS wOAM+3, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+3, hEnemyOAM
     ld [hl], OAMF_PAL1
-    SET_HL_TO_ADDRESS wOAM+7, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+7, hEnemyOAM
     ld [hl], OAMF_PAL1
-    SET_HL_TO_ADDRESS wOAM+11, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+11, hEnemyOAM
     ld [hl], OAMF_PAL1 | OAMF_XFLIP
     jr .endFrame
 .frame3:
     ; Flip palette
-    SET_HL_TO_ADDRESS wOAM+3, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+3, hEnemyOAM
     ld [hl], OAMF_PAL0
-    SET_HL_TO_ADDRESS wOAM+7, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+7, hEnemyOAM
     ld [hl], OAMF_PAL0
-    SET_HL_TO_ADDRESS wOAM+11, wEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+11, hEnemyOAM
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
     jr .endFrame
 .clear:
     xor a
-    ldh [wEnemyPopping], a
+    ldh [hEnemyDying], a
     ret 
 .endFrame:
-    ldh a, [wEnemyPoppingFrame]
+    ldh a, [hEnemyAnimationFrame]
     inc a 
-    ldh [wEnemyPoppingFrame], a
+    ldh [hEnemyAnimationFrame], a
     ret
