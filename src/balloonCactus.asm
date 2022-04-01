@@ -49,13 +49,13 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyX2]
     ld [hli], a
-    ldh a, [wEnemyFalling]
+    ldh a, [hEnemySpeed]
     ld [hli], a
-    ldh a, [wEnemySpeed]
+    ldh a, [hEnemyParam1] ; Enemy Falling Flag
     ld [hli], a
-    ldh a, [wEnemyFallingTimer]
+    ldh a, [hEnemyParam2] ; Enemy Falling Timer
     ld [hli], a
-    ldh a, [wEnemyDelayFallingTimer]
+    ldh a, [hEnemyParam3] ; Enemy Delay Falling Timer
     ld [hli], a
     ldh a, [hEnemyDifficulty]
     ld [hl], a
@@ -84,7 +84,7 @@ SpawnBalloonCactus::
     ld a, 1
     ldh [hEnemyActive], a
     ldh [hEnemyAlive], a
-    ldh [wEnemySpeed], a
+    ldh [hEnemySpeed], a
     ldh a, [hEnemyY]
     add 16
     ldh [hEnemyY2], a
@@ -313,13 +313,13 @@ BalloonCactusUpdate::
     ld a, [hli]
     ldh [hEnemyX2], a
     ld a, [hli]
-    ldh [wEnemyFalling], a 
+    ldh [hEnemySpeed], a 
     ld a, [hli]
-    ldh [wEnemySpeed], a 
+    ldh [hEnemyParam1], a 
     ld a, [hli]
-    ldh [wEnemyFallingTimer], a
+    ldh [hEnemyParam2], a
     ld a, [hli]
-    ldh [wEnemyDelayFallingTimer], a
+    ldh [hEnemyParam3], a
     ld a, [hl]
     ldh [hEnemyDifficulty], a
 
@@ -441,7 +441,7 @@ BalloonCactusUpdate::
     ; Animation trigger
     ld a, 1
     ldh [hEnemyDying], a
-    ldh [wEnemyFalling], a
+    ldh [hEnemyParam1], a
     ; Screaming cactus
     SET_HL_TO_ADDRESS wOAM+14, hEnemyOAM
     ld [hl], BALLOON_CACTUS_SCREAMING_TILE
@@ -498,11 +498,11 @@ BalloonCactusUpdate::
 .endPopped:
 
 .falling:
-    ldh a, [wEnemyFalling]
+    ldh a, [hEnemyParam1]
     cp a, 0
     jr z, .clearFalling
 .animateFalling:
-    ld hl, wEnemyFallingTimer
+    ld hl, hEnemyParam2
     inc [hl]
     ld a, [hl]
     and CACTUS_FALLING_TIME
@@ -514,24 +514,24 @@ BalloonCactusUpdate::
     jr c, .offScreen
 .canFall:
     ; call CactusFallingCollision
-    ld hl, wEnemyDelayFallingTimer
+    ld hl, hEnemyParam3
     inc [hl]
     ld a, [hl]
     cp a, CACTUS_DELAY_FALLING_TIME
     jr c, .skipAcceleration
 .accelerate:
     xor a ; ld a, 0
-    ld [wEnemyDelayFallingTimer], a
-    ld a, [wEnemySpeed]
+    ld [hEnemyParam3], a
+    ld a, [hEnemySpeed]
     add a, a
-    ld [wEnemySpeed], a
+    ld [hEnemySpeed], a
 .skipAcceleration:
-    INCREMENT_POS hEnemyY2, [wEnemySpeed]
+    INCREMENT_POS hEnemyY2, [hEnemySpeed]
     call UpdateCactusPosition
     jr .endFalling
 .offScreen:
     xor a
-    ld [wEnemyFalling], a
+    ld [hEnemyParam1], a
     jr .endFalling
 .clearFalling:
     call ClearBalloon

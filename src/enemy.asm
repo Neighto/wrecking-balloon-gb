@@ -24,12 +24,10 @@ SECTION "enemy struct vars", HRAM
     hEnemyAnimationFrame:: DB
     hEnemyAnimationTimer:: DB
     hEnemyDirectionLeft:: DB
-    wEnemySpeed:: DB
-    wEnemyFalling:: DB
-    wEnemyFallingTimer:: DB
-    wEnemyDelayFallingTimer:: DB ; wEnemyParam1, 2, 3
-    wEnemyToDie:: DB ; If enemy set to die from external file
-    ; TODO clean these up to be more generic and helpful
+    hEnemySpeed:: DB
+    hEnemyParam1:: DB
+    hEnemyParam2:: DB
+    hEnemyParam3:: DB
 
 SECTION "enemy struct", ROM0
 
@@ -45,11 +43,10 @@ InitializeEnemyStructVars::
     ldh [hEnemyDirectionLeft], a
     ldh [hEnemyY2], a
     ldh [hEnemyX2], a
-    ldh [wEnemyFalling], a 
-    ldh [wEnemySpeed], a 
-    ldh [wEnemyFallingTimer], a
-    ldh [wEnemyDelayFallingTimer], a
-    ldh [wEnemyToDie], a
+    ldh [hEnemySpeed], a 
+    ldh [hEnemyParam1], a 
+    ldh [hEnemyParam2], a
+    ldh [hEnemyParam3], a
     pop af
     ret
 

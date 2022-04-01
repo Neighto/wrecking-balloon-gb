@@ -15,5 +15,5 @@ HARD EQU 3
 
 ; Enemy data info
 NUMBER_OF_ENEMIES EQU 8
-ENEMY_STRUCT_SIZE EQU 18 ; Bytes in enemy struct vars
+ENEMY_STRUCT_SIZE EQU 17 ; Bytes in enemy struct vars
 ENEMY_DATA_SIZE EQU ENEMY_STRUCT_SIZE * NUMBER_OF_ENEMIES

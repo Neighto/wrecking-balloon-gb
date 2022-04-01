@@ -25,11 +25,11 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyOAM]
     ld [hli], a
-    ldh a, [wEnemySpeed]
+    ldh a, [hEnemySpeed]
     ld [hli], a
-    ldh a, [wEnemyFallingTimer]
+    ldh a, [hEnemyParam1] ; Enemy Falling Timer
     ld [hli], a
-    ldh a, [wEnemyDelayFallingTimer]
+    ldh a, [hEnemyParam2] ; Enemy Delay Falling Timer
     ld [hl], a
     ret
 
@@ -55,7 +55,7 @@ SpawnAnvil::
     LD_BC_DE
     ld a, 1
     ldh [hEnemyActive], a
-    ldh [wEnemySpeed], a
+    ldh [hEnemySpeed], a
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
 .anvilLeftOAM:
@@ -107,32 +107,32 @@ AnvilUpdate::
     ld a, [hli]
     ldh [hEnemyOAM], a
     ld a, [hli]
-    ldh [wEnemySpeed], a
+    ldh [hEnemySpeed], a
     ld a, [hli]
-    ldh [wEnemyFallingTimer], a
+    ldh [hEnemyParam1], a
     ld a, [hl]
-    ldh [wEnemyDelayFallingTimer], a
+    ldh [hEnemyParam2], a
 
 .fallingSpeed:
-    ldh a, [wEnemyFallingTimer]
+    ldh a, [hEnemyParam1]
     inc a
-    ldh [wEnemyFallingTimer], a
+    ldh [hEnemyParam1], a
     and CACTUS_FALLING_TIME
     jr nz, .endFallingSpeed
 .canFall:
-    ldh a, [wEnemyDelayFallingTimer]
+    ldh a, [hEnemyParam2]
     inc a
-    ldh [wEnemyDelayFallingTimer], a
+    ldh [hEnemyParam2], a
     cp a, CACTUS_DELAY_FALLING_TIME
     jr c, .skipAcceleration
 .accelerate:
     xor a ; ld a, 0
-    ldh [wEnemyDelayFallingTimer], a
-    ldh a, [wEnemySpeed]
+    ldh [hEnemyParam2], a
+    ldh a, [hEnemySpeed]
     add a, a
-    ldh [wEnemySpeed], a
+    ldh [hEnemySpeed], a
 .skipAcceleration:
-    INCREMENT_POS hEnemyY, [wEnemySpeed]
+    INCREMENT_POS hEnemyY, [hEnemySpeed]
 .anvilLeftOAM:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ldh a, [hEnemyY]
