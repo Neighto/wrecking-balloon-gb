@@ -415,7 +415,7 @@ BalloonCactusUpdate::
     ld bc, wPlayerCactusOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ld d, 16
-    ld e, 16
+    ld e, 12
     call CollisionCheck
     cp a, 0
     jr z, .checkHitByBullet

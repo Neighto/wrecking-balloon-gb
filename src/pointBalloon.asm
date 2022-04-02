@@ -4,8 +4,7 @@ INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 INCLUDE "constants.inc"
 
-POINT_BALLOON_OAM_SPRITES EQU 2
-POINT_BALLOON_OAM_BYTES EQU POINT_BALLOON_OAM_SPRITES * 4
+POINT_BALLOON_OAM_SPRITES EQU 3
 POINT_BALLOON_MOVE_TIME EQU %00000001
 POINT_BALLOON_COLLISION_TIME EQU %00001000
 
@@ -110,7 +109,17 @@ SpawnPointBalloon::
     ld [hli], a
     ld a, e
     or a, OAMF_XFLIP
-    ld [hl], a
+    ld [hli], a
+.stringOAM:
+    ldh a, [hEnemyY]
+    add 14
+    ld [hli], a
+    ldh a, [hEnemyX]
+    add 4
+    ld [hli], a
+    ld a, STRING_TILE
+    ld [hli], a
+    ld [hl], OAMF_PAL0
 .setStruct:
     LD_HL_BC
     call SetStruct
@@ -121,6 +130,10 @@ SpawnPointBalloon::
 Clear:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     xor a ; ld a, 0
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
+    ld [hli], a
     ld [hli], a
     ld [hli], a
     ld [hli], a
@@ -185,17 +198,34 @@ PointBalloonUpdate::
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [hEnemyX] ; Do not need to update X for point balloon
-    ld [hli], a
+    inc l
     inc l
     inc l
 .balloonRightOAM:
-    ldh a, [hEnemyY]
     ld [hli], a
-    ldh a, [hEnemyX]
-    add 8
-    ld [hl], a
+    inc l
+    inc l
+    inc l
+.stringOAM:
+    add 14
+    ld [hli], a
 .endMove:
+
+.checkString:
+    ldh a, [hGlobalTimer]
+    and STRING_MOVE_TIME
+    jr nz, .endString
+    SET_HL_TO_ADDRESS wOAM+11, hEnemyOAM
+    ld a, [hl]
+    cp a, OAMF_PAL0
+    jr z, .flipX
+    ld a, OAMF_PAL0
+    ld [hl], a
+    jr .endString
+.flipX:
+    ld a, OAMF_XFLIP | OAMF_PAL0
+    ld [hl], a
+.endString:
 
 .checkCollision:
     ldh a, [hGlobalTimer]
@@ -205,7 +235,7 @@ PointBalloonUpdate::
     ld bc, wPlayerCactusOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ld d, 16
-    ld e, 16
+    ld e, 12
     call CollisionCheck
     cp a, 0
     jr nz, .deathOfPointBalloon
