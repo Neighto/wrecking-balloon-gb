@@ -112,11 +112,11 @@ SetupNextLevel::
 	; call hUGE_init
 	; jr .endLevelSetup
 .level2:
-	; call SetLevel2Interrupts
-	; call LoadLevel2Graphics
-	; ld hl, angryTheme
-	; call hUGE_init
-	; jr .endLevelSetup
+	call SetLevel2Interrupts
+	call LoadLevel2Graphics
+	ld hl, angryTheme
+	call hUGE_init
+	jr .endLevelSetup
 .level3:
 	call SetLevel3Interrupts
 	call LoadLevel3Graphics

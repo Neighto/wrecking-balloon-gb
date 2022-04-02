@@ -28,24 +28,28 @@ SECTION "enemy struct vars", HRAM
     hEnemyParam1:: DB
     hEnemyParam2:: DB
     hEnemyParam3:: DB
+    hEnemyParam4:: DB
 
 SECTION "enemy struct", ROM0
 
 InitializeEnemyStructVars::
     xor a ; ld a, 0
     ldh [hEnemyActive], a
+    ldh [hEnemyNumber], a
     ldh [hEnemyOAM], a
     ldh [hEnemyAlive], a
+    ldh [hEnemyY2], a
+    ldh [hEnemyX2], a
+    ldh [hEnemyDifficulty], a
     ldh [hEnemyDying], a
     ldh [hEnemyAnimationFrame], a
     ldh [hEnemyAnimationTimer], a
     ldh [hEnemyDirectionLeft], a
-    ldh [hEnemyY2], a
-    ldh [hEnemyX2], a
     ldh [hEnemySpeed], a 
     ldh [hEnemyParam1], a 
     ldh [hEnemyParam2], a
     ldh [hEnemyParam3], a
+    ldh [hEnemyParam4], a
     ret
 
 SECTION "enemy data vars", WRAM0
