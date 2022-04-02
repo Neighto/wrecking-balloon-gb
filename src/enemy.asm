@@ -32,7 +32,6 @@ SECTION "enemy struct vars", HRAM
 SECTION "enemy struct", ROM0
 
 InitializeEnemyStructVars::
-    push af
     xor a ; ld a, 0
     ldh [hEnemyActive], a
     ldh [hEnemyOAM], a
@@ -47,7 +46,6 @@ InitializeEnemyStructVars::
     ldh [hEnemyParam1], a 
     ldh [hEnemyParam2], a
     ldh [hEnemyParam3], a
-    pop af
     ret
 
 SECTION "enemy data vars", WRAM0

@@ -4,10 +4,11 @@ INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 
-BOMB_DEFAULT_SPEED EQU 1
+BOMB_DEFAULT_SPEED EQU 2
 BOMB_OAM_SPRITES EQU 3
 BOMB_OAM_BYTES EQU BOMB_OAM_SPRITES * 4
 BOMB_MOVE_TIME EQU %00000001
+BOMB_FOLLOW_TIME EQU %00000111
 BOMB_COLLISION_TIME EQU %00001000
 
 BOMB_EASY_TILE EQU $22
@@ -173,11 +174,27 @@ BombUpdate::
     and	BOMB_MOVE_TIME
     jr nz, .endMove
 .canMove:
-    ld hl, hEnemyY
-    ld a, BOMB_DEFAULT_SPEED
-    cpl
-    add [hl]
-    ld [hl], a
+    DECREMENT_POS hEnemyY, BOMB_DEFAULT_SPEED
+.moveDifficulty:
+    ldh a, [hEnemyDifficulty]
+    cp a, MEDIUM
+    jr nz, .endMoveDifficulty
+.horizontalMedium:
+    ldh a, [hGlobalTimer]
+    and BOMB_FOLLOW_TIME
+    jr nz, .endMoveDifficulty
+    ldh a, [hEnemyX]
+    ld hl, wPlayerX
+    cp a, [hl]
+    jr z, .endMoveDifficulty
+    jr c, .moveRight
+.moveLeft:
+    DECREMENT_POS hEnemyX, 1
+    jr .endMoveDifficulty
+.moveRight:
+    INCREMENT_POS hEnemyX, 1
+.endMoveDifficulty:
+
 .balloonLeftOAM:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ldh a, [hEnemyY]
