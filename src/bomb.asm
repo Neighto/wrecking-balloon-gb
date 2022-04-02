@@ -175,6 +175,7 @@ BombUpdate::
     jr nz, .endMove
 .canMove:
     DECREMENT_POS hEnemyY, BOMB_DEFAULT_SPEED
+    
 .moveDifficulty:
     ldh a, [hEnemyDifficulty]
     cp a, MEDIUM

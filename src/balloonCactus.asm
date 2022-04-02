@@ -12,10 +12,10 @@ BALLOON_CACTUS_TILE EQU $14
 
 PROJECTILE_RESPAWN_TIME EQU %01111111
 
-BALLOON_CACTUS_EASY_TILE EQU ENEMY_BALLOON_TILE
+BALLOON_CACTUS_EASY_TILE EQU $5A
 BALLOON_CACTUS_EASY_POINTS EQU 15
 
-BALLOON_CACTUS_MEDIUM_TILE EQU $5A
+BALLOON_CACTUS_MEDIUM_TILE EQU ENEMY_BALLOON_TILE
 BALLOON_CACTUS_MEDIUM_POINTS EQU 30
 
 BALLOON_CACTUS_HARD_TILE EQU $22
@@ -56,6 +56,8 @@ SetStruct:
     ldh a, [hEnemyParam2] ; Enemy Falling Timer
     ld [hli], a
     ldh a, [hEnemyParam3] ; Enemy Delay Falling Timer
+    ld [hli], a
+    ldh a, [hEnemyParam4] ; Enemy Projectile Timer
     ld [hli], a
     ldh a, [hEnemyDifficulty]
     ld [hl], a
@@ -104,13 +106,13 @@ SpawnBalloonCactus::
     cp a, EASY
     jr nz, .mediumVisual
     ld d, BALLOON_CACTUS_EASY_TILE
-    ld e, OAMF_PAL1
+    ld e, OAMF_PAL0
     jr .endDifficultyVisual
 .mediumVisual:
     cp a, MEDIUM
     jr nz, .hardVisual
     ld d, BALLOON_CACTUS_MEDIUM_TILE
-    ld e, OAMF_PAL0
+    ld e, OAMF_PAL1
     jr .endDifficultyVisual
 .hardVisual:
     cp a, HARD
@@ -320,6 +322,8 @@ BalloonCactusUpdate::
     ldh [hEnemyParam2], a
     ld a, [hli]
     ldh [hEnemyParam3], a
+    ld a, [hli]
+    ldh [hEnemyParam4], a
     ld a, [hl]
     ldh [hEnemyDifficulty], a
 
@@ -544,16 +548,52 @@ BalloonCactusUpdate::
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
 
-; Handle spawning projectile AFTER SetStruct because it messes up the struct
+; Handle spawning projectile AFTER SetStruct because it messes up the current struct
 .checkProjectile:
-    ldh a, [hGlobalTimer]
-    and	PROJECTILE_RESPAWN_TIME
-    jr nz, .endProjectile
     ldh a, [hEnemyAlive]
     cp a, 0
     jr z, .endProjectile
     ldh a, [hEnemyDifficulty]
     cp a, EASY 
+    jr nz, .endProjectile
+
+.flickerToSignalProjectile:
+    ldh a, [hGlobalTimer]
+.flickerTimeA:
+    cp a, PROJECTILE_RESPAWN_TIME - 10
+    jr c, .flickerTimeB
+    cp a, PROJECTILE_RESPAWN_TIME
+    jr c, .canFlicker
+.flickerTimeB:
+    cp a, (PROJECTILE_RESPAWN_TIME * 2) - 10
+    jr c, .endFlicker
+    cp a, PROJECTILE_RESPAWN_TIME * 2
+    jr nc, .endFlicker
+.canFlicker:
+    and	%00000001
+    jr nz, .flickerOff
+.flickerOn:
+    SET_HL_TO_ADDRESS wOAM+3, hEnemyOAM
+    ld a, OAMF_PAL0
+    ld [hli], a
+    inc l
+    inc l
+    inc l
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
+    jr .endFlicker
+.flickerOff:
+    SET_HL_TO_ADDRESS wOAM+3, hEnemyOAM
+    ld a, OAMF_PAL1
+    ld [hli], a
+    inc l
+    inc l
+    inc l
+    ld a, OAMF_PAL1 | OAMF_XFLIP
+    ld [hli], a
+.endFlicker:
+    ldh a, [hGlobalTimer]
+    and	PROJECTILE_RESPAWN_TIME
     jr nz, .endProjectile
 .spawnProjectile:
     ld a, PROJECTILE
@@ -564,7 +604,6 @@ BalloonCactusUpdate::
     ldh a, [hEnemyX]
     add a, 4
     ldh [hEnemyX], a
-
     call SpawnProjectile
 .endProjectile:
     ret
