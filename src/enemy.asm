@@ -35,12 +35,12 @@ SECTION "enemy struct", ROM0
 InitializeEnemyStructVars::
     xor a ; ld a, 0
     ldh [hEnemyActive], a
-    ldh [hEnemyNumber], a
+    ; ldh [hEnemyNumber], a ; Do not clear
     ldh [hEnemyOAM], a
     ldh [hEnemyAlive], a
     ldh [hEnemyY2], a
     ldh [hEnemyX2], a
-    ldh [hEnemyDifficulty], a
+    ; ldh [hEnemyDifficulty], a ; Do not clear
     ldh [hEnemyDying], a
     ldh [hEnemyAnimationFrame], a
     ldh [hEnemyAnimationTimer], a
