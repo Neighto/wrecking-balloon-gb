@@ -29,6 +29,7 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/Projectile.2bpp"
     INCBIN "incbin/sprite/Anvil.2bpp"
     INCBIN "incbin/sprite/Bomb2.2bpp"
+    INCBIN "incbin/sprite/String.2bpp"
 GameSpriteTilesEnd::
 
 Level1Tiles::
