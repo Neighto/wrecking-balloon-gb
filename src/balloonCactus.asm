@@ -386,6 +386,19 @@ BalloonCactusUpdate::
     call UpdateCactusPosition
 .endMove:
 
+.checkProjectile:
+    ldh a, [hEnemyDifficulty]
+    cp a, EASY 
+    jr nz, .endProjectile
+    ldh a, [hEnemyParam4]
+    inc a
+    ldh [hEnemyParam4], a
+    cp a, PROJECTILE_RESPAWN_TIME + 1
+    jr c, .endProjectile
+    xor a ; ld a, 0
+    ldh [hEnemyParam4], a
+.endProjectile:
+
 .checkCollision:
     ldh a, [hGlobalTimer]
     and	BALLOON_CACTUS_COLLISION_TIME
@@ -549,25 +562,13 @@ BalloonCactusUpdate::
     call SetStruct
 
 ; Handle spawning projectile AFTER SetStruct because it messes up the current struct
-.checkProjectile:
-    ldh a, [hEnemyAlive]
-    cp a, 0
-    jr z, .endProjectile
-    ldh a, [hEnemyDifficulty]
-    cp a, EASY 
-    jr nz, .endProjectile
+.checkSpawnProjectile:
 
 .flickerToSignalProjectile:
-    ldh a, [hGlobalTimer]
-.flickerTimeA:
+    ldh a, [hEnemyParam4]
     cp a, PROJECTILE_RESPAWN_TIME - 10
-    jr c, .flickerTimeB
-    cp a, PROJECTILE_RESPAWN_TIME
-    jr c, .canFlicker
-.flickerTimeB:
-    cp a, (PROJECTILE_RESPAWN_TIME * 2) - 10
     jr c, .endFlicker
-    cp a, PROJECTILE_RESPAWN_TIME * 2
+    cp a, PROJECTILE_RESPAWN_TIME
     jr nc, .endFlicker
 .canFlicker:
     and	%00000001
@@ -592,9 +593,9 @@ BalloonCactusUpdate::
     ld a, OAMF_PAL1 | OAMF_XFLIP
     ld [hli], a
 .endFlicker:
-    ldh a, [hGlobalTimer]
-    and	PROJECTILE_RESPAWN_TIME
-    jr nz, .endProjectile
+    ldh a, [hEnemyParam4]
+    cp a, PROJECTILE_RESPAWN_TIME
+    jr nz, .endSpawnProjectile
 .spawnProjectile:
     ld a, PROJECTILE
     ldh [hEnemyNumber], a
@@ -605,5 +606,5 @@ BalloonCactusUpdate::
     add a, 4
     ldh [hEnemyX], a
     call SpawnProjectile
-.endProjectile:
+.endSpawnProjectile:
     ret
