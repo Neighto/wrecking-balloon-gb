@@ -7,13 +7,11 @@ BIRD_OAM_SPRITES EQU 3
 BIRD_MOVE_TIME EQU %00000011
 BIRD_COLLISION_TIME EQU %00001000
 
-BIRD_SOARING_TIME EQU %00000111
-BIRD_FLAPPING_TIME EQU %00111111
-BIRD_SPRITE_DESCENDING_TIME EQU %00001111
+BIRD_VERTICAL_MOVE_TIME EQU %00000011
 BIRD_FALLING_WAIT_TIME EQU %00000001
 BIRD_HORIZONTAL_SPEED EQU 2
 BIRD_VERTICAL_SPEED EQU 1
-BIRD_FLAP_UP_SPEED EQU 5
+BIRD_FLAP_UP_SPEED EQU 3
 
 BIRD_TILE_1 EQU $18
 BIRD_TILE_2 EQU $1A
@@ -50,6 +48,8 @@ SetStruct:
     ldh a, [hEnemyAnimationFrame]
     ld [hli], a
     ldh a, [hEnemyParam1] ; Enemy Marked to Die
+    ld [hli], a
+    ldh a, [hEnemyDifficulty]
     ld [hl], a
     ret
 
@@ -76,23 +76,44 @@ SpawnBird::
     ld a, 1
     ldh [hEnemyActive], a
     ldh [hEnemyAlive], a
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+
+.difficultyVisual:
+    ldh a, [hEnemyDifficulty]
+.easyVisual:
+    cp a, EASY
+    jr nz, .mediumVisual
+    ld e, OAMF_PAL0
+    jr .endDifficultyVisual
+.mediumVisual:
+    cp a, MEDIUM
+    jr nz, .hardVisual
+    ld e, OAMF_PAL1
+    jr .endDifficultyVisual
+.hardVisual:
+    cp a, HARD
+    jr nz, .endDifficultyVisual
+    ld e, OAMF_PAL0
+.endDifficultyVisual:
+
+.setupByDirection:
     ldh a, [hEnemyX]
     cp a, SCRN_X / 2
     jr c, .isLeftside
 .isRightside:
     ld a, 1
     ldh [hEnemyDirectionLeft], a
+    
 .birdLeft:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
     ld [hli], a
     ld [hl], BIRD_TILE_1
     inc l
-    ld [hl], OAMF_PAL0
+    ld a, e
+    ld [hli], a
 .birdMiddle:
-    inc l
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -100,9 +121,9 @@ SpawnBird::
     ld [hli], a
     ld [hl], BIRD_TILE_2
     inc l
-    ld [hl], OAMF_PAL0
+    ld a, e
+    ld [hli], a
 .birdRight:
-    inc l
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -110,20 +131,21 @@ SpawnBird::
     ld [hli], a
     ld [hl], BIRD_TILE_3
     inc l
-    ld [hl], OAMF_PAL0
+    ld a, e
+    ld [hl], a
     jr .setStruct
 .isLeftside:
 .leftBirdLeft:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
     ld [hli], a
     ld [hl], BIRD_TILE_3
     inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+    ld a, e
+    or a, OAMF_XFLIP
+    ld [hli], a
 .leftBirdMiddle:
-    inc l
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -131,9 +153,10 @@ SpawnBird::
     ld [hli], a
     ld [hl], BIRD_TILE_2
     inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+    ld a, e
+    or a, OAMF_XFLIP
+    ld [hli], a
 .leftBirdRight:
-    inc l
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -141,68 +164,14 @@ SpawnBird::
     ld [hli], a
     ld [hl], BIRD_TILE_1
     inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+    ld a, e
+    or a, OAMF_XFLIP
+    ld [hl], a
 .setStruct:
     LD_HL_BC
     call SetStruct
 .end:
     pop hl
-    ret
-
-BirdRightsideFlap:
-    ldh a, [hEnemyAnimationFrame]
-    cp a, 0
-    jr nz, .flapping
-.soaring:
-    ldh a, [hGlobalTimer]
-    and BIRD_SOARING_TIME
-    ret nz
-    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
-    ld [hl], BIRD_TILE_2_ALT
-    SET_HL_TO_ADDRESS wOAM+10, hEnemyOAM
-    ld [hl], BIRD_TILE_3_ALT
-    ld hl, hEnemyAnimationFrame
-    ld [hl], 1
-    ret
-.flapping:
-    ldh a, [hGlobalTimer]
-    and BIRD_FLAPPING_TIME
-    ret nz
-    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
-    ld [hl], BIRD_TILE_2
-    SET_HL_TO_ADDRESS wOAM+10, hEnemyOAM
-    ld [hl], BIRD_TILE_3
-    ld hl, hEnemyAnimationFrame
-    ld [hl], 0
-    DECREMENT_POS hEnemyY, BIRD_FLAP_UP_SPEED
-    ret
-
-BirdLeftsideFlap:
-    ldh a, [hEnemyAnimationFrame]
-    cp a, 0
-    jr nz, .flapping
-.soaring:
-    ldh a, [hGlobalTimer]
-    and BIRD_SOARING_TIME
-    ret nz
-    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
-    ld [hl], BIRD_TILE_2_ALT
-    SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM
-    ld [hl], BIRD_TILE_3_ALT
-    ld hl, hEnemyAnimationFrame
-    ld [hl], 1
-    ret
-.flapping:
-    ldh a, [hGlobalTimer]
-    and BIRD_FLAPPING_TIME
-    ret nz
-    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
-    ld [hl], BIRD_TILE_2
-    SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM
-    ld [hl], BIRD_TILE_3
-    ld hl, hEnemyAnimationFrame
-    ld [hl], 0
-    DECREMENT_POS hEnemyY, BIRD_FLAP_UP_SPEED
     ret
 
 Clear:
@@ -283,8 +252,10 @@ BirdUpdate::
     ldh [hEnemyDying], a
     ld a, [hli]
     ldh [hEnemyAnimationFrame], a
-    ld a, [hl]
+    ld a, [hli]
     ldh [hEnemyParam1], a
+    ld a, [hl]
+    ldh [hEnemyDifficulty], a
 
 .checkAlive:
     ldh a, [hEnemyAlive]
@@ -295,24 +266,74 @@ BirdUpdate::
 .checkMove:
     ldh a, [hGlobalTimer]
     and	BIRD_MOVE_TIME
-    jr nz, .endMove
+    jp nz, .endMove
 .canMove:
     ldh a, [hEnemyDirectionLeft]
     cp a, 0
     jr z, .isLeftside
 .isRightside:
     DECREMENT_POS hEnemyX, BIRD_HORIZONTAL_SPEED
-    call BirdRightsideFlap
-    jr .moveDown
+    SET_HL_TO_ADDRESS wOAM+10, hEnemyOAM
+    jr .verticalMovement
 .isLeftside:
     INCREMENT_POS hEnemyX, BIRD_HORIZONTAL_SPEED
-    call BirdLeftsideFlap
-.moveDown:
+    SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM
+.verticalMovement:
     ldh a, [hGlobalTimer]
-    and BIRD_SPRITE_DESCENDING_TIME
-    jr nz, .skipMoveDown
-    INCREMENT_POS hEnemyY, BIRD_VERTICAL_SPEED
-.skipMoveDown:
+    and BIRD_VERTICAL_MOVE_TIME
+    jp nz, .endVerticalMovement
+.moveDifficulty:
+    ldh a, [hEnemyDifficulty]    
+.moveEasy:
+    cp a, EASY 
+    jr nz, .moveMedium
+    ld b, BIRD_VERTICAL_SPEED
+    ld c, BIRD_FLAP_UP_SPEED
+    ldh a, [hEnemyAnimationFrame]
+    cp a, 0
+    jr z, .soar
+    cp a, 6
+    jr c, .moveDown
+    jr z, .flap
+    cp a, 7
+    jr z, .moveUp
+    xor a
+    ldh [hEnemyAnimationFrame], a
+    jr .endVerticalMovement
+.moveMedium:
+    cp a, MEDIUM 
+    jr nz, .endVerticalMovement
+    ld b, BIRD_VERTICAL_SPEED * 2
+    ld c, BIRD_FLAP_UP_SPEED * 2
+    ldh a, [hEnemyAnimationFrame]
+    cp a, 0
+    jr z, .soar
+    cp a, 12
+    jr c, .moveDown
+    jr z, .flap
+    cp a, 16
+    jr c, .moveUp
+    xor a
+    ldh [hEnemyAnimationFrame], a
+    jr .endVerticalMovement
+.soar:
+    ld [hl], BIRD_TILE_3_ALT
+    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
+    ld [hl], BIRD_TILE_2_ALT
+.moveDown:
+    INCREMENT_POS hEnemyY, b
+    jr .endFrame
+.flap:
+    ld [hl], BIRD_TILE_3
+    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
+    ld [hl], BIRD_TILE_2
+.moveUp:
+    DECREMENT_POS hEnemyY, c
+.endFrame:
+    ldh a, [hEnemyAnimationFrame]
+    inc a
+    ldh [hEnemyAnimationFrame], a
+.endVerticalMovement:
     call UpdateBirdPosition
 .endMove:
 
@@ -322,7 +343,7 @@ BirdUpdate::
     jp nz, .endCollision
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
-    SET_HL_TO_ADDRESS wOAM+4, hEnemyOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ld d, 24
     ld e, 8
     call CollisionCheck
@@ -378,6 +399,7 @@ BirdUpdate::
     call Clear
     jr z, .setStruct
 .endOffscreen:
+    jr .setStruct
 
 .isDead:
     ldh a, [hEnemyDying]
@@ -385,7 +407,21 @@ BirdUpdate::
     jr z, .setStruct
     ldh a, [hGlobalTimer]
     and BIRD_FALLING_WAIT_TIME
-    call z, BirdFall
+    jr nz, .setStruct
+.animating:
+    INCREMENT_POS hEnemyY, 2
+    call UpdateBirdPosition
+.checkOffscreenY:
+    ldh a, [hEnemyY]
+    ld b, a
+    ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr nc, .setStruct
+    ld a, SCRN_VY - OFF_SCREEN_ENEMY_BUFFER
+    cp a, b
+    jr c, .setStruct
+.offscreenY:
+    call Clear
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
