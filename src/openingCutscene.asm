@@ -82,6 +82,16 @@ HandWaveAnimation::
 
 UpdateOpeningCutscene::
     UPDATE_GLOBAL_TIMER
+    call _hUGE_dosound
+
+.checkSkip:
+	call ReadController
+	ldh a, [hControllerDown]
+	and PADF_START
+	jr z, .endSkip
+	ld a, 9
+	ld [wOpeningCutsceneFrame], a
+.endSkip:
 
 .checkWreckingBalloon:
 .canFlyUp:
@@ -112,7 +122,6 @@ UpdateOpeningCutscene::
     ld d, %01000000
 .endWreckingBalloonCheck:
     call MovePlayerForCutscene
-    call _hUGE_dosound
     
 .updates:
     ldh a, [hGlobalTimer]
