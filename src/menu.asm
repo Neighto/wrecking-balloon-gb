@@ -79,6 +79,15 @@ SpawnMenuCursor::
 
 UpdateMenuOpening::
 	UPDATE_GLOBAL_TIMER
+.checkSkip:
+	call ReadController
+	ldh a, [hControllerDown]
+	and PADF_START
+	jr z, .endSkip
+	call StopSweepSound
+	ld a, 5
+	ld [wMenuFrame], a
+.endSkip:
 
 	ld a, [wMenuFrame]
 	cp a, 0
@@ -93,12 +102,12 @@ UpdateMenuOpening::
 	jr z, .scrollUpTitle2
 	cp a, 5
 	jr z, .fadeOut
-	ret
+	jp StartMenu
 .startSound:
 	call RisingSound
 	jr .endFrame
 .scrollUpTitle:
-	ld a, [rSCY]
+	ldh a, [rSCY]
 	cp a, 0
 	jr z, .endFrame
 	ldh a, [rSCY]
@@ -109,7 +118,7 @@ UpdateMenuOpening::
 	call StopSweepSound
 	jr .endFrame
 .scrollDownTitle:
-	ld a, [rSCY]
+	ldh a, [rSCY]
 	cp a, 252
 	jr z, .endFrame
 	ldh a, [rSCY]
@@ -128,9 +137,6 @@ UpdateMenuOpening::
 	call FadeOutPalettes
 	cp a, 0
 	ret z
-.next:
-	jp StartMenu
-	ret
 .endFrame:
 	ld a, [wMenuFrame]
 	inc a 
