@@ -106,7 +106,6 @@ UpdateGameCountdown::
     call RefreshWindow
     call IncrementScrollOffset
     call FadeInPalettes
-	cp a, 0
 	ret z
 .checkCountdownAnimation:
     ld a, [wCountdownFrame]
