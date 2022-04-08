@@ -334,7 +334,6 @@ LevelDataHandler::
     ret 
 .end:
     call FadeOutPalettes
-	cp a, 0
     ret z
     ld a, [wLevel] 
     inc a
@@ -342,6 +341,5 @@ LevelDataHandler::
     jp StageClear
 .won:
     call FadeOutPalettes
-	cp a, 0
     ret z
     jp GameWon

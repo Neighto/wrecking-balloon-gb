@@ -94,7 +94,6 @@ UpdateStageClear::
     call RefreshStageClear
 .fadeIn:
     call FadeInPalettes
-	cp a, 0
 	ret z
 .hasFadedIn:
     ldh a, [hGlobalTimer]
@@ -117,7 +116,6 @@ UpdateStageClear::
     jr z, .pause
 .fadeOut:
     call FadeOutPalettes
-	cp a, 0
     ret z
 .hasFadedOut:
     ; Jump to next level!

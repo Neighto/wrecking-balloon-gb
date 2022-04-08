@@ -82,7 +82,7 @@ UpdateMenuOpening::
 .checkSkip:
 	call ReadController
 	ldh a, [hControllerDown]
-	and PADF_START
+    and PADF_START | PADF_A
 	jr z, .endSkip
 	call StopSweepSound
 	ld a, 5
@@ -135,7 +135,6 @@ UpdateMenuOpening::
 	ret
 .fadeOut:
 	call FadeOutPalettes
-	cp a, 0
 	ret z
 .endFrame:
 	ld a, [wMenuFrame]
@@ -149,7 +148,6 @@ UpdateMenu::
 
 .fadeIn:
 	call FadeInPalettes
-	cp a, 0
 	ret z
 .hasFadedIn:
 	call _hUGE_dosound
@@ -188,6 +186,5 @@ UpdateMenu::
 	ret
 .fadeOut:
 	call FadeOutPalettes
-	cp a, 0
 	jp nz, StartGame
 	ret

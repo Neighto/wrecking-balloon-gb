@@ -53,12 +53,13 @@ InitializeFlicker::
 	ret
 
 FadeOutPalettes::
-	; Return a for has faded (0 = false)
+	; Returns z flag as faded / nz flag as not faded
 	ld a, [wFadeOutFrame]
 	cp a, 5
 	jr c, .fadeOut
 .hasFadedIn:
 	ld a, 1
+	cp a, 0
 	ret
 .fadeOut:
 	ldh a, [hGlobalTimer]
@@ -105,15 +106,17 @@ FadeOutPalettes::
 	ld [wFadeOutFrame], a
 .end:
 	xor a ; ld a, 0
+	cp a, 0
 	ret
 
 FadeInPalettes::
-	; Return a for has faded (0 = false, 1 = true)
+	; Returns z flag as faded / nz flag as not faded
 	ld a, [wFadeInFrame]
 	cp a, 5
 	jr c, .fadeIn
 .hasFadedIn:
 	ld a, 1
+	cp a, 0
 	ret
 .fadeIn:
 	ldh a, [hGlobalTimer]
@@ -160,6 +163,7 @@ FadeInPalettes::
 	ld [wFadeInFrame], a
 .end:
 	xor a ; ld a, 0
+	cp a, 0
 	ret
 
 FlickerBackgroundPalette::

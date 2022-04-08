@@ -87,7 +87,7 @@ UpdateOpeningCutscene::
 .checkSkip:
 	call ReadController
 	ldh a, [hControllerDown]
-	and PADF_START
+    and PADF_START | PADF_A
 	jr z, .endSkip
 	ld a, 9
 	ld [wOpeningCutsceneFrame], a
@@ -155,7 +155,6 @@ UpdateOpeningCutscene::
     jp SetupNextLevel
 .fadeIn:
     call FadeInPalettes
-    cp a, 0
     ret z
     jr .endFrame
 .pause:
@@ -178,7 +177,6 @@ UpdateOpeningCutscene::
     jr .endFrame
 .fadeOut:
     call FadeOutPalettes
-    cp a, 0
     ret z
 .endFrame:
     ld a, [wOpeningCutsceneFrame]
