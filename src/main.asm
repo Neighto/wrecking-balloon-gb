@@ -161,7 +161,7 @@ StageClear::
 	call ClearSound
 	call InitializeInterrupts
 	call LoadStageClearGraphics
-	call InitializePalettes ; Warning cannot fade back in with this set this way
+	call ResetFading
 	call InitializeStageClear
 	ld hl, menuTheme
 	call hUGE_init

@@ -92,10 +92,13 @@ UpdateStageClear::
     UPDATE_GLOBAL_TIMER
     call _hUGE_dosound
     call RefreshStageClear
-
+.fadeIn:
+    call FadeInPalettes
+	cp a, 0
+	ret z
+.hasFadedIn:
     ldh a, [hGlobalTimer]
     and STAGE_CLEAR_UPDATE_TIME
-    cp a, 0
     ret nz
     ld a, [wStageClearFrame]
     cp a, 0
@@ -112,6 +115,11 @@ UpdateStageClear::
     jr z, .pause
     cp a, 6
     jr z, .pause
+.fadeOut:
+    call FadeOutPalettes
+	cp a, 0
+    ret z
+.hasFadedOut:
     ; Jump to next level!
     jp SetupNextLevel
 .pause:
