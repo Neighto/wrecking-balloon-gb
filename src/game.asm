@@ -82,7 +82,6 @@ LoadLevel3Graphics::
 SpawnCountdown::
 	ld b, 2
 	call RequestOAMSpace
-    cp a, 0
     ret z
     ld a, b
 	ld [wCountdownOAM], a

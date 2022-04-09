@@ -335,12 +335,10 @@ SpawnBoss::
     ld d, NUMBER_OF_ENEMIES
     ld e, ENEMY_STRUCT_SIZE
     call RequestRAMSpace ; hl now contains free RAM space address
-    cp a, 0
     jp z, .end
 .availableSpace:
     ld b, PORCUPINE_OAM_SPRITES
 	call RequestOAMSpace ; b now contains OAM address
-    cp a, 0
     jp z, .end
 .availableOAMSpace:
     LD_DE_HL

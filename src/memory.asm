@@ -77,9 +77,8 @@ ClearRAM::
 
 RequestOAMSpace::
     push hl
-    push de
     ; Argument b = sprite space needed (4 bytes each)
-    ; Returns a as 0 or 1 where 0 is failed and 1 is succeeded
+    ; Returns z flag as failed / nz flag as succeeded
     ; Returns b as start sprite # in wOAM
 
     ld c, 0 ; c = how many sprites we've found free so far
@@ -116,8 +115,10 @@ RequestOAMSpace::
     ld c, 4
     call MULTIPLY
     ld b, a
-    ld a, 1
-    jr .end
+    ; Set the nz
+    or a, 1
+    pop hl
+    ret
 .isNotZero4:
     inc l
 .isNotZero3:
@@ -134,10 +135,8 @@ RequestOAMSpace::
     ld a, d
 	cp a, 0
     jr nz, .loop
-    ; No space
-    xor a ; ld a, 0
-.end:
-    pop de
+.noFreeSpace:
+    ; z already set
     pop hl
     ret
 
@@ -145,7 +144,7 @@ RequestRAMSpace::
     ; Argument hl as data address
     ; Argument d as struct amount
     ; Argument e as struct size
-    ; Returns a as 0 or 1 where 0 is failed and 1 is succeeded
+    ; Returns z flag as failed / nz flag as succeeded
     ; Returns hl as address of free space
 .loop:
     ld a, [hl] ; Active
@@ -153,7 +152,8 @@ RequestRAMSpace::
     jr nz, .checkLoop
 .availableSpace:
     ld a, 1
-    jr .end
+    cp a, 0
+    ret
 .checkLoop:
     ADD_TO_HL e
     dec d
@@ -162,5 +162,5 @@ RequestRAMSpace::
     jr nz, .loop
 .noFreeSpace:
     xor a ; ld a, 0
-.end:
+    cp a, 0
     ret

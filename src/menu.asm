@@ -61,7 +61,6 @@ LoadMenuGraphics::
 SpawnMenuCursor::
 	ld b, 1 ; need 1 sprite for cursor
 	call RequestOAMSpace
-	cp a, 0
 	jr z, .end
 .availableSpace:
 	ld a, b

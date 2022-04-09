@@ -42,7 +42,6 @@ LoadOpeningCutsceneGraphics::
 SpawnHandWave::
 	ld b, 1
 	call RequestOAMSpace
-    cp a, 0
     ret z
     ld a, b
 	ld [wHandWaveOAM], a
