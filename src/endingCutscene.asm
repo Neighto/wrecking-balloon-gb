@@ -34,7 +34,6 @@ LoadEndingCutsceneGraphics::
 SpawnHandClap::
 	ld b, 2
 	call RequestOAMSpace
-    cp a, 0
     ret z
     ld a, b
 	ld [wHandClapOAM], a
