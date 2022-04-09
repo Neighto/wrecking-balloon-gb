@@ -121,7 +121,7 @@ SetPlayerPositionOpeningCutscene::
 
 SetPlayerPositionEndingCutscene::
   ld b, PLAYER_START_X
-  ld c, PLAYER_START_Y
+  ld c, 90
   call SetPlayerPosition
   ret
 
