@@ -25,10 +25,24 @@ LoadEndingCutsceneGraphics::
 	ld hl, _VRAM9000
 	ld de, CutsceneTilesEnd - CutsceneTiles
 	call MEMCPY
+
+    SET_IN_RANGE _SCRN0, _SCRN1 - _SCRN0, $01
+
 	ld bc, CutsceneMap + SCRN_X_B * CUTSCENE_DISTANCE_FROM_TOP_IN_TILES
 	ld hl, _SCRN0
     ld d, SCRN_Y_B
 	call MEMCPY_SINGLE_SCREEN
+
+    ld bc, CloudsTiles
+	ld hl, _VRAM8800
+	ld de, CloudsTilesEnd - CloudsTiles
+	call MEMCPY
+
+	ld bc, CloudsMap
+	ld hl, $99A0
+	ld de, CloudsMapEnd - CloudsMap
+	ld a, $80
+	call MEMCPY_WITH_OFFSET
 	ret
 
 SpawnHandClap::
@@ -79,9 +93,11 @@ MoveHands:
 
 UpdateEndingCutscene::
     UPDATE_GLOBAL_TIMER
-    ldh a, [hGlobalTimer]
-    and HAND_CLAP_SPEED
-    call z, MoveHands
+    call IncrementScrollOffset
+
+    ; ldh a, [hGlobalTimer]
+    ; and HAND_CLAP_SPEED
+    ; call z, MoveHands
     ; Temp
     call ReadController
     ldh a, [hControllerDown]

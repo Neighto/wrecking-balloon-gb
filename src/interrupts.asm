@@ -23,6 +23,10 @@ GAME_SHOWDOWN_LCD_SCROLL_MIDDLE EQU 24
 GAME_SHOWDOWN_LCD_SCROLL_RAIN EQU 31
 GAME_SHOWDOWN_LCD_SCROLL_RESET EQU WINDOW_START_Y
 
+ENDING_CUTSCENE_SCROLL_FAR EQU 103
+ENDING_CUTSCENE_SCROLL_CLOSE EQU 111
+ENDING_CUTSCENE_SCROLL_RESET EQU 119
+
 SECTION "interrupts vars", WRAM0
     wVBlankFlag:: DB
     wLCDInterrupt:: DS 2
@@ -267,24 +271,12 @@ Level3LCDInterrupt:
 .close:
     ld a, GAME_SHOWDOWN_LCD_SCROLL_MIDDLE
     ldh [rLYC], a
-
-    ; ld a, [rLY]
-    ; cp a, GAME_SHOWDOWN_LCD_SCROLL_CLOSE
-    ; jr nz, .end
-
-
     ld a, [wParallaxClose]
 	ldh [rSCX], a
     jr .end
 .middle:
     ld a, GAME_SHOWDOWN_LCD_SCROLL_RAIN
     ldh [rLYC], a
-
-    ; ld a, [rLY]
-    ; cp a, GAME_SHOWDOWN_LCD_SCROLL_MIDDLE
-    ; jr nz, .end
-
-
     ld a, [wParallaxMiddle]
 	ldh [rSCX], a
     jr .end
@@ -308,3 +300,43 @@ SetLevel3Interrupts::
     ld a, HIGH(Level3LCDInterrupt)
     ld [hl], a
     ret
+
+EndingCutsceneLCDInterrupt:
+    ld a, [rLYC]
+    cp a, ENDING_CUTSCENE_SCROLL_RESET
+    jr z, .reset
+	cp a, ENDING_CUTSCENE_SCROLL_FAR
+    jr z, .far
+    cp a, ENDING_CUTSCENE_SCROLL_CLOSE
+    jr z, .close
+    jr .end
+.reset:
+    ld a, ENDING_CUTSCENE_SCROLL_FAR
+	ldh [rLYC], a
+    xor a ; ld a, 0
+    ldh [rSCX], a
+    jr .end
+.far:
+    ld a, ENDING_CUTSCENE_SCROLL_CLOSE
+    ldh [rLYC], a
+    ld a, [wParallaxFar]
+	ldh [rSCX], a
+    jr .end
+.close:
+    ld a, ENDING_CUTSCENE_SCROLL_RESET
+	ldh [rLYC], a
+    ld a, [wParallaxClose]
+	ldh [rSCX], a
+.end:
+    jp LCDInterruptEnd
+
+SetEndingCutsceneInterrupts::
+    ld a, ENDING_CUTSCENE_SCROLL_FAR
+	ldh [rLYC], a
+
+    ld hl, wLCDInterrupt
+    ld a, LOW(EndingCutsceneLCDInterrupt)
+    ld [hli], a
+    ld a, HIGH(EndingCutsceneLCDInterrupt)
+    ld [hl], a
+    ret 
