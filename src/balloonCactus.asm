@@ -72,7 +72,9 @@ SpawnBalloonCactus::
     jp z, .end
 .availableSpace:
     ld b, BALLOON_CACTUS_OAM_SPRITES
+    push hl
 	call RequestOAMSpace ; b now contains OAM address
+    pop hl
     jp z, .end
 .availableOAMSpace:
     LD_DE_HL

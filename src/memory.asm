@@ -76,7 +76,6 @@ ClearRAM::
     ret
 
 RequestOAMSpace::
-    push hl
     ; Argument b = sprite space needed (4 bytes each)
     ; Returns z flag as failed / nz flag as succeeded
     ; Returns b as start sprite # in wOAM
@@ -85,24 +84,27 @@ RequestOAMSpace::
     ld hl, wOAM
     ld d, OAMVarsEnd - OAMVars
 .loop:
+    ; Check sprite attribute: Y
     ld a, [hl]
     cp a, 0
     jr nz, .isNotZero4
+    ; Check sprite attribute: X
     inc l
     ld a, [hl]
     cp a, 0
     jr nz, .isNotZero3
+    ; Check sprite attribute: Tile
     inc l
     ld a, [hl]
     cp a, 0
     jr nz, .isNotZero2
+    ; Check sprite attribute: Flag
     inc l
     ld a, [hl]
     cp a, 0
     jr nz, .isNotZero1
-.availableSpace:
+.freeSpriteSpace:
     inc c
-    ; DO WE HAVE ENOUGH SPACE
     ld a, b
     cp a, c
     jr nz, .notEnoughSprites
@@ -115,9 +117,9 @@ RequestOAMSpace::
     ld c, 4
     call MULTIPLY
     ld b, a
+.availableSpace:
     ; Set the nz
     or a, 1
-    pop hl
     ret
 .isNotZero4:
     inc l
@@ -137,7 +139,6 @@ RequestOAMSpace::
     jr nz, .loop
 .noFreeSpace:
     ; z already set
-    pop hl
     ret
 
 RequestRAMSpace::

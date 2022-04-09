@@ -338,7 +338,9 @@ SpawnBoss::
     jp z, .end
 .availableSpace:
     ld b, PORCUPINE_OAM_SPRITES
+    push hl
 	call RequestOAMSpace ; b now contains OAM address
+    pop hl
     jp z, .end
 .availableOAMSpace:
     LD_DE_HL

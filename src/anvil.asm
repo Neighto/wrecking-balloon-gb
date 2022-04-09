@@ -42,7 +42,9 @@ SpawnAnvil::
     jr z, .end
 .availableSpace:
     ld b, ANVIL_OAM_SPRITES
+    push hl
 	call RequestOAMSpace ; b now contains OAM address
+    pop hl
     jr z, .end
 .availableOAMSpace:
     LD_DE_HL
