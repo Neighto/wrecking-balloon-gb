@@ -5,10 +5,10 @@ INCLUDE "constants.inc"
 OPENING_CUTSCENE_UPDATE_TIME EQU %00000011
 OPENING_CUTSCENE_PAUSE_LENGTH EQU 15
 
-HAND_DOWN_START_X EQU 149
-HAND_DOWN_START_Y EQU 105
-HAND_WAVE_START_X EQU 151
-HAND_WAVE_START_Y EQU 96
+HAND_DOWN_START_X EQU 51
+HAND_DOWN_START_Y EQU 106
+HAND_WAVE_START_X EQU HAND_DOWN_START_X - 2
+HAND_WAVE_START_Y EQU 97
 HAND_WAVE_TILE_1 EQU $3C
 HAND_WAVE_TILE_2 EQU $3E
 
@@ -52,7 +52,7 @@ SpawnHandWave::
     ld [hli], a
     ld [hl], HAND_WAVE_TILE_1
     inc l
-    ld [hl], OAMF_PAL0 | OAMF_YFLIP
+    ld [hl], OAMF_PAL0 | OAMF_XFLIP | OAMF_YFLIP
 	ret
 
 HandWaveAnimation::
@@ -172,7 +172,7 @@ UpdateOpeningCutscene::
     ld a, HAND_WAVE_START_X
     ld [hli], a
     inc l
-    ld [hl], OAMF_PAL0
+    ld [hl], OAMF_PAL0 | OAMF_XFLIP
     jr .endFrame
 .fadeOut:
     call FadeOutPalettes
