@@ -37,7 +37,9 @@ SpawnProjectile::
     jr z, .end
 .availableSpace:
     ld b, PROJECTILE_OAM_SPRITES
+    push hl
 	call RequestOAMSpace ; b now contains OAM address
+    pop hl
     jr z, .end
 .availableOAMSpace:
     LD_DE_HL

@@ -62,7 +62,9 @@ SpawnBird::
     jp z, .end
 .availableSpace:
     ld b, BIRD_OAM_SPRITES
+    push hl
 	call RequestOAMSpace ; b now contains OAM address
+    pop hl
     jp z, .end
 .availableOAMSpace:
     LD_DE_HL
