@@ -83,10 +83,10 @@ StartGame::
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateOpeningCutscene
-	jp OpeningCutsceneLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateOpeningCutscene
+	; jp OpeningCutsceneLoop
 
 SetupNextLevel::
 	call WaitVBlank
@@ -98,26 +98,26 @@ SetupNextLevel::
 	call ClearSound
 
 	ld a, [wLevel]
-	cp a, 1
-	jr z, .level1
-	cp a, 2
-	jr z, .level2
-	cp a, 3
-	jr z, .level3
-	; Don't reach this point
 .level1:
-	; call SetLevel1Interrupts
-	; call LoadLevel1Graphics
-	; ld hl, angryTheme
-	; call hUGE_init
-	; jr .endLevelSetup
+	cp a, 1
+	jr nz, .level2
+	call SetLevel1Interrupts
+	call LoadLevel1Graphics
+	call LoadLevel1NightMode
+	ld hl, angryTheme
+	call hUGE_init
+	jr .endLevelSetup
 .level2:
-	; call SetLevel2Interrupts
-	; call LoadLevel2Graphics
-	; ld hl, angryTheme
-	; call hUGE_init
-	; jr .endLevelSetup
+	cp a, 2
+	jr nz, .level3
+	call SetLevel2Interrupts
+	call LoadLevel2Graphics
+	ld hl, angryTheme
+	call hUGE_init
+	jr .endLevelSetup
 .level3:
+	cp a, 3
+	jr nz, .level4
 	call SetLevel3Interrupts
 	call LoadLevel3Graphics
 	call InitializeFlicker
@@ -141,10 +141,10 @@ SetupNextLevel::
 	call LCD_ON
 
 GameCountdownLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateGameCountdown
-	jp GameCountdownLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateGameCountdown
+	; jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA

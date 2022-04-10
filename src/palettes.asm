@@ -41,7 +41,6 @@ InitializePalettes::
 	call ResetFading
 	ld a, MAIN_PALETTE
 	ldh [rBGP], a
-    ldh [rOCPD], a ; do we need this?
 	ldh [rOBP0], a
 	ld a, MAIN_PALETTE2
 	ldh [rOBP1], a
