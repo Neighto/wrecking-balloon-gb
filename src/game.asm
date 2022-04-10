@@ -44,7 +44,10 @@ LoadLevel1Graphics::
 	ld de, Level1MapEnd - Level1Map
 	call MEMCPY
 	ret
-	ret
+
+LoadLevel1NightMode::
+    ; SET_IN_RANGE _SCRN0, $98C0 - _SCRN0, $40
+    ret
 
 LoadLevel2Graphics::
 	ld bc, Level2Tiles

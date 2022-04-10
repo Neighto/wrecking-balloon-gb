@@ -62,9 +62,8 @@ VBlankInterrupt::
     reti
 
 LCDInterrupt::
-    push af
-    push bc
     push hl
+    push af
 	ld hl, wLCDInterrupt
 	ld a, [hli]
 	ld h, [hl]
@@ -72,9 +71,8 @@ LCDInterrupt::
     jp hl
 
 LCDInterruptEnd:
-    pop hl
-    pop bc
     pop af
+    pop hl
     reti
 
 MenuLCDInterrupt:
@@ -95,13 +93,13 @@ MenuLCDInterrupt:
 .far:
     ld a, MENU_LCD_SCROLL_CLOSE
     ldh [rLYC], a
-    ld a, [wParallaxFar]
+    ldh a, [hParallaxFar]
 	ldh [rSCX], a
     jr .end
 .close:
     ld a, MENU_LCD_SCROLL_RESET
 	ldh [rLYC], a
-    ld a, [wParallaxClose]
+    ldh a, [hParallaxClose]
 	ldh [rSCX], a
 .end:
     jp LCDInterruptEnd
@@ -150,43 +148,60 @@ SetOpeningCutsceneInterrupts::
     ret 
 
 Level1LCDInterrupt:
-    ld a, [rLYC]
-    cp a, GAME_CITY_LCD_SCROLL_RESET
-    jr z, .reset
+    ldh a, [rLYC]
+.far:
 	cp a, GAME_CITY_LCD_SCROLL_FAR
-    jr z, .far
+    jr nz, .middle
+    ldh a, [hParallaxFar]
+	ldh [rSCX], a
+    ld a, GAME_CITY_LCD_SCROLL_MIDDLE
+    ldh [rLYC], a
+    jp LCDInterruptEnd
+.middle:
     cp a, GAME_CITY_LCD_SCROLL_MIDDLE
-    jr z, .middle
+    jr nz, .close
+    ldh a, [hParallaxMiddle]
+	ldh [rSCX], a
+    ld a, GAME_CITY_LCD_SCROLL_CLOSE
+    ldh [rLYC], a
+    jp LCDInterruptEnd
+.close:
     cp a, GAME_CITY_LCD_SCROLL_CLOSE
-    jr z, .close2
-    jr .end
-.reset:
-    ld a, GAME_CITY_LCD_SCROLL_FAR
+    jr nz, .preWindow
+    ld a, %11010100
+	ldh [rBGP], a
+    ldh a, [hParallaxClose]
+	ldh [rSCX], a
+    ld a, GAME_CITY_LCD_SCROLL_RESET - 1
 	ldh [rLYC], a
+    jp LCDInterruptEnd
+.preWindow:
+    cp a, GAME_CITY_LCD_SCROLL_RESET - 1
+    jr nz, .window
+    ld a, MAIN_PALETTE
+    ldh [rBGP], a
+    ld a, GAME_CITY_LCD_SCROLL_RESET
+	ldh [rLYC], a
+    jp LCDInterruptEnd
+.window:
+    cp a, GAME_CITY_LCD_SCROLL_RESET
+    jr nz, .bottom
     xor a ; ld a, 0
     ldh [rSCX], a
     ld hl, rLCDC
     res 1, [hl]
-    jr .end
-.far:
-    ld a, GAME_CITY_LCD_SCROLL_MIDDLE
-    ldh [rLYC], a
-    ld a, [wParallaxFar]
-	ldh [rSCX], a
-    jr .end
-.middle:
-    ld a, GAME_CITY_LCD_SCROLL_CLOSE
-    ldh [rLYC], a
-    ld a, [wParallaxMiddle]
-	ldh [rSCX], a
-    jr .end
-.close2:
-    ld a, GAME_CITY_LCD_SCROLL_RESET
+    ld a, SCRN_Y
 	ldh [rLYC], a
-    ld a, [wParallaxClose]
-	ldh [rSCX], a
-.end:
     jp LCDInterruptEnd
+.bottom:
+    cp a, SCRN_Y
+    jp nz, LCDInterruptEnd
+    ld a, %11010010
+	ldh [rBGP], a
+    ld a, GAME_CITY_LCD_SCROLL_FAR
+	ldh [rLYC], a
+    jp LCDInterruptEnd
+
 
 SetLevel1Interrupts::
     ld a, GAME_CITY_LCD_SCROLL_FAR
@@ -221,19 +236,19 @@ Level2LCDInterrupt:
 .far:
     ld a, GAME_DESERT_LCD_SCROLL_MIDDLE
     ldh [rLYC], a
-    ld a, [wParallaxFar]
+    ldh a, [hParallaxFar]
 	ldh [rSCX], a
     jr .end
 .middle:
     ld a, GAME_DESERT_LCD_SCROLL_CLOSE
     ldh [rLYC], a
-    ld a, [wParallaxMiddle]
+    ldh a, [hParallaxMiddle]
 	ldh [rSCX], a
     jr .end
 .close:
     ld a, GAME_DESERT_LCD_SCROLL_RESET
 	ldh [rLYC], a
-    ld a, [wParallaxClose]
+    ldh a, [hParallaxClose]
 	ldh [rSCX], a
 .end:
     jp LCDInterruptEnd
@@ -271,19 +286,19 @@ Level3LCDInterrupt:
 .close:
     ld a, GAME_SHOWDOWN_LCD_SCROLL_MIDDLE
     ldh [rLYC], a
-    ld a, [wParallaxClose]
+    ldh a, [hParallaxClose]
 	ldh [rSCX], a
     jr .end
 .middle:
     ld a, GAME_SHOWDOWN_LCD_SCROLL_RAIN
     ldh [rLYC], a
-    ld a, [wParallaxMiddle]
+    ldh a, [hParallaxMiddle]
 	ldh [rSCX], a
     jr .end
 .rain:
     ld a, GAME_SHOWDOWN_LCD_SCROLL_RESET
     ldh [rLYC], a
-    ld a, [wRain]    
+    ldh a, [hRain]    
     ldh [rSCY], a
     xor a ; ld a, 0
     ldh [rSCX], a
@@ -300,35 +315,6 @@ SetLevel3Interrupts::
     ld a, HIGH(Level3LCDInterrupt)
     ld [hl], a
     ret
-
-; EndingCutsceneLCDInterrupt:
-;     ld a, [rLYC]
-;     cp a, ENDING_CUTSCENE_SCROLL_RESET
-;     jr z, .reset
-; 	cp a, ENDING_CUTSCENE_SCROLL_FAR
-;     jr z, .far
-;     cp a, ENDING_CUTSCENE_SCROLL_CLOSE
-;     jr z, .close
-;     jr .end
-; .reset:
-;     ld a, ENDING_CUTSCENE_SCROLL_FAR
-; 	ldh [rLYC], a
-;     xor a ; ld a, 0
-;     ldh [rSCX], a
-;     jr .end
-; .far:
-;     ld a, ENDING_CUTSCENE_SCROLL_CLOSE
-;     ldh [rLYC], a
-;     ld a, [wParallaxFar]
-; 	ldh [rSCX], a
-;     jr .end
-; .close:
-;     ld a, ENDING_CUTSCENE_SCROLL_RESET
-; 	ldh [rLYC], a
-;     ld a, [wParallaxClose]
-; 	ldh [rSCX], a
-; .end:
-;     jp LCDInterruptEnd
 
 SetEndingCutsceneInterrupts::
     ld a, ENDING_CUTSCENE_SCROLL_FAR

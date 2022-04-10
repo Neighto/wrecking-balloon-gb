@@ -232,10 +232,11 @@ PointBalloonUpdate::
     and	POINT_BALLOON_COLLISION_TIME
     jr nz, .endCollision
 .checkHit:
-    ld bc, wPlayerCactusOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    LD_BC_HL
+    ld hl, wPlayerCactusOAM
     ld d, 16
-    ld e, 12
+    ld e, 13
     call CollisionCheck
     cp a, 0
     jr nz, .deathOfPointBalloon
