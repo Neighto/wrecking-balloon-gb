@@ -125,6 +125,52 @@ SetPlayerPositionEndingCutscene::
   call SetPlayerPosition
   ret
 
+SetPlayerCactusHappy::
+  ld hl, wPlayerCactusOAM+2
+  ld [hl], PLAYER_CACTUS_HAPPY_TILE
+  ld hl, wPlayerCactusOAM+6
+  ld [hl], PLAYER_CACTUS_HAPPY_TILE
+  ret
+
+BobPlayer::
+  ldh a, [hGlobalTimer]
+  and %00011111
+  ld d, %00000000
+  jr nz, .endWreckingBalloonCheck
+  ld a, 1
+  ld [wPlayerSpeed], a
+  ld a, [wPlayerBobbedUp]
+  cp a, 0
+  jr z, .bobUp
+.bobDown:
+  xor a ; ld a, 0
+  ld [wPlayerBobbedUp], a
+  ld d, %10000000
+  jr .endWreckingBalloonCheck
+.bobUp:
+  ld a, 1
+  ld [wPlayerBobbedUp], a
+  ld d, %01000000
+.endWreckingBalloonCheck:
+  ld e, 0
+  ld c, 0
+  call PlayerControls
+  call UpdateBalloonPosition
+  call UpdateCactusPosition
+  ret
+
+MovePlayerUp::
+  ldh a, [hGlobalTimer]
+  and %00000011
+  ret nz
+  ld d, %01000000
+  ld e, 0
+  ld c, 0
+  call PlayerControls
+  call UpdateBalloonPosition
+  call UpdateCactusPosition
+  ret
+
 SpawnPlayer::
 .cactusLeftOAM:
   ld hl, wPlayerCactusOAM
@@ -389,15 +435,6 @@ PlayerControls:
   ld hl, wPlayerSpeed
   ld [hl], PLAYER_DEFAULT_SPEED * 2
 .endB:
-  ret
-
-MovePlayerForCutscene::
-  ; d argument as input string
-  ld e, 0
-  ld c, 0
-  call PlayerControls
-  call UpdateBalloonPosition
-  call UpdateCactusPosition
   ret
 
 FallCactusDown:

@@ -93,34 +93,15 @@ UpdateOpeningCutscene::
 .endSkip:
 
 .checkWreckingBalloon:
-.canFlyUp:
-    ldh a, [hGlobalTimer]
-    and %00000011
-    jr nz, .endCanFlyUp
     ld a, [wOpeningCutsceneFrame]
     cp a, 4
-    jr nc, .bobUp
-.endCanFlyUp:
-    ldh a, [hGlobalTimer]
-    and %00011111
-    ld d, %00000000
-    jr nz, .endWreckingBalloonCheck
-    ld a, 1
-    ld [wPlayerSpeed], a
-    ld a, [wPlayerBobbedUp]
-    cp a, 0
-    jr z, .bobUp
-.bobDown:
-    xor a ; ld a, 0
-    ld [wPlayerBobbedUp], a
-    ld d, %10000000
-    jr .endWreckingBalloonCheck
-.bobUp:
-    ld a, 1
-    ld [wPlayerBobbedUp], a
-    ld d, %01000000
-.endWreckingBalloonCheck:
-    call MovePlayerForCutscene
+    jr nc, .up
+.bob:
+    call BobPlayer
+    jr .endCheckWreckingBalloon
+.up:
+    call MovePlayerUp
+.endCheckWreckingBalloon:
     
 .updates:
     ldh a, [hGlobalTimer]

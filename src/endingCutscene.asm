@@ -2,12 +2,13 @@ INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
 CUTSCENE_DISTANCE_FROM_TOP_IN_TILES EQU 15
-HAND_CLAP_SPEED EQU %00001111
-LEFT_HAND_CLAP_START_X EQU 140
+HAND_CLAP_SPEED EQU %00000111
+LEFT_HAND_CLAP_START_X EQU 61
 LEFT_HAND_CLAP_START_Y EQU 114
-RIGHT_HAND_CLAP_START_X EQU 140
-RIGHT_HAND_CLAP_START_Y EQU 101
+RIGHT_HAND_CLAP_START_X EQU LEFT_HAND_CLAP_START_X
+RIGHT_HAND_CLAP_START_Y EQU LEFT_HAND_CLAP_START_Y - 13
 HAND_CLAP_TILE EQU $58
+TOTAL_SC_INDEX_ONE_ADDRESS EQU $98EF
 
 SECTION "ending cutscene vars", WRAM0
     wHandClappingFrame:: DB
@@ -18,6 +19,9 @@ SECTION "ending cutscene", ROMX
 InitializeEndingCutscene::
     xor a ; ld a, 0
     ld [wHandClappingFrame], a
+    call AddScoreToTotal
+    ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
+	call RefreshTotal
     ret
 
 LoadEndingCutsceneGraphics::
@@ -32,17 +36,6 @@ LoadEndingCutsceneGraphics::
 	ld hl, _SCRN0
     ld d, SCRN_Y_B
 	call MEMCPY_SINGLE_SCREEN
-
-    ld bc, CloudsTiles
-	ld hl, _VRAM8800
-	ld de, CloudsTilesEnd - CloudsTiles
-	call MEMCPY
-
-	ld bc, CloudsMap
-	ld hl, $99A0
-	ld de, CloudsMapEnd - CloudsMap
-	ld a, $80
-	call MEMCPY_WITH_OFFSET
 	ret
 
 SpawnHandClap::
@@ -94,13 +87,28 @@ MoveHands:
 UpdateEndingCutscene::
     UPDATE_GLOBAL_TIMER
     call IncrementScrollOffset
+    call BobPlayer
 
-    ; ldh a, [hGlobalTimer]
-    ; and HAND_CLAP_SPEED
-    ; call z, MoveHands
-    ; Temp
+.animateHands:
+    ldh a, [hGlobalTimer]
+    and HAND_CLAP_SPEED
+    call z, MoveHands
+.endAnimateHands:
+
+.checkTriggerFadeOut:
     call ReadController
     ldh a, [hControllerDown]
     and PADF_START | PADF_A
+    jr z, .endTriggerFadeOut
+    ld a, 1
+    ld [wTriggerFadeOut], a
+.endTriggerFadeOut:
+
+.fadeOut:
+    ld a, [wTriggerFadeOut]
+    cp a, 0
+    jr z, .endFadeOut
+    call FadeOutPalettes
     jp nz, Start
+.endFadeOut:
     ret
