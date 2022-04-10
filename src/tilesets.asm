@@ -4,7 +4,6 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/Player.2bpp"
     INCBIN "incbin/sprite/PlayerFalling.2bpp"
     INCBIN "incbin/sprite/PlayerInvincible.2bpp"
-    ; INCBIN "incbin/sprite/PlayerHappy.2bpp"
     INCBIN "incbin/sprite/Pop1.2bpp"
     INCBIN "incbin/sprite/Pop2.2bpp"
     INCBIN "incbin/sprite/Bullet.2bpp"
@@ -30,6 +29,7 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/Anvil.2bpp"
     INCBIN "incbin/sprite/Bomb2.2bpp"
     INCBIN "incbin/sprite/String.2bpp"
+    INCBIN "incbin/sprite/PlayerHappy.2bpp"
 GameSpriteTilesEnd::
 
 Level1Tiles::
