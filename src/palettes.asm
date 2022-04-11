@@ -46,6 +46,12 @@ InitializePalettes::
 	ldh [rOBP1], a
 	ret
 
+InitializeFadedPalettes::
+	ld a, FADE_PALETTE_4
+	ldh [rBGP], a
+	ldh [rOBP0], a
+	ret
+
 InitializeFlicker::
 	ld a, TIME_UNTIL_FLICKER
 	ld [wFlickerTimer], a
@@ -58,7 +64,7 @@ FadeOutPalettes::
 	jr c, .fadeOut
 .hasFadedIn:
 	ld a, 1
-	cp a, 0
+	and a
 	ret
 .fadeOut:
 	ldh a, [hGlobalTimer]
@@ -104,7 +110,7 @@ FadeOutPalettes::
 	ld [wFadeOutFrame], a
 .end:
 	xor a ; ld a, 0
-	cp a, 0
+	and a
 	ret
 
 FadeInPalettes::
@@ -114,7 +120,7 @@ FadeInPalettes::
 	jr c, .fadeIn
 .hasFadedIn:
 	ld a, 1
-	cp a, 0
+	and a
 	ret
 .fadeIn:
 	ldh a, [hGlobalTimer]
@@ -160,7 +166,7 @@ FadeInPalettes::
 	ld [wFadeInFrame], a
 .end:
 	xor a ; ld a, 0
-	cp a, 0
+	and a
 	ret
 
 FlickerBackgroundPalette::
