@@ -113,6 +113,7 @@ SetupNextLevel::
 	call LoadLevelCityGraphics
 	ld hl, angryTheme
 	call hUGE_init
+	call InitializePalettes
 	jr .endLevelSetup
 .level3:
 	cp a, 3
@@ -168,6 +169,7 @@ StageClear::
 	call InitializeInterrupts
 	call LoadStageClearGraphics
 	call ResetFading
+	call InitializeFadedPalettes
 	call InitializeStageClear
 	ld hl, menuTheme
 	call hUGE_init

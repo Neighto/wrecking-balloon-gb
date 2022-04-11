@@ -78,6 +78,13 @@ LoadLevel3Graphics::
 	call MEMCPY_WITH_OFFSET
     ret
 
+CanFadeLevel::
+	; Returns z flag as cannot / nz flag as can
+    ; For levels that have interrupts that mess with the palettes
+    ld a, [wLevel]
+    cp a, 2
+    ret
+
 SpawnCountdown::
 	ld b, 2
 	call RequestOAMSpace
@@ -103,8 +110,14 @@ UpdateGameCountdown::
     UPDATE_GLOBAL_TIMER
     call RefreshWindow
     call IncrementScrollOffset
+
+.checkFading:
+    call CanFadeLevel
+    jr z, .endFading
     call FadeInPalettes
 	ret z
+.endFading:
+
 .checkCountdownAnimation:
     ld a, [wCountdownFrame]
     cp a, 4
