@@ -8,17 +8,17 @@ StageEndMap::
     INCBIN "incbin/background/StageEnd.tilemap"
 StageEndMapEnd::
 
-Level1Map:: 
+LevelCityMap:: 
     INCBIN "incbin/background/City.tilemap"
-Level1MapEnd::
+LevelCityMapEnd::
 
-Level2Map::
+LevelDesertMap::
     INCBIN "incbin/background/Desert.tilemap"
-Level2MapEnd::
+LevelDesertMapEnd::
 
-Level3Map::
+LevelShowdownMap::
     INCBIN "incbin/background/Showdown.tilemap"
-Level3MapEnd::
+LevelShowdownMapEnd::
 
 MenuMap::
     INCBIN "incbin/background/Menu.tilemap"

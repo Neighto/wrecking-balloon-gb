@@ -32,9 +32,9 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/PlayerHappy.2bpp"
 GameSpriteTilesEnd::
 
-Level1Tiles::
+LevelCityTiles::
     INCBIN "incbin/background/City.2bpp"
-Level1TilesEnd::
+LevelCityTilesEnd::
 
 CloudsTiles::
     INCBIN "incbin/background/Clouds.2bpp"
@@ -54,13 +54,13 @@ StageEndTiles::
     INCBIN "incbin/background/StageEnd.2bpp"
 StageEndTilesEnd::
 
-Level2Tiles::
+LevelDesertTiles::
     INCBIN "incbin/background/Desert.2bpp"
-Level2TilesEnd::
+LevelDesertTilesEnd::
 
-Level3Tiles::
+LevelShowdownTiles::
     INCBIN "incbin/background/Showdown.2bpp"
-Level3TilesEnd::
+LevelShowdownTilesEnd::
 
 WindowTiles::
     INCBIN "incbin/window/Window.2bpp"

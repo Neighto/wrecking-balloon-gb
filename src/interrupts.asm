@@ -147,7 +147,55 @@ SetOpeningCutsceneInterrupts::
     ld [hl], a
     ret 
 
-Level1LCDInterrupt:
+LevelCityLCDInterrupt:
+    ldh a, [rLYC]
+.far:
+	cp a, GAME_CITY_LCD_SCROLL_FAR
+    jr nz, .middle
+    ldh a, [hParallaxFar]
+	ldh [rSCX], a
+    ld a, GAME_CITY_LCD_SCROLL_MIDDLE
+    ldh [rLYC], a
+    jp LCDInterruptEnd
+.middle:
+    cp a, GAME_CITY_LCD_SCROLL_MIDDLE
+    jr nz, .close
+    ldh a, [hParallaxMiddle]
+	ldh [rSCX], a
+    ld a, GAME_CITY_LCD_SCROLL_CLOSE
+    ldh [rLYC], a
+    jp LCDInterruptEnd
+.close:
+    cp a, GAME_CITY_LCD_SCROLL_CLOSE
+    jr nz, .window
+    ldh a, [hParallaxClose]
+	ldh [rSCX], a
+    ld a, GAME_CITY_LCD_SCROLL_RESET
+	ldh [rLYC], a
+    jp LCDInterruptEnd
+.window:
+    cp a, GAME_CITY_LCD_SCROLL_RESET
+    jp nz, LCDInterruptEnd
+    xor a ; ld a, 0
+    ldh [rSCX], a
+    ld hl, rLCDC
+    res 1, [hl]
+    ld a, GAME_CITY_LCD_SCROLL_FAR
+	ldh [rLYC], a
+    jp LCDInterruptEnd
+
+SetLevelCityInterrupts::
+    ld a, GAME_CITY_LCD_SCROLL_FAR
+    ldh [rLYC], a
+
+    ld hl, wLCDInterrupt
+    ld a, LOW(LevelCityLCDInterrupt)
+    ld [hli], a
+    ld a, HIGH(LevelCityLCDInterrupt)
+    ld [hl], a
+    ret
+
+LevelNightCityLCDInterrupt:
     ldh a, [rLYC]
 .far:
 	cp a, GAME_CITY_LCD_SCROLL_FAR
@@ -202,20 +250,19 @@ Level1LCDInterrupt:
 	ldh [rLYC], a
     jp LCDInterruptEnd
 
-
-SetLevel1Interrupts::
+SetLevelNightCityInterrupts::
     ld a, GAME_CITY_LCD_SCROLL_FAR
     ldh [rLYC], a
 
     ld hl, wLCDInterrupt
-    ld a, LOW(Level1LCDInterrupt)
+    ld a, LOW(LevelNightCityLCDInterrupt)
     ld [hli], a
-    ld a, HIGH(Level1LCDInterrupt)
+    ld a, HIGH(LevelNightCityLCDInterrupt)
     ld [hl], a
     ret
 
 Level2LCDInterrupt:
-    ld a, [rLYC]
+    ldh a, [rLYC]
     cp a, GAME_DESERT_LCD_SCROLL_RESET
     jr z, .reset
 	cp a, GAME_DESERT_LCD_SCROLL_FAR
