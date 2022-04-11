@@ -65,39 +65,38 @@ FadeOutPalettes::
 	and FADE_SPEED
 	jr nz, .end
 	ld a, [wFadeOutFrame]
-	cp a, 0
-	jr z, .fade1
-	cp a, 1
-	jr z, .fade2
-	cp a, 2
-	jr z, .fade3
-	cp a, 3
-	jr z, .fade4
-	cp a, 4
-	jr z, .increaseFrame
-	jr .end
 .fade1:
+	cp a, 0
+	jr nz, .fade2
 	ld a, FADE_PALETTE2_1
 	ldh [rOBP1], a
     ld a, FADE_PALETTE_1
 	jr .fadePalettes
 .fade2:
+	cp a, 1
+	jr nz, .fade3
 	ld a, FADE_PALETTE2_2
 	ldh [rOBP1], a
 	ld a, FADE_PALETTE_2
 	jr .fadePalettes
 .fade3:
+	cp a, 2
+	jr nz, .fade4
 	ld a, FADE_PALETTE2_3
 	ldh [rOBP1], a
 	ld a, FADE_PALETTE_3
 	jr .fadePalettes
 .fade4:
+	cp a, 3
+	jr nz, .fade5
 	ld a, FADE_PALETTE2_4
 	ldh [rOBP1], a
 	ld a, FADE_PALETTE_4
+	jr .fadePalettes
+.fade5:
+	jr .increaseFrame
 .fadePalettes:
 	ldh [rBGP], a
-    ldh [rOCPD], a
 	ldh [rOBP0], a
 .increaseFrame:
 	ld a, [wFadeOutFrame]
@@ -122,39 +121,38 @@ FadeInPalettes::
 	and FADE_SPEED
 	jr nz, .end
 	ld a, [wFadeInFrame]
-	cp a, 0
-	jr z, .fade1
-	cp a, 1
-	jr z, .fade2
-	cp a, 2
-	jr z, .fade3
-	cp a, 3
-	jr z, .fade4
-	cp a, 4
-	jr z, .increaseFrame
-	jr .end
 .fade1:
+	cp a, 0
+	jr nz, .fade2
 	ld a, FADE_PALETTE2_4
 	ldh [rOBP1], a
     ld a, FADE_PALETTE_4
 	jr .fadePalettes
 .fade2:
+	cp a, 1
+	jr nz, .fade3
 	ld a, FADE_PALETTE2_3
 	ldh [rOBP1], a
 	ld a, FADE_PALETTE_3
 	jr .fadePalettes
 .fade3:
+	cp a, 2
+	jr nz, .fade4
 	ld a, FADE_PALETTE2_2
 	ldh [rOBP1], a
 	ld a, FADE_PALETTE_2
 	jr .fadePalettes
 .fade4:
+	cp a, 3
+	jr nz, .fade5
 	ld a, FADE_PALETTE2_1
 	ldh [rOBP1], a
 	ld a, FADE_PALETTE_1
+	jr .fadePalettes
+.fade5:
+	jr .increaseFrame
 .fadePalettes:
 	ldh [rBGP], a
-    ldh [rOCPD], a
 	ldh [rOBP0], a
 .increaseFrame:
 	ld a, [wFadeInFrame]

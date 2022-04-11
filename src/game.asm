@@ -34,38 +34,34 @@ LoadGameSpriteTiles::
 	call MEMCPY
 	ret
     
-LoadLevel1Graphics::
-	ld bc, Level1Tiles
+LoadLevelCityGraphics::
+	ld bc, LevelCityTiles
 	ld hl, _VRAM9000
-	ld de, Level1TilesEnd - Level1Tiles
+	ld de, LevelCityTilesEnd - LevelCityTiles
 	call MEMCPY
-	ld bc, Level1Map
+	ld bc, LevelCityMap
 	ld hl, _SCRN0
-	ld de, Level1MapEnd - Level1Map
+	ld de, LevelCityMapEnd - LevelCityMap
 	call MEMCPY
 	ret
 
-LoadLevel1NightMode::
-    ; SET_IN_RANGE _SCRN0, $98C0 - _SCRN0, $40
-    ret
-
-LoadLevel2Graphics::
-	ld bc, Level2Tiles
+LoadLevelDesertGraphics::
+	ld bc, LevelDesertTiles
 	ld hl, _VRAM9000
-	ld de, Level2TilesEnd - Level2Tiles
+	ld de, LevelDesertTilesEnd - LevelDesertTiles
 	call MEMCPY
-	ld bc, Level2Map
+	ld bc, LevelDesertMap
 	ld hl, _SCRN0
-	ld de, Level2MapEnd - Level2Map
+	ld de, LevelDesertMapEnd - LevelDesertMap
 	call MEMCPY
     ret
 
 LoadLevel3Graphics::
-	ld bc, Level3Tiles
+	ld bc, LevelShowdownTiles
 	ld hl, _VRAM9000
-	ld de, Level3TilesEnd - Level3Tiles
+	ld de, LevelShowdownTilesEnd - LevelShowdownTiles
 	call MEMCPY
-	ld bc, Level3Map
+	ld bc, LevelShowdownMap
 	ld hl, _SCRN0
     ld d, SCRN_VY_B
 	call MEMCPY_SINGLE_SCREEN
