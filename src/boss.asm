@@ -43,11 +43,13 @@ SetStruct:
     ldh a, [hEnemyAlive]
     ld [hli], a
     ldh a, [hEnemyDirectionLeft]
+    ld [hli], a
+    ldh a, [hEnemyDifficulty]
     ld [hl], a
     ret
 
 UpdateBossPosition:
-.balloonLeft:
+.balloonLeftOAM:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ldh a, [hEnemyY]
     sub 15
@@ -55,190 +57,192 @@ UpdateBossPosition:
     ldh a, [hEnemyX]
     add 8
     ld [hli], a
-    ld [hl], $22
-    inc l
-    ld [hl], OAMF_PAL0
-    inc l
-.balloonRight:
+    ld a, $22
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+.balloonRightOAM:
     ldh a, [hEnemyY]
     sub 15
     ld [hli], a
     ldh a, [hEnemyX]
     add 16
     ld [hli], a
-    ld [hl], $22
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
-    inc l
+    ld a, $22
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
 .checkFacing:
     ldh a, [hEnemyDirectionLeft]
     cp a, 0
     jp nz, .facingLeft
 .facingRight:
-.facingRightTopLeft:
+.facingRightTopLeftOAM:
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
     ld [hli], a
-    ld [hl], PORCUPINE_TILE_1
-    inc l
-    ld [hl], OAMF_PAL0
-.facingRightTopMiddle:
-    inc l
+    ld a, PORCUPINE_TILE_1
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+.facingRightTopMiddleOAM:
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
     add 8
     ld [hli], a
-    ld [hl], PORCUPINE_TILE_3
-    inc l
-    ld [hl], OAMF_PAL0
-.facingRightTopMiddle2:
-    inc l
+    ld a, PORCUPINE_TILE_3
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+.facingRightTopMiddle2OAM:
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
     add 16
     ld [hli], a
-    ld [hl], PORCUPINE_TILE_5
-    inc l
-    ld [hl], OAMF_PAL0
-.facingRightTopRight:
-    inc l
+    ld a, PORCUPINE_TILE_5
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+.facingRightTopRightOAM:
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
     add 24
     ld [hli], a
-    ld [hl], PORCUPINE_TILE_7
-    inc l
-    ld [hl], OAMF_PAL0
-.facingRightBottomLeft:
-    inc l
+    ld a, PORCUPINE_TILE_7
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+.facingRightBottomLeftOAM:
     ldh a, [hEnemyY]
     add 16
     ld [hli], a
     ldh a, [hEnemyX]
     ld [hli], a
-    ld [hl], PORCUPINE_TILE_2
-    inc l
-    ld [hl], OAMF_PAL0
-.facingRightBottomMiddle:
-    inc l
+    ld a, PORCUPINE_TILE_2
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+.facingRightBottomMiddleOAM:
     ldh a, [hEnemyY]
     add 16
     ld [hli], a
     ldh a, [hEnemyX]
     add 8
     ld [hli], a
-    ld [hl], PORCUPINE_TILE_4
-    inc l
-    ld [hl], OAMF_PAL0
-.facingRightBottomMiddle2:
-    inc l
+    ld a, PORCUPINE_TILE_4
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+.facingRightBottomMiddle2OAM:
     ldh a, [hEnemyY]
     add 16
     ld [hli], a
     ldh a, [hEnemyX]
     add 16
     ld [hli], a
-    ld [hl], PORCUPINE_TILE_6
-    inc l
-    ld [hl], OAMF_PAL0
-.facingRightBottomRight:
-    inc l
+    ld a, PORCUPINE_TILE_6
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+.facingRightBottomRightOAM:
     ldh a, [hEnemyY]
     add 16
     ld [hli], a
     ldh a, [hEnemyX]
     add 24
     ld [hli], a
-    ld [hl], EMPTY_TILE
-    inc l
-    ld [hl], OAMF_PAL0
+    ld a, EMPTY_TILE
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hl], a
     ret
 .facingLeft:
-.facingLeftTopLeft:
+.facingLeftTopLeftOAM:
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
     ld [hli], a
-    ld [hl], PORCUPINE_TILE_7
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
-.facingLeftTopMiddle:
-    inc l
+    ld a, PORCUPINE_TILE_7
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
+.facingLeftTopMiddleOAM:
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
     add 8
     ld [hli], a
-    ld [hl], PORCUPINE_TILE_5
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
-.facingLeftTopMiddle2:
-    inc l
+    ld a, PORCUPINE_TILE_5
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
+.facingLeftTopMiddle2OAM:
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
     add 16
     ld [hli], a
-    ld [hl], PORCUPINE_TILE_3
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
-.facingLeftTopRight:
-    inc l
+    ld a, PORCUPINE_TILE_3
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
+.facingLeftTopRightOAM:
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
     add 24
     ld [hli], a
-    ld [hl], PORCUPINE_TILE_1
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
-.facingLeftBottomLeft:
-    inc l
+    ld a, PORCUPINE_TILE_1
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
+.facingLeftBottomLeftOAM:
     ldh a, [hEnemyY]
     add 16
     ld [hli], a
     ldh a, [hEnemyX]
     ld [hli], a
-    ld [hl], EMPTY_TILE
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
-.facingLeftBottomMiddle:
-    inc l
+    ld a, EMPTY_TILE
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
+.facingLeftBottomMiddleOAM:
     ldh a, [hEnemyY]
     add 16
     ld [hli], a
     ldh a, [hEnemyX]
     add 8
     ld [hli], a
-    ld [hl], PORCUPINE_TILE_6
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
-.facingLeftBottomMiddle2:
-    inc l
+    ld a, PORCUPINE_TILE_6
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
+.facingLeftBottomMiddle2OAM:
     ldh a, [hEnemyY]
     add 16
     ld [hli], a
     ldh a, [hEnemyX]
     add 16
     ld [hli], a
-    ld [hl], PORCUPINE_TILE_4
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
-.facingLeftBottomRight:
-    inc l
+    ld a, PORCUPINE_TILE_4
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
+.facingLeftBottomRightOAM:
     ldh a, [hEnemyY]
     add 16
     ld [hli], a
     ldh a, [hEnemyX]
     add 24
     ld [hli], a
-    ld [hl], PORCUPINE_TILE_2
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+    ld a, PORCUPINE_TILE_2
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hl], a
     ret
 
 UpdateBossBallPosition:
@@ -427,8 +431,10 @@ BossUpdate::
     ldh [hEnemyOAM], a
     ld a, [hli]
     ldh [hEnemyAlive], a
-    ld a, [hl]
+    ld a, [hli]
     ldh [hEnemyDirectionLeft], a
+    ld a, [hl]
+    ldh [hEnemyDifficulty], a
 
 .checkAlive:
     ldh a, [hEnemyAlive]
