@@ -19,10 +19,10 @@ PORCUPINE_TILE_5 EQU $48
 PORCUPINE_TILE_6 EQU $4A
 PORCUPINE_TILE_7 EQU $4C
 
-PORCUPINE_BALL_TILE_1 EQU $50
-PORCUPINE_BALL_TILE_2 EQU $52
-PORCUPINE_BALL_TILE_3 EQU $54
-PORCUPINE_BALL_TILE_4 EQU $56
+PORCUPINE_BALL_TILE_1 EQU $4E
+PORCUPINE_BALL_TILE_2 EQU $50
+PORCUPINE_BALL_TILE_3 EQU $52
+PORCUPINE_BALL_TILE_4 EQU $54
 
 PORCUPINE_POINTS EQU 1
 
@@ -41,6 +41,8 @@ SetStruct:
     ldh a, [hEnemyOAM]
     ld [hli], a
     ldh a, [hEnemyAlive]
+    ld [hli], a
+    ldh a, [hEnemyAnimationFrame]
     ld [hli], a
     ldh a, [hEnemyDirectionLeft]
     ld [hli], a
@@ -245,92 +247,108 @@ UpdateBossPosition:
     ld [hl], a
     ret
 
+GetBallTileTopLeft:
+    SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM
+    ld a, PORCUPINE_BALL_TILE_1
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+    ldh a, [hEnemyY]
+    ld [hli], a
+    ldh a, [hEnemyX]
+    add 8
+    ld [hli], a
+    ld a, PORCUPINE_BALL_TILE_2
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+    ret
+
+GetBallTileTopRight:
+    ldh a, [hEnemyY]
+    ld [hli], a
+    ldh a, [hEnemyX]
+    add 16
+    ld [hli], a
+    ld a, PORCUPINE_BALL_TILE_3
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+    ldh a, [hEnemyY]
+    ld [hli], a
+    ldh a, [hEnemyX]
+    add 24
+    ld [hli], a
+    ld a, PORCUPINE_BALL_TILE_4
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+    ret
+
+GetBallTileBottomLeft:
+    ldh a, [hEnemyY]
+    add 16
+    ld [hli], a
+    ldh a, [hEnemyX]
+    ld [hli], a
+    ld a, PORCUPINE_BALL_TILE_1
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_YFLIP
+    ld [hli], a
+    ldh a, [hEnemyY]
+    add 16
+    ld [hli], a
+    ldh a, [hEnemyX]
+    add 8
+    ld [hli], a
+    ld a, PORCUPINE_BALL_TILE_2
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_YFLIP
+    ld [hli], a
+    ret
+
+GetBallTileBottomRight:
+    ldh a, [hEnemyY]
+    add 16
+    ld [hli], a
+    ldh a, [hEnemyX]
+    add 16
+    ld [hli], a
+    ld a, PORCUPINE_BALL_TILE_2
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_YFLIP | OAMF_XFLIP
+    ld [hli], a
+    ldh a, [hEnemyY]
+    add 16
+    ld [hli], a
+    ldh a, [hEnemyX]
+    add 24
+    ld [hli], a
+    ld a, PORCUPINE_BALL_TILE_1
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_YFLIP | OAMF_XFLIP
+    ld [hli], a
+    ret
+
 UpdateBossBallPosition:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-.topLeft:
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    ld [hli], a
-    ld [hl], PORCUPINE_BALL_TILE_1
-    inc l
-    ld [hl], OAMF_PAL0
-.topMiddle:
-    inc l
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 8
-    ld [hli], a
-    ld [hl], PORCUPINE_BALL_TILE_2
-    inc l
-    ld [hl], OAMF_PAL0
-.topMiddle2:
-    inc l
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 16
-    ld [hli], a
-    ld [hl], PORCUPINE_BALL_TILE_3
-    inc l
-    ld [hl], OAMF_PAL0
-.topRight:
-    inc l
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 24
-    ld [hli], a
-    ld [hl], PORCUPINE_BALL_TILE_4
-    inc l
-    ld [hl], OAMF_PAL0
-.bottomLeft:
-    inc l
-    ldh a, [hEnemyY]
-    add 16
-    ld [hli], a
-    ldh a, [hEnemyX]
-    ld [hli], a
-    ld [hl], PORCUPINE_BALL_TILE_1
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_YFLIP
-.bottomMiddle:
-    inc l
-    ldh a, [hEnemyY]
-    add 16
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 8
-    ld [hli], a
-    ld [hl], PORCUPINE_BALL_TILE_2
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_YFLIP
-.bottomMiddle2:
-    inc l
-    ldh a, [hEnemyY]
-    add 16
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 16
-    ld [hli], a
-    ld [hl], PORCUPINE_BALL_TILE_2
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_YFLIP | OAMF_XFLIP
-.bottomRight:
-    inc l
-    ldh a, [hEnemyY]
-    add 16
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 24
-    ld [hli], a
-    ld [hl], PORCUPINE_BALL_TILE_1
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_YFLIP | OAMF_XFLIP
+    UPDATE_POSITION 8
+    call GetBallTileTopLeft
+    call GetBallTileTopRight
+    call GetBallTileBottomLeft
+    call GetBallTileBottomRight
 .empty:
-    inc l
     RESET_AT_HL 8
+
+; .rotate:
+;     ldh a, [hEnemyAnimationFrame]
+;     inc a
+;     cp a, 4
+;     jr c, .skipReset
+;     xor a ; ld a, 0
+; .skipReset:
+;     ldh [hEnemyAnimationFrame], a
+; .endRotate:
     ret
 
 SpawnBoss::
@@ -400,8 +418,8 @@ Move:
     xor a ; ld a, 0
     ldh [hEnemyDirectionLeft], a
 .updatePosition:
-    call UpdateBossPosition
-    ; call UpdateBossBallPosition
+    ; call UpdateBossPosition
+    call UpdateBossBallPosition
     ret
 
     ; he'll roll towards you
@@ -432,6 +450,8 @@ BossUpdate::
     ld a, [hli]
     ldh [hEnemyAlive], a
     ld a, [hli]
+    ldh [hEnemyAnimationFrame], a
+    ld a, [hli]
     ldh [hEnemyDirectionLeft], a
     ld a, [hl]
     ldh [hEnemyDifficulty], a
@@ -448,7 +468,7 @@ BossUpdate::
     jr nz, .endMove
 .canMove:
     call Move
-    ; call MoveBall
+    call MoveBall
 .endMove:
 
 .checkCollision:

@@ -89,22 +89,22 @@ ENDM
 
 MACRO ADD_TO_HL
     ; argument 1 is value to add to HL (8 bit)
-    ld a, \1
-    add a, l
-    ld l, a
-    ld a, h
-    adc a, 0
-    ld h, a
+    ld a, \1 ; 2 cycles
+    add a, l ; 1 cycle
+    ld l, a ; 1 cycle
+    ld a, h ; 1 cycle
+    adc a, 0 ; 2 cycles
+    ld h, a ; 1 cycle
 ENDM
 
 MACRO ADD_TO_HL_16
     ; argument 1 is value to add to HL (16 bit)
-    ld a, l
-    add a, LOW(\1)
-    ld l, a
-    ld a, h
-    adc a, HIGH(\1)
-    ld h, a
+    ld a, l ; 1 cycle
+    add a, LOW(\1) ; 2 cycles
+    ld l, a ; 1 cycle
+    ld a, h ; 1 cycle
+    adc a, HIGH(\1) ; 2 cycles
+    ld h, a ; 1 cycle
 ENDM
 
 MACRO SUB_FROM_HL_16
@@ -122,6 +122,22 @@ MACRO SET_HL_TO_ADDRESS
     ; argument 2 is offset
     ld hl, \1
     ADD_TO_HL [\2]
+ENDM
+
+MACRO UPDATE_POSITION_ENEMY
+    ; argument 1 is # sprites horizontal
+    ; argument 2 is # sprites vertical
+REPT \1
+    ldh a, [hEnemyY]
+    ld [hli], a
+    ldh a, [hEnemyX]
+    ld [hli], a
+    inc l
+    inc l
+ENDR
+
+; => + 8 each X
+; ^ + 16 each Y
 ENDM
 
 ; Level Macros
