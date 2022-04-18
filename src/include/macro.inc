@@ -124,20 +124,52 @@ MACRO SET_HL_TO_ADDRESS
     ADD_TO_HL [\2]
 ENDM
 
-MACRO UPDATE_POSITION_ENEMY
+MACRO UPDATE_OAM_POSITION_HRAM
     ; argument 1 is # sprites horizontal
     ; argument 2 is # sprites vertical
+    ; argument 3 is x position
+    ; argument 4 is y position
+    ; argument 5 is y offset (where 1 = 16 pixels down, 2 = 32 pixels down, etc)
+REPT_NUMBER_X SET 0
+REPT_NUMBER_Y SET \5
+REPT \2
 REPT \1
-    ldh a, [hEnemyY]
+    ldh a, \4
+IF REPT_NUMBER_Y != 0
+    add 16 * REPT_NUMBER_Y
+ENDC
     ld [hli], a
-    ldh a, [hEnemyX]
+    ldh a, \3
+IF REPT_NUMBER_X != 0
+    add 8 * REPT_NUMBER_X
+ENDC
     ld [hli], a
     inc l
     inc l
+REPT_NUMBER_X SET REPT_NUMBER_X + 1
 ENDR
+REPT_NUMBER_X SET 0
+REPT_NUMBER_Y SET REPT_NUMBER_Y + 1
+ENDR
+ENDM
 
-; => + 8 each X
-; ^ + 16 each Y
+MACRO UPDATE_OAM_POSITION_ENEMY
+    ; argument 1 is # sprites horizontal
+    ; argument 2 is # sprites vertical
+    UPDATE_OAM_POSITION_HRAM \1, \2, [hEnemyX], [hEnemyY], 0
+ENDM
+
+MACRO UPDATE_OAM_POSITION_ENEMY2
+    ; argument 1 is # sprites horizontal
+    ; argument 2 is # sprites vertical
+    UPDATE_OAM_POSITION_HRAM \1, \2, [hEnemyX2], [hEnemyY2], 0
+ENDM
+
+MACRO UPDATE_OAM_POSITION_ENEMY_WITH_OFFSET
+    ; argument 1 is # sprites horizontal
+    ; argument 2 is # sprites vertical
+    ; argument 3 is y offset
+    UPDATE_OAM_POSITION_HRAM \1, \2, [hEnemyX], [hEnemyY], \3
 ENDM
 
 ; Level Macros

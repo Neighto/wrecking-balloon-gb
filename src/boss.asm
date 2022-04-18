@@ -4,25 +4,27 @@ INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 INCLUDE "constants.inc"
 
-PORCUPINE_OAM_SPRITES EQU 10
+PORCUPINE_OAM_SPRITES EQU 14
 PORCUPINE_OAM_BYTES EQU PORCUPINE_OAM_SPRITES * 4
 PORCUPINE_MOVE_TIME EQU %00000011
+PORCUPINE_ATTACK_TIME EQU %01111111
 PORCUPINE_COLLISION_TIME EQU %00001000
 
 PORCUPINE_HP EQU 2
 
-PORCUPINE_TILE_1 EQU $40
-PORCUPINE_TILE_2 EQU $42
-PORCUPINE_TILE_3 EQU $44
-PORCUPINE_TILE_4 EQU $46
-PORCUPINE_TILE_5 EQU $48
-PORCUPINE_TILE_6 EQU $4A
-PORCUPINE_TILE_7 EQU $4C
+PORCUPINE_BALLOON_TILE_1 EQU $40
+PORCUPINE_BALLOON_TILE_2 EQU $42
+PORCUPINE_BALLOON_TILE_3 EQU $48
+PORCUPINE_BALLOON_TILE_4 EQU $4A
 
-PORCUPINE_BALL_TILE_1 EQU $4E
-PORCUPINE_BALL_TILE_2 EQU $50
-PORCUPINE_BALL_TILE_3 EQU $52
-PORCUPINE_BALL_TILE_4 EQU $54
+PORCUPINE_TILE_1 EQU $44
+PORCUPINE_TILE_2 EQU $46
+PORCUPINE_TILE_3 EQU $4C
+PORCUPINE_TILE_4 EQU $4E
+PORCUPINE_TILE_5 EQU $50
+
+PORCUPINE_LAUGH_TILE_1 EQU $6C
+PORCUPINE_LAUGH_TILE_2 EQU $6E
 
 PORCUPINE_POINTS EQU 1
 
@@ -42,313 +44,22 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyAlive]
     ld [hli], a
+    ldh a, [hEnemyDying]
+    ld [hli], a
     ldh a, [hEnemyAnimationFrame]
     ld [hli], a
+    ldh a, [hEnemyAnimationTimer]
+    ld [hli], a
     ldh a, [hEnemyDirectionLeft]
+    ld [hli], a
+    ldh a, [hEnemyY2]
+    ld [hli], a
+    ldh a, [hEnemyX2]
+    ld [hli], a
+    ldh a, [hEnemyParam1] ; Enemy Invincibility Timer
     ld [hli], a
     ldh a, [hEnemyDifficulty]
     ld [hl], a
-    ret
-
-UpdateBossPosition:
-.balloonLeftOAM:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ldh a, [hEnemyY]
-    sub 15
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 8
-    ld [hli], a
-    ld a, $22
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-.balloonRightOAM:
-    ldh a, [hEnemyY]
-    sub 15
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 16
-    ld [hli], a
-    ld a, $22
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hli], a
-.checkFacing:
-    ldh a, [hEnemyDirectionLeft]
-    cp a, 0
-    jp nz, .facingLeft
-.facingRight:
-.facingRightTopLeftOAM:
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    ld [hli], a
-    ld a, PORCUPINE_TILE_1
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-.facingRightTopMiddleOAM:
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 8
-    ld [hli], a
-    ld a, PORCUPINE_TILE_3
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-.facingRightTopMiddle2OAM:
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 16
-    ld [hli], a
-    ld a, PORCUPINE_TILE_5
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-.facingRightTopRightOAM:
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 24
-    ld [hli], a
-    ld a, PORCUPINE_TILE_7
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-.facingRightBottomLeftOAM:
-    ldh a, [hEnemyY]
-    add 16
-    ld [hli], a
-    ldh a, [hEnemyX]
-    ld [hli], a
-    ld a, PORCUPINE_TILE_2
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-.facingRightBottomMiddleOAM:
-    ldh a, [hEnemyY]
-    add 16
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 8
-    ld [hli], a
-    ld a, PORCUPINE_TILE_4
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-.facingRightBottomMiddle2OAM:
-    ldh a, [hEnemyY]
-    add 16
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 16
-    ld [hli], a
-    ld a, PORCUPINE_TILE_6
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-.facingRightBottomRightOAM:
-    ldh a, [hEnemyY]
-    add 16
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 24
-    ld [hli], a
-    ld a, EMPTY_TILE
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hl], a
-    ret
-.facingLeft:
-.facingLeftTopLeftOAM:
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    ld [hli], a
-    ld a, PORCUPINE_TILE_7
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hli], a
-.facingLeftTopMiddleOAM:
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 8
-    ld [hli], a
-    ld a, PORCUPINE_TILE_5
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hli], a
-.facingLeftTopMiddle2OAM:
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 16
-    ld [hli], a
-    ld a, PORCUPINE_TILE_3
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hli], a
-.facingLeftTopRightOAM:
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 24
-    ld [hli], a
-    ld a, PORCUPINE_TILE_1
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hli], a
-.facingLeftBottomLeftOAM:
-    ldh a, [hEnemyY]
-    add 16
-    ld [hli], a
-    ldh a, [hEnemyX]
-    ld [hli], a
-    ld a, EMPTY_TILE
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hli], a
-.facingLeftBottomMiddleOAM:
-    ldh a, [hEnemyY]
-    add 16
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 8
-    ld [hli], a
-    ld a, PORCUPINE_TILE_6
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hli], a
-.facingLeftBottomMiddle2OAM:
-    ldh a, [hEnemyY]
-    add 16
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 16
-    ld [hli], a
-    ld a, PORCUPINE_TILE_4
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hli], a
-.facingLeftBottomRightOAM:
-    ldh a, [hEnemyY]
-    add 16
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 24
-    ld [hli], a
-    ld a, PORCUPINE_TILE_2
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hl], a
-    ret
-
-GetBallTileTopLeft:
-    SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM
-    ld a, PORCUPINE_BALL_TILE_1
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 8
-    ld [hli], a
-    ld a, PORCUPINE_BALL_TILE_2
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-    ret
-
-GetBallTileTopRight:
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 16
-    ld [hli], a
-    ld a, PORCUPINE_BALL_TILE_3
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 24
-    ld [hli], a
-    ld a, PORCUPINE_BALL_TILE_4
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-    ret
-
-GetBallTileBottomLeft:
-    ldh a, [hEnemyY]
-    add 16
-    ld [hli], a
-    ldh a, [hEnemyX]
-    ld [hli], a
-    ld a, PORCUPINE_BALL_TILE_1
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_YFLIP
-    ld [hli], a
-    ldh a, [hEnemyY]
-    add 16
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 8
-    ld [hli], a
-    ld a, PORCUPINE_BALL_TILE_2
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_YFLIP
-    ld [hli], a
-    ret
-
-GetBallTileBottomRight:
-    ldh a, [hEnemyY]
-    add 16
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 16
-    ld [hli], a
-    ld a, PORCUPINE_BALL_TILE_2
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_YFLIP | OAMF_XFLIP
-    ld [hli], a
-    ldh a, [hEnemyY]
-    add 16
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 24
-    ld [hli], a
-    ld a, PORCUPINE_BALL_TILE_1
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_YFLIP | OAMF_XFLIP
-    ld [hli], a
-    ret
-
-UpdateBossBallPosition:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    UPDATE_POSITION 8
-    call GetBallTileTopLeft
-    call GetBallTileTopRight
-    call GetBallTileBottomLeft
-    call GetBallTileBottomRight
-.empty:
-    RESET_AT_HL 8
-
-; .rotate:
-;     ldh a, [hEnemyAnimationFrame]
-;     inc a
-;     cp a, 4
-;     jr c, .skipReset
-;     xor a ; ld a, 0
-; .skipReset:
-;     ldh [hEnemyAnimationFrame], a
-; .endRotate:
     ret
 
 SpawnBoss::
@@ -375,9 +86,114 @@ SpawnBoss::
     ldh [hEnemyActive], a
     ld a, PORCUPINE_HP
     ldh [hEnemyAlive], a
-    ld a, BOSS
-    ldh [hEnemyNumber], a
-    call UpdateBossPosition
+    ldh a, [hEnemyY]
+    add 32
+    ldh [hEnemyY2], a
+    ldh a, [hEnemyX]
+    sub 4
+    ldh [hEnemyX2], a
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    UPDATE_OAM_POSITION_ENEMY 3, 2
+    UPDATE_OAM_POSITION_ENEMY2 4, 2
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+.balloonTopLeftOAM:
+    inc l
+    inc l
+    ld a, PORCUPINE_BALLOON_TILE_1
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+.balloonTopMiddleOAM:
+    inc l
+    inc l
+    ld a, PORCUPINE_BALLOON_TILE_3
+    ld [hli], a
+    ld a, OAMF_PAL1
+    ld [hli], a
+.balloonTopRightOAM:
+    inc l
+    inc l
+    ld a, PORCUPINE_BALLOON_TILE_1
+    ld [hli], a
+    ld a, OAMF_PAL1 | OAMF_XFLIP
+    ld [hli], a
+.balloonBottomLeftOAM:
+    inc l
+    inc l
+    ld a, PORCUPINE_BALLOON_TILE_2
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+.balloonBottomMiddleOAM:
+    inc l
+    inc l
+    ld a, PORCUPINE_BALLOON_TILE_4
+    ld [hli], a
+    ld a, OAMF_PAL1
+    ld [hli], a
+.balloonBottomRightOAM:
+    inc l
+    inc l
+    ld a, PORCUPINE_BALLOON_TILE_2
+    ld [hli], a
+    ld a, OAMF_PAL1 | OAMF_XFLIP
+    ld [hli], a
+.bossTopLeftOAM:
+    inc l
+    inc l
+    ld a, PORCUPINE_TILE_1
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+.bossTopMiddleOAM:
+    inc l
+    inc l
+    ld a, PORCUPINE_TILE_3
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+.bossTopMiddle2OAM:
+    inc l
+    inc l
+    ld a, PORCUPINE_TILE_5
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+.bossTopRightOAM:
+    inc l
+    inc l
+    ld a, PORCUPINE_TILE_1
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
+.bossBottomLeftOAM:
+    inc l
+    inc l
+    ld a, PORCUPINE_TILE_2
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+.bossBottomMiddleOAM:
+    inc l
+    inc l
+    ld a, PORCUPINE_TILE_4
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+.bossBottomMiddle2OAM:
+    inc l
+    inc l
+    ld a, PORCUPINE_TILE_4
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
+.bossBottomRightOAM:
+    inc l
+    inc l
+    ld a, PORCUPINE_TILE_2
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hl], a
 .setStruct:
     LD_HL_BC
     call SetStruct
@@ -392,6 +208,7 @@ Move:
     ld b, a
     ldh a, [hEnemyY]
     cp a, b
+    jr z, .moveHorizontal
     jr nc, .moveDown
 .moveUp:
     inc a
@@ -405,6 +222,7 @@ Move:
     ld b, a
     ldh a, [hEnemyX]
     cp a, b
+    jr z, .updatePosition
     jr c, .moveRight
 .moveLeft:
     dec a
@@ -418,19 +236,9 @@ Move:
     xor a ; ld a, 0
     ldh [hEnemyDirectionLeft], a
 .updatePosition:
-    ; call UpdateBossPosition
-    call UpdateBossBallPosition
-    ret
-
-    ; he'll roll towards you
-    ; pop the balloon and he'll fall right away or blink
-    ; falls near the bottom of the screen then goes ball mode
-    ; avoid until done with the pattern;
-    ; repeat until donzo
-    ; any other moves?
-
-MoveBall:
-
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    UPDATE_OAM_POSITION_ENEMY 3, 2
+    UPDATE_OAM_POSITION_ENEMY2 4, 2
     ret
 
 Clear:
@@ -450,9 +258,19 @@ BossUpdate::
     ld a, [hli]
     ldh [hEnemyAlive], a
     ld a, [hli]
+    ldh [hEnemyDying], a
+    ld a, [hli]
     ldh [hEnemyAnimationFrame], a
     ld a, [hli]
+    ldh [hEnemyAnimationTimer], a
+    ld a, [hli]
     ldh [hEnemyDirectionLeft], a
+    ld a, [hli]
+    ldh [hEnemyY2], a
+    ld a, [hli]
+    ldh [hEnemyX2], a
+    ld a, [hli]
+    ldh [hEnemyParam1], a
     ld a, [hl]
     ldh [hEnemyDifficulty], a
 
@@ -467,14 +285,33 @@ BossUpdate::
     and	PORCUPINE_MOVE_TIME
     jr nz, .endMove
 .canMove:
-    call Move
-    call MoveBall
 .endMove:
+
+.checkAttack:
+    ldh a, [hGlobalTimer]
+    and	PORCUPINE_ATTACK_TIME
+    jr nz, .endAttack
+
+.canAttack:
+
+.endAttack:
 
 .checkCollision:
     ldh a, [hGlobalTimer]
     and	PORCUPINE_COLLISION_TIME
     jr nz, .endCollision
+    ldh a, [hEnemyDying]
+    cp a, 0
+    jr nz, .endCollision
+.checkHit:
+    ld bc, wPlayerBalloonOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ld d, 16
+    ld e, 16
+    call CollisionCheck
+    cp a, 0
+    jr z, .checkHitByBullet
+    jr .bossDamaged
 .checkHitByBullet:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     LD_BC_HL
@@ -485,10 +322,39 @@ BossUpdate::
     cp a, 0
     jr z, .endCollision
     call ClearBullet
-    ldh a, [hEnemyAlive]
-    dec a
-    ldh [hEnemyAlive], a
+.bossDamaged:
+    ; ldh a, [hEnemyAlive]
+    ; dec a
+    ; ldh [hEnemyAlive], a
+    ld a, 1
+    ldh [hEnemyDying], a
 .endCollision:
+
+; .popped:
+;     ldh a, [hEnemyDying]
+;     cp a, 0
+;     call nz, PopBalloonAnimation
+;     ldh a, [hEnemyDying]
+;     cp a, 0
+;     jr nz, .endPopped
+; .poppingAnimationDone:
+;     xor a ; ld a, 0
+;     ldh [hEnemyAnimationFrame], a
+;     ldh [hEnemyAnimationTimer], a
+
+
+;     ; ld a, 150
+;     ; ldh [hEnemyParam1], a
+; .endPopped:
+
+; .checkInvincible:
+;     ldh a, [hEnemyParam1]
+;     cp a, 0
+;     jr z, .endInvincible
+;     dec a
+;     ldh [hEnemyParam1], a
+; .blinkBoss:
+; .endInvincible:
 
 .checkOffscreen:
 .offscreen:
