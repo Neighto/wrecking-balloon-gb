@@ -30,6 +30,7 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/Bomb2.2bpp"
     INCBIN "incbin/sprite/String.2bpp"
     INCBIN "incbin/sprite/PlayerHappy.2bpp"
+    INCBIN "incbin/sprite/BossLaugh.2bpp"
 GameSpriteTilesEnd::
 
 LevelCityTiles::

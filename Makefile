@@ -43,7 +43,7 @@ ifdef path
 	rgbgfx $(flag) -h -o incbin/$(path).2bpp  $(IMG_DIR)/$(path).png
 	@echo "Ran rgbgfx - tileset for $(path)"
 else
-	$(foreach file, $(SPRITE_FILES), rgbgfx $(flag) -h -o incbin/$(file).2bpp $(IMG_DIR)/$(file).png;)
+	$(foreach file, $(SPRITE_FILES), rgbgfx -h $(flag) -o incbin/$(file).2bpp $(IMG_DIR)/$(file).png;)
 	@echo "Ran rgbgfx - tileset for all"
 endif
 

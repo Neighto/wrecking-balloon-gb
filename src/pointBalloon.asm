@@ -7,6 +7,8 @@ INCLUDE "constants.inc"
 POINT_BALLOON_OAM_SPRITES EQU 3
 POINT_BALLOON_MOVE_TIME EQU %00000001
 POINT_BALLOON_COLLISION_TIME EQU %00001000
+POINT_BALLOON_STRING_X_OFFSET EQU 4
+POINT_BALLOON_STRING_Y_OFFSET EQU 14
 
 POINT_BALLOON_EASY_TILE EQU $3A
 POINT_BALLOON_EASY_POINTS EQU 25
@@ -112,10 +114,10 @@ SpawnPointBalloon::
     ld [hli], a
 .stringOAM:
     ldh a, [hEnemyY]
-    add 14
+    add POINT_BALLOON_STRING_Y_OFFSET
     ld [hli], a
     ldh a, [hEnemyX]
-    add 4
+    add POINT_BALLOON_STRING_X_OFFSET
     ld [hli], a
     ld a, STRING_TILE
     ld [hli], a
@@ -181,33 +183,25 @@ PointBalloonUpdate::
     cp a, EASY
     jr nz, .moveMedium
     dec [hl]
-    jr .balloonLeftOAM
+    jr .setOAM
 .moveMedium:
     cp a, MEDIUM
     jr nz, .moveHard
     dec [hl]
     dec [hl]
-    jr .balloonLeftOAM
+    jr .setOAM
 .moveHard:
     cp a, HARD
-    jr nz, .balloonLeftOAM
+    jr nz, .setOAM
     dec [hl]
     dec [hl]
     dec [hl]
-.balloonLeftOAM:
+.setOAM:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ldh a, [hEnemyY]
-    ld [hli], a
-    inc l
-    inc l
-    inc l
-.balloonRightOAM:
-    ld [hli], a
-    inc l
-    inc l
-    inc l
+    UPDATE_OAM_POSITION_ENEMY 2, 1
 .stringOAM:
-    add 14
+    ldh a, [hEnemyY]
+    add POINT_BALLOON_STRING_Y_OFFSET
     ld [hli], a
 .endMove:
 
