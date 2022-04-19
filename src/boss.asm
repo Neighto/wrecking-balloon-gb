@@ -241,6 +241,24 @@ Move:
     UPDATE_OAM_POSITION_ENEMY2 4, 2
     ret
 
+BossLaugh:
+    SET_HL_TO_ADDRESS wOAM+28, hEnemyOAM
+.bossTopMiddleOAM:
+    inc l
+    inc l
+    ld a, PORCUPINE_LAUGH_TILE_1
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+.bossTopMiddle2OAM:
+    inc l
+    inc l
+    ld a, PORCUPINE_LAUGH_TILE_2
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+    ret
+
 Clear:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     RESET_AT_HL PORCUPINE_OAM_BYTES
@@ -293,7 +311,7 @@ BossUpdate::
     jr nz, .endAttack
 
 .canAttack:
-
+    call BossLaugh
 .endAttack:
 
 .checkCollision:
