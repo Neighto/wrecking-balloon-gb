@@ -97,6 +97,11 @@ SetupNextLevel::
 	call ClearRAM
 	call ClearSound
 
+	; testing
+	ld a, 2
+	ld [wLevel], a
+	; ^^^
+
 	ld a, [wLevel]
 .level1:
 	cp a, 1
@@ -148,10 +153,10 @@ SetupNextLevel::
 	call LCD_ON
 
 GameCountdownLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateGameCountdown
-	; jp GameCountdownLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateGameCountdown
+	jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA

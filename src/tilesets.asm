@@ -20,8 +20,6 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/BalloonGeneric.2bpp"
     INCBIN "incbin/sprite/ManWave.2bpp"
     INCBIN "incbin/sprite/ManWave2.2bpp"
-    INCBIN "incbin/sprite/Boss.2bpp"
-    INCBIN "incbin/sprite/BossBall.2bpp"
     INCBIN "incbin/sprite/PointBalloon.2bpp"
     INCBIN "incbin/sprite/ManClap.2bpp"
     INCBIN "incbin/sprite/EnemyCactus2.2bpp"
@@ -30,6 +28,8 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/Bomb2.2bpp"
     INCBIN "incbin/sprite/String.2bpp"
     INCBIN "incbin/sprite/PlayerHappy.2bpp"
+    INCBIN "incbin/sprite/Boss.2bpp"
+    INCBIN "incbin/sprite/BossBall.2bpp"
     INCBIN "incbin/sprite/BossLaugh.2bpp"
 GameSpriteTilesEnd::
 
