@@ -16,20 +16,18 @@ MODULO::
     jr nc, .loop
     ret
 
-; RANDOM::
-;     ; takes 'a' argument as range number
-;     ; uses 'd' as holder
-;     ; returns 'a' as random number => 0 to a - 1
-;     ; ex:
-;     ; ld a, 10
-;     ; call RANDOM
-;     ; [a is # 0-9]
-;     push de
-;     ld d, a
-;     ldh a, [rDIV]
-;     call MODULO
-;     pop de
-;     ret
+RANDOM::
+    ; takes 'a' argument as range number
+    ; uses 'd' as holder
+    ; returns 'a' as random number => 0 to a - 1
+    ; ex:
+    ; ld a, 10
+    ; call RANDOM
+    ; [a is # 0-9]
+    ld d, a
+    ldh a, [rDIV]
+    call MODULO
+    ret
 
 DIVISION::
     ; simple division formula

@@ -172,6 +172,24 @@ MACRO UPDATE_OAM_POSITION_ENEMY_WITH_OFFSET
     UPDATE_OAM_POSITION_HRAM \1, \2, [hEnemyX], [hEnemyY], \3
 ENDM
 
+MACRO IF_HRAM_Z
+    ; argument 1 is hram var
+    ; argument 2 is compare value
+    ; argument 3 is label for zero path
+    ldh a, [\1]
+    cp a, \2
+    jr z, \3
+ENDM
+
+MACRO IF_WRAM_Z
+    ; argument 1 is wram var
+    ; argument 2 is compare value
+    ; argument 3 is label for zero path
+    ld a, [\1]
+    cp a, \2
+    jr z, \3
+ENDM
+
 ; Level Macros
 
 ; Level Instructions
