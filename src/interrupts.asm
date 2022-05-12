@@ -300,7 +300,7 @@ Level2LCDInterrupt:
 .end:
     jp LCDInterruptEnd
 
-SetLevel2Interrupts::
+SetLevelDesertInterrupts::
     ld a, GAME_DESERT_LCD_SCROLL_FAR
     ldh [rLYC], a
 
@@ -352,7 +352,7 @@ Level3LCDInterrupt:
 .end:
     jp LCDInterruptEnd
 
-SetLevel3Interrupts::
+SetLevelShowdownInterrupts::
     ld a, GAME_SHOWDOWN_LCD_SCROLL_CLOSE
     ldh [rLYC], a
 

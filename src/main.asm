@@ -98,7 +98,7 @@ SetupNextLevel::
 	call ClearSound
 
 	; testing
-	ld a, 2
+	ld a, 3
 	ld [wLevel], a
 	; ^^^
 
@@ -123,16 +123,16 @@ SetupNextLevel::
 .level3:
 	cp a, 3
 	jr nz, .level4
-	call SetLevel2Interrupts
-	call LoadLevelDesertGraphics
-	ld hl, angryTheme
+	call SetLevelShowdownInterrupts
+	call LoadLevelShowdownGraphics
+	ld hl, bossTheme
 	call hUGE_init
 	jr .endLevelSetup
 .level4:
 	cp a, 4
 	jr nz, .level5
-	call SetLevel3Interrupts
-	call LoadLevel3Graphics
+	call SetLevelDesertInterrupts
+	call LoadLevelDesertGraphics
 	call InitializeFlicker
 	ld hl, angryTheme
 	call hUGE_init
@@ -153,10 +153,10 @@ SetupNextLevel::
 	call LCD_ON
 
 GameCountdownLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateGameCountdown
-	jp GameCountdownLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateGameCountdown
+	; jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA

@@ -4,9 +4,9 @@ INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 INCLUDE "constants.inc"
 
-PORCUPINE_OAM_SPRITES EQU 14
+PORCUPINE_OAM_SPRITES EQU 9
 PORCUPINE_OAM_BYTES EQU PORCUPINE_OAM_SPRITES * 4
-PORCUPINE_MOVE_TIME EQU %00000011
+PORCUPINE_MOVE_TIME EQU %00000001
 PORCUPINE_ATTACK_TIME EQU %01111111
 PORCUPINE_COLLISION_TIME EQU %00001000
 
@@ -17,18 +17,48 @@ PORCUPINE_BALLOON_TILE_2 EQU $42
 PORCUPINE_BALLOON_TILE_3 EQU $48
 PORCUPINE_BALLOON_TILE_4 EQU $4A
 
-PORCUPINE_TILE_1 EQU $40
-PORCUPINE_TILE_2 EQU $42
-PORCUPINE_TILE_3 EQU $44
-PORCUPINE_TILE_4 EQU $46
-PORCUPINE_TILE_5 EQU $48
+PORCUPINE_TILE_1 EQU $52
+PORCUPINE_TILE_2 EQU $54
+PORCUPINE_TILE_3 EQU $56
+PORCUPINE_TILE_4 EQU $58
+PORCUPINE_TILE_5 EQU $5A
 
 PORCUPINE_LAUGH_TILE_1 EQU $6C
 PORCUPINE_LAUGH_TILE_2 EQU $6E
 
+PORCUPINE_STRING_Y_OFFSET EQU 31
+PORCUPINE_STRING_X_OFFSET EQU 12
+
+PORCUPINE_START_SPEED EQU 1
+PORCUPINE_INCREASE_SPEED EQU 1
+PORCUPINE_MAX_SPEED EQU 4
+
+PORCUPINE_LEFTSIDE_POSITION_X EQU 10
+PORCUPINE_RIGHTSIDE_POSITION_X EQU 132
+PORCUPINE_TOPSIDE_POSITION_Y EQU 25
+PORCUPINE_DOWNSIDE_POSITION_Y EQU 100
+
 PORCUPINE_POINTS EQU 1
 
+SECTION "boss temp vars", WRAM0
+    wEnemyToX:: DB
+    wEnemyToY:: DB
+    wEnemyFromX:: DB
+    wEnemyFromY:: DB
+    wEnemyMoveTimer:: DB
+    wEnemyDirectionUp:: DB
+
 SECTION "boss", ROMX
+
+ClearTempVars:
+    xor a ; ld a, 0
+    ld [wEnemyToX], a
+    ld [wEnemyToY], a
+    ld [wEnemyFromX], a
+    ld [wEnemyFromY], a
+    ld [wEnemyMoveTimer], a
+    ld [wEnemyDirectionUp], a
+    ret
 
 SetStruct:
     ; Argument hl = start of free enemy struct
@@ -56,10 +86,51 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyX2]
     ld [hli], a
+    ldh a, [hEnemySpeed]
+    ld [hli], a
     ldh a, [hEnemyParam1] ; Enemy Invincibility Timer
     ld [hli], a
     ldh a, [hEnemyDifficulty]
     ld [hl], a
+    ret
+
+UpdateBossPosition:
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    UPDATE_OAM_POSITION_ENEMY 4, 2
+    ldh a, [hEnemyY]
+    add PORCUPINE_STRING_Y_OFFSET
+    ld [hli], a
+    ldh a, [hEnemyX]
+    add PORCUPINE_STRING_X_OFFSET
+    ld [hli], a
+    ret
+
+MakeBossFaceRight:
+    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
+    ld a, PORCUPINE_TILE_5
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
+    inc l
+    inc l
+    ld a, PORCUPINE_TILE_3
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
+    ret
+
+MakeBossFaceLeft:
+    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
+    ld a, PORCUPINE_TILE_3
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+    inc l
+    inc l
+    ld a, PORCUPINE_TILE_5
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
     ret
 
 SpawnBoss::
@@ -84,6 +155,7 @@ SpawnBoss::
     LD_BC_DE
     ld a, 1
     ldh [hEnemyActive], a
+    ldh [hEnemyDirectionLeft], a
     ld a, PORCUPINE_HP
     ldh [hEnemyAlive], a
     ldh a, [hEnemyY]
@@ -92,52 +164,9 @@ SpawnBoss::
     ldh a, [hEnemyX]
     sub 4
     ldh [hEnemyX2], a
+    call ClearTempVars ; TEMP
+    call UpdateBossPosition
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    UPDATE_OAM_POSITION_ENEMY 3, 2
-    UPDATE_OAM_POSITION_ENEMY2 4, 2
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-.balloonTopLeftOAM:
-    inc l
-    inc l
-    ld a, PORCUPINE_BALLOON_TILE_1
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-.balloonTopMiddleOAM:
-    inc l
-    inc l
-    ld a, PORCUPINE_BALLOON_TILE_1
-    ld [hli], a
-    ld a, OAMF_PAL1
-    ld [hli], a
-.balloonTopRightOAM:
-    inc l
-    inc l
-    ld a, PORCUPINE_BALLOON_TILE_1
-    ld [hli], a
-    ld a, OAMF_PAL1 | OAMF_XFLIP
-    ld [hli], a
-.balloonBottomLeftOAM:
-    inc l
-    inc l
-    ld a, PORCUPINE_BALLOON_TILE_2
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-.balloonBottomMiddleOAM:
-    inc l
-    inc l
-    ld a, PORCUPINE_BALLOON_TILE_4
-    ld [hli], a
-    ld a, OAMF_PAL1
-    ld [hli], a
-.balloonBottomRightOAM:
-    inc l
-    inc l
-    ld a, PORCUPINE_BALLOON_TILE_2
-    ld [hli], a
-    ld a, OAMF_PAL1 | OAMF_XFLIP
-    ld [hli], a
 .bossTopLeftOAM:
     inc l
     inc l
@@ -193,6 +222,13 @@ SpawnBoss::
     ld a, PORCUPINE_TILE_2
     ld [hli], a
     ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
+.stringOAM:
+    inc l
+    inc l
+    ld a, STRING_TILE
+    ld [hli], a
+    ld a, OAMF_PAL0
     ld [hl], a
 .setStruct:
     LD_HL_BC
@@ -201,68 +237,93 @@ SpawnBoss::
     pop hl
     ret
 
-Move:
-    ; Follow player
-.moveVertical:
-    ld a, [wPlayerY]
-    ld b, a
-    ldh a, [hEnemyY]
-    cp a, b
-    jr z, .moveHorizontal
-    jr nc, .moveDown
-.moveUp:
-    inc a
-    ldh [hEnemyY], a
-    jr .moveHorizontal
-.moveDown:
-    dec a
-    ldh [hEnemyY], a
-.moveHorizontal:
-    ld a, [wPlayerX]
-    ld b, a
-    ldh a, [hEnemyX]
-    cp a, b
-    jr z, .updatePosition
-    jr c, .moveRight
-.moveLeft:
-    dec a
-    ldh [hEnemyX], a
-    ld a, 1
-    ldh [hEnemyDirectionLeft], a
-    jr .updatePosition
-.moveRight:
-    inc a
-    ldh [hEnemyX], a
-    xor a ; ld a, 0
-    ldh [hEnemyDirectionLeft], a
-.updatePosition:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    UPDATE_OAM_POSITION_ENEMY 3, 2
-    UPDATE_OAM_POSITION_ENEMY2 4, 2
-    ret
-
-BossLaugh:
-    SET_HL_TO_ADDRESS wOAM+28, hEnemyOAM
-.bossTopMiddleOAM:
-    inc l
-    inc l
-    ld a, PORCUPINE_LAUGH_TILE_1
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-.bossTopMiddle2OAM:
-    inc l
-    inc l
-    ld a, PORCUPINE_LAUGH_TILE_2
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-    ret
-
 Clear:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     RESET_AT_HL PORCUPINE_OAM_BYTES
     call InitializeEnemyStructVars
+    ret
+
+HelperMoveY:
+    ld b, 1 ; speed
+.move:
+    IF_WRAM_Z wEnemyDirectionUp, 0, .moveDown
+.moveUp:
+    ldh a, [hEnemyY]
+    cp a, PORCUPINE_TOPSIDE_POSITION_Y
+    jr nc, .moveUpStopSkip
+.moveUpStop:
+    ld b, 0
+.moveUpStopSkip:
+    sub a, b
+    ldh [hEnemyY], a
+    ret
+.moveDown:
+    ldh a, [hEnemyY]
+    cp a, PORCUPINE_DOWNSIDE_POSITION_Y
+    jr c, .moveDownStopSkip
+.moveDownStop:
+    ld b, 0
+.moveDownStopSkip:
+    add a, b
+    ldh [hEnemyY], a
+    ret
+
+HelperMoveX:
+    ld hl, hEnemySpeed
+    ld a, [wEnemyToX] ; do we need this if its a hard number??
+    ld b, a
+    IF_HRAM_Z hEnemyDirectionLeft, 0, .handleMovingRight
+.handleMovingLeft:
+    ldh a, [hEnemyX]
+    cp a, b
+    jr c, .stopSpeed
+    cp a, PORCUPINE_LEFTSIDE_POSITION_X + PORCUPINE_MAX_SPEED * 2
+    jr c, .slowDown
+    jr .speedUp
+.handleMovingRight:
+    ldh a, [hEnemyX]
+    cp a, b
+    jr nc, .stopSpeed
+    cp a, PORCUPINE_RIGHTSIDE_POSITION_X - PORCUPINE_MAX_SPEED * 2
+    jr nc, .slowDown
+.speedUp:
+    ld a, [hl]
+    add a, PORCUPINE_INCREASE_SPEED
+    ld b, PORCUPINE_MAX_SPEED
+    cp a, b
+    jr c, .updateSpeed
+    ld a, b
+    jr .updateSpeed
+.slowDown:
+    ld a, [hl]
+    sub a, PORCUPINE_INCREASE_SPEED
+    ld b, PORCUPINE_START_SPEED
+    cp a, b
+    jr c, .updateSpeed
+    ld a, b
+    jr .updateSpeed
+.stopSpeed:
+    IF_HRAM_Z hEnemyDirectionLeft, 0, .stopFaceLeft
+.stopFaceRight:
+    call MakeBossFaceRight
+    jr .endStopFace
+.stopFaceLeft:
+    call MakeBossFaceLeft
+.endStopFace:
+    xor a ; ld a, 0
+.updateSpeed:
+    ld [hl], a
+.move:
+    IF_HRAM_Z hEnemyDirectionLeft, 0, .moveRight
+.moveLeft:
+    ldh a, [hEnemyX]
+    sub a, [hl]
+    ldh [hEnemyX], a
+    ret
+.moveRight:
+    ldh a, [hEnemyX]
+    add a, [hl]
+    ldh [hEnemyX], a
     ret
 
 BossUpdate::
@@ -288,6 +349,8 @@ BossUpdate::
     ld a, [hli]
     ldh [hEnemyX2], a
     ld a, [hli]
+    ldh [hEnemySpeed], a
+    ld a, [hli]
     ldh [hEnemyParam1], a
     ld a, [hl]
     ldh [hEnemyDifficulty], a
@@ -295,14 +358,59 @@ BossUpdate::
 .checkAlive:
     ldh a, [hEnemyAlive]
     cp a, 0
-    jr z, .isDead
+    jp z, .isDead
 .isAlive:
+
+    ; Boss may have 2 phases,
+    ; 1 - floats around and shoots needles
+    ; AND oscillates up and down, and every so often hops from right side of screen to left 
+    ; 2 - navigates the bottom of the screen and jumps up to try to hit the player
+.checkPointPicker:
+    ld a, [wEnemyMoveTimer]
+    inc a
+    ld [wEnemyMoveTimer], a
+    cp a, 140
+    jr z, .directionY
+    cp a, 1
+    jr nz, .endPointPicker
+.directionX:
+    ldh a, [hEnemyX]
+    cp a, SCRN_X / 2
+    jr c, .moveToRight
+.moveToLeft:
+    ld a, PORCUPINE_LEFTSIDE_POSITION_X
+    ld [wEnemyToX], a
+    ld a, 1
+    ldh [hEnemyDirectionLeft], a
+    jr .endDirectionX
+.moveToRight:
+    ld a, PORCUPINE_RIGHTSIDE_POSITION_X
+    ld [wEnemyToX], a
+    xor a ; ld a, 0 
+    ldh [hEnemyDirectionLeft], a
+.endDirectionX:
+.directionY:
+    ldh a, [hEnemyY]
+    cp a, SCRN_Y / 2
+    jr c, .moveToDown
+.moveToUp:
+    ld a, 1
+    ld [wEnemyDirectionUp], a
+    jr .endDirectionY
+.moveToDown:
+    xor a ; ld a, 0
+    ld [wEnemyDirectionUp], a
+.endDirectionY:
+.endPointPicker:
 
 .checkMove:
     ldh a, [hGlobalTimer]
     and	PORCUPINE_MOVE_TIME
     jr nz, .endMove
-.canMove:
+.canMove: 
+    call HelperMoveX
+    call HelperMoveY
+    call UpdateBossPosition
 .endMove:
 
 .checkAttack:
@@ -311,8 +419,23 @@ BossUpdate::
     jr nz, .endAttack
 
 .canAttack:
-    ; call BossLaugh
 .endAttack:
+
+.checkString:
+    ldh a, [hGlobalTimer]
+    and STRING_MOVE_TIME
+    jr nz, .endString
+    SET_HL_TO_ADDRESS wOAM+35, hEnemyOAM
+    ld a, [hl]
+    cp a, OAMF_PAL0
+    jr z, .flipX
+    ld a, OAMF_PAL0
+    ld [hl], a
+    jr .endString
+.flipX:
+    ld a, OAMF_XFLIP | OAMF_PAL0
+    ld [hl], a
+.endString:
 
 .checkCollision:
     ldh a, [hGlobalTimer]

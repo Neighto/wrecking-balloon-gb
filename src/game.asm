@@ -56,7 +56,7 @@ LoadLevelDesertGraphics::
 	call MEMCPY
     ret
 
-LoadLevel3Graphics::
+LoadLevelShowdownGraphics::
 	ld bc, LevelShowdownTiles
 	ld hl, _VRAM9000
 	ld de, LevelShowdownTilesEnd - LevelShowdownTiles
