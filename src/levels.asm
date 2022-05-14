@@ -18,7 +18,9 @@ SPAWN_X_D EQU 128
 SECTION "level vars", WRAM0
     wLevel:: DB
     wLevelWaitCounter:: DB
+    wLevelWaitBoss:: DB
     wLevelDataAddress:: DS 2
+
 
 SECTION "level data", ROM0
 
@@ -117,8 +119,8 @@ Level2:
 
 Level3:
     LEVEL_SPAWN BOSS, 80, 120, NONE
-    ; LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_C, EASY
-    LEVEL_WAIT 150
+    LEVEL_WAIT_BOSS
+    LEVEL_WAIT 10
     LEVEL_END
 
     ; Desert Levels
@@ -230,6 +232,7 @@ Level7:
 InitializeNewLevel::
     xor a ; ld a, 0
     ld [wLevelWaitCounter], a
+    ld [wLevelWaitBoss], a
 
     ld a, [wLevel]
 .level1:
@@ -317,6 +320,8 @@ LevelDataHandler::
     jr z, .spawn
     cp a, LEVEL_WAIT_KEY
     jr z, .wait
+    cp a, LEVEL_WAIT_BOSS_KEY
+    jr z, .waitBoss
     cp a, LEVEL_END_KEY
     jr z, .end
     cp a, GAME_WON_KEY
@@ -348,7 +353,17 @@ LevelDataHandler::
     ld [wLevelDataAddress+1], a
     xor a ; ld a, 0
     ld [wLevelWaitCounter], a
-    ret 
+    ret
+.waitBoss:
+    ld a, [wLevelWaitBoss]
+    cp a, 0
+    ret z
+    inc hl
+    ld a, l
+    ld [wLevelDataAddress], a
+    ld a, h
+    ld [wLevelDataAddress+1], a
+    ret
 .end:
     call CanFadeLevel
     jr z, .incrementLevel
