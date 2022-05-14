@@ -95,6 +95,8 @@ UpdateEnemy::
     jr z, .projectile
     cp a, BOSS
     jr z, .boss
+    cp a, BOSS_NEEDLE
+    jr z, .bossNeedle
     cp a, ANVIL
     jr z, .anvil
     jr .checkLoop
@@ -115,6 +117,9 @@ UpdateEnemy::
     jr .checkLoop
 .boss:
     call BossUpdate
+    jr .checkLoop
+.bossNeedle:
+    call BossNeedleUpdate
     jr .checkLoop
 .anvil:
     call AnvilUpdate

@@ -31,6 +31,7 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/Boss.2bpp"
     INCBIN "incbin/sprite/BossConfident.2bpp"
     INCBIN "incbin/sprite/BossScared.2bpp"
+    INCBIN "incbin/sprite/BossNeedle.2bpp"
 GameSpriteTilesEnd::
 
 LevelCityTiles::
