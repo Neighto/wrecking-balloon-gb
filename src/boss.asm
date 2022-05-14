@@ -10,7 +10,7 @@ PORCUPINE_MOVE_TIME EQU %00000001
 PORCUPINE_ATTACK_TIME EQU %01111111
 PORCUPINE_COLLISION_TIME EQU %00001000
 
-PORCUPINE_HP EQU 2
+PORCUPINE_HP EQU 1
 
 PORCUPINE_BALLOON_TILE_1 EQU $56
 PORCUPINE_BALLOON_TILE_2 EQU $42
@@ -41,7 +41,7 @@ PORCUPINE_RIGHTSIDE_POSITION_X EQU 132
 PORCUPINE_TOPSIDE_POSITION_Y EQU 25
 PORCUPINE_DOWNSIDE_POSITION_Y EQU 100
 
-PORCUPINE_POINTS EQU 1
+PORCUPINE_POINTS EQU 50
 
 SECTION "boss temp vars", WRAM0
     wEnemyMoveTimer:: DB
@@ -76,10 +76,6 @@ SetStruct:
     ldh a, [hEnemyAnimationTimer]
     ld [hli], a
     ldh a, [hEnemyDirectionLeft]
-    ld [hli], a
-    ldh a, [hEnemyY2]
-    ld [hli], a
-    ldh a, [hEnemyX2]
     ld [hli], a
     ldh a, [hEnemySpeed]
     ld [hli], a
@@ -180,15 +176,8 @@ SpawnBoss::
     LD_BC_DE
     ld a, 1
     ldh [hEnemyActive], a
-    ; ldh [hEnemyDirectionLeft], a ; will be 0 init
     ld a, PORCUPINE_HP
     ldh [hEnemyAlive], a
-    ldh a, [hEnemyY]
-    add 32
-    ldh [hEnemyY2], a
-    ldh a, [hEnemyX]
-    sub 4
-    ldh [hEnemyX2], a
     call ClearTempVars ; TEMP
     call UpdateBossPosition
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
@@ -367,10 +356,6 @@ BossUpdate::
     ld a, [hli]
     ldh [hEnemyDirectionLeft], a
     ld a, [hli]
-    ldh [hEnemyY2], a
-    ld a, [hli]
-    ldh [hEnemyX2], a
-    ld a, [hli]
     ldh [hEnemySpeed], a
     ld a, [hli]
     ldh [hEnemyParam1], a
@@ -484,18 +469,17 @@ BossUpdate::
     ldh a, [hGlobalTimer]
     and	PORCUPINE_COLLISION_TIME
     jr nz, .endCollision
-    ldh a, [hEnemyDying]
-    cp a, 0
-    jr nz, .endCollision
-.checkHit:
+    ; ldh a, [hEnemyDying]
+    ; cp a, 0
+    ; jr nz, .endCollision
+.checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ld d, 16
-    ld e, 16
+    ld d, 32
+    ld e, 32
     call CollisionCheck
     cp a, 0
-    jr z, .checkHitByBullet
-    jr .bossDamaged
+    call nz, CollisionWithPlayer
 .checkHitByBullet:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     LD_BC_HL
@@ -507,38 +491,27 @@ BossUpdate::
     jr z, .endCollision
     call ClearBullet
 .bossDamaged:
-    ; ldh a, [hEnemyAlive]
-    ; dec a
-    ; ldh [hEnemyAlive], a
-    ld a, 1
-    ldh [hEnemyDying], a
+    ; Points
+    ld d, PORCUPINE_POINTS
+    call AddPoints
+    ; Sound
+    call PopSound
+    ldh a, [hEnemyAlive]
+    dec a
+    ldh [hEnemyAlive], a
+    ; ld a, 1
+    ; ldh [hEnemyDying], a
+    call MakeBossScared
 .endCollision:
 
 ; .popped:
 ;     ldh a, [hEnemyDying]
 ;     cp a, 0
-;     call nz, PopBalloonAnimation
-;     ldh a, [hEnemyDying]
-;     cp a, 0
-;     jr nz, .endPopped
-; .poppingAnimationDone:
-;     xor a ; ld a, 0
-;     ldh [hEnemyAnimationFrame], a
-;     ldh [hEnemyAnimationTimer], a
-
-
-;     ; ld a, 150
-;     ; ldh [hEnemyParam1], a
-; .endPopped:
-
-; .checkInvincible:
-;     ldh a, [hEnemyParam1]
-;     cp a, 0
-;     jr z, .endInvincible
+;     jr z, .endPopped
+;     ldh a, [hEnemyAlive]
 ;     dec a
-;     ldh [hEnemyParam1], a
-; .blinkBoss:
-; .endInvincible:
+;     ldh [hEnemyAlive], a
+; .endPopped:
 
 .checkOffscreen:
 .offscreen:
@@ -546,34 +519,51 @@ BossUpdate::
 
     jr .setStruct
 .isDead:
-    ; Points
-    ld d, PORCUPINE_POINTS
-    call AddPoints
-    ; Animation trigger
-    ; None
-    ; Sound
-    call PopSound
-    call Clear
+    ; call Clear
+    ld a, 1 
+    ld [wLevelWaitBoss], a
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
 
-.checkSpawnProjectile:
-    ldh a, [hEnemyParam2]
-    cp a, %01111111
-    jr nz, .endSpawnProjectile
-.spawnProjectile:
-    ; call MakeBossConfident
-
-    ld a, BOSS_NEEDLE
-    ldh [hEnemyNumber], a
-    ldh a, [hEnemyY]
-    add a, 4
-    ldh [hEnemyY], a
-    ldh a, [hEnemyX]
-    add a, 4
-    ldh [hEnemyX], a
-    call SpawnBossNeedle
-
-.endSpawnProjectile:
+; .checkSpawnBossNeedle:
+;     ldh a, [hEnemyParam2]
+;     cp a, %01111111
+;     ret nz
+; .spawnBossNeedle:
+;     call MakeBossConfident
+;     ld a, BOSS_NEEDLE
+;     ldh [hEnemyNumber], a
+; .topLeftNeedle:
+;     ld a, NONE ; Alias for aim top-left
+;     ldh [hEnemyDifficulty], a
+;     ldh a, [hEnemyY]
+;     add a, 8
+;     ldh [hEnemyY], a
+;     ldh a, [hEnemyX]
+;     add a, 8
+;     ldh [hEnemyX], a
+;     call SpawnBossNeedle
+; .topRightNeedle:
+;     ld a, EASY ; Alias for aim top-right
+;     ldh [hEnemyDifficulty], a
+;     ldh a, [hEnemyX]
+;     add a, 8
+;     ldh [hEnemyX], a
+;     call SpawnBossNeedle
+; .bottomRightNeedle:
+;     ld a, HARD ; Alias for aim bottom-right
+;     ldh [hEnemyDifficulty], a
+;     ldh a, [hEnemyY]
+;     add a, 16
+;     ldh [hEnemyY], a
+;     call SpawnBossNeedle
+; .bottomLeftNeedle:
+;     ld a, MEDIUM ; Alias for aim bottom-left
+;     ldh [hEnemyDifficulty], a
+;     ldh a, [hEnemyX]
+;     sub a, 8
+;     ldh [hEnemyX], a
+;     call SpawnBossNeedle
+; .endSpawnBossNeedle:
     ret

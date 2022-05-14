@@ -8,7 +8,15 @@ BOSS_NEEDLE_MOVE_TIME EQU %00000001
 BOSS_NEEDLE_COLLISION_TIME EQU %00001000
 BOSS_NEEDLE_TILE EQU $64
 
+BOSS_NEEDLE_SPEED EQU 2
+
 SECTION "boss needle", ROM0
+
+; Enemy difficulty / Effect
+; NONE - Shoot top-left
+; EASY - Shoot top-right
+; MEDIUM - Shoot bottom-left
+; HARD - Shoot bottom-right
 
 SetStruct:
     ; Argument hl = start of free enemy struct
@@ -22,9 +30,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyOAM]
     ld [hli], a
-    ldh a, [hEnemyY2] ; Add to Y
-    ld [hli], a
-    ldh a, [hEnemyX2] ; Add to X
+    ldh a, [hEnemyDifficulty]
     ld [hl], a
     ret
 
@@ -50,49 +56,37 @@ SpawnBossNeedle::
     LD_BC_DE
     ld a, 1
     ldh [hEnemyActive], a
-.setupY2:
-    ld a, [wPlayerY]
-    ld d, a
-    ldh a, [hEnemyY]
-    cp a, d
-    jr c, .down
-.up:
-    ld a, -1
-    jr .endY
-; .middleY:
-;     xor a ; ld a, 0
-;     jr .endY
-.down:
-    ld a, 1
-.endY:
-    ldh [hEnemyY2], a
-.endSetupY2:
-.setupX2:
-    ld a, [wPlayerX]
-    ld d, a
-    ldh a, [hEnemyX]
-    cp a, d
-    jr c, .right
-.left:
-    ld a, -1
-    jr .endX
-; .middleX:
-;     xor a ; ld a, 0
-;     jr .endX
-.right:
-    ld a, 1
-.endX:
-    ldh [hEnemyX2], a
-.endSetupX2:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-.projectileOAM:
+
+.difficultyDirection:
+    ldh a, [hEnemyDifficulty]
+.topLeftDirection:
+    cp a, NONE
+    jr nz, .topRightDirection
+    ld e, OAMF_PAL0
+    jr .endDifficultyDirection
+.topRightDirection:
+    cp a, EASY
+    jr nz, .bottomLeftDirection
+    ld e, OAMF_PAL0 | OAMF_XFLIP
+    jr .endDifficultyDirection
+.bottomLeftDirection:
+    cp a, MEDIUM
+    jr nz, .bottomRightDirection
+    ld e, OAMF_PAL0 | OAMF_XFLIP
+    jr .endDifficultyDirection
+.bottomRightDirection:
+    ld e, OAMF_PAL0
+.endDifficultyDirection:
+
+.bossNeedleOAM:
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
     ld [hli], a
     ld a, BOSS_NEEDLE_TILE
     ld [hli], a
-    ld [hl], OAMF_PAL0
+    ld [hl], e
 .setStruct:
     LD_HL_BC
     call SetStruct
@@ -119,9 +113,7 @@ BossNeedleUpdate::
     ld a, [hli]
     ldh [hEnemyOAM], a
     ld a, [hli]
-    ldh [hEnemyY2], a
-    ld a, [hli]
-    ldh [hEnemyX2], a
+    ldh [hEnemyDifficulty], a
     ld a, [hl]
 
 .checkMove:
@@ -129,18 +121,39 @@ BossNeedleUpdate::
     and	BOSS_NEEDLE_MOVE_TIME
     jr nz, .endMove
 .canMove:
-.projectileOAM:
+.bossNeedleOAM:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+
+.difficultyDirection:
+    ldh a, [hEnemyDifficulty]
+.topLeftDirection:
+    cp a, NONE
+    jr nz, .topRightDirection
+    ld b, BOSS_NEEDLE_SPEED * -1
+    ld c, BOSS_NEEDLE_SPEED * -1
+    jr .endDifficultyDirection
+.topRightDirection:
+    cp a, EASY
+    jr nz, .bottomLeftDirection
+    ld b, BOSS_NEEDLE_SPEED * -1
+    ld c, BOSS_NEEDLE_SPEED
+    jr .endDifficultyDirection
+.bottomLeftDirection:
+    cp a, MEDIUM
+    jr nz, .bottomRightDirection
+    ld b, BOSS_NEEDLE_SPEED
+    ld c, BOSS_NEEDLE_SPEED * -1
+    jr .endDifficultyDirection
+.bottomRightDirection:
+    ld b, BOSS_NEEDLE_SPEED
+    ld c, BOSS_NEEDLE_SPEED
+.endDifficultyDirection:
     ldh a, [hEnemyY]
-    ld b, a
-    ldh a, [hEnemyY2]
     add a, b
     ldh [hEnemyY], a
     ld [hli], a
     ldh a, [hEnemyX]
-    ld b, a
-    ldh a, [hEnemyX2]
-    add a, b
+    add a, c
     ldh [hEnemyX], a
     ld [hl], a
 .endMove:
@@ -152,12 +165,12 @@ BossNeedleUpdate::
 .checkHit:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ld d, 8
-    ld e, 8
+    ld d, 8 ; should be 4... Maybe make collision that can read flipped
+    ld e, 4
     call CollisionCheck
     cp a, 0
     jr z, .endCollision
-.deathOfProjectile:
+.deathOfBossNeedle:
     call Clear
     call CollisionWithPlayer
     jr .setStruct
