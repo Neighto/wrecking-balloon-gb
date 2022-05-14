@@ -33,10 +33,6 @@ CollisionCheck::
     cp a, e
     jr nc, .noCollision
     ; Target y < collider y'
-    add 16
-    cp a, e
-    jr c, .noCollision
-    ; Target y' <= collider y'
 
 .checkX:
     inc l ; collider+1
@@ -60,10 +56,6 @@ CollisionCheck::
     cp a, d
     jr nc, .noCollision
     ; Target x < collider x'
-    add 16
-    cp a, d
-    jr c, .noCollision
-    ; Target x' <= collider x'
 
 .collision:
     ld a, 1 ; Success
