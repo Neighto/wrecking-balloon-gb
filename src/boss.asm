@@ -23,14 +23,17 @@ PORCUPINE_TILE_3 EQU $56
 PORCUPINE_TILE_4 EQU $58
 PORCUPINE_TILE_5 EQU $5A
 
-PORCUPINE_LAUGH_TILE_1 EQU $6C
-PORCUPINE_LAUGH_TILE_2 EQU $6E
+PORCUPINE_CONFIDENT_TILE_1 EQU $5C
+PORCUPINE_CONFIDENT_TILE_2 EQU $5E
+
+PORCUPINE_SCARED_TILE_1 EQU $60
+PORCUPINE_SCARED_TILE_2 EQU $62
 
 PORCUPINE_STRING_Y_OFFSET EQU 31
 PORCUPINE_STRING_X_OFFSET EQU 12
 
 PORCUPINE_START_SPEED EQU 1
-PORCUPINE_INCREASE_SPEED EQU 1
+PORCUPINE_INCREASE_SPEED EQU 2
 PORCUPINE_MAX_SPEED EQU 4
 
 PORCUPINE_LEFTSIDE_POSITION_X EQU 10
@@ -41,10 +44,6 @@ PORCUPINE_DOWNSIDE_POSITION_Y EQU 100
 PORCUPINE_POINTS EQU 1
 
 SECTION "boss temp vars", WRAM0
-    wEnemyToX:: DB
-    wEnemyToY:: DB
-    wEnemyFromX:: DB
-    wEnemyFromY:: DB
     wEnemyMoveTimer:: DB
     wEnemyDirectionUp:: DB
 
@@ -52,10 +51,6 @@ SECTION "boss", ROMX
 
 ClearTempVars:
     xor a ; ld a, 0
-    ld [wEnemyToX], a
-    ld [wEnemyToY], a
-    ld [wEnemyFromX], a
-    ld [wEnemyFromY], a
     ld [wEnemyMoveTimer], a
     ld [wEnemyDirectionUp], a
     ret
@@ -90,6 +85,8 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyParam1] ; Enemy Invincibility Timer
     ld [hli], a
+    ldh a, [hEnemyParam2] ; Enemy Projectile Timer
+    ld [hli], a
     ldh a, [hEnemyDifficulty]
     ld [hl], a
     ret
@@ -102,6 +99,34 @@ UpdateBossPosition:
     ld [hli], a
     ldh a, [hEnemyX]
     add PORCUPINE_STRING_X_OFFSET
+    ld [hli], a
+    ret
+
+MakeBossConfident:
+    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
+    ld a, PORCUPINE_CONFIDENT_TILE_1
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+    inc l
+    inc l
+    ld a, PORCUPINE_CONFIDENT_TILE_2
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+    ret
+
+MakeBossScared:
+    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
+    ld a, PORCUPINE_SCARED_TILE_1
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+    inc l
+    inc l
+    ld a, PORCUPINE_SCARED_TILE_2
+    ld [hli], a
+    ld a, OAMF_PAL0
     ld [hli], a
     ret
 
@@ -155,7 +180,7 @@ SpawnBoss::
     LD_BC_DE
     ld a, 1
     ldh [hEnemyActive], a
-    ldh [hEnemyDirectionLeft], a
+    ; ldh [hEnemyDirectionLeft], a ; will be 0 init
     ld a, PORCUPINE_HP
     ldh [hEnemyAlive], a
     ldh a, [hEnemyY]
@@ -245,7 +270,6 @@ Clear:
 
 HelperMoveY:
     ld b, 1 ; speed
-.move:
     IF_WRAM_Z wEnemyDirectionUp, 0, .moveDown
 .moveUp:
     ldh a, [hEnemyY]
@@ -270,19 +294,17 @@ HelperMoveY:
 
 HelperMoveX:
     ld hl, hEnemySpeed
-    ld a, [wEnemyToX] ; do we need this if its a hard number??
-    ld b, a
     IF_HRAM_Z hEnemyDirectionLeft, 0, .handleMovingRight
 .handleMovingLeft:
     ldh a, [hEnemyX]
-    cp a, b
+    cp a, PORCUPINE_LEFTSIDE_POSITION_X
     jr c, .stopSpeed
     cp a, PORCUPINE_LEFTSIDE_POSITION_X + PORCUPINE_MAX_SPEED * 2
     jr c, .slowDown
     jr .speedUp
 .handleMovingRight:
     ldh a, [hEnemyX]
-    cp a, b
+    cp a, PORCUPINE_RIGHTSIDE_POSITION_X
     jr nc, .stopSpeed
     cp a, PORCUPINE_RIGHTSIDE_POSITION_X - PORCUPINE_MAX_SPEED * 2
     jr nc, .slowDown
@@ -352,6 +374,8 @@ BossUpdate::
     ldh [hEnemySpeed], a
     ld a, [hli]
     ldh [hEnemyParam1], a
+    ld a, [hli]
+    ldh [hEnemyParam2], a
     ld a, [hl]
     ldh [hEnemyDifficulty], a
 
@@ -365,30 +389,31 @@ BossUpdate::
     ; 1 - floats around and shoots needles
     ; AND oscillates up and down, and every so often hops from right side of screen to left 
     ; 2 - navigates the bottom of the screen and jumps up to try to hit the player
-.checkPointPicker:
+    ; Could also just fly fast off screen left + shoot with needles (maybe another boss)
+    ; TODO what if cactus gets hit by something, he goes cross-eyed, blinks, and can't move for like 1 second?
+.checkPointPickerX:
     ld a, [wEnemyMoveTimer]
-    inc a
-    ld [wEnemyMoveTimer], a
-    cp a, 140
-    jr z, .directionY
-    cp a, 1
-    jr nz, .endPointPicker
+    cp a, 50 ; MAKE RANDOM
+    jr nz, .endPointPickerX
 .directionX:
     ldh a, [hEnemyX]
     cp a, SCRN_X / 2
     jr c, .moveToRight
 .moveToLeft:
     ld a, PORCUPINE_LEFTSIDE_POSITION_X
-    ld [wEnemyToX], a
-    ld a, 1
     ldh [hEnemyDirectionLeft], a
     jr .endDirectionX
 .moveToRight:
-    ld a, PORCUPINE_RIGHTSIDE_POSITION_X
-    ld [wEnemyToX], a
     xor a ; ld a, 0 
     ldh [hEnemyDirectionLeft], a
 .endDirectionX:
+.endPointPickerX:
+
+.checkPointPickerY:
+    ld a, [wEnemyMoveTimer]
+    and %00111111
+    ; cp a, 0 ; MAKE RANDOM
+    jr nz, .endPointPickerY
 .directionY:
     ldh a, [hEnemyY]
     cp a, SCRN_Y / 2
@@ -401,7 +426,13 @@ BossUpdate::
     xor a ; ld a, 0
     ld [wEnemyDirectionUp], a
 .endDirectionY:
-.endPointPicker:
+.endPointPickerY:
+
+.updatePointPickerTimer:
+    ld a, [wEnemyMoveTimer]
+    inc a
+    ld [wEnemyMoveTimer], a
+.endUpdatePointPickerTimer:
 
 .checkMove:
     ldh a, [hGlobalTimer]
@@ -414,11 +445,23 @@ BossUpdate::
 .endMove:
 
 .checkAttack:
-    ldh a, [hGlobalTimer]
-    and	PORCUPINE_ATTACK_TIME
-    jr nz, .endAttack
+    ; ldh a, [hGlobalTimer]
+    ; and	PORCUPINE_ATTACK_TIME
+    ; jr nz, .endAttack
 
 .canAttack:
+    ; Shoot needles (the more vertical the better!)
+    ; 3 up 3 down
+.checkProjectile:
+    ldh a, [hEnemyParam2]
+    inc a
+    ldh [hEnemyParam2], a
+    cp a, %01111111 + 1
+    jr c, .endProjectile
+    xor a ; ld a, 0
+    ldh [hEnemyParam2], a
+.endProjectile:
+
 .endAttack:
 
 .checkString:
@@ -514,4 +557,21 @@ BossUpdate::
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
+
+.checkSpawnProjectile:
+    ldh a, [hEnemyParam2]
+    cp a, %01111111
+    jr nz, .endSpawnProjectile
+.spawnProjectile:
+    ; call MakeBossConfident
+    ld a, PROJECTILE
+    ldh [hEnemyNumber], a
+    ldh a, [hEnemyY]
+    add a, 4
+    ldh [hEnemyY], a
+    ldh a, [hEnemyX]
+    add a, 4
+    ldh [hEnemyX], a
+    call SpawnProjectile
+.endSpawnProjectile:
     ret
