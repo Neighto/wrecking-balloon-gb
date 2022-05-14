@@ -298,6 +298,8 @@ SpawnDataHandler:
     jp z, SpawnProjectile
     cp a, BOSS
     jp z, SpawnBoss
+    cp a, BOSS_NEEDLE
+    jp z, SpawnBossNeedle
     cp a, ANVIL 
     jp z, SpawnAnvil
     ret

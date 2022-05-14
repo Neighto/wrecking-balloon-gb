@@ -439,8 +439,8 @@ BossUpdate::
     and	PORCUPINE_MOVE_TIME
     jr nz, .endMove
 .canMove: 
-    call HelperMoveX
-    call HelperMoveY
+    ; call HelperMoveX
+    ; call HelperMoveY
     call UpdateBossPosition
 .endMove:
 
@@ -564,7 +564,8 @@ BossUpdate::
     jr nz, .endSpawnProjectile
 .spawnProjectile:
     ; call MakeBossConfident
-    ld a, PROJECTILE
+
+    ld a, BOSS_NEEDLE
     ldh [hEnemyNumber], a
     ldh a, [hEnemyY]
     add a, 4
@@ -572,6 +573,7 @@ BossUpdate::
     ldh a, [hEnemyX]
     add a, 4
     ldh [hEnemyX], a
-    call SpawnProjectile
+    call SpawnBossNeedle
+
 .endSpawnProjectile:
     ret
