@@ -28,9 +28,12 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/Bomb2.2bpp"
     INCBIN "incbin/sprite/String.2bpp"
     INCBIN "incbin/sprite/PlayerHappy.2bpp"
-    INCBIN "incbin/sprite/Boss.2bpp"
+    INCBIN "incbin/sprite/BossA.2bpp"
+    INCBIN "incbin/sprite/BossB.2bpp"
+    INCBIN "incbin/sprite/BossFace.2bpp"
     INCBIN "incbin/sprite/BossConfident.2bpp"
     INCBIN "incbin/sprite/BossScared.2bpp"
+    INCBIN "incbin/sprite/BossFeet.2bpp"
     INCBIN "incbin/sprite/BossNeedle.2bpp"
 GameSpriteTilesEnd::
 
