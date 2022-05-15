@@ -15,6 +15,7 @@ Start::
 	call ClearRAM
 	call ClearAllTiles
 	call ResetScroll
+	call ResetGlobalTimer
 	call CopyDMARoutine
 	call LoadMenuOpeningGraphics
 	call InitializeLives
@@ -36,6 +37,7 @@ StartMenu::
 	call ResetScroll
 	call SetMenuInterrupts
 	call ResetFading
+	call ResetGlobalTimer
 	call LoadMenuGraphics
 	call SpawnMenuCursor
 	call LCD_ON_NO_WINDOW
@@ -55,6 +57,7 @@ StartGame::
 	call ClearSound
 	call ClearAllTiles
 	call ResetScroll
+	call ResetGlobalTimer
 	call SetOpeningCutsceneInterrupts
 	call LoadGameSpriteTiles
 	call LoadWindow
@@ -92,6 +95,7 @@ SetupNextLevel::
 	call WaitVBlank
 	call LCD_OFF
 	call ResetScroll
+	call ResetGlobalTimer
 	call ClearMap
 	call ClearOAM
 	call ClearRAM
@@ -151,7 +155,6 @@ SetupNextLevel::
 	call SpawnPlayer
 	call SpawnCountdown
 	call LCD_ON
-
 GameCountdownLoop:
 	; call WaitVBlank
 	; call OAMDMA
@@ -174,6 +177,7 @@ StageClear::
 	call InitializeInterrupts
 	call LoadStageClearGraphics
 	call ResetFading
+	call ResetGlobalTimer
 	call InitializeFadedPalettes
 	call InitializeStageClear
 	ld hl, menuTheme
@@ -194,6 +198,7 @@ GameOver::
 	call WaitVBlank
 	call LCD_OFF
 	call ResetScroll
+	call ResetGlobalTimer
 	call ClearMap
 	call ClearOAM
 	call ClearRAM
@@ -214,6 +219,7 @@ GameWon::
 	call WaitVBlank
 	call LCD_OFF
 	call ResetScroll
+	call ResetGlobalTimer
 	call ClearMap
 	call ClearOAM
 	call ClearRAM
