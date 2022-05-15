@@ -41,11 +41,18 @@ PORCUPINE_RIGHTSIDE_POSITION_X EQU 132
 PORCUPINE_TOPSIDE_POSITION_Y EQU 25
 PORCUPINE_DOWNSIDE_POSITION_Y EQU 100
 
+PORCUPINE_EXPRESSION_LEFT EQU 0
+PORCUPINE_EXPRESSION_RIGHT EQU 1
+PORCUPINE_EXPRESSION_CONFIDENT EQU 2
+PORCUPINE_EXPRESSION_SCARED EQU 3
+
 PORCUPINE_POINTS EQU 50
 
 SECTION "boss temp vars", WRAM0
     wEnemyMoveTimer:: DB
     wEnemyDirectionUp:: DB
+    wEnemyExpression:: DB
+    wEnemyExpressionTimer:: DB
 
 SECTION "boss", ROMX
 
@@ -53,6 +60,8 @@ ClearTempVars:
     xor a ; ld a, 0
     ld [wEnemyMoveTimer], a
     ld [wEnemyDirectionUp], a
+    ld [wEnemyExpression], a
+    ld [wEnemyExpressionTimer], a
     ret
 
 SetStruct:
@@ -314,13 +323,6 @@ HelperMoveX:
     ld a, b
     jr .updateSpeed
 .stopSpeed:
-    IF_HRAM_Z hEnemyDirectionLeft, 0, .stopFaceLeft
-.stopFaceRight:
-    call MakeBossFaceRight
-    jr .endStopFace
-.stopFaceLeft:
-    call MakeBossFaceLeft
-.endStopFace:
     xor a ; ld a, 0
 .updateSpeed:
     ld [hl], a
@@ -364,6 +366,47 @@ BossUpdate::
     ld a, [hl]
     ldh [hEnemyDifficulty], a
 
+.faceExpression:
+    ld a, [wEnemyExpressionTimer]
+    cp a, 0
+    jr z, .canUpdateFaceExpression
+    dec a
+    ld [wEnemyExpressionTimer], a
+    jr .endFaceExpression
+.canUpdateFaceExpression:
+    ld a, [wEnemyExpression]
+.faceExpressionLeft:
+    cp a, PORCUPINE_EXPRESSION_LEFT
+    jr nz, .faceExpressionRight
+    call MakeBossFaceLeft
+    jr .setExpressionTimer
+.faceExpressionRight:
+    cp a, PORCUPINE_EXPRESSION_RIGHT
+    jr nz, .faceExpressionConfident
+    call MakeBossFaceRight
+    jr .setExpressionTimer
+.faceExpressionConfident:
+    cp a, PORCUPINE_EXPRESSION_CONFIDENT
+    jr nz, .faceExpressionScared
+    call MakeBossConfident
+    jr .setExpressionTimer
+.faceExpressionScared:
+    call MakeBossScared
+.setExpressionTimer:
+    ld a, 30
+    ld [wEnemyExpressionTimer], a
+    ld a, [hEnemyX]
+    cp a, SCRN_X / 2
+    jr c, .lookRight
+.lookLeft:
+    ld a, PORCUPINE_EXPRESSION_LEFT
+    ld [wEnemyExpression], a
+    jr .endFaceExpression
+.lookRight:
+    ld a, PORCUPINE_EXPRESSION_RIGHT
+    ld [wEnemyExpression], a
+.endFaceExpression:
+
 .checkAlive:
     ldh a, [hEnemyAlive]
     cp a, 0
@@ -376,56 +419,49 @@ BossUpdate::
     ; 2 - navigates the bottom of the screen and jumps up to try to hit the player
     ; Could also just fly fast off screen left + shoot with needles (maybe another boss)
     ; TODO what if cactus gets hit by something, he goes cross-eyed, blinks, and can't move for like 1 second?
+
+.pointPicker:
+    ld hl, wEnemyMoveTimer
 .checkPointPickerX:
-    ld a, [wEnemyMoveTimer]
+    ld a, [hl]
     cp a, 50 ; MAKE RANDOM
     jr nz, .endPointPickerX
-.directionX:
     ldh a, [hEnemyX]
     cp a, SCRN_X / 2
     jr c, .moveToRight
 .moveToLeft:
-    ld a, PORCUPINE_LEFTSIDE_POSITION_X
+    ld a, 1
     ldh [hEnemyDirectionLeft], a
-    jr .endDirectionX
+    jr .endPointPickerX
 .moveToRight:
     xor a ; ld a, 0 
     ldh [hEnemyDirectionLeft], a
-.endDirectionX:
 .endPointPickerX:
-
 .checkPointPickerY:
-    ld a, [wEnemyMoveTimer]
+    ld a, [hl]
     and %00111111
-    ; cp a, 0 ; MAKE RANDOM
     jr nz, .endPointPickerY
-.directionY:
     ldh a, [hEnemyY]
     cp a, SCRN_Y / 2
     jr c, .moveToDown
 .moveToUp:
     ld a, 1
     ld [wEnemyDirectionUp], a
-    jr .endDirectionY
+    jr .endPointPickerY
 .moveToDown:
     xor a ; ld a, 0
     ld [wEnemyDirectionUp], a
-.endDirectionY:
 .endPointPickerY:
-
-.updatePointPickerTimer:
-    ld a, [wEnemyMoveTimer]
-    inc a
-    ld [wEnemyMoveTimer], a
-.endUpdatePointPickerTimer:
+    inc [hl]
+.endPointPicker:
 
 .checkMove:
     ldh a, [hGlobalTimer]
     and	PORCUPINE_MOVE_TIME
     jr nz, .endMove
 .canMove: 
-    ; call HelperMoveX
-    ; call HelperMoveY
+    call HelperMoveX
+    call HelperMoveY
     call UpdateBossPosition
 .endMove:
 
@@ -433,20 +469,14 @@ BossUpdate::
     ; ldh a, [hGlobalTimer]
     ; and	PORCUPINE_ATTACK_TIME
     ; jr nz, .endAttack
-
 .canAttack:
-    ; Shoot needles (the more vertical the better!)
-    ; 3 up 3 down
-.checkProjectile:
     ldh a, [hEnemyParam2]
     inc a
     ldh [hEnemyParam2], a
     cp a, %01111111 + 1
-    jr c, .endProjectile
+    jr c, .endAttack
     xor a ; ld a, 0
     ldh [hEnemyParam2], a
-.endProjectile:
-
 .endAttack:
 
 .checkString:
@@ -501,17 +531,9 @@ BossUpdate::
     ldh [hEnemyAlive], a
     ; ld a, 1
     ; ldh [hEnemyDying], a
-    call MakeBossScared
+    ld a, PORCUPINE_EXPRESSION_SCARED
+    ld [wEnemyExpression], a
 .endCollision:
-
-; .popped:
-;     ldh a, [hEnemyDying]
-;     cp a, 0
-;     jr z, .endPopped
-;     ldh a, [hEnemyAlive]
-;     dec a
-;     ldh [hEnemyAlive], a
-; .endPopped:
 
 .checkOffscreen:
 .offscreen:
@@ -526,44 +548,47 @@ BossUpdate::
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
 
-; .checkSpawnBossNeedle:
-;     ldh a, [hEnemyParam2]
-;     cp a, %01111111
-;     ret nz
-; .spawnBossNeedle:
-;     call MakeBossConfident
-;     ld a, BOSS_NEEDLE
-;     ldh [hEnemyNumber], a
-; .topLeftNeedle:
-;     ld a, NONE ; Alias for aim top-left
-;     ldh [hEnemyDifficulty], a
-;     ldh a, [hEnemyY]
-;     add a, 8
-;     ldh [hEnemyY], a
-;     ldh a, [hEnemyX]
-;     add a, 8
-;     ldh [hEnemyX], a
-;     call SpawnBossNeedle
-; .topRightNeedle:
-;     ld a, EASY ; Alias for aim top-right
-;     ldh [hEnemyDifficulty], a
-;     ldh a, [hEnemyX]
-;     add a, 8
-;     ldh [hEnemyX], a
-;     call SpawnBossNeedle
-; .bottomRightNeedle:
-;     ld a, HARD ; Alias for aim bottom-right
-;     ldh [hEnemyDifficulty], a
-;     ldh a, [hEnemyY]
-;     add a, 16
-;     ldh [hEnemyY], a
-;     call SpawnBossNeedle
-; .bottomLeftNeedle:
-;     ld a, MEDIUM ; Alias for aim bottom-left
-;     ldh [hEnemyDifficulty], a
-;     ldh a, [hEnemyX]
-;     sub a, 8
-;     ldh [hEnemyX], a
-;     call SpawnBossNeedle
-; .endSpawnBossNeedle:
+.checkSpawnBossNeedle:
+    ldh a, [hEnemyParam2]
+    cp a, %01111111
+    ret nz
+.spawnBossNeedle:
+    ld a, PORCUPINE_EXPRESSION_CONFIDENT
+    ld [wEnemyExpression], a
+    xor a ; ld a, 0
+    ld [wEnemyExpressionTimer], a
+    ld a, BOSS_NEEDLE
+    ldh [hEnemyNumber], a
+.topLeftNeedle:
+    ld a, NONE ; Alias for aim top-left
+    ldh [hEnemyDifficulty], a
+    ldh a, [hEnemyY]
+    add a, 8
+    ldh [hEnemyY], a
+    ldh a, [hEnemyX]
+    add a, 8
+    ldh [hEnemyX], a
+    call SpawnBossNeedle
+.topRightNeedle:
+    ld a, EASY ; Alias for aim top-right
+    ldh [hEnemyDifficulty], a
+    ldh a, [hEnemyX]
+    add a, 8
+    ldh [hEnemyX], a
+    call SpawnBossNeedle
+.bottomRightNeedle:
+    ld a, HARD ; Alias for aim bottom-right
+    ldh [hEnemyDifficulty], a
+    ldh a, [hEnemyY]
+    add a, 16
+    ldh [hEnemyY], a
+    call SpawnBossNeedle
+.bottomLeftNeedle:
+    ld a, MEDIUM ; Alias for aim bottom-left
+    ldh [hEnemyDifficulty], a
+    ldh a, [hEnemyX]
+    sub a, 8
+    ldh [hEnemyX], a
+    call SpawnBossNeedle
+.endSpawnBossNeedle:
     ret

@@ -231,3 +231,8 @@ MACRO UPDATE_GLOBAL_TIMER
     inc	a
     ldh [hGlobalTimer], a
 ENDM
+
+MACRO RESET_GLOBAL_TIMER
+    xor a ; ld a, 0
+    ldh [hGlobalTimer], a
+ENDM
