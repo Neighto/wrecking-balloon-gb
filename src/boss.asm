@@ -47,6 +47,7 @@ SECTION "boss temp vars", WRAM0
     wEnemyDirectionUp:: DB
     wEnemyExpression:: DB
     wEnemyExpressionTimer:: DB
+    wEnemyFallingSpeed:: DB
 
 SECTION "boss", ROMX
 
@@ -56,6 +57,7 @@ ClearTempVars:
     ld [wEnemyDirectionUp], a
     ld [wEnemyExpression], a
     ld [wEnemyExpressionTimer], a
+    ld [wEnemyFallingSpeed], a
     ret
 
 SetStruct:
@@ -157,6 +159,24 @@ MakeBossFaceLeft:
     ld [hli], a
     ret
 
+MakeBossShowFeetAndRemoveBalloon:
+    SET_HL_TO_ADDRESS wOAM+22, hEnemyOAM
+    ld a, PORCUPINE_TILE_3_FEET_ALT
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+    inc l
+    inc l
+    ld a, PORCUPINE_TILE_3_FEET_ALT
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
+
+    SET_HL_TO_ADDRESS wOAM+34, hEnemyOAM
+    ld a, EMPTY_TILE
+    ld [hl], a
+    ret
+
 SpawnBoss::
     push hl
     ld hl, wEnemies
@@ -168,6 +188,11 @@ SpawnBoss::
     ld b, PORCUPINE_OAM_SPRITES
     push hl
 	call RequestOAMSpace ; b now contains OAM address
+    ; really ugly test hack:
+    ld a, b 
+    add a, 24
+    ld b, a
+    ; ^^^^
     pop hl
     jp z, .end
 .availableOAMSpace:
@@ -415,13 +440,33 @@ BossUpdate::
 .dyingDone:
     ld a, 1 
     ld [wLevelWaitBoss], a
-    ; call Clear
+.dyingOffscreen:
+    ld a, SCRN_X ; TODO fix this should not be SCRN_X
+    ld hl, hEnemyY
+    cp a, [hl]
+    jr nc, .checkFalling
+.isOffScreen:
+    call Clear
+    jp .endDyingOffscreen
+.checkFalling:
+    ldh a, [hGlobalTimer]
+    and %00000001
+    jr nz, .endDyingOffscreen
+.canFall:
+    ld a, [wEnemyFallingSpeed]
+    inc a 
+    ld [wEnemyFallingSpeed], a
+    ld b, 6
+    call DIVISION
+    ld b, a
+    ldh a, [hEnemyY]
+    add a, b
+    ldh [hEnemyY], a
+    call UpdateBossPosition
+.endDyingOffscreen:
     jp .setStruct
 .dying:
-    ; remove balloon
-    ; load in bottom body
-
-
+    call MakeBossShowFeetAndRemoveBalloon
     xor a ; ld a, 0
     ldh [hEnemyDying], a
     jp .setStruct
@@ -561,7 +606,7 @@ BossUpdate::
 .checkSpawnBossNeedle:
     ldh a, [hEnemyParam2]
     cp a, 0
-    ret z
+    jr z, .endSpawnBossNeedle
 .spawnBossNeedle:
     ld a, PORCUPINE_EXPRESSION_CONFIDENT
     ld [wEnemyExpression], a
@@ -601,4 +646,24 @@ BossUpdate::
     ldh [hEnemyX], a
     call SpawnBossNeedle
 .endSpawnBossNeedle:
+
+
+.checkSpawnPointBalloon:
+    ldh a, [hEnemyDying]
+    cp a, 0
+    jr z, .endSpawnPointBalloon
+.spawnPointBalloon:
+    ld a, POINT_BALLOON
+    ldh [hEnemyNumber], a
+    ld a, MEDIUM
+    ldh [hEnemyDifficulty], a
+    ldh a, [hEnemyY]
+    add a, 18
+    ldh [hEnemyY], a
+    ldh a, [hEnemyX]
+    add a, 8
+    ldh [hEnemyX], a
+    call SpawnPointBalloon
+
+.endSpawnPointBalloon:
     ret
