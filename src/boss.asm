@@ -48,6 +48,7 @@ SECTION "boss temp vars", WRAM0
     wEnemyExpression:: DB
     wEnemyExpressionTimer:: DB
     wEnemyFallingSpeed:: DB
+    wEnemyTriggerBalloon:: DB
 
 SECTION "boss", ROMX
 
@@ -58,6 +59,7 @@ ClearTempVars:
     ld [wEnemyExpression], a
     ld [wEnemyExpressionTimer], a
     ld [wEnemyFallingSpeed], a
+    ld [wEnemyTriggerBalloon], a
     ret
 
 SetStruct:
@@ -440,18 +442,24 @@ BossUpdate::
 .dyingDone:
     ld a, 1 
     ld [wLevelWaitBoss], a
+    call Clear
+    jp .setStruct 
+.dying:
+    xor a ; ld a, 0
+    ld [wEnemyTriggerBalloon], a
 .dyingOffscreen:
-    ld a, SCRN_X ; TODO fix this should not be SCRN_X
+    ld a, SCRN_Y + 16 ; buffer
     ld hl, hEnemyY
     cp a, [hl]
     jr nc, .checkFalling
 .isOffScreen:
-    call Clear
-    jp .endDyingOffscreen
+    xor a ; ld a, 0
+    ldh [hEnemyDying], a
+    jp .setStruct
 .checkFalling:
     ldh a, [hGlobalTimer]
     and %00000001
-    jr nz, .endDyingOffscreen
+    jp nz, .setStruct
 .canFall:
     ld a, [wEnemyFallingSpeed]
     inc a 
@@ -463,21 +471,8 @@ BossUpdate::
     add a, b
     ldh [hEnemyY], a
     call UpdateBossPosition
-.endDyingOffscreen:
-    jp .setStruct
-.dying:
-    call MakeBossShowFeetAndRemoveBalloon
-    xor a ; ld a, 0
-    ldh [hEnemyDying], a
     jp .setStruct
 .isAlive:
-
-    ; Boss may have 2 phases,
-    ; 1 - floats around and shoots needles
-    ; AND oscillates up and down, and every so often hops from right side of screen to left 
-    ; 2 - navigates the bottom of the screen and jumps up to try to hit the player
-    ; Could also just fly fast off screen left + shoot with needles (maybe another boss)
-    ; TODO what if cactus gets hit by something, he goes cross-eyed, blinks, and can't move for like 1 second?
 
 .pointPicker:
     ld hl, wEnemyMoveTimer
@@ -586,6 +581,13 @@ BossUpdate::
     ldh a, [hEnemyAlive]
     dec a
     ldh [hEnemyAlive], a
+    cp a, 0
+    jr nz, .bossDamagedAndAlive
+.bossDamagedAndDead:
+    ld a, 1
+    ld [wEnemyTriggerBalloon], a
+    call MakeBossShowFeetAndRemoveBalloon
+.bossDamagedAndAlive:
     ; Animation trigger
     ld a, 1
     ldh [hEnemyDying], a
@@ -649,7 +651,7 @@ BossUpdate::
 
 
 .checkSpawnPointBalloon:
-    ldh a, [hEnemyDying]
+    ld a, [wEnemyTriggerBalloon]
     cp a, 0
     jr z, .endSpawnPointBalloon
 .spawnPointBalloon:
@@ -658,7 +660,7 @@ BossUpdate::
     ld a, MEDIUM
     ldh [hEnemyDifficulty], a
     ldh a, [hEnemyY]
-    add a, 18
+    add a, 19
     ldh [hEnemyY], a
     ldh a, [hEnemyX]
     add a, 8
