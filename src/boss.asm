@@ -12,22 +12,16 @@ PORCUPINE_COLLISION_TIME EQU %00001000
 
 PORCUPINE_HP EQU 1
 
-PORCUPINE_BALLOON_TILE_1 EQU $56
-PORCUPINE_BALLOON_TILE_2 EQU $42
-PORCUPINE_BALLOON_TILE_3 EQU $48
-PORCUPINE_BALLOON_TILE_4 EQU $4A
-
 PORCUPINE_TILE_1 EQU $52
 PORCUPINE_TILE_2 EQU $54
 PORCUPINE_TILE_3 EQU $56
-PORCUPINE_TILE_4 EQU $58
-PORCUPINE_TILE_5 EQU $5A
+PORCUPINE_TILE_3_FEET_ALT EQU $60
 
-PORCUPINE_CONFIDENT_TILE_1 EQU $5C
-PORCUPINE_CONFIDENT_TILE_2 EQU $5E
+PORCUPINE_FACE_LEFT_TILE_1 EQU $58
+PORCUPINE_FACE_LEFT_TILE_2 EQU $5A
 
-PORCUPINE_SCARED_TILE_1 EQU $60
-PORCUPINE_SCARED_TILE_2 EQU $62
+PORCUPINE_CONFIDENT_FACE_TILE EQU $5C
+PORCUPINE_SCARED_FACE_TILE EQU $5E
 
 PORCUPINE_STRING_Y_OFFSET EQU 31
 PORCUPINE_STRING_X_OFFSET EQU 12
@@ -90,7 +84,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyParam1] ; Enemy Invincibility Timer
     ld [hli], a
-    ldh a, [hEnemyParam2] ; Enemy Projectile Timer
+    ldh a, [hEnemyParam2] ; Enemy Can Shoot Needle
     ld [hli], a
     ldh a, [hEnemyDifficulty]
     ld [hl], a
@@ -109,41 +103,41 @@ UpdateBossPosition:
 
 MakeBossConfident:
     SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
-    ld a, PORCUPINE_CONFIDENT_TILE_1
+    ld a, PORCUPINE_CONFIDENT_FACE_TILE
     ld [hli], a
     ld a, OAMF_PAL0
     ld [hli], a
     inc l
     inc l
-    ld a, PORCUPINE_CONFIDENT_TILE_2
+    ld a, PORCUPINE_CONFIDENT_FACE_TILE
     ld [hli], a
-    ld a, OAMF_PAL0
+    ld a, OAMF_PAL0 | OAMF_XFLIP
     ld [hli], a
     ret
 
 MakeBossScared:
     SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
-    ld a, PORCUPINE_SCARED_TILE_1
+    ld a, PORCUPINE_SCARED_FACE_TILE
     ld [hli], a
     ld a, OAMF_PAL0
     ld [hli], a
     inc l
     inc l
-    ld a, PORCUPINE_SCARED_TILE_2
+    ld a, PORCUPINE_SCARED_FACE_TILE
     ld [hli], a
-    ld a, OAMF_PAL0
+    ld a, OAMF_PAL0 | OAMF_XFLIP
     ld [hli], a
     ret
 
 MakeBossFaceRight:
     SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
-    ld a, PORCUPINE_TILE_5
+    ld a, PORCUPINE_FACE_LEFT_TILE_2
     ld [hli], a
     ld a, OAMF_PAL0 | OAMF_XFLIP
     ld [hli], a
     inc l
     inc l
-    ld a, PORCUPINE_TILE_3
+    ld a, PORCUPINE_FACE_LEFT_TILE_1
     ld [hli], a
     ld a, OAMF_PAL0 | OAMF_XFLIP
     ld [hli], a
@@ -151,13 +145,13 @@ MakeBossFaceRight:
 
 MakeBossFaceLeft:
     SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
-    ld a, PORCUPINE_TILE_3
+    ld a, PORCUPINE_FACE_LEFT_TILE_1
     ld [hli], a
     ld a, OAMF_PAL0
     ld [hli], a
     inc l
     inc l
-    ld a, PORCUPINE_TILE_5
+    ld a, PORCUPINE_FACE_LEFT_TILE_2
     ld [hli], a
     ld a, OAMF_PAL0
     ld [hli], a
@@ -200,14 +194,14 @@ SpawnBoss::
 .bossTopMiddleOAM:
     inc l
     inc l
-    ld a, PORCUPINE_TILE_3
+    ld a, PORCUPINE_FACE_LEFT_TILE_1
     ld [hli], a
     ld a, OAMF_PAL0
     ld [hli], a
 .bossTopMiddle2OAM:
     inc l
     inc l
-    ld a, PORCUPINE_TILE_5
+    ld a, PORCUPINE_FACE_LEFT_TILE_2
     ld [hli], a
     ld a, OAMF_PAL0
     ld [hli], a
@@ -228,14 +222,14 @@ SpawnBoss::
 .bossBottomMiddleOAM:
     inc l
     inc l
-    ld a, PORCUPINE_TILE_4
+    ld a, PORCUPINE_TILE_3
     ld [hli], a
     ld a, OAMF_PAL0
     ld [hli], a
 .bossBottomMiddle2OAM:
     inc l
     inc l
-    ld a, PORCUPINE_TILE_4
+    ld a, PORCUPINE_TILE_3
     ld [hli], a
     ld a, OAMF_PAL0 | OAMF_XFLIP
     ld [hli], a
@@ -379,21 +373,24 @@ BossUpdate::
     cp a, PORCUPINE_EXPRESSION_LEFT
     jr nz, .faceExpressionRight
     call MakeBossFaceLeft
+    ld a, 30
     jr .setExpressionTimer
 .faceExpressionRight:
     cp a, PORCUPINE_EXPRESSION_RIGHT
     jr nz, .faceExpressionConfident
     call MakeBossFaceRight
+    ld a, 30
     jr .setExpressionTimer
 .faceExpressionConfident:
     cp a, PORCUPINE_EXPRESSION_CONFIDENT
     jr nz, .faceExpressionScared
     call MakeBossConfident
+    ld a, 30
     jr .setExpressionTimer
 .faceExpressionScared:
     call MakeBossScared
+    ld a, 255
 .setExpressionTimer:
-    ld a, 30
     ld [wEnemyExpressionTimer], a
     ld a, [hEnemyX]
     cp a, SCRN_X / 2
@@ -410,7 +407,24 @@ BossUpdate::
 .checkAlive:
     ldh a, [hEnemyAlive]
     cp a, 0
-    jp z, .isDead
+    jr nz, .isAlive
+.isAtZeroHealth:
+    ldh a, [hEnemyDying]
+    cp a, 0
+    jr nz, .dying
+.dyingDone:
+    ld a, 1 
+    ld [wLevelWaitBoss], a
+    ; call Clear
+    jp .setStruct
+.dying:
+    ; remove balloon
+    ; load in bottom body
+
+
+    xor a ; ld a, 0
+    ldh [hEnemyDying], a
+    jp .setStruct
 .isAlive:
 
     ; Boss may have 2 phases,
@@ -460,22 +474,19 @@ BossUpdate::
     and	PORCUPINE_MOVE_TIME
     jr nz, .endMove
 .canMove: 
-    call HelperMoveX
-    call HelperMoveY
+    ; call HelperMoveX
+    ; call HelperMoveY
     call UpdateBossPosition
 .endMove:
 
 .checkAttack:
-    ; ldh a, [hGlobalTimer]
-    ; and	PORCUPINE_ATTACK_TIME
-    ; jr nz, .endAttack
+    ldh a, [hGlobalTimer]
+    and	PORCUPINE_ATTACK_TIME
+    ld a, 0
+    jr nz, .updateCanAttack
 .canAttack:
-    ldh a, [hEnemyParam2]
     inc a
-    ldh [hEnemyParam2], a
-    cp a, %01111111 + 1
-    jr c, .endAttack
-    xor a ; ld a, 0
+.updateCanAttack:
     ldh [hEnemyParam2], a
 .endAttack:
 
@@ -525,33 +536,32 @@ BossUpdate::
     ld d, PORCUPINE_POINTS
     call AddPoints
     ; Sound
-    call PopSound
+    call PercussionSound
+    ; Decrease life
     ldh a, [hEnemyAlive]
     dec a
     ldh [hEnemyAlive], a
-    ; ld a, 1
-    ; ldh [hEnemyDying], a
+    ; Animation trigger
+    ld a, 1
+    ldh [hEnemyDying], a
     ld a, PORCUPINE_EXPRESSION_SCARED
     ld [wEnemyExpression], a
+    xor a ; ld a, 0
+    ld [wEnemyExpressionTimer], a
 .endCollision:
 
 .checkOffscreen:
 .offscreen:
 .endOffscreen:
 
-    jr .setStruct
-.isDead:
-    ; call Clear
-    ld a, 1 
-    ld [wLevelWaitBoss], a
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
 
 .checkSpawnBossNeedle:
     ldh a, [hEnemyParam2]
-    cp a, %01111111
-    ret nz
+    cp a, 0
+    ret z
 .spawnBossNeedle:
     ld a, PORCUPINE_EXPRESSION_CONFIDENT
     ld [wEnemyExpression], a
