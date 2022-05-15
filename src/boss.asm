@@ -10,7 +10,7 @@ PORCUPINE_MOVE_TIME EQU %00000001
 PORCUPINE_ATTACK_TIME EQU %01111111
 PORCUPINE_COLLISION_TIME EQU %00001000
 
-PORCUPINE_HP EQU 1
+PORCUPINE_HP EQU 2
 
 PORCUPINE_TILE_1 EQU $52
 PORCUPINE_TILE_2 EQU $54
@@ -49,6 +49,7 @@ SECTION "boss temp vars", WRAM0
     wEnemyExpressionTimer:: DB
     wEnemyFallingSpeed:: DB
     wEnemyTriggerBalloon:: DB
+    wEnemyKnockedOutTimer:: DB
 
 SECTION "boss", ROMX
 
@@ -60,6 +61,7 @@ ClearTempVars:
     ld [wEnemyExpressionTimer], a
     ld [wEnemyFallingSpeed], a
     ld [wEnemyTriggerBalloon], a
+    ld [wEnemyKnockedOutTimer], a
     ret
 
 SetStruct:
@@ -192,7 +194,7 @@ SpawnBoss::
 	call RequestOAMSpace ; b now contains OAM address
     ; really ugly test hack:
     ld a, b 
-    add a, 24
+    add a, 28
     ld b, a
     ; ^^^^
     pop hl
@@ -431,6 +433,32 @@ BossUpdate::
     ld [wEnemyExpression], a
 .endFaceExpression:
 
+.checkKnockedOut:
+    ld a, [wEnemyKnockedOutTimer]
+    cp a, 0
+    jr z, .endKnockedOut
+    cp a, 1
+    jr z, .knockedOutDone
+.knockedOut:
+    dec a 
+    ld [wEnemyKnockedOutTimer], a
+    jp .setStruct
+.knockedOutDone:
+    dec a 
+    ld [wEnemyKnockedOutTimer], a
+    ldh a, [hEnemyDying]
+    cp a, 0
+    jr z, .knockedOutAndAlive
+.knockedOutAndDead:
+    ld a, 1
+    ld [wEnemyTriggerBalloon], a
+    call MakeBossShowFeetAndRemoveBalloon
+    jp .setStruct
+.knockedOutAndAlive:
+    xor a ; ld a, 0
+    ld [wEnemyExpressionTimer], a
+.endKnockedOut:
+
 .checkAlive:
     ldh a, [hEnemyAlive]
     cp a, 0
@@ -514,7 +542,7 @@ BossUpdate::
     and	PORCUPINE_MOVE_TIME
     jr nz, .endMove
 .canMove: 
-    ; call HelperMoveX
+    call HelperMoveX
     ; call HelperMoveY
     call UpdateBossPosition
 .endMove:
@@ -550,9 +578,6 @@ BossUpdate::
     ldh a, [hGlobalTimer]
     and	PORCUPINE_COLLISION_TIME
     jr nz, .endCollision
-    ; ldh a, [hEnemyDying]
-    ; cp a, 0
-    ; jr nz, .endCollision
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
@@ -581,25 +606,20 @@ BossUpdate::
     ldh a, [hEnemyAlive]
     dec a
     ldh [hEnemyAlive], a
+    ; Animation trigger
     cp a, 0
     jr nz, .bossDamagedAndAlive
 .bossDamagedAndDead:
     ld a, 1
-    ld [wEnemyTriggerBalloon], a
-    call MakeBossShowFeetAndRemoveBalloon
-.bossDamagedAndAlive:
-    ; Animation trigger
-    ld a, 1
     ldh [hEnemyDying], a
+.bossDamagedAndAlive:
+    ld a, 40
+    ld [wEnemyKnockedOutTimer], a
     ld a, PORCUPINE_EXPRESSION_SCARED
     ld [wEnemyExpression], a
     xor a ; ld a, 0
     ld [wEnemyExpressionTimer], a
 .endCollision:
-
-.checkOffscreen:
-.offscreen:
-.endOffscreen:
 
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
