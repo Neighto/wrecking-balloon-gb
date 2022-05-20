@@ -142,6 +142,14 @@ SetupNextLevel::
 	call hUGE_init
 	jr .endLevelSetup
 .level5:
+	cp a, 5
+	jr nz, .level5
+	call SetLevelDesertInterrupts
+	call LoadLevelDesertGraphics
+	call InitializeFlicker
+	ld hl, angryTheme
+	call hUGE_init
+	jr .endLevelSetup
 .level6:
 .endLevelSetup:
 	call SetupWindow
@@ -156,10 +164,10 @@ SetupNextLevel::
 	call SpawnCountdown
 	call LCD_ON
 GameCountdownLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateGameCountdown
-	; jp GameCountdownLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateGameCountdown
+	jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA
