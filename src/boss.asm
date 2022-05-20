@@ -492,7 +492,7 @@ BossUpdate::
     ld a, [wEnemyFallingSpeed]
     inc a 
     ld [wEnemyFallingSpeed], a
-    ld b, 6
+    ld b, 5
     call DIVISION
     ld b, a
     ldh a, [hEnemyY]
@@ -543,7 +543,7 @@ BossUpdate::
     jr nz, .endMove
 .canMove: 
     call HelperMoveX
-    ; call HelperMoveY
+    call HelperMoveY
     call UpdateBossPosition
 .endMove:
 
