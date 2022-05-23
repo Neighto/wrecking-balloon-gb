@@ -100,26 +100,32 @@ SpawnBalloonCactus::
 .isLeftside:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
-.difficultyVisual:
+.difficultyVisualBalloon:
     ldh a, [hEnemyDifficulty]
 .easyVisual:
     cp a, EASY
     jr nz, .mediumVisual
     ld d, BALLOON_CACTUS_EASY_TILE
     ld e, OAMF_PAL0
-    jr .endDifficultyVisual
+    jr .endDifficultyVisualBalloon
 .mediumVisual:
     cp a, MEDIUM
     jr nz, .hardVisual
     ld d, BALLOON_CACTUS_MEDIUM_TILE
     ld e, OAMF_PAL1
-    jr .endDifficultyVisual
+    jr .endDifficultyVisualBalloon
 .hardVisual:
     cp a, HARD
-    jr nz, .endDifficultyVisual
+    jr nz, .alternateVisualBalloon
     ld d, BALLOON_CACTUS_HARD_TILE
     ld e, OAMF_PAL0
-.endDifficultyVisual:
+    jr .endDifficultyVisualBalloon
+.alternateVisualBalloon:
+    cp a, ALTERNATE 
+    jr nz, .endDifficultyVisualBalloon
+    ld d, $3A
+    ld e, OAMF_PAL0
+.endDifficultyVisualBalloon:
 
 .balloonLeftOAM:
     ldh a, [hEnemyY]
@@ -149,24 +155,53 @@ SpawnBalloonCactus::
     ld [hli], a
     ld [hl], OAMF_PAL0
     inc l
+
+.difficultyVisualCactusLeft:
+    ldh a, [hEnemyDifficulty]
+.alternateVisualCactusLeft:
+    cp a, ALTERNATE 
+    jr nz, .restVisualLeft
+    ld d, $48
+    ld e, OAMF_PAL0
+    jr .endDifficultyVisualCactusLeft
+.restVisualLeft:
+    ld d, BALLOON_CACTUS_TILE
+    ld e, OAMF_PAL0
+.endDifficultyVisualCactusLeft:
+
 .cactusLeftOAM:
     ldh a, [hEnemyY2]
     ld [hli], a
     ldh a, [hEnemyX2]
     ld [hli], a
-    ld [hl], BALLOON_CACTUS_TILE
-    inc l
-    ld [hl], OAMF_PAL0
+    ld a, d
+    ld [hli], a
+    ld a, e
+    ld [hli], a
+
+.difficultyVisualCactusRight:
+    ldh a, [hEnemyDifficulty]
+.alternateVisualCactusRight:
+    cp a, ALTERNATE 
+    jr nz, .restVisualRight
+    ld d, $4A
+    ld e, OAMF_PAL0
+    jr .endDifficultyVisualCactusRight
+.restVisualRight:
+    ld d, BALLOON_CACTUS_TILE
+    ld e, OAMF_PAL0 | OAMF_XFLIP
+.endDifficultyVisualCactusRight:
+
 .cactusRightOAM:
-    inc l
     ldh a, [hEnemyY2]
     ld [hli], a
     ldh a, [hEnemyX2]
     add 8
     ld [hli], a
-    ld [hl], BALLOON_CACTUS_TILE
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+    ld a, d
+    ld [hli], a
+    ld a, e
+    ld [hl], a
 .setStruct:
     LD_HL_BC
     call SetStruct
@@ -349,7 +384,7 @@ BalloonCactusUpdate::
 .mediumMove:
     cp a, MEDIUM
     jr nz, .hardMove
-    ; Follow player, maybe add random?
+    ; Follow player
     ldh a, [hEnemyY2]
     ld hl, wPlayerY
     cp a, [hl]
@@ -451,19 +486,35 @@ BalloonCactusUpdate::
     jr .endDifficultyPoints
 .hardPoints:
     cp a, HARD
-    jr nz, .endDifficultyPoints
+    jr nz, .alternatePoints
     ld d, BALLOON_CACTUS_HARD_POINTS
+.alternatePoints:
+    cp a, ALTERNATE
+    jr nz, .endDifficultyPoints
+    ld d, 0
 .endDifficultyPoints:
     call AddPoints
+    ; Falling visual
+.difficultyFallingVisual:
+    ldh a, [hEnemyDifficulty]
+.alternateFallingVisual:
+    cp a, ALTERNATE 
+    jr nz, .restFallingVisual
+    ld d, $48
+    ld e, $4A
+    jr .endDifficultyFallingVisual
+.restFallingVisual:
+    ld d, BALLOON_CACTUS_SCREAMING_TILE
+    ld e, BALLOON_CACTUS_SCREAMING_TILE
+.endDifficultyFallingVisual:
+    SET_HL_TO_ADDRESS wOAM+14, hEnemyOAM
+    ld [hl], d
+    SET_HL_TO_ADDRESS wOAM+18, hEnemyOAM
+    ld [hl], e
     ; Animation trigger
     ld a, 1
     ldh [hEnemyDying], a
     ldh [hEnemyParam1], a
-    ; Screaming cactus
-    SET_HL_TO_ADDRESS wOAM+14, hEnemyOAM
-    ld [hl], BALLOON_CACTUS_SCREAMING_TILE
-    SET_HL_TO_ADDRESS wOAM+18, hEnemyOAM
-    ld [hl], BALLOON_CACTUS_SCREAMING_TILE
     ; Sound
     call PopSound
 .endCollision:
