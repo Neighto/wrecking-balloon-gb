@@ -177,7 +177,7 @@ LEVEL_END_KEY EQU 3
 GAME_WON_KEY EQU 4
 
 MACRO LEVEL_SPAWN
-    ; Enemy, Y, X, Difficulty
+    ; Enemy, Y, X, Variant
     DB LEVEL_SPAWN_KEY, \1, \2, \3, \4
 ENDM
 

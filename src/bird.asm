@@ -49,7 +49,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyParam1] ; Enemy Marked to Die
     ld [hli], a
-    ldh a, [hEnemyDifficulty]
+    ldh a, [hEnemyVariant]
     ld [hl], a
     ret
 
@@ -78,23 +78,23 @@ SpawnBird::
     ldh [hEnemyAlive], a
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
-.difficultyVisual:
-    ldh a, [hEnemyDifficulty]
+.variantVisual:
+    ldh a, [hEnemyVariant]
 .easyVisual:
     cp a, EASY
     jr nz, .mediumVisual
     ld e, OAMF_PAL0
-    jr .endDifficultyVisual
+    jr .endVariantVisual
 .mediumVisual:
     cp a, MEDIUM
     jr nz, .hardVisual
     ld e, OAMF_PAL1
-    jr .endDifficultyVisual
+    jr .endVariantVisual
 .hardVisual:
     cp a, HARD
-    jr nz, .endDifficultyVisual
+    jr nz, .endVariantVisual
     ld e, OAMF_PAL0
-.endDifficultyVisual:
+.endVariantVisual:
 
 .setupByDirection:
     ldh a, [hEnemyX]
@@ -255,7 +255,7 @@ BirdUpdate::
     ld a, [hli]
     ldh [hEnemyParam1], a
     ld a, [hl]
-    ldh [hEnemyDifficulty], a
+    ldh [hEnemyVariant], a
 
 .checkAlive:
     ldh a, [hEnemyAlive]
@@ -282,8 +282,8 @@ BirdUpdate::
     ldh a, [hGlobalTimer]
     and BIRD_VERTICAL_MOVE_TIME
     jp nz, .endVerticalMovement
-.moveDifficulty:
-    ldh a, [hEnemyDifficulty]    
+.variantMove:
+    ldh a, [hEnemyVariant]    
 .moveEasy:
     cp a, EASY 
     jr nz, .moveMedium

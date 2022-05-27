@@ -4,9 +4,9 @@ INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 
-BALLOON_CACTUS_OAM_SPRITES EQU 4
-BALLOON_CACTUS_MOVE_TIME EQU %00000011
-BALLOON_CACTUS_COLLISION_TIME EQU %00001000
+BALLOON_CARRIER_OAM_SPRITES EQU 4
+BALLOON_CARRIER_MOVE_TIME EQU %00000011
+BALLOON_CARRIER_COLLISION_TIME EQU %00001000
 BALLOON_CACTUS_SCREAMING_TILE EQU $16
 BALLOON_CACTUS_TILE EQU $14
 
@@ -21,7 +21,7 @@ BALLOON_CACTUS_MEDIUM_POINTS EQU 30
 BALLOON_CACTUS_HARD_TILE EQU $22
 BALLOON_CACTUS_HARD_POINTS EQU 50
 
-SECTION "balloon anvil", ROMX
+SECTION "balloon carrier", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
@@ -45,11 +45,11 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyParam1] ; Trigger Carry
     ld [hli], a
-    ldh a, [hEnemyDifficulty]
+    ldh a, [hEnemyVariant]
     ld [hl], a
     ret
 
-SpawnBalloonAnvil::
+SpawnBalloonCarrier::
     push hl
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
@@ -57,7 +57,7 @@ SpawnBalloonAnvil::
     call RequestRAMSpace ; hl now contains free RAM space address
     jp z, .end
 .availableSpace:
-    ld b, BALLOON_CACTUS_OAM_SPRITES
+    ld b, BALLOON_CARRIER_OAM_SPRITES
     push hl
 	call RequestOAMSpace ; b now contains OAM address
     pop hl
@@ -134,7 +134,7 @@ SpawnBalloonAnvil::
     pop hl
     ret
 
-ClearBalloonAnvil:
+ClearBalloonCarrier:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     xor a ; ld a, 0
     ld [hli], a
@@ -156,7 +156,7 @@ ClearBalloonAnvil:
     call InitializeEnemyStructVars
     ret
 
-BalloonAnvilUpdate::
+BalloonCarrierUpdate::
     ; Get rest of struct
     ld a, [hli]
     ldh [hEnemyY], a
@@ -175,7 +175,7 @@ BalloonAnvilUpdate::
     ld a, [hli]
     ldh [hEnemyParam1], a
     ld a, [hl]
-    ldh [hEnemyDifficulty], a
+    ldh [hEnemyVariant], a
 
 .checkAlive:
     ldh a, [hEnemyAlive]
@@ -191,13 +191,13 @@ BalloonAnvilUpdate::
     call PopBalloonAnimation
     jp .setStruct
 .clearPopping:
-    call ClearBalloonAnvil
+    call ClearBalloonCarrier
     jp .setStruct
 .isAlive:
 
 .checkMove:
     ldh a, [hGlobalTimer]
-    and	BALLOON_CACTUS_MOVE_TIME
+    and	BALLOON_CARRIER_MOVE_TIME
     jr nz, .endMove
 .canMove:
 .moveHorizontal:
@@ -241,7 +241,7 @@ BalloonAnvilUpdate::
 
 .checkCollision:
     ldh a, [hGlobalTimer]
-    and	BALLOON_CACTUS_COLLISION_TIME
+    and	BALLOON_CARRIER_COLLISION_TIME
     jp nz, .endCollision
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
@@ -298,7 +298,7 @@ BalloonAnvilUpdate::
     cp a, b
     jr c, .endOffscreen
 .offscreen:
-    call ClearBalloonAnvil
+    call ClearBalloonCarrier
 .endOffscreen:
 
 .setStruct:
@@ -313,7 +313,7 @@ BalloonAnvilUpdate::
     ld a, ANVIL
     ldh [hEnemyNumber], a
     ld a, NONE
-    ldh [hEnemyDifficulty], a
+    ldh [hEnemyVariant], a
     ldh a, [hEnemyY]
     add 16
     ldh [hEnemyY], a

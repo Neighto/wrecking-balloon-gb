@@ -12,7 +12,7 @@ BOSS_NEEDLE_SPEED EQU 2
 
 SECTION "boss needle", ROM0
 
-; Enemy difficulty / Effect
+; Enemy variant / Effect
 ; NONE - Shoot top-left
 ; EASY - Shoot top-right
 ; MEDIUM - Shoot bottom-left
@@ -30,7 +30,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyOAM]
     ld [hli], a
-    ldh a, [hEnemyDifficulty]
+    ldh a, [hEnemyVariant]
     ld [hl], a
     ret
 
@@ -58,26 +58,26 @@ SpawnBossNeedle::
     ldh [hEnemyActive], a
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
-.difficultyDirection:
-    ldh a, [hEnemyDifficulty]
+.variantDirection:
+    ldh a, [hEnemyVariant]
 .topLeftDirection:
     cp a, NONE
     jr nz, .topRightDirection
     ld e, OAMF_PAL0
-    jr .endDifficultyDirection
+    jr .endVariantDirection
 .topRightDirection:
     cp a, EASY
     jr nz, .bottomLeftDirection
     ld e, OAMF_PAL0 | OAMF_XFLIP
-    jr .endDifficultyDirection
+    jr .endVariantDirection
 .bottomLeftDirection:
     cp a, MEDIUM
     jr nz, .bottomRightDirection
     ld e, OAMF_PAL0 | OAMF_XFLIP
-    jr .endDifficultyDirection
+    jr .endVariantDirection
 .bottomRightDirection:
     ld e, OAMF_PAL0
-.endDifficultyDirection:
+.endVariantDirection:
 
 .bossNeedleOAM:
     ldh a, [hEnemyY]
@@ -113,7 +113,7 @@ BossNeedleUpdate::
     ld a, [hli]
     ldh [hEnemyOAM], a
     ld a, [hli]
-    ldh [hEnemyDifficulty], a
+    ldh [hEnemyVariant], a
     ld a, [hl]
 
 .checkMove:
@@ -124,30 +124,30 @@ BossNeedleUpdate::
 .bossNeedleOAM:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
-.difficultyDirection:
-    ldh a, [hEnemyDifficulty]
+.variantDirection:
+    ldh a, [hEnemyVariant]
 .topLeftDirection:
     cp a, NONE
     jr nz, .topRightDirection
     ld b, BOSS_NEEDLE_SPEED * -1
     ld c, BOSS_NEEDLE_SPEED * -1
-    jr .endDifficultyDirection
+    jr .endVariantDirection
 .topRightDirection:
     cp a, EASY
     jr nz, .bottomLeftDirection
     ld b, BOSS_NEEDLE_SPEED * -1
     ld c, BOSS_NEEDLE_SPEED
-    jr .endDifficultyDirection
+    jr .endVariantDirection
 .bottomLeftDirection:
     cp a, MEDIUM
     jr nz, .bottomRightDirection
     ld b, BOSS_NEEDLE_SPEED
     ld c, BOSS_NEEDLE_SPEED * -1
-    jr .endDifficultyDirection
+    jr .endVariantDirection
 .bottomRightDirection:
     ld b, BOSS_NEEDLE_SPEED
     ld c, BOSS_NEEDLE_SPEED
-.endDifficultyDirection:
+.endVariantDirection:
     ldh a, [hEnemyY]
     add a, b
     ldh [hEnemyY], a
