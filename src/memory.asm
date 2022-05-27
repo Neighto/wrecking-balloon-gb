@@ -68,9 +68,7 @@ MEMCPY_SINGLE_SCREEN::
     ret
 
 ResetHLInRange::
-    ; argument bc is distance
-    ; Overwrites hl and bc
-    push af
+    ; bc = distance
 .loop:
     xor a ; ld a, 0
     ld [hli], a
@@ -78,7 +76,6 @@ ResetHLInRange::
     ld a, b
     or c
     jr nz, .loop
-    pop af
     ret
 
 ClearOAM::
