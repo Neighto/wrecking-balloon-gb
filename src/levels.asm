@@ -21,7 +21,6 @@ SECTION "level vars", WRAM0
     wLevelWaitBoss:: DB
     wLevelDataAddress:: DS 2
 
-
 SECTION "level data", ROM0
 
 ; LEVEL INSTRUCTIONS *************************************
@@ -118,9 +117,7 @@ Level2:
     LEVEL_END
 
 Level3:
-    LEVEL_SPAWN BOSS, 80, 166, NONE
-    LEVEL_SPAWN BALLOON_CACTUS, 32, 0, ALTERNATE
-    ; LEVEL_SPAWN BOSS, 80, 120, NONE
+    ; LEVEL_SPAWN BALLOON_CACTUS, 32, 0, ALTERNATE
     LEVEL_WAIT_BOSS
     LEVEL_WAIT 10
     LEVEL_END
@@ -345,6 +342,8 @@ SpawnDataHandler:
     jp z, SpawnBossNeedle
     cp a, ANVIL 
     jp z, SpawnAnvil
+    cp a, BALLOON_ANVIL 
+    jp z, SpawnBalloonAnvil
     ret
 
 LevelDataHandler::

@@ -59,10 +59,15 @@ SECTION "enemy data vars", WRAM0
     wEnemyOffset2:: DB ; If we loop inside another enemy's data
     wEnemyLoopIndex:: DB
 
+SECTION "enemy inter-collision vars", WRAM0
+
+    wFallingEnemies:: DS FALLING_ENEMIES_DATA_SIZE ; Check if falling enemy would cause a collision with another enemy
+
 SECTION "enemy", ROM0
 
 InitializeEnemies::
     RESET_IN_RANGE wEnemies, ENEMY_DATA_SIZE
+    RESET_IN_RANGE wFallingEnemies, FALLING_ENEMIES_DATA_SIZE
     ret
 
 UpdateEnemy::
@@ -99,6 +104,8 @@ UpdateEnemy::
     jr z, .bossNeedle
     cp a, ANVIL
     jr z, .anvil
+    cp a, BALLOON_ANVIL
+    jr z, .balloonAnvil
     jr .checkLoop
 .pointBalloon:
     call PointBalloonUpdate
@@ -123,6 +130,9 @@ UpdateEnemy::
     jr .checkLoop
 .anvil:
     call AnvilUpdate
+    jr .checkLoop
+.balloonAnvil:
+    call BalloonAnvilUpdate
     jr .checkLoop
 .checkLoop:
     ld a, [wEnemyOffset]

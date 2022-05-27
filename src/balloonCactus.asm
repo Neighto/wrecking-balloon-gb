@@ -284,6 +284,15 @@ ClearCactus:
 ; .end:
 ;     pop bc
     ; ret
+CactusFallingCollision:
+    ; Flip some var that says we are falling
+    ; Update something that says where we are stored
+    ; Boss would read it and be able to check collision, and handle both destructions
+    ; So we need some RAM space to hold falling cacti only
+    ; And we need to clear it when done
+
+    ; Should it itself do a clean check or should we handle it?
+    ret
 
 UpdateBalloonPosition:
 .balloonLeftOAM:
@@ -515,6 +524,12 @@ BalloonCactusUpdate::
     ld a, 1
     ldh [hEnemyDying], a
     ldh [hEnemyParam1], a
+    ; Set as falling enemy
+    SET_HL_TO_ADDRESS wEnemies+4, wEnemyOffset
+    ld a, h 
+    ld [wFallingEnemies], a
+    ld a, l
+    ld [wFallingEnemies+1], a
     ; Sound
     call PopSound
 .endCollision:
@@ -533,9 +548,9 @@ BalloonCactusUpdate::
     call ClearExtraSpace
     call ClearCactus
     call InitializeEnemyStructVars
-    jr .setStruct
+    jp .setStruct
 .endOffscreen:
-    jr .setStruct
+    jp .setStruct
 
 .popped:
     ldh a, [hEnemyDying]
@@ -581,7 +596,7 @@ BalloonCactusUpdate::
     cp a, [hl]
     jr c, .offScreen
 .canFall:
-    ; call CactusFallingCollision
+    call CactusFallingCollision
     ld hl, hEnemyParam3
     inc [hl]
     ld a, [hl]
@@ -600,6 +615,9 @@ BalloonCactusUpdate::
 .offScreen:
     xor a
     ld [hEnemyParam1], a
+    ; Remove as falling enemy
+    ld [wFallingEnemies], a
+    ld [wFallingEnemies+1], a
     jr .endFalling
 .clearFalling:
     call ClearBalloon

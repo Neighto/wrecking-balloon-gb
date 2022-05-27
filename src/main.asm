@@ -100,6 +100,12 @@ SetupNextLevel::
 	call ClearOAM
 	call ClearRAM
 	call ClearSound
+	call SetupWindow
+	call ResetFading
+	call InitializeEnemies
+	call InitializePlayer
+	call InitializeBullet
+	call SpawnPlayer
 
 	; testing
 	ld a, 3
@@ -131,6 +137,8 @@ SetupNextLevel::
 	call LoadLevelShowdownGraphics
 	ld hl, bossTheme
 	call hUGE_init
+	call SpawnBossNotInLevelData
+	call SetPlayerPositionBoss
 	jr .endLevelSetup
 .level4:
 	cp a, 4
@@ -152,15 +160,9 @@ SetupNextLevel::
 	jr .endLevelSetup
 .level6:
 .endLevelSetup:
-	call SetupWindow
-	call ResetFading
 	call InitializeGame
 	call InitializeScore
 	call InitializeNewLevel
-	call InitializeEnemies
-	call InitializePlayer
-	call InitializeBullet
-	call SpawnPlayer
 	call SpawnCountdown
 	call LCD_ON
 GameCountdownLoop:

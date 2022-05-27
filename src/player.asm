@@ -113,6 +113,12 @@ SetPlayerPositionOpeningDefault:
   call SetPlayerPosition
   ret
 
+SetPlayerPositionBoss::
+  ld b, PLAYER_START_X - 40
+  ld c, PLAYER_START_Y
+  call SetPlayerPosition
+  ret
+
 SetPlayerPositionOpeningCutscene::
   ld b, PLAYER_START_X
   ld c, 52

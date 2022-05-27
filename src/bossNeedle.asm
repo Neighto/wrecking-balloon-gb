@@ -166,7 +166,7 @@ BossNeedleUpdate::
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ld d, 8 ; should be 4... Maybe make collision that can read flipped
-    ld e, 4
+    ld e, 16
     call CollisionCheck
     cp a, 0
     jr z, .endCollision
