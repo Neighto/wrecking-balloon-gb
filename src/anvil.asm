@@ -9,6 +9,8 @@ ANVIL_OAM_BYTES EQU ANVIL_OAM_SPRITES * 4
 ANVIL_MOVE_TIME EQU %00000001
 ANVIL_COLLISION_TIME EQU %00001000
 
+CACTUS_SCREAMING_TILE EQU $16
+
 ANVIL_TILE_1 EQU $48
 ANVIL_TILE_2 EQU $4A
 
@@ -27,6 +29,8 @@ SetStruct:
     ldh a, [hEnemyOAM]
     ld [hli], a
     ldh a, [hEnemySpeed]
+    ld [hli], a
+    ldh a, [hEnemyVariant]
     ld [hl], a
     ret
 
@@ -55,24 +59,51 @@ SpawnAnvil::
     ldh [hEnemySpeed], a
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
+.variantVisualLeft:
+    ldh a, [hEnemyVariant]
+.cactusVisual:
+    cp a, CACTUS_VARIANT
+    jr nz, .anvilVisualLeft
+    ld d, CACTUS_SCREAMING_TILE
+    ld e, OAMF_PAL0
+    jr .endVariantVisualLeft
+.anvilVisualLeft:
+    ld d, ANVIL_TILE_1
+    ld e, OAMF_PAL0
+.endVariantVisualLeft:
+
 .anvilLeftOAM:
     ldh a, [hEnemyY]
     ld [hli], a
     ld a, [hEnemyX]
     ld [hli], a
-    ld a, ANVIL_TILE_1
+    ld a, d
     ld [hli], a
-    ld a, OAMF_PAL0
+    ld a, e
     ld [hli], a
+
+.variantVisualRight:
+    ldh a, [hEnemyVariant]
+.cactusVisualRight:
+    cp a, CACTUS_VARIANT
+    jr nz, .anvilVisualRight
+    ld d, CACTUS_SCREAMING_TILE
+    ld e, OAMF_PAL0 | OAMF_XFLIP
+    jr .endVariantVisualRight
+.anvilVisualRight:
+    ld d, ANVIL_TILE_2
+    ld e, OAMF_PAL0
+.endVariantVisualRight:
+
 .anvilRightOAM:
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
     add 8
     ld [hli], a
-    ld a, ANVIL_TILE_2
+    ld a, d
     ld [hli], a
-    ld a, OAMF_PAL0
+    ld a, e
     ld [hl], a
 .setStruct:
     LD_HL_BC
@@ -96,8 +127,10 @@ AnvilUpdate::
     ldh [hEnemyX], a
     ld a, [hli]
     ldh [hEnemyOAM], a
-    ld a, [hl]
+    ld a, [hli]
     ldh [hEnemySpeed], a
+    ld a, [hl]
+    ldh [hEnemyVariant], a
 
 .fallingSpeed:
     ldh a, [hGlobalTimer]
@@ -136,15 +169,6 @@ AnvilUpdate::
     call CollisionCheck
     cp a, 0
     call nz, CollisionWithPlayer
-; .checkHitByBullet:
-;     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-;     LD_BC_HL
-;     ld hl, wPlayerBulletOAM
-;     ld d, 16
-;     ld e, 4
-;     call CollisionCheck
-;     cp a, 0
-;     call nz, ClearBullet
 .checkHitAnotherEnemy:
     call EnemyInterCollision
     jr z, .endCollision
