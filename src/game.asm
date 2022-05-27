@@ -242,7 +242,7 @@ UpdateGame::
 .updateSprites:
     call PlayerUpdate
     call BulletUpdate
-    call UpdateEnemy
+    call EnemyUpdate
 .rest:
     UPDATE_GLOBAL_TIMER
     call LevelDataHandler

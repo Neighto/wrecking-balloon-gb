@@ -56,21 +56,17 @@ SECTION "enemy data vars", WRAM0
 
     wEnemies:: DS ENEMY_DATA_SIZE
     wEnemyOffset:: DB ; Offset for looping through enemy data
-    wEnemyOffset2:: DB ; If we loop inside another enemy's data
+    wEnemyOffset2:: DB ; Offset for looping through enemy data within enemy
     wEnemyLoopIndex:: DB
-
-SECTION "enemy inter-collision vars", WRAM0
-
-    wFallingEnemies:: DS FALLING_ENEMIES_DATA_SIZE ; Check if falling enemy would cause a collision with another enemy
+    wEnemyLoopIndex2:: DB
 
 SECTION "enemy", ROM0
 
 InitializeEnemies::
     RESET_IN_RANGE wEnemies, ENEMY_DATA_SIZE
-    RESET_IN_RANGE wFallingEnemies, FALLING_ENEMIES_DATA_SIZE
     ret
 
-UpdateEnemy::
+EnemyUpdate::
     ld a, NUMBER_OF_ENEMIES
     ld [wEnemyLoopIndex], a
     xor a ; ld a, 0
@@ -88,50 +84,49 @@ UpdateEnemy::
     ld a, [hli]
     ldh [hEnemyNumber], a
     ; Check enemy number
-    cp a, POINT_BALLOON
-    jr z, .pointBalloon
-    cp a, BALLOON_CACTUS
-    jr z, .balloonCactus
-    cp a, BIRD
-    jr z, .bird
-    cp a, BOMB
-    jr z, .bomb
-    cp a, PROJECTILE
-    jr z, .projectile
-    cp a, BOSS
-    jr z, .boss
-    cp a, BOSS_NEEDLE
-    jr z, .bossNeedle
-    cp a, ANVIL
-    jr z, .anvil
-    cp a, BALLOON_ANVIL
-    jr z, .balloonAnvil
-    jr .checkLoop
 .pointBalloon:
+    cp a, POINT_BALLOON
+    jr nz, .balloonCactus
     call PointBalloonUpdate
     jr .checkLoop
 .balloonCactus:
+    cp a, BALLOON_CACTUS
+    jr nz, .bird
     call BalloonCactusUpdate
     jr .checkLoop
 .bird:
+    cp a, BIRD
+    jr nz, .bomb
     call BirdUpdate
     jr .checkLoop
 .bomb:
+    cp a, BOMB
+    jr nz, .projectile
     call BombUpdate
     jr .checkLoop
 .projectile:
+    cp a, PROJECTILE
+    jr nz, .boss
     call ProjectileUpdate
     jr .checkLoop
 .boss:
+    cp a, BOSS
+    jr nz, .bossNeedle
     call BossUpdate
     jr .checkLoop
 .bossNeedle:
+    cp a, BOSS_NEEDLE
+    jr nz, .anvil
     call BossNeedleUpdate
     jr .checkLoop
 .anvil:
+    cp a, ANVIL
+    jr nz, .balloonAnvil
     call AnvilUpdate
     jr .checkLoop
 .balloonAnvil:
+    cp a, BALLOON_ANVIL
+    jr nz, .checkLoop
     call BalloonAnvilUpdate
     jr .checkLoop
 .checkLoop:
@@ -143,6 +138,52 @@ UpdateEnemy::
     ld a, [hl]
     cp a, 0
     jr nz, .loop
+    ret
+
+EnemyInterCollision::
+    ; Call from enemy script
+    ; Returns z flag as failed / nz flag as succeeded
+    ld a, NUMBER_OF_ENEMIES
+    ld [wEnemyLoopIndex2], a
+    xor a ; ld a, 0
+    ld [wEnemyOffset2], a
+.loop:
+    ; Get active state
+    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset2
+    ld a, [hli]
+    ; Check active
+    cp a, 0
+    jr z, .checkLoop
+    ; Get enemy number
+    ld a, [hli]
+    ; Check enemy number
+.boss:
+    cp a, BOSS
+    jr nz, .checkLoop
+    inc hl
+    inc hl
+    LD_BC_HL ; hEnemyOAM stored in bc
+    SET_HL_TO_ADDRESS wEnemies, bc
+    LD_BC_HL ; OAM address stored in bc
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ld d, 32
+    ld e, 32
+    call CollisionCheck
+    cp a, 0
+    jr z, .checkLoop
+    ; nz flag set
+    ret
+.checkLoop:
+    ld a, [wEnemyOffset2]
+    add a, ENEMY_STRUCT_SIZE
+    ld [wEnemyOffset2], a    
+    ld a, [wEnemyLoopIndex2]
+    dec a
+    ld [wEnemyLoopIndex2], a
+    cp a, 0
+    jr nz, .loop
+.end:
+    ; z flag set
     ret
 
 SECTION "enemy animations", ROM0

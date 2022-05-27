@@ -116,14 +116,8 @@ SpawnBalloonCactus::
     jr .endDifficultyVisualBalloon
 .hardVisual:
     cp a, HARD
-    jr nz, .alternateVisualBalloon
-    ld d, BALLOON_CACTUS_HARD_TILE
-    ld e, OAMF_PAL0
-    jr .endDifficultyVisualBalloon
-.alternateVisualBalloon:
-    cp a, ALTERNATE 
     jr nz, .endDifficultyVisualBalloon
-    ld d, $3A
+    ld d, BALLOON_CACTUS_HARD_TILE
     ld e, OAMF_PAL0
 .endDifficultyVisualBalloon:
 
@@ -155,52 +149,24 @@ SpawnBalloonCactus::
     ld [hli], a
     ld [hl], OAMF_PAL0
     inc l
-
-.difficultyVisualCactusLeft:
-    ldh a, [hEnemyDifficulty]
-.alternateVisualCactusLeft:
-    cp a, ALTERNATE 
-    jr nz, .restVisualLeft
-    ld d, $48
-    ld e, OAMF_PAL0
-    jr .endDifficultyVisualCactusLeft
-.restVisualLeft:
-    ld d, BALLOON_CACTUS_TILE
-    ld e, OAMF_PAL0
-.endDifficultyVisualCactusLeft:
-
 .cactusLeftOAM:
     ldh a, [hEnemyY2]
     ld [hli], a
     ldh a, [hEnemyX2]
     ld [hli], a
-    ld a, d
+    ld a, BALLOON_CACTUS_TILE
     ld [hli], a
-    ld a, e
+    ld a, OAMF_PAL0
     ld [hli], a
-
-.difficultyVisualCactusRight:
-    ldh a, [hEnemyDifficulty]
-.alternateVisualCactusRight:
-    cp a, ALTERNATE 
-    jr nz, .restVisualRight
-    ld d, $4A
-    ld e, OAMF_PAL0
-    jr .endDifficultyVisualCactusRight
-.restVisualRight:
-    ld d, BALLOON_CACTUS_TILE
-    ld e, OAMF_PAL0 | OAMF_XFLIP
-.endDifficultyVisualCactusRight:
-
 .cactusRightOAM:
     ldh a, [hEnemyY2]
     ld [hli], a
     ldh a, [hEnemyX2]
     add 8
     ld [hli], a
-    ld a, d
+    ld a, BALLOON_CACTUS_TILE
     ld [hli], a
-    ld a, e
+    ld a, OAMF_PAL0 | OAMF_XFLIP
     ld [hl], a
 .setStruct:
     LD_HL_BC
@@ -284,15 +250,6 @@ ClearCactus:
 ; .end:
 ;     pop bc
     ; ret
-CactusFallingCollision:
-    ; Flip some var that says we are falling
-    ; Update something that says where we are stored
-    ; Boss would read it and be able to check collision, and handle both destructions
-    ; So we need some RAM space to hold falling cacti only
-    ; And we need to clear it when done
-
-    ; Should it itself do a clean check or should we handle it?
-    ret
 
 UpdateBalloonPosition:
 .balloonLeftOAM:
@@ -495,41 +452,19 @@ BalloonCactusUpdate::
     jr .endDifficultyPoints
 .hardPoints:
     cp a, HARD
-    jr nz, .alternatePoints
-    ld d, BALLOON_CACTUS_HARD_POINTS
-.alternatePoints:
-    cp a, ALTERNATE
     jr nz, .endDifficultyPoints
-    ld d, 0
+    ld d, BALLOON_CACTUS_HARD_POINTS
 .endDifficultyPoints:
     call AddPoints
     ; Falling visual
-.difficultyFallingVisual:
-    ldh a, [hEnemyDifficulty]
-.alternateFallingVisual:
-    cp a, ALTERNATE 
-    jr nz, .restFallingVisual
-    ld d, $48
-    ld e, $4A
-    jr .endDifficultyFallingVisual
-.restFallingVisual:
-    ld d, BALLOON_CACTUS_SCREAMING_TILE
-    ld e, BALLOON_CACTUS_SCREAMING_TILE
-.endDifficultyFallingVisual:
     SET_HL_TO_ADDRESS wOAM+14, hEnemyOAM
-    ld [hl], d
+    ld [hl], BALLOON_CACTUS_SCREAMING_TILE
     SET_HL_TO_ADDRESS wOAM+18, hEnemyOAM
-    ld [hl], e
+    ld [hl], BALLOON_CACTUS_SCREAMING_TILE
     ; Animation trigger
     ld a, 1
     ldh [hEnemyDying], a
     ldh [hEnemyParam1], a
-    ; Set as falling enemy
-    SET_HL_TO_ADDRESS wEnemies+4, wEnemyOffset
-    ld a, h 
-    ld [wFallingEnemies], a
-    ld a, l
-    ld [wFallingEnemies+1], a
     ; Sound
     call PopSound
 .endCollision:
@@ -596,7 +531,6 @@ BalloonCactusUpdate::
     cp a, [hl]
     jr c, .offScreen
 .canFall:
-    call CactusFallingCollision
     ld hl, hEnemyParam3
     inc [hl]
     ld a, [hl]
@@ -615,9 +549,6 @@ BalloonCactusUpdate::
 .offScreen:
     xor a
     ld [hEnemyParam1], a
-    ; Remove as falling enemy
-    ld [wFallingEnemies], a
-    ld [wFallingEnemies+1], a
     jr .endFalling
 .clearFalling:
     call ClearBalloon
