@@ -147,8 +147,7 @@ AnvilUpdate::
     call EnemyInterCollision
     jr z, .endCollision
 .hitEnemy:
-    ld d, 1 
-    call AddPoints
+    ; mark to blink instead
     call Clear
     jr .setStruct
 .endCollision:

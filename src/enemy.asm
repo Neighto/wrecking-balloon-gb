@@ -21,6 +21,7 @@ SECTION "enemy struct vars", HRAM
     hEnemyY2:: DB
     hEnemyX2:: DB
     hEnemyDying:: DB
+    hEnemyHitEnemy:: DB
     hEnemyAnimationFrame:: DB
     hEnemyAnimationTimer:: DB
     hEnemyDirectionLeft:: DB
@@ -42,6 +43,7 @@ InitializeEnemyStructVars::
     ldh [hEnemyX2], a
     ; ldh [hEnemyDifficulty], a ; Do not clear
     ldh [hEnemyDying], a
+    ldh [hEnemyHitEnemy], a
     ldh [hEnemyAnimationFrame], a
     ldh [hEnemyAnimationTimer], a
     ldh [hEnemyDirectionLeft], a
@@ -163,7 +165,7 @@ EnemyInterCollision::
     inc hl
     inc hl
     LD_BC_HL ; hEnemyOAM stored in bc
-    SET_HL_TO_ADDRESS wEnemies, bc
+    SET_HL_TO_ADDRESS wOAM, bc
     LD_BC_HL ; OAM address stored in bc
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ld d, 32
@@ -171,6 +173,10 @@ EnemyInterCollision::
     call CollisionCheck
     cp a, 0
     jr z, .checkLoop
+    SET_HL_TO_ADDRESS wEnemies+7, wEnemyOffset2 ; hEnemyHitEnemy
+    ld a, 1 
+    ld [hl], a
+    cp a, 0
     ; nz flag set
     ret
 .checkLoop:

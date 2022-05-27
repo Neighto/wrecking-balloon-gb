@@ -80,6 +80,8 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyDying]
     ld [hli], a
+    ldh a, [hEnemyHitEnemy]
+    ld [hli], a
     ldh a, [hEnemyAnimationFrame]
     ld [hli], a
     ldh a, [hEnemyAnimationTimer]
@@ -385,6 +387,8 @@ BossUpdate::
     ld a, [hli]
     ldh [hEnemyDying], a
     ld a, [hli]
+    ldh [hEnemyHitEnemy], a
+    ld a, [hli]
     ldh [hEnemyAnimationFrame], a
     ld a, [hli]
     ldh [hEnemyAnimationTimer], a
@@ -588,6 +592,9 @@ BossUpdate::
     ldh a, [hGlobalTimer]
     and	PORCUPINE_COLLISION_TIME
     jp nz, .endCollision
+    ldh a, [hEnemyHitEnemy]
+    cp a, 0
+    jr nz, .bossDamaged
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
@@ -644,6 +651,9 @@ BossUpdate::
     call AddPoints
     ; Sound
     call PercussionSound
+    ; Stop enemy hit
+    xor a ; ld a, 0
+    ldh [hEnemyHitEnemy], a
     ; Decrease life
     ldh a, [hEnemyAlive]
     dec a
