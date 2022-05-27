@@ -297,7 +297,8 @@ SpawnBossNotInLevelData::
 
 Clear:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    RESET_AT_HL PORCUPINE_OAM_BYTES
+    ld bc, PORCUPINE_OAM_BYTES
+    call ResetHLInRange
     call InitializeEnemyStructVars
     ret
 
