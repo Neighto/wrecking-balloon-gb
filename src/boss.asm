@@ -283,6 +283,16 @@ SpawnBoss::
     pop hl
     ret
 
+SpawnBossNotInLevelData::
+	ld a, BOSS
+	ldh [hEnemyNumber], a
+	ld a, 68
+	ldh [hEnemyY], a 
+	ld a, 112
+	ldh [hEnemyX], a
+    call SpawnBoss
+    ret
+
 Clear:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     RESET_AT_HL PORCUPINE_OAM_BYTES
@@ -542,8 +552,8 @@ BossUpdate::
     and	PORCUPINE_MOVE_TIME
     jr nz, .endMove
 .canMove: 
-    call HelperMoveX
-    call HelperMoveY
+    ; call HelperMoveX
+    ; call HelperMoveY
     call UpdateBossPosition
 .endMove:
 
@@ -577,7 +587,7 @@ BossUpdate::
 .checkCollision:
     ldh a, [hGlobalTimer]
     and	PORCUPINE_COLLISION_TIME
-    jr nz, .endCollision
+    jp nz, .endCollision
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
@@ -586,16 +596,47 @@ BossUpdate::
     call CollisionCheck
     cp a, 0
     call nz, CollisionWithPlayer
-.checkHitByBullet:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+; .checkHitByBullet:
+;     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+;     LD_BC_HL
+;     ld hl, wPlayerBulletOAM
+;     ld d, 16
+;     ld e, 4
+;     call CollisionCheck
+;     cp a, 0
+;     jr z, .endCollision
+;     call ClearBullet
+.checkHitByAnvil:
+    ; *****************************************************
+    
+    ; Check for colliding anvil
+    ld a, [wFallingEnemies]
+    cp a, 0
+    jr nz, .fallingEnemiesSet
+    ld b, a
+    ld a, [wFallingEnemies+1]
+    cp a, 0
+    jr nz, .fallingEnemiesSet
+    ld c, a
+    jr .endCollision
+.fallingEnemiesSet:
+    SET_HL_TO_ADDRESS wOAM+12, bc
     LD_BC_HL
-    ld hl, wPlayerBulletOAM
-    ld d, 16
-    ld e, 4
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ld d, 32
+    ld e, 32
     call CollisionCheck
     cp a, 0
     jr z, .endCollision
-    call ClearBullet
+
+    ; we know its falling and we know its type (only 1 falling enemy rn)
+    ; check its OAM...
+    ; check collision
+    ; if yes, here we do bossDamaged etc
+    ; if yes, we need to mark balloonCactus for death, but make sure it still
+    ; removes itself from fallingEnemies
+ 
+    ; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .bossDamaged:
     ; Points
     ld d, PORCUPINE_POINTS
@@ -654,19 +695,19 @@ BossUpdate::
     ldh [hEnemyX], a
     call SpawnBossNeedle
 .bottomRightNeedle:
-    ld a, HARD ; Alias for aim bottom-right
-    ldh [hEnemyDifficulty], a
-    ldh a, [hEnemyY]
-    add a, 16
-    ldh [hEnemyY], a
-    call SpawnBossNeedle
+    ; ld a, HARD ; Alias for aim bottom-right
+    ; ldh [hEnemyDifficulty], a
+    ; ldh a, [hEnemyY]
+    ; add a, 16
+    ; ldh [hEnemyY], a
+    ; call SpawnBossNeedle
 .bottomLeftNeedle:
-    ld a, MEDIUM ; Alias for aim bottom-left
-    ldh [hEnemyDifficulty], a
-    ldh a, [hEnemyX]
-    sub a, 8
-    ldh [hEnemyX], a
-    call SpawnBossNeedle
+    ; ld a, MEDIUM ; Alias for aim bottom-left
+    ; ldh [hEnemyDifficulty], a
+    ; ldh a, [hEnemyX]
+    ; sub a, 8
+    ; ldh [hEnemyX], a
+    ; call SpawnBossNeedle
 .endSpawnBossNeedle:
 
 
