@@ -21,7 +21,7 @@ BALLOON_CACTUS_MEDIUM_POINTS EQU 30
 BALLOON_CACTUS_HARD_TILE EQU $22
 BALLOON_CACTUS_HARD_POINTS EQU 50
 
-SECTION "balloon anvil", ROMX
+SECTION "balloon anvil", ROM0 ; make ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
@@ -42,6 +42,8 @@ SetStruct:
     ldh a, [hEnemyAnimationFrame]
     ld [hli], a
     ldh a, [hEnemyAnimationTimer]
+    ld [hli], a
+    ldh a, [hEnemyParam1] ; Trigger Carry
     ld [hli], a
     ldh a, [hEnemyDifficulty]
     ld [hl], a
@@ -151,25 +153,7 @@ ClearBalloonAnvil:
     ld [hli], a
     ld [hli], a
     ld [hl], a
-    ret
-
-UpdatePosition:
-.balloonLeftOAM:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    ld [hli], a
-    inc l
-    inc l
-.balloonRightOAM:
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 8
-    ld [hli], a
-    inc l
-    inc l
+    call InitializeEnemyStructVars
     ret
 
 BalloonAnvilUpdate::
@@ -188,6 +172,8 @@ BalloonAnvilUpdate::
     ldh [hEnemyAnimationFrame], a
     ld a, [hli]
     ldh [hEnemyAnimationTimer], a
+    ld a, [hli]
+    ldh [hEnemyParam1], a
     ld a, [hl]
     ldh [hEnemyDifficulty], a
 
@@ -196,6 +182,8 @@ BalloonAnvilUpdate::
     cp a, 0
     jr nz, .isAlive
 .isPopping:
+    xor a ; ld a, 0
+    ldh [hEnemyParam1], a
     ldh a, [hEnemyDying]
     cp a, 0
     jr z, .clearPopping
@@ -212,13 +200,43 @@ BalloonAnvilUpdate::
     and	BALLOON_CACTUS_MOVE_TIME
     jr nz, .endMove
 .canMove:
-
 .moveHorizontal:
     INCREMENT_POS hEnemyX, 1
 .endMoveHorizontal:
-
 .updatePosition:
-    call UpdatePosition
+.balloonLeftOAM:
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ldh a, [hEnemyY]
+    ld [hli], a
+    ldh a, [hEnemyX]
+    ld [hli], a
+    inc l
+    inc l
+.balloonRightOAM:
+    ldh a, [hEnemyY]
+    ld [hli], a
+    ldh a, [hEnemyX]
+    add 8
+    ld [hli], a
+    inc l
+    inc l
+.carryLeftOAM:
+    ldh a, [hEnemyY]
+    add 16
+    ld [hli], a
+    ldh a, [hEnemyX]
+    ld [hli], a
+    inc l
+    inc l
+.carryRightOAM:
+    ldh a, [hEnemyY]
+    add 16
+    ld [hli], a
+    ldh a, [hEnemyX]
+    add 8
+    ld [hli], a
+    inc l
+    inc l
 .endMove:
 
 .checkCollision:
@@ -240,11 +258,7 @@ BalloonAnvilUpdate::
     ld e, 12
     call CollisionCheck
     cp a, 0
-    jr z, .checkHitByBullet
-    ldh a, [hEnemyDifficulty]
-    cp a, HARD 
-    call z, CollisionWithPlayer
-    jr .deathOfBalloonCactus
+    jr nz, .deathOfBalloonCarry
 .checkHitByBullet:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     LD_BC_HL
@@ -255,16 +269,17 @@ BalloonAnvilUpdate::
     cp a, 0
     jr z, .endCollision
     call ClearBullet
-.deathOfBalloonCactus:
+.deathOfBalloonCarry:
     xor a ; ld a, 0
     ld [hEnemyAlive], a
-    ; Falling visual
-    ld d, $48
-    ld e, $4A
-    SET_HL_TO_ADDRESS wOAM+14, hEnemyOAM
-    ld [hl], d
-    SET_HL_TO_ADDRESS wOAM+18, hEnemyOAM
-    ld [hl], e
+    ; Hide carry visual
+    SET_HL_TO_ADDRESS wOAM+10, hEnemyOAM
+    ld a, EMPTY_TILE
+    ld [hli], a
+    inc hl
+    inc hl
+    inc hl
+    ld [hl], a
     ; Animation trigger
     ld a, 1
     ldh [hEnemyDying], a
@@ -284,10 +299,24 @@ BalloonAnvilUpdate::
     jr c, .endOffscreen
 .offscreen:
     call ClearBalloonAnvil
-    call InitializeEnemyStructVars
 .endOffscreen:
 
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
+
+.checkSpawnCarry:
+    ldh a, [hEnemyParam1]
+    cp a, 0
+    jr z, .endSpawnCarry
+.spawnCarry:
+    ld a, ANVIL
+    ldh [hEnemyNumber], a
+    ld a, NONE
+    ldh [hEnemyDifficulty], a
+    ldh a, [hEnemyY]
+    add 16
+    ldh [hEnemyY], a
+    call SpawnAnvil
+.endSpawnCarry:
     ret

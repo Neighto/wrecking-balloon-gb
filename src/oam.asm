@@ -6,7 +6,7 @@ SECTION "OAM vars", WRAM0[$C100]
 	wPlayerBalloonOAM:: DS 4*2
 	wPlayerBulletOAM:: DS 4*1
 OAMVars::
-	wOAM:: DS 4*35 ; 36 sprites with 4 bytes each of attributes
+	wOAM:: DS 4*35 ; 35 sprites with 4 bytes each of attributes
 OAMVarsEnd::
 
 SECTION "OAM DMA routine", ROM0

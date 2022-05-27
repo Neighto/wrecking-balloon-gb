@@ -26,10 +26,6 @@ SetStruct:
     ldh a, [hEnemyOAM]
     ld [hli], a
     ldh a, [hEnemySpeed]
-    ld [hli], a
-    ldh a, [hEnemyParam1] ; Enemy Falling Timer
-    ld [hli], a
-    ldh a, [hEnemyParam2] ; Enemy Delay Falling Timer
     ld [hl], a
     ret
 
@@ -86,15 +82,7 @@ SpawnAnvil::
 
 Clear:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    xor a ; ld a, 0
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hl], a
+    RESET_AT_HL 8
     call InitializeEnemyStructVars
     ret
 
@@ -106,33 +94,22 @@ AnvilUpdate::
     ldh [hEnemyX], a
     ld a, [hli]
     ldh [hEnemyOAM], a
-    ld a, [hli]
-    ldh [hEnemySpeed], a
-    ld a, [hli]
-    ldh [hEnemyParam1], a
     ld a, [hl]
-    ldh [hEnemyParam2], a
+    ldh [hEnemySpeed], a
 
 .fallingSpeed:
-    ldh a, [hEnemyParam1]
-    inc a
-    ldh [hEnemyParam1], a
-    and CACTUS_FALLING_TIME
+    ldh a, [hGlobalTimer]
+    and ANVIL_MOVE_TIME
     jr nz, .endFallingSpeed
-.canFall:
-    ldh a, [hEnemyParam2]
-    inc a
-    ldh [hEnemyParam2], a
-    cp a, CACTUS_DELAY_FALLING_TIME
-    jr c, .skipAcceleration
-.accelerate:
-    xor a ; ld a, 0
-    ldh [hEnemyParam2], a
     ldh a, [hEnemySpeed]
-    add a, a
+    inc a 
     ldh [hEnemySpeed], a
-.skipAcceleration:
-    INCREMENT_POS hEnemyY, [hEnemySpeed]
+    ld b, 2
+    call DIVISION
+    ld b, a
+    ldh a, [hEnemyY]
+    add a, b
+    ldh [hEnemyY], a
 .anvilLeftOAM:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ldh a, [hEnemyY]
@@ -157,16 +134,23 @@ AnvilUpdate::
     call CollisionCheck
     cp a, 0
     call nz, CollisionWithPlayer
-.checkHitByBullet:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    LD_BC_HL
-    ld hl, wPlayerBulletOAM
-    ld d, 16
-    ld e, 4
-    call CollisionCheck
-    cp a, 0
+; .checkHitByBullet:
+;     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+;     LD_BC_HL
+;     ld hl, wPlayerBulletOAM
+;     ld d, 16
+;     ld e, 4
+;     call CollisionCheck
+;     cp a, 0
+;     call nz, ClearBullet
+.checkHitAnotherEnemy:
+    call EnemyInterCollision
     jr z, .endCollision
-    call ClearBullet
+.hitEnemy:
+    ld d, 1 
+    call AddPoints
+    call Clear
+    jr .setStruct
 .endCollision:
 
 .checkOffscreen:

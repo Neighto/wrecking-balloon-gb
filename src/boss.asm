@@ -557,16 +557,16 @@ BossUpdate::
     call UpdateBossPosition
 .endMove:
 
-.checkAttack:
-    ldh a, [hGlobalTimer]
-    and	PORCUPINE_ATTACK_TIME
-    ld a, 0
-    jr nz, .updateCanAttack
-.canAttack:
-    inc a
-.updateCanAttack:
-    ldh [hEnemyParam2], a
-.endAttack:
+; .checkAttack:
+;     ldh a, [hGlobalTimer]
+;     and	PORCUPINE_ATTACK_TIME
+;     ld a, 0
+;     jr nz, .updateCanAttack
+; .canAttack:
+;     inc a
+; .updateCanAttack:
+;     ldh [hEnemyParam2], a
+; .endAttack:
 
 .checkString:
     ldh a, [hGlobalTimer]
@@ -608,26 +608,27 @@ BossUpdate::
 ;     call ClearBullet
 .checkHitByAnvil:
     ; *****************************************************
-    
-    ; Check for colliding anvil
-    ld a, [wFallingEnemies]
-    cp a, 0
-    jr nz, .fallingEnemiesSet
-    ld b, a
-    ld a, [wFallingEnemies+1]
-    cp a, 0
-    jr nz, .fallingEnemiesSet
-    ld c, a
     jr .endCollision
-.fallingEnemiesSet:
-    SET_HL_TO_ADDRESS wOAM+12, bc
-    LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ld d, 32
-    ld e, 32
-    call CollisionCheck
-    cp a, 0
-    jr z, .endCollision
+
+    ; Check for colliding anvil
+;     ld a, [wFallingEnemies]
+;     cp a, 0
+;     jr nz, .fallingEnemiesSet
+;     ld b, a
+;     ld a, [wFallingEnemies+1]
+;     cp a, 0
+;     jr nz, .fallingEnemiesSet
+;     ld c, a
+;     jr .endCollision
+; .fallingEnemiesSet:
+;     SET_HL_TO_ADDRESS wOAM+12, bc
+;     LD_BC_HL
+;     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+;     ld d, 32
+;     ld e, 32
+;     call CollisionCheck
+;     cp a, 0
+;     jr z, .endCollision
 
     ; we know its falling and we know its type (only 1 falling enemy rn)
     ; check its OAM...
