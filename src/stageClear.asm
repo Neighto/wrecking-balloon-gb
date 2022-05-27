@@ -65,7 +65,7 @@ RefreshStageClear::
 	ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
 	call RefreshTotal
 
-	ld a, [wPlayerLives]
+	ldh a, [hPlayerLives]
 	add NUMBERS_TILE_OFFSET
 	ld [LIVES_SC_ADDRESS], a
 
@@ -154,11 +154,11 @@ UpdateStageClear::
     jr z, .endFrame
     dec a
     ld [wLivesToAdd], a
-    ld a, [wPlayerLives]
+    ldh a, [hPlayerLives]
     cp a, PLAYER_MAX_LIVES
     ret nc
     inc a
-    ld [wPlayerLives], a
+    ldh [hPlayerLives], a
     call CollectSound
     ret
 .endFrame:

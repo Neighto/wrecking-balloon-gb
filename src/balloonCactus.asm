@@ -352,7 +352,7 @@ BalloonCactusUpdate::
     jr nz, .hardMove
     ; Follow player
     ldh a, [hEnemyY2]
-    ld hl, wPlayerY
+    ld hl, hPlayerY
     cp a, [hl]
     jr z, .endMoveVertical
     jr c, .moveDown

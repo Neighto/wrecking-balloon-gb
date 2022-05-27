@@ -4,74 +4,70 @@ INCLUDE "balloonConstants.inc"
 INCLUDE "constants.inc"
 INCLUDE "macro.inc"
 
-SECTION "player vars", WRAM0
-  wPlayerY:: DB
-  wPlayerX:: DB
-  wPlayerY2:: DB
-  wPlayerX2:: DB
-  wPlayerAlive:: DB
-  wPlayerPopping:: DB
-  wPlayerPoppingFrame:: DB
-  wPlayerPoppingTimer:: DB
-  wPlayerFalling:: DB
-  wPlayerFallSpeed:: DB
-  wPlayerFallingTimer:: DB
-  wPlayerDelayFallingTimer:: DB
-  wPlayerRespawnTimer:: DB
-  wPlayerSpeed:: DB
-  wPlayerLives:: DB
-  wPlayerRight:: DB
-  wPlayerBobbedUp:: DB
+SECTION "player vars", HRAM
+  hPlayerY:: DB
+  hPlayerX:: DB
+  hPlayerY2:: DB
+  hPlayerX2:: DB
+  hPlayerAlive:: DB
+  hPlayerPopping:: DB
+  hPlayerPoppingFrame:: DB
+  hPlayerPoppingTimer:: DB
+  hPlayerFalling:: DB
+  hPlayerFallSpeed:: DB
+  hPlayerRespawnTimer:: DB
+  hPlayerSpeed:: DB
+  hPlayerLives:: DB
+  hPlayerLookRight:: DB
+  hPlayerBobbedUp:: DB
 
   ; Operate like timers
-  wPlayerInvincible:: DB
-  wPlayerBoost:: DB ; TODO it would be a lot more logical to make these increase instead of decrease
-  wPlayerAttack:: DB
+  hPlayerInvincible:: DB
+  hPlayerBoost:: DB ; TODO it would be a lot more logical to make these increase instead of decrease
+  hPlayerAttack:: DB
 
 SECTION "player", ROM0
 
 InitializeLives::
 	ld a, PLAYER_START_LIVES
-	ld [wPlayerLives], a
+	ldh [hPlayerLives], a
   ret
 
 InitializePlayer::
   xor a ; ld a, 0
-  ld [wPlayerPopping], a
-  ld [wPlayerPoppingFrame], a
-  ld [wPlayerPoppingTimer], a
-  ld [wPlayerFalling], a
-  ld [wPlayerDelayFallingTimer], a
-  ld [wPlayerFallingTimer], a
-  ld [wPlayerRespawnTimer], a
-  ld [wPlayerInvincible], a
-  ld [wPlayerBoost], a
-  ld [wPlayerAttack], a
-  ld [wPlayerBobbedUp], a
+  ldh [hPlayerPopping], a
+  ldh [hPlayerPoppingFrame], a
+  ldh [hPlayerPoppingTimer], a
+  ldh [hPlayerFalling], a
+  ldh [hPlayerRespawnTimer], a
+  ldh [hPlayerInvincible], a
+  ldh [hPlayerBoost], a
+  ldh [hPlayerAttack], a
+  ldh [hPlayerBobbedUp], a
 
   ld a, 1
-  ld [wPlayerAlive], a
-  ld [wPlayerFallSpeed], a
-  ld [wPlayerRight], a
+  ldh [hPlayerAlive], a
+  ldh [hPlayerFallSpeed], a
+  ldh [hPlayerLookRight], a
 
   call SetPlayerPositionOpeningDefault
-  ld hl, wPlayerSpeed
+  ld hl, hPlayerSpeed
   ld [hl], PLAYER_DEFAULT_SPEED
   ret
 
 UpdateBalloonPosition:
 .balloonLeft:
   ld hl, wPlayerBalloonOAM
-  ld a, [wPlayerY]
+  ldh a, [hPlayerY]
   ld [hli], a
-  ld a, [wPlayerX]
+  ldh a, [hPlayerX]
   ld [hli], a
   inc l
   inc l
 .balloonRight:
-  ld a, [wPlayerY]
+  ldh a, [hPlayerY]
   ld [hli], a
-  ld a, [wPlayerX]
+  ldh a, [hPlayerX]
   add 8
   ld [hl], a
   ret
@@ -79,16 +75,16 @@ UpdateBalloonPosition:
 UpdateCactusPosition:
 .cactusLeft:
   ld hl, wPlayerCactusOAM
-  ld a, [wPlayerY2]
+  ldh a, [hPlayerY2]
   ld [hli], a
-  ld a, [wPlayerX2]
+  ldh a, [hPlayerX2]
   ld [hli], a
   inc l
   inc l
 .cactusRight:
-  ld a, [wPlayerY2]
+  ldh a, [hPlayerY2]
   ld [hli], a
-  ld a, [wPlayerX2]
+  ldh a, [hPlayerX2]
   add 8
   ld [hl], a
   ret
@@ -97,12 +93,12 @@ SetPlayerPosition:
   ; b = start x
   ; c = start y
   ld a, b
-  ld [wPlayerX], a
-  ld [wPlayerX2], a
+  ldh [hPlayerX], a
+  ldh [hPlayerX2], a
   ld a, c
-  ld [wPlayerY], a
+  ldh [hPlayerY], a
   add a, 16
-  ld [wPlayerY2], a
+  ldh [hPlayerY2], a
   call UpdateBalloonPosition
   call UpdateCactusPosition
   ret
@@ -144,18 +140,18 @@ BobPlayer::
   ld d, %00000000
   jr nz, .endWreckingBalloonCheck
   ld a, 1
-  ld [wPlayerSpeed], a
-  ld a, [wPlayerBobbedUp]
+  ldh [hPlayerSpeed], a
+  ldh a, [hPlayerBobbedUp]
   cp a, 0
   jr z, .bobUp
 .bobDown:
   xor a ; ld a, 0
-  ld [wPlayerBobbedUp], a
+  ldh [hPlayerBobbedUp], a
   ld d, %10000000
   jr .endWreckingBalloonCheck
 .bobUp:
   ld a, 1
-  ld [wPlayerBobbedUp], a
+  ldh [hPlayerBobbedUp], a
   ld d, %01000000
 .endWreckingBalloonCheck:
   ld e, 0
@@ -180,18 +176,18 @@ MovePlayerUp::
 SpawnPlayer::
 .cactusLeftOAM:
   ld hl, wPlayerCactusOAM
-  ld a, [wPlayerY2]
+  ldh a, [hPlayerY2]
   ld [hli], a
-  ld a, [wPlayerX2]
+  ldh a, [hPlayerX2]
   ld [hli], a
   ld [hl], PLAYER_CACTUS_TILE
   inc l
   ld [hl], OAMF_PAL0
 .cactusRightOAM:
   inc l
-  ld a, [wPlayerY2]
+  ldh a, [hPlayerY2]
   ld [hli], a
-  ld a, [wPlayerX2]
+  ldh a, [hPlayerX2]
   add 8
   ld [hli], a
   ld [hl], PLAYER_CACTUS_TILE
@@ -199,18 +195,18 @@ SpawnPlayer::
   ld [hl], OAMF_PAL0 | OAMF_XFLIP
 .balloonLeftOAM:
   ld hl, wPlayerBalloonOAM
-  ld a, [wPlayerY]
+  ldh a, [hPlayerY]
   ld [hli], a
-  ld a, [wPlayerX]
+  ldh a, [hPlayerX]
   ld [hli], a
   ld [hl], PLAYER_BALLOON_TILE
   inc l
   ld [hl], OAMF_PAL1
 .balloonRightOAM:
   inc l
-  ld a, [wPlayerY]
+  ldh a, [hPlayerY]
   ld [hli], a
-  ld a, [wPlayerX]
+  ldh a, [hPlayerX]
   add 8
   ld [hli], a
   ld [hl], PLAYER_BALLOON_TILE
@@ -254,26 +250,26 @@ PlayerControls:
 	jr z, .endRight
 .setFacingRight:
   ld a, 1
-  ld [wPlayerRight], a
+  ldh [hPlayerLookRight], a
 .checkOffscreenRight:
   ld a, c
   cp a, 0
   jr z, .moveRight
 .offscreenRight:
-  ld a, [wPlayerX]
+  ldh a, [hPlayerX]
   ld b, a
   ld a, SCRN_X - 10
   cp a, b
   jr c, .endRight
 .moveRight:
-  INCREMENT_POS wPlayerX, [wPlayerSpeed]
-  INCREMENT_POS wPlayerX2, [wPlayerSpeed]
+  INCREMENT_POS hPlayerX, [hPlayerSpeed]
+  INCREMENT_POS hPlayerX2, [hPlayerSpeed]
 .canCactusDriftLeft:
-  ld hl, wPlayerX
+  ld hl, hPlayerX
   ld a, PLAYER_MAX_DRIFT_X
   cpl
   add [hl]
-  ld hl, wPlayerX2
+  ld hl, hPlayerX2
   cp a, [hl]
   jr nc, .endRight
 .cactusDriftLeft:
@@ -286,26 +282,26 @@ PlayerControls:
 	jr z, .endLeft
 .setFacingLeft:
   xor a ; ld a, 0
-  ld [wPlayerRight], a
+  ldh [hPlayerLookRight], a
 .checkOffscreenLeft:
   ld a, c
   cp a, 0
   jr z, .moveLeft
 .offscreenLeft:
-  ld a, [wPlayerX]
+  ldh a, [hPlayerX]
   sub 10
   ld b, a
   ld a, SCRN_X
   cp a, b
   jr c, .endLeft
 .moveLeft:
-  DECREMENT_POS wPlayerX, [wPlayerSpeed]
-  DECREMENT_POS wPlayerX2, [wPlayerSpeed]
+  DECREMENT_POS hPlayerX, [hPlayerSpeed]
+  DECREMENT_POS hPlayerX2, [hPlayerSpeed]
 .canCactusDriftRight:
-  ld hl, wPlayerX
+  ld hl, hPlayerX
   ld a, PLAYER_MAX_DRIFT_X
   add [hl]
-  ld hl, wPlayerX2
+  ld hl, hPlayerX2
   cp a, [hl]
   jr c, .endLeft
 .cactusDriftRight:
@@ -321,15 +317,15 @@ PlayerControls:
   cp a, 0
   jr z, .moveUp
 .offscreenUp:
-  ld a, [wPlayerY]
+  ldh a, [hPlayerY]
   sub 18
   ld b, a
   ld a, SCRN_Y - WINDOW_LAYER_HEIGHT
   cp a, b
   jr c, .endUp
 .moveUp:
-  DECREMENT_POS wPlayerY, [wPlayerSpeed]
-  DECREMENT_POS wPlayerY2, [wPlayerSpeed]
+  DECREMENT_POS hPlayerY, [hPlayerSpeed]
+  DECREMENT_POS hPlayerY2, [hPlayerSpeed]
 .endUp:
 
 .down:
@@ -341,20 +337,20 @@ PlayerControls:
   cp a, 0
   jr z, .moveDown
 .offscreenDown:
-  ld a, [wPlayerY]
+  ldh a, [hPlayerY]
   ld b, a
   ld a, SCRN_Y - 16 - WINDOW_LAYER_HEIGHT
   cp a, b
   jr c, .endDown
 .moveDown:
-  INCREMENT_POS wPlayerY, [wPlayerSpeed]
-  INCREMENT_POS wPlayerY2, [wPlayerSpeed]
+  INCREMENT_POS hPlayerY, [hPlayerSpeed]
+  INCREMENT_POS hPlayerY2, [hPlayerSpeed]
 .canCactusDriftUp:
-  ld hl, wPlayerY  
+  ld hl, hPlayerY  
   ld a, PLAYER_MAX_DRIFT_Y-16
   cpl
   add [hl]
-  ld hl, wPlayerY2
+  ld hl, hPlayerY2
   cp a, [hl]
   jr nc, .endDown
 .cactusDriftUp:
@@ -371,8 +367,8 @@ PlayerControls:
   ldh a, [hGlobalTimer]
   and	%00000001
   jr nz, .endDriftToCenterX
-  ld a, [wPlayerX]
-  ld hl, wPlayerX2
+  ldh a, [hPlayerX]
+  ld hl, hPlayerX2
   cp a, [hl]
   jr z, .endDriftToCenterX
   jr c, .driftCenterXLeft
@@ -393,10 +389,10 @@ PlayerControls:
   ldh a, [hGlobalTimer]
   and	%00000001
   jr nz, .endDriftToCenterY
-  ld hl, wPlayerY
+  ld hl, hPlayerY
   ld a, 16
   add [hl]
-  ld hl, wPlayerY2
+  ld hl, hPlayerY2
   cp a, [hl]
   jr z, .endDriftToCenterY
   jr nc, .driftCenterYDown
@@ -419,12 +415,12 @@ PlayerControls:
   ld a, d
 	and PADF_A
 	jr z, .endA
-  ld a, [wPlayerAttack]
+  ldh a, [hPlayerAttack]
   cp a, PLAYER_ATTACK_FULL
   jr nz, .endA
 .activateAttack:
   ld a, PLAYER_ATTACK_EMPTY
-  ld [wPlayerAttack], a
+  ldh [hPlayerAttack], a
   call SpawnBullet
 .endA:
 
@@ -432,44 +428,28 @@ PlayerControls:
   ld a, d
   and PADF_B
 	jr z, .endB
-  ld a, [wPlayerBoost]
+  ldh a, [hPlayerBoost]
   cp a, PLAYER_BOOST_FULL
   jr nz, .endB
 .activateBoost:
   ld a, PLAYER_BOOST_EMPTY
-  ld [wPlayerBoost], a
-  ld hl, wPlayerSpeed
+  ldh [hPlayerBoost], a
+  ld hl, hPlayerSpeed
   ld [hl], PLAYER_DEFAULT_SPEED * 2
 .endB:
   ret
 
-FallCactusDown:
-  ld hl, wPlayerFallSpeed
-  ld a, [wPlayerDelayFallingTimer]
-  inc a
-  ld [wPlayerDelayFallingTimer], a
-  cp a, CACTUS_DELAY_FALLING_TIME
-  jr c, .skipAcceleration
-  xor a ; ld a, 0
-  ld [wPlayerDelayFallingTimer], a
-  ld a, [hl]
-  add a, a
-  ld [hl], a
-.skipAcceleration
-  INCREMENT_POS wPlayerY2, [wPlayerFallSpeed]
-  ret
-
 PopPlayerBalloonAnimation:
-  ld a, [wPlayerPoppingFrame]
+  ldh a, [hPlayerPoppingFrame]
   cp a, 0
   jr z, .frame0
-  ld a, [wPlayerPoppingTimer]
+  ldh a, [hPlayerPoppingTimer]
   inc	a
-  ld [wPlayerPoppingTimer], a
+  ldh [hPlayerPoppingTimer], a
   and POPPING_BALLOON_ANIMATION_SPEED
   ret nz
 .canSwitchFrames:
-  ld a, [wPlayerPoppingFrame]
+  ldh a, [hPlayerPoppingFrame]
   cp a, 1
   jr z, .frame1
   cp a, 2
@@ -503,55 +483,34 @@ PopPlayerBalloonAnimation:
   ; Remove sprites
   call ClearPlayerBalloon
   ; Reset variables
-  ld hl, wPlayerPopping
+  ld hl, hPlayerPopping
   ld [hl], a
   ret
 .endFrame:
-  ld [wPlayerPoppingFrame], a
+  ldh [hPlayerPoppingFrame], a
   inc a 
-  ld [wPlayerPoppingFrame], a
-  ret
-
-CactusFalling:
-  ld a, [wPlayerFallingTimer]
-  inc a
-  ld [wPlayerFallingTimer], a
-  and CACTUS_FALLING_TIME
-  ret nz
-.checkOffscreen:
-  ld a, SCRN_X
-  ld hl, wPlayerY2
-  cp a, [hl]
-  jr c, .offScreen
-.moveDown:
-  call FallCactusDown
-  call UpdateCactusPosition
-  ret
-.offScreen:
-  ld hl, wPlayerFalling
-  ld [hl], 0
-  call ClearPlayerCactus
+  ldh [hPlayerPoppingFrame], a
   ret
 
 CollisionWithPlayer::
   ; Check if player is invincible
-  ld a, [wPlayerInvincible]
+  ldh a, [hPlayerInvincible]
   cp a, 0
   ret nz
-  ld a, [wPlayerAlive]
+  ldh a, [hPlayerAlive]
   cp a, 0
   ret z
 .deathOfPlayer:
   xor a ; ld a, 0
-  ld hl, wPlayerAlive
+  ld hl, hPlayerAlive
   ld [hl], a
-  ld hl, wPlayerLives
+  ld hl, hPlayerLives
   dec [hl]
   ; Animation trigger
   ld a, 1
-  ld hl, wPlayerPopping
+  ld hl, hPlayerPopping
   ld [hl], a
-  ld hl, wPlayerFalling
+  ld hl, hPlayerFalling
   ld [hl], a
   ; Screaming cactus
   ld hl, wPlayerCactusOAM+2
@@ -564,19 +523,74 @@ CollisionWithPlayer::
   ret
 
 PlayerUpdate::
+
 .checkAlive:
-  ld a, [wPlayerAlive]
+  ldh a, [hPlayerAlive]
   cp a, 0
-  jp z, .popped
+  jr nz, .isAlive
+.popped:
+.checkRespawn:
+  ldh a, [hPlayerRespawnTimer]
+  inc a
+  ldh [hPlayerRespawnTimer], a
+  cp a, PLAYER_RESPAWN_TIME
+  jr z, .respawning
+.popping:
+  ldh a, [hPlayerPopping]
+  cp a, 0
+  call nz, PopPlayerBalloonAnimation
+.falling:
+  ldh a, [hPlayerFalling]
+  cp a, 0
+  ret z
+.checkFallingOffscreen:
+  ld a, SCRN_X
+  ld hl, hPlayerY2
+  cp a, [hl]
+  jr c, .fellOffscreen
+.continueFalling:
+  ldh a, [hGlobalTimer]
+  and %00000001
+  ret nz
+  ldh a, [hPlayerFallSpeed]
+  inc a 
+  ldh [hPlayerFallSpeed], a
+  ld b, 4
+  call DIVISION
+  ld b, a
+  ldh a, [hPlayerY2]
+  add a, b
+  ldh [hPlayerY2], a
+  call UpdateCactusPosition
+  ret
+.fellOffscreen:
+  xor a ; ld a, 0
+  ldh [hPlayerFalling], a
+  call ClearPlayerCactus
+  ret
+.respawning:
+  ldh a, [hPlayerLives]
+  cp a, 0
+  jr nz, .respawn
+.noMoreLives:
+  jp GameOver
+.respawn:
+  call StopSweepSound
+  call InitializePlayer
+  call InitializeBullet
+  call SpawnPlayer
+  ld a, INVINCIBLE_RESPAWN_TIME
+  ldh [hPlayerInvincible], a
+  ret
 .isAlive:
 
 .checkInvincible:
-  ld a, [wPlayerInvincible]
+  ldh a, [hPlayerInvincible]
   cp a, 0
   jr z, .endInvincible
 .isInvincible:
   dec a
-  ld [wPlayerInvincible], a
+  ldh [hPlayerInvincible], a
   ; If at the end make sure we stop on default tileset
   cp a, 2
   jr c, .noBlink
@@ -631,16 +645,16 @@ PlayerUpdate::
   ldh a, [hGlobalTimer]
 	and	PLAYER_BOOST_TIME
   jr nz, .endBoost
-  ld a, [wPlayerBoost]
+  ldh a, [hPlayerBoost]
   cp a, PLAYER_BOOST_FULL
   jr z, .endBoost
 .isChargingBoost:
   dec a
-  ld [wPlayerBoost], a
+  ldh [hPlayerBoost], a
   cp a, PLAYER_BOOST_EFFECT_ENDS
   jr nc, .endBoost
 .resetBoost:
-  ld hl, wPlayerSpeed
+  ld hl, hPlayerSpeed
   ld [hl], PLAYER_DEFAULT_SPEED
 .endBoost:
 
@@ -648,43 +662,11 @@ PlayerUpdate::
   ldh a, [hGlobalTimer]
 	and	PLAYER_ATTACK_TIME
   jr nz, .endAttack
-  ld a, [wPlayerAttack]
+  ldh a, [hPlayerAttack]
   cp a, PLAYER_ATTACK_FULL
   jr z, .endAttack
 .isChargingAttack:
   dec a
-  ld [wPlayerAttack], a
+  ldh [hPlayerAttack], a
 .endAttack:
   ret
-
-.popped:
-
-.checkRespawn:
-  ld hl, wPlayerRespawnTimer
-  inc [hl]
-  ld a, [hl]
-  cp a, PLAYER_RESPAWN_TIME
-  jr z, .respawning
-.popping:
-  ld a, [wPlayerPopping]
-  cp a, 0
-  call nz, PopPlayerBalloonAnimation
-.falling:
-  ld a, [wPlayerFalling]
-  cp a, 0
-  call nz, CactusFalling
-  ret
-.respawning:
-  ld a, [wPlayerLives]
-  cp a, 0
-  jr z, .noMoreLives
-.respawn:
-  call StopSweepSound
-  call InitializePlayer
-  call InitializeBullet
-  call SpawnPlayer
-  ld a, INVINCIBLE_RESPAWN_TIME
-  ld [wPlayerInvincible], a
-  ret
-.noMoreLives:
-  jp GameOver

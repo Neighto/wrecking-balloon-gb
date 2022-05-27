@@ -121,13 +121,13 @@ RefreshWindow::
 	call RefreshScore
 	; LIVES
 .refreshLives:
-	ld a, [wPlayerLives]
+	ldh a, [hPlayerLives]
 	add NUMBERS_TILE_OFFSET
 	ld [LIVES_ADDRESS], a
 	; BOOST
 .refreshBoostBar:
 	ld hl, BOOST_BAR_ADDRESS
-	ld a, [wPlayerBoost]
+	ldh a, [hPlayerBoost]
 	cp a, PLAYER_BOOST_FULL
 	jr z, .isBoostReady
 .isBoostCharging:
@@ -169,7 +169,7 @@ RefreshWindow::
 	; ATTACK
 .refreshAttackBar:
 	ld hl, ATTACK_BAR_ADDRESS
-	ld a, [wPlayerAttack]
+	ldh a, [hPlayerAttack]
 	cp a, PLAYER_ATTACK_FULL
 	jr z, .isAttackReady
 .isAttackCharging:
