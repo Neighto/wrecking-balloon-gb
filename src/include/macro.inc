@@ -20,29 +20,6 @@ MACRO DECREMENT_POS
     ld [hl], a
 ENDM
 
-; Use with caution: Overwrites hl and bc
-MACRO RESET_AT_HL
-    ; argument 1 is distance
-    ld bc, \1
-    push af
-.loop\@:
-    xor a ; ld a, 0
-    ld [hli], a
-    dec bc
-    ld a, b
-    or c
-    jr nz, .loop\@
-    pop af
-ENDM
-
-; Use with caution: Overwrites hl and bc
-MACRO RESET_IN_RANGE
-    ; argument 1 is starting address
-    ; argument 2 is distance
-    ld hl, \1
-    RESET_AT_HL \2
-ENDM
-
 ; Use with caution: Overwrites hl and bc, and d
 MACRO SET_IN_RANGE
     ; argument 1 is starting address

@@ -5,6 +5,7 @@ INCLUDE "enemyConstants.inc"
 INCLUDE "constants.inc"
 
 ANVIL_OAM_SPRITES EQU 2
+ANVIL_OAM_BYTES EQU ANVIL_OAM_SPRITES * 4
 ANVIL_MOVE_TIME EQU %00000001
 ANVIL_COLLISION_TIME EQU %00001000
 
@@ -82,7 +83,8 @@ SpawnAnvil::
 
 Clear:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    RESET_AT_HL 8
+    ld bc, ANVIL_OAM_BYTES
+    call ResetHLInRange
     call InitializeEnemyStructVars
     ret
 

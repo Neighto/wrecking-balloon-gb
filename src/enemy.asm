@@ -65,7 +65,9 @@ SECTION "enemy data vars", WRAM0
 SECTION "enemy", ROM0
 
 InitializeEnemies::
-    RESET_IN_RANGE wEnemies, ENEMY_DATA_SIZE
+    ld hl, wEnemies
+    ld bc, ENEMY_DATA_SIZE
+    call ResetHLInRange
     ret
 
 EnemyUpdate::

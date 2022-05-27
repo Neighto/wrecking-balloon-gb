@@ -36,17 +36,27 @@ AddBGTiles8800Method::
 ClearAllTiles::
 	push hl
 	push bc
-	RESET_IN_RANGE _VRAM8000, _VRAM8800 - _VRAM8000
-	RESET_IN_RANGE _VRAM8800, _VRAM9000 - _VRAM8800
-	RESET_IN_RANGE _VRAM9000, _SCRN0 - _VRAM9000
+	ld hl, _VRAM8000
+	ld bc, _VRAM8800 - _VRAM8000
+	call ResetHLInRange
+	ld hl, _VRAM8800
+	ld bc, _VRAM9000 - _VRAM8800
+	call ResetHLInRange
+	ld hl, _VRAM9000
+	ld bc, _SCRN0 - _VRAM9000
+	call ResetHLInRange
 	pop bc
 	pop hl
     ret
 
 ClearMap::
-	RESET_IN_RANGE _SCRN0, SCRN0_SIZE
+	ld hl, _SCRN0
+	ld bc, SCRN0_SIZE
+	call ResetHLInRange
 	ret
 
 ClearWindow::
-	RESET_IN_RANGE _SCRN1, SCRN1_SIZE
+	ld hl, _SCRN1
+	ld bc, SCRN1_SIZE
+	call ResetHLInRange
 	ret

@@ -67,12 +67,30 @@ MEMCPY_SINGLE_SCREEN::
 	jr nz, .loop
     ret
 
+ResetHLInRange::
+    ; argument bc is distance
+    ; Overwrites hl and bc
+    push af
+.loop:
+    xor a ; ld a, 0
+    ld [hli], a
+    dec bc
+    ld a, b
+    or c
+    jr nz, .loop
+    pop af
+    ret
+
 ClearOAM::
-    RESET_IN_RANGE _OAMRAM, $A0
+    ld hl, _OAMRAM
+    ld bc, $A0 
+    call ResetHLInRange
     ret
 
 ClearRAM::
-    RESET_IN_RANGE $C100, $A0
+    ld hl, $C100
+    ld bc, $A0
+    call ResetHLInRange
     ret
 
 RequestOAMSpace::

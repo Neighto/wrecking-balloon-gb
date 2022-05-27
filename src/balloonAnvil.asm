@@ -21,7 +21,7 @@ BALLOON_CACTUS_MEDIUM_POINTS EQU 30
 BALLOON_CACTUS_HARD_TILE EQU $22
 BALLOON_CACTUS_HARD_POINTS EQU 50
 
-SECTION "balloon anvil", ROM0 ; make ROMX
+SECTION "balloon anvil", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
