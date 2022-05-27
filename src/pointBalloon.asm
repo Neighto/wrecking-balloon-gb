@@ -42,7 +42,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyAnimationTimer]
     ld [hli], a
-    ldh a, [hEnemyDifficulty]
+    ldh a, [hEnemyVariant]
     ld [hl], a
     ret
 
@@ -71,26 +71,26 @@ SpawnPointBalloon::
     ldh [hEnemyAlive], a
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
-.difficultyVisual:
-    ldh a, [hEnemyDifficulty]
+.variantVisual:
+    ldh a, [hEnemyVariant]
 .easyVisual:
     cp a, EASY
     jr nz, .mediumVisual
     ld d, POINT_BALLOON_EASY_TILE
     ld e, OAMF_PAL0
-    jr .endDifficultyVisual
+    jr .endVariantVisual
 .mediumVisual:
     cp a, MEDIUM
     jr nz, .hardVisual
     ld d, POINT_BALLOON_MEDIUM_TILE
     ld e, OAMF_PAL0
-    jr .endDifficultyVisual
+    jr .endVariantVisual
 .hardVisual:
     cp a, HARD
-    jr nz, .endDifficultyVisual
+    jr nz, .endVariantVisual
     ld d, POINT_BALLOON_HARD_TILE
     ld e, OAMF_PAL1
-.endDifficultyVisual:
+.endVariantVisual:
 
 .balloonLeftOAM:
     ldh a, [hEnemyY]
@@ -164,7 +164,7 @@ PointBalloonUpdate::
     ld a, [hli]
     ldh [hEnemyAnimationTimer], a
     ld a, [hl]
-    ldh [hEnemyDifficulty], a
+    ldh [hEnemyVariant], a
 
 .checkAlive:
     ldh a, [hEnemyAlive]
@@ -178,7 +178,7 @@ PointBalloonUpdate::
     jr nz, .endMove
 .canMove:
     ld hl, hEnemyY
-    ldh a, [hEnemyDifficulty]
+    ldh a, [hEnemyVariant]
 .moveEasy:
     cp a, EASY
     jr nz, .moveMedium
@@ -248,23 +248,23 @@ PointBalloonUpdate::
     xor a ; ld a, 0
     ldh [hEnemyAlive], a
     ; Points
-.difficultyPoints:
-    ldh a, [hEnemyDifficulty]
+.variantPoints:
+    ldh a, [hEnemyVariant]
 .easyPoints:
     cp a, EASY
     jr nz, .mediumPoints
     ld d, POINT_BALLOON_EASY_POINTS
-    jr .endDifficultyPoints
+    jr .endVariantPoints
 .mediumPoints:
     cp a, MEDIUM
     jr nz, .hardPoints
     ld d, POINT_BALLOON_MEDIUM_POINTS
-    jr .endDifficultyPoints
+    jr .endVariantPoints
 .hardPoints:
     cp a, HARD
-    jr nz, .endDifficultyPoints
+    jr nz, .endVariantPoints
     ld d, POINT_BALLOON_HARD_POINTS
-.endDifficultyPoints:
+.endVariantPoints:
     call AddPoints
     ; Animation trigger
     ld a, 1 

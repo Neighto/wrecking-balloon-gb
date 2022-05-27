@@ -42,7 +42,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyAnimationTimer]
     ld [hli], a
-    ldh a, [hEnemyDifficulty]
+    ldh a, [hEnemyVariant]
     ld [hl], a
     ret
 
@@ -71,26 +71,26 @@ SpawnBomb::
     ldh [hEnemyAlive], a
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
-.difficultyVisual:
-    ldh a, [hEnemyDifficulty]
+.variantVisual:
+    ldh a, [hEnemyVariant]
 .easyVisual:
     cp a, EASY
     jr nz, .mediumVisual
     ld d, BOMB_EASY_TILE
     ld e, OAMF_PAL0
-    jr .endDifficultyVisual
+    jr .endVariantVisual
 .mediumVisual:
     cp a, MEDIUM
     jr nz, .hardVisual
     ld d, BOMB_MEDIUM_TILE
     ld e, OAMF_PAL0
-    jr .endDifficultyVisual
+    jr .endVariantVisual
 .hardVisual:
     cp a, HARD
-    jr nz, .endDifficultyVisual
+    jr nz, .endVariantVisual
     ld d, BOMB_HARD_TILE
     ld e, OAMF_PAL0
-.endDifficultyVisual:
+.endVariantVisual:
 
 .balloonLeftOAM:
     ldh a, [hEnemyY]
@@ -161,7 +161,7 @@ BombUpdate::
     ld a, [hli]
     ldh [hEnemyAnimationTimer], a
     ld a, [hl]
-    ldh [hEnemyDifficulty], a
+    ldh [hEnemyVariant], a
 
 .checkAlive:
     ldh a, [hEnemyAlive]
@@ -176,25 +176,25 @@ BombUpdate::
 .canMove:
     DECREMENT_POS hEnemyY, BOMB_DEFAULT_SPEED
     
-.moveDifficulty:
-    ldh a, [hEnemyDifficulty]
+.variantMove:
+    ldh a, [hEnemyVariant]
     cp a, MEDIUM
-    jr nz, .endMoveDifficulty
+    jr nz, .endVariantMove
 .horizontalMedium:
     ldh a, [hGlobalTimer]
     and BOMB_FOLLOW_TIME
-    jr nz, .endMoveDifficulty
+    jr nz, .endVariantMove
     ldh a, [hEnemyX]
     ld hl, hPlayerX
     cp a, [hl]
-    jr z, .endMoveDifficulty
+    jr z, .endVariantMove
     jr c, .moveRight
 .moveLeft:
     DECREMENT_POS hEnemyX, 1
-    jr .endMoveDifficulty
+    jr .endVariantMove
 .moveRight:
     INCREMENT_POS hEnemyX, 1
-.endMoveDifficulty:
+.endVariantMove:
 
 .balloonLeftOAM:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
@@ -248,23 +248,23 @@ BombUpdate::
     xor a ; ld a, 0
     ldh [hEnemyAlive], a
     ; Points
-.difficultyPoints:
-    ldh a, [hEnemyDifficulty]
+.variantPoints:
+    ldh a, [hEnemyVariant]
 .easyPoints:
     cp a, EASY
     jr nz, .mediumPoints
     ld d, BOMB_EASY_POINTS
-    jr .endDifficultyPoints
+    jr .endVariantPoints
 .mediumPoints:
     cp a, MEDIUM
     jr nz, .hardPoints
     ld d, BOMB_MEDIUM_POINTS
-    jr .endDifficultyPoints
+    jr .endVariantPoints
 .hardPoints:
     cp a, HARD
-    jr nz, .endDifficultyPoints
+    jr nz, .endVariantPoints
     ld d, BOMB_HARD_POINTS
-.endDifficultyPoints:
+.endVariantPoints:
     call AddPoints
     ; Animation trigger
     ld a, 1

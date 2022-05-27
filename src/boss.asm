@@ -94,7 +94,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyParam2] ; Enemy Can Shoot Needle
     ld [hli], a
-    ldh a, [hEnemyDifficulty]
+    ldh a, [hEnemyVariant]
     ld [hl], a
     ret
 
@@ -402,7 +402,7 @@ BossUpdate::
     ld a, [hli]
     ldh [hEnemyParam2], a
     ld a, [hl]
-    ldh [hEnemyDifficulty], a
+    ldh [hEnemyVariant], a
 
 .faceExpression:
     ld a, [wEnemyExpressionTimer]
@@ -691,7 +691,7 @@ BossUpdate::
     ldh [hEnemyNumber], a
 .topLeftNeedle:
     ld a, NONE ; Alias for aim top-left
-    ldh [hEnemyDifficulty], a
+    ldh [hEnemyVariant], a
     ldh a, [hEnemyY]
     add a, 8
     ldh [hEnemyY], a
@@ -701,21 +701,21 @@ BossUpdate::
     call SpawnBossNeedle
 .topRightNeedle:
     ld a, EASY ; Alias for aim top-right
-    ldh [hEnemyDifficulty], a
+    ldh [hEnemyVariant], a
     ldh a, [hEnemyX]
     add a, 8
     ldh [hEnemyX], a
     call SpawnBossNeedle
 .bottomRightNeedle:
     ; ld a, HARD ; Alias for aim bottom-right
-    ; ldh [hEnemyDifficulty], a
+    ; ldh [hEnemyVariant], a
     ; ldh a, [hEnemyY]
     ; add a, 16
     ; ldh [hEnemyY], a
     ; call SpawnBossNeedle
 .bottomLeftNeedle:
     ; ld a, MEDIUM ; Alias for aim bottom-left
-    ; ldh [hEnemyDifficulty], a
+    ; ldh [hEnemyVariant], a
     ; ldh a, [hEnemyX]
     ; sub a, 8
     ; ldh [hEnemyX], a
@@ -731,7 +731,7 @@ BossUpdate::
     ld a, POINT_BALLOON
     ldh [hEnemyNumber], a
     ld a, MEDIUM
-    ldh [hEnemyDifficulty], a
+    ldh [hEnemyVariant], a
     ldh a, [hEnemyY]
     add a, 19
     ldh [hEnemyY], a

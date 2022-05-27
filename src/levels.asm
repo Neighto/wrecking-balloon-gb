@@ -64,6 +64,7 @@ Level1:
     LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_C, EASY
     LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B, EASY
     LEVEL_WAIT 16
+    ; TODO maybe add a firework that would just simply animate!
     LEVEL_END
     
 Level2:
@@ -118,7 +119,7 @@ Level2:
     LEVEL_END
 
 Level3:
-    LEVEL_SPAWN BALLOON_ANVIL, 32, 60, NONE
+    LEVEL_SPAWN BALLOON_CARRIER, 32, 60, NONE
     LEVEL_WAIT_BOSS
     LEVEL_WAIT 10
     LEVEL_END
@@ -323,8 +324,8 @@ SpawnDataHandler:
     ld a, [hli]
     ldh [hEnemyX], a
     ld a, [hli]
-    ; Update difficulty
-    ld [hEnemyDifficulty], a
+    ; Update variant
+    ld [hEnemyVariant], a
     ld a, b
     ; Spawns
     cp a, POINT_BALLOON
@@ -343,8 +344,8 @@ SpawnDataHandler:
     jp z, SpawnBossNeedle
     cp a, ANVIL 
     jp z, SpawnAnvil
-    cp a, BALLOON_ANVIL 
-    jp z, SpawnBalloonAnvil
+    cp a, BALLOON_CARRIER 
+    jp z, SpawnBalloonCarrier
     ret
 
 LevelDataHandler::

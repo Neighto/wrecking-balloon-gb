@@ -59,7 +59,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyParam4] ; Enemy Projectile Timer
     ld [hli], a
-    ldh a, [hEnemyDifficulty]
+    ldh a, [hEnemyVariant]
     ld [hl], a
     ret
 
@@ -100,26 +100,26 @@ SpawnBalloonCactus::
 .isLeftside:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
-.difficultyVisualBalloon:
-    ldh a, [hEnemyDifficulty]
+.variantVisual:
+    ldh a, [hEnemyVariant]
 .easyVisual:
     cp a, EASY
     jr nz, .mediumVisual
     ld d, BALLOON_CACTUS_EASY_TILE
     ld e, OAMF_PAL0
-    jr .endDifficultyVisualBalloon
+    jr .endVariantVisual
 .mediumVisual:
     cp a, MEDIUM
     jr nz, .hardVisual
     ld d, BALLOON_CACTUS_MEDIUM_TILE
     ld e, OAMF_PAL1
-    jr .endDifficultyVisualBalloon
+    jr .endVariantVisual
 .hardVisual:
     cp a, HARD
-    jr nz, .endDifficultyVisualBalloon
+    jr nz, .endVariantVisual
     ld d, BALLOON_CACTUS_HARD_TILE
     ld e, OAMF_PAL0
-.endDifficultyVisualBalloon:
+.endVariantVisual:
 
 .balloonLeftOAM:
     ldh a, [hEnemyY]
@@ -326,7 +326,7 @@ BalloonCactusUpdate::
     ld a, [hli]
     ldh [hEnemyParam4], a
     ld a, [hl]
-    ldh [hEnemyDifficulty], a
+    ldh [hEnemyVariant], a
 
 .checkAlive:
     ldh a, [hEnemyAlive]
@@ -341,7 +341,7 @@ BalloonCactusUpdate::
 .canMove:
 
 .moveVertical:
-    ldh a, [hEnemyDifficulty]
+    ldh a, [hEnemyVariant]
 .easyMove:
     cp a, EASY
     jr nz, .mediumMove
@@ -388,7 +388,7 @@ BalloonCactusUpdate::
 .endMove:
 
 .checkProjectile:
-    ldh a, [hEnemyDifficulty]
+    ldh a, [hEnemyVariant]
     cp a, EASY 
     jr nz, .endProjectile
     ldh a, [hEnemyParam4]
@@ -420,7 +420,7 @@ BalloonCactusUpdate::
     call CollisionCheck
     cp a, 0
     jr z, .checkHitByBullet
-    ldh a, [hEnemyDifficulty]
+    ldh a, [hEnemyVariant]
     cp a, HARD 
     call z, CollisionWithPlayer
     jr .deathOfBalloonCactus
@@ -438,23 +438,23 @@ BalloonCactusUpdate::
     xor a ; ld a, 0
     ld [hEnemyAlive], a
     ; Points
-.difficultyPoints:
-    ldh a, [hEnemyDifficulty]
+.variantPoints:
+    ldh a, [hEnemyVariant]
 .easyPoints:
     cp a, EASY
     jr nz, .mediumPoints
     ld d, BALLOON_CACTUS_EASY_POINTS
-    jr .endDifficultyPoints
+    jr .endVariantPoints
 .mediumPoints:
     cp a, MEDIUM
     jr nz, .hardPoints
     ld d, BALLOON_CACTUS_MEDIUM_POINTS
-    jr .endDifficultyPoints
+    jr .endVariantPoints
 .hardPoints:
     cp a, HARD
-    jr nz, .endDifficultyPoints
+    jr nz, .endVariantPoints
     ld d, BALLOON_CACTUS_HARD_POINTS
-.endDifficultyPoints:
+.endVariantPoints:
     call AddPoints
     ; Falling visual
     SET_HL_TO_ADDRESS wOAM+14, hEnemyOAM
@@ -492,7 +492,7 @@ BalloonCactusUpdate::
     cp a, 0
     jr z, .clearPopping
 .animatePopping:
-    ld a, [hEnemyDifficulty]
+    ld a, [hEnemyVariant]
     cp a, HARD
     jr z, .bombBalloon
 .normalBalloon:

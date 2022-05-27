@@ -17,7 +17,7 @@ SECTION "enemy struct vars", HRAM
     hEnemyX:: DB
     hEnemyOAM:: DB
     hEnemyAlive:: DB
-    hEnemyDifficulty:: DB
+    hEnemyVariant:: DB
     hEnemyY2:: DB
     hEnemyX2:: DB
     hEnemyDying:: DB
@@ -41,7 +41,7 @@ InitializeEnemyStructVars::
     ldh [hEnemyAlive], a
     ldh [hEnemyY2], a
     ldh [hEnemyX2], a
-    ; ldh [hEnemyDifficulty], a ; Do not clear
+    ; ldh [hEnemyVariant], a ; Do not clear
     ldh [hEnemyDying], a
     ldh [hEnemyHitEnemy], a
     ldh [hEnemyAnimationFrame], a
@@ -129,9 +129,9 @@ EnemyUpdate::
     call AnvilUpdate
     jr .checkLoop
 .balloonAnvil:
-    cp a, BALLOON_ANVIL
+    cp a, BALLOON_CARRIER
     jr nz, .checkLoop
-    call BalloonAnvilUpdate
+    call BalloonCarrierUpdate
     jr .checkLoop
 .checkLoop:
     ld a, [wEnemyOffset]
