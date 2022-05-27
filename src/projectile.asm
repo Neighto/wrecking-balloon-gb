@@ -51,7 +51,7 @@ SpawnProjectile::
     ld a, 1
     ldh [hEnemyActive], a
 .setupY2:
-    ld a, [wPlayerY]
+    ldh a, [hPlayerY]
     ld d, a
     ldh a, [hEnemyY]
     cp a, d
@@ -68,7 +68,7 @@ SpawnProjectile::
     ldh [hEnemyY2], a
 .endSetupY2:
 .setupX2:
-    ld a, [wPlayerX]
+    ldh a, [hPlayerX]
     ld d, a
     ldh a, [hEnemyX]
     cp a, d

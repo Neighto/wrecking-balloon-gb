@@ -185,7 +185,7 @@ BombUpdate::
     and BOMB_FOLLOW_TIME
     jr nz, .endMoveDifficulty
     ldh a, [hEnemyX]
-    ld hl, wPlayerX
+    ld hl, hPlayerX
     cp a, [hl]
     jr z, .endMoveDifficulty
     jr c, .moveRight

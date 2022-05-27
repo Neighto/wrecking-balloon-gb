@@ -22,16 +22,16 @@ InitializeBullet::
 SpawnBullet::
     ld a, 1 
     ld [wPlayerBulletAlive], a
-    ld a, [wPlayerY2]
+    ldh a, [hPlayerY2]
     add 5
     ld [wPlayerBulletY], a
     ld hl, wPlayerBulletOAM
-    ld a, [wPlayerRight]
+    ldh a, [hPlayerLookRight]
     ld [wPlayerBulletRight], a
     cp a, 0
     jr nz, .spawnFromRight
 .spawnFromLeft:
-    ld a, [wPlayerX2]
+    ldh a, [hPlayerX2]
     sub 3
     ld [wPlayerBulletX], a
 .leftOAM:
@@ -44,7 +44,7 @@ SpawnBullet::
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
     ret
 .spawnFromRight:
-    ld a, [wPlayerX2]
+    ldh a, [hPlayerX2]
     add 12
     ld [wPlayerBulletX], a
 .rightOAM:
