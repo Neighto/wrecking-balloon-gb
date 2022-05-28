@@ -56,9 +56,20 @@ SpawnAnvil::
     LD_BC_DE
     ld a, 1
     ldh [hEnemyActive], a
-    ldh [hEnemySpeed], a
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
+.variantSpeed:
+    ldh a, [hEnemyVariant]
+.cactusSpeed:
+    cp a, CACTUS_VARIANT
+    jr nz, .anvilSpeed
+    ld a, 1
+    jr .endVariantSpeed
+.anvilSpeed:
+    ld a, 4
+.endVariantSpeed:
+    ldh [hEnemySpeed], a
+
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 .variantVisualLeft:
     ldh a, [hEnemyVariant]
 .cactusVisual:
