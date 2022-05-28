@@ -76,6 +76,15 @@ SpawnBalloonCarrier::
     ld a, 1
     ldh [hEnemyActive], a
     ldh [hEnemyAlive], a
+
+.updateDirection:
+    ldh a, [hEnemyX]
+    cp a, SCRN_X / 2
+    jr c, .endUpdateDirection
+    ld a, 1
+    ldh [hEnemyDirectionLeft], a
+.endUpdateDirection:
+
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
 .variantVisualBalloon:
@@ -261,10 +270,16 @@ BalloonCarrierUpdate::
 .checkMove:
     ldh a, [hGlobalTimer]
     and	BALLOON_CARRIER_MOVE_TIME
-    jr nz, .endMove
+    jp nz, .endMove
 .canMove:
 
 .moveHorizontal:
+    ldh a, [hEnemyDirectionLeft]
+    cp a, 0
+    jr z, .isLeftside
+    DECREMENT_POS hEnemyX, 1
+    jr .endMoveHorizontal
+.isLeftside:
     INCREMENT_POS hEnemyX, 1
 .endMoveHorizontal:
 
@@ -358,7 +373,13 @@ BalloonCarrierUpdate::
     ld e, 12
     call CollisionCheck
     cp a, 0
-    jr nz, .deathOfBalloonCarrier
+    jr z, .checkHitByBullet
+.checkHitVariant:
+    ldh a, [hEnemyVariant]
+    cp a, BOMB_VARIANT 
+    call z, CollisionWithPlayer
+.endHitVariant:
+    jr .deathOfBalloonCarrier
 .checkHitByBullet:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     LD_BC_HL

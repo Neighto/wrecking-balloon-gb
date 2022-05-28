@@ -90,13 +90,13 @@ EnemyUpdate::
     ; Check enemy number
 .pointBalloon:
     cp a, POINT_BALLOON
-    jr nz, .balloonCactus
+    jr nz, .balloonCarrier
     call PointBalloonUpdate
     jr .checkLoop
-.balloonCactus:
-    cp a, BALLOON_CACTUS
+.balloonCarrier:
+    cp a, BALLOON_CARRIER
     jr nz, .bird
-    call BalloonCactusUpdate
+    call BalloonCarrierUpdate
     jr .checkLoop
 .bird:
     cp a, BIRD
@@ -125,13 +125,8 @@ EnemyUpdate::
     jr .checkLoop
 .anvil:
     cp a, ANVIL
-    jr nz, .balloonAnvil
-    call AnvilUpdate
-    jr .checkLoop
-.balloonAnvil:
-    cp a, BALLOON_CARRIER
     jr nz, .checkLoop
-    call BalloonCarrierUpdate
+    call AnvilUpdate
     jr .checkLoop
 .checkLoop:
     ld a, [wEnemyOffset]
