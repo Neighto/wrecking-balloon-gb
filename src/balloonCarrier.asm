@@ -8,7 +8,7 @@ BALLOON_CARRIER_OAM_SPRITES EQU 4
 BALLOON_CARRIER_MOVE_TIME EQU %00000011
 BALLOON_CARRIER_COLLISION_TIME EQU %00001000
 
-PROJECTILE_RESPAWN_TIME EQU %01111111
+PROJECTILE_RESPAWN_TIME EQU %01011111
 
 BALLOON_CACTUS_TILE EQU $14
 
@@ -175,20 +175,6 @@ SpawnBalloonCarrier::
     ld e, OAMF_PAL0
 .endVariantVisualCarryRight:
 
-
-; .variantVisualCarryRight:
-;     ldh a, [hEnemyVariant]
-; .noneVisualCarryRight:
-;     cp a, NONE
-;     jr nz, .cactusVisualCarryRight
-;     ld d, $4A
-;     ld e, OAMF_PAL0
-;     jr .endVariantVisualCarryRight
-; .cactusVisualCarryRight:
-;     ld d, BALLOON_CACTUS_TILE
-;     ld e, OAMF_PAL0 | OAMF_XFLIP
-; .endVariantVisualCarryRight:
-
 .cactusRightOAM:
     ldh a, [hEnemyY]
     add 16
@@ -339,6 +325,20 @@ BalloonCarrierUpdate::
     inc l
 .endMove:
 
+.checkProjectileVariant:
+    ldh a, [hEnemyVariant]
+.projectileVariant:
+    cp a, PROJECTILE_VARIANT 
+    jr nz, .endProjectileVariant
+    ldh a, [hEnemyParam2]
+    inc a
+    ldh [hEnemyParam2], a
+    cp a, PROJECTILE_RESPAWN_TIME + 1
+    jr c, .endProjectileVariant
+    xor a ; ld a, 0
+    ldh [hEnemyParam2], a
+.endProjectileVariant:
+
 .checkCollision:
     ldh a, [hGlobalTimer]
     and	BALLOON_CARRIER_COLLISION_TIME
@@ -369,7 +369,28 @@ BalloonCarrierUpdate::
     cp a, 0
     jr z, .endCollision
     call ClearBullet
+
 .deathOfBalloonCarrier:
+    ld d, 0
+.variantPoints:
+    ldh a, [hEnemyVariant]
+.followPoints:
+    cp a, FOLLOW_VARIANT
+    jr nz, .projectilePoints
+    ld d, BALLOON_CACTUS_EASY_POINTS
+    jr .endVariantPoints
+.projectilePoints:
+    cp a, PROJECTILE_VARIANT
+    jr nz, .bombPoints
+    ld d, BALLOON_CACTUS_MEDIUM_POINTS
+    jr .endVariantPoints
+.bombPoints:
+    cp a, BOMB_VARIANT
+    jr nz, .endVariantPoints
+    ld d, BALLOON_CACTUS_HARD_POINTS
+.endVariantPoints:
+    call AddPoints
+
     xor a ; ld a, 0
     ld [hEnemyAlive], a
     ; Hide carry visual
@@ -408,18 +429,68 @@ BalloonCarrierUpdate::
 .checkSpawnCarry:
     ldh a, [hEnemyParam1]
     cp a, 0
-    jr z, .endSpawnCarryVariant
-.spawnCarryVariant:
-    ; ldh a, [hEnemyVariant]
-    ; cp a, noneVi
-    ld a, ANVIL
-    ldh [hEnemyNumber], a
+    jr z, .variantEndSpawnCarry
+.variantSpawnCarry:
+    ldh a, [hEnemyVariant]
+.anvilSpawnCarry:
+    cp a, ANVIL_VARIANT
+    jr nz, .cactusSpawnCarry
     ld a, NONE
     ldh [hEnemyVariant], a
+    jr .spawnCarryEnd
+.cactusSpawnCarry:
+    ld a, CACTUS_VARIANT
+    ldh [hEnemyVariant], a
+.spawnCarryEnd:
+    ld a, ANVIL
+    ldh [hEnemyNumber], a
     ldh a, [hEnemyY]
     add 16
     ldh [hEnemyY], a
     call SpawnAnvil
+.variantEndSpawnCarry:
 
-.endSpawnCarryVariant:
+.checkSpawnProjectile:
+    ldh a, [hEnemyParam2]
+    cp a, PROJECTILE_RESPAWN_TIME - 20
+    jr c, .endFlicker
+    cp a, PROJECTILE_RESPAWN_TIME
+    jr nc, .endFlicker
+.canFlicker:
+    and	%00000001
+    jr nz, .flickerOff
+.flickerOn:
+    SET_HL_TO_ADDRESS wOAM+3, hEnemyOAM
+    ld a, OAMF_PAL0
+    ld [hli], a
+    inc l
+    inc l
+    inc l
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
+    jr .endFlicker
+.flickerOff:
+    SET_HL_TO_ADDRESS wOAM+3, hEnemyOAM
+    ld a, OAMF_PAL1
+    ld [hli], a
+    inc l
+    inc l
+    inc l
+    ld a, OAMF_PAL1 | OAMF_XFLIP
+    ld [hli], a
+.endFlicker:
+    ldh a, [hEnemyParam2]
+    cp a, PROJECTILE_RESPAWN_TIME
+    jr nz, .endSpawnProjectile
+.spawnProjectile:
+    ld a, PROJECTILE
+    ldh [hEnemyNumber], a
+    ldh a, [hEnemyY]
+    add a, 4
+    ldh [hEnemyY], a
+    ldh a, [hEnemyX]
+    add a, 4
+    ldh [hEnemyX], a
+    call SpawnProjectile
+.endSpawnProjectile:
     ret
