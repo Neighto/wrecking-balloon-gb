@@ -18,8 +18,6 @@ SECTION "enemy struct vars", HRAM
     hEnemyOAM:: DB
     hEnemyAlive:: DB
     hEnemyVariant:: DB
-    hEnemyY2:: DB
-    hEnemyX2:: DB
     hEnemyDying:: DB
     hEnemyHitEnemy:: DB
     hEnemyAnimationFrame:: DB
@@ -39,8 +37,6 @@ InitializeEnemyStructVars::
     ; ldh [hEnemyNumber], a ; Do not clear
     ldh [hEnemyOAM], a
     ldh [hEnemyAlive], a
-    ldh [hEnemyY2], a
-    ldh [hEnemyX2], a
     ; ldh [hEnemyVariant], a ; Do not clear
     ldh [hEnemyDying], a
     ldh [hEnemyHitEnemy], a
