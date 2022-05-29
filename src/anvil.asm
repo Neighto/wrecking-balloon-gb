@@ -179,7 +179,6 @@ AnvilUpdate::
     ld [hli], a
     jr .setStruct
 .blinkOn:
-
 .variantBlinkOn:
     ldh a, [hEnemyVariant]
 .variantCactus:
