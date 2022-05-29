@@ -43,24 +43,14 @@ PORCUPINE_EXPRESSION_SCARED EQU 3
 PORCUPINE_POINTS EQU 50
 
 SECTION "boss temp vars", WRAM0
-    wEnemyMoveTimer:: DB
     wEnemyDirectionUp:: DB
-    wEnemyExpression:: DB
-    wEnemyExpressionTimer:: DB
-    wEnemyFallingSpeed:: DB
-    wEnemyTriggerBalloon:: DB
     wEnemyKnockedOutTimer:: DB
 
 SECTION "boss", ROMX
 
 ClearTempVars:
     xor a ; ld a, 0
-    ld [wEnemyMoveTimer], a
     ld [wEnemyDirectionUp], a
-    ld [wEnemyExpression], a
-    ld [wEnemyExpressionTimer], a
-    ld [wEnemyFallingSpeed], a
-    ld [wEnemyTriggerBalloon], a
     ld [wEnemyKnockedOutTimer], a
     ret
 
@@ -92,7 +82,11 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyParam1] ; Enemy Invincibility Timer
     ld [hli], a
-    ldh a, [hEnemyParam2] ; Enemy Can Shoot Needle
+    ldh a, [hEnemyParam2] ; 
+    ld [hli], a
+    ldh a, [hEnemyParam3] ; Enemy Trigger Projectile / Balloon
+    ld [hli], a
+    ldh a, [hEnemyParam4] ; 
     ld [hli], a
     ldh a, [hEnemyVariant]
     ld [hl], a
@@ -401,18 +395,22 @@ BossUpdate::
     ldh [hEnemyParam1], a
     ld a, [hli]
     ldh [hEnemyParam2], a
+    ld a, [hli]
+    ldh [hEnemyParam3], a
+    ld a, [hli]
+    ldh [hEnemyParam4], a
     ld a, [hl]
     ldh [hEnemyVariant], a
 
 .faceExpression:
-    ld a, [wEnemyExpressionTimer]
+    ldh a, [hEnemyAnimationTimer]
     cp a, 0
     jr z, .canUpdateFaceExpression
     dec a
-    ld [wEnemyExpressionTimer], a
+    ldh [hEnemyAnimationTimer], a
     jr .endFaceExpression
 .canUpdateFaceExpression:
-    ld a, [wEnemyExpression]
+    ldh a, [hEnemyAnimationFrame]
 .faceExpressionLeft:
     cp a, PORCUPINE_EXPRESSION_LEFT
     jr nz, .faceExpressionRight
@@ -435,17 +433,17 @@ BossUpdate::
     call MakeBossScared
     ld a, 255
 .setExpressionTimer:
-    ld [wEnemyExpressionTimer], a
+    ldh [hEnemyAnimationTimer], a
     ld a, [hEnemyX]
     cp a, SCRN_X / 2
     jr c, .lookRight
 .lookLeft:
     ld a, PORCUPINE_EXPRESSION_LEFT
-    ld [wEnemyExpression], a
+    ldh [hEnemyAnimationFrame], a
     jr .endFaceExpression
 .lookRight:
     ld a, PORCUPINE_EXPRESSION_RIGHT
-    ld [wEnemyExpression], a
+    ldh [hEnemyAnimationFrame], a
 .endFaceExpression:
 
 .checkKnockedOut:
@@ -466,12 +464,12 @@ BossUpdate::
     jr z, .knockedOutAndAlive
 .knockedOutAndDead:
     ld a, 1
-    ld [wEnemyTriggerBalloon], a
+    ld [hEnemyParam3], a
     call MakeBossShowFeetAndRemoveBalloon
     jp .setStruct
 .knockedOutAndAlive:
     xor a ; ld a, 0
-    ld [wEnemyExpressionTimer], a
+    ldh [hEnemyAnimationTimer], a
 .endKnockedOut:
 
 .checkAlive:
@@ -489,7 +487,7 @@ BossUpdate::
     jp .setStruct 
 .dying:
     xor a ; ld a, 0
-    ld [wEnemyTriggerBalloon], a
+    ld [hEnemyParam3], a
 .dyingOffscreen:
     ld a, SCRN_Y + 16 ; buffer
     ld hl, hEnemyY
@@ -504,9 +502,9 @@ BossUpdate::
     and %00000001
     jp nz, .setStruct
 .canFall:
-    ld a, [wEnemyFallingSpeed]
+    ld a, [hEnemySpeed]
     inc a 
-    ld [wEnemyFallingSpeed], a
+    ld [hEnemySpeed], a
     ld b, 5
     call DIVISION
     ld b, a
@@ -517,61 +515,64 @@ BossUpdate::
     jp .setStruct
 .isAlive:
 
-.pointPicker:
-    ld hl, wEnemyMoveTimer
-.checkPointPickerX:
+.checkDirection:
+    ld hl, hGlobalTimer
+.checkDirectionX:
     ld a, [hl]
-    cp a, 50 ; MAKE RANDOM
-    jr nz, .endPointPickerX
+    cp a, 50
+    jr nz, .endCheckDirectionX
     ldh a, [hEnemyX]
     cp a, SCRN_X / 2
     jr c, .moveToRight
 .moveToLeft:
     ld a, 1
     ldh [hEnemyDirectionLeft], a
-    jr .endPointPickerX
+    jr .endCheckDirectionX
 .moveToRight:
     xor a ; ld a, 0 
     ldh [hEnemyDirectionLeft], a
-.endPointPickerX:
-.checkPointPickerY:
+.endCheckDirectionX:
+.checkDirectionY:
     ld a, [hl]
-    and %00111111
-    jr nz, .endPointPickerY
+    and %00011111
+    jr nz, .endCheckDirectionY
     ldh a, [hEnemyY]
     cp a, SCRN_Y / 2
     jr c, .moveToDown
 .moveToUp:
     ld a, 1
     ld [wEnemyDirectionUp], a
-    jr .endPointPickerY
+    jr .endCheckDirectionY
 .moveToDown:
     xor a ; ld a, 0
     ld [wEnemyDirectionUp], a
-.endPointPickerY:
-    inc [hl]
-.endPointPicker:
+.endCheckDirectionY:
+.endCheckDirection:
 
 .checkMove:
     ldh a, [hGlobalTimer]
     and	PORCUPINE_MOVE_TIME
     jr nz, .endMove
 .canMove: 
-    ; call HelperMoveX
-    ; call HelperMoveY
+    call HelperMoveX
+    call HelperMoveY
     call UpdateBossPosition
 .endMove:
 
-; .checkAttack:
-;     ldh a, [hGlobalTimer]
-;     and	PORCUPINE_ATTACK_TIME
-;     ld a, 0
-;     jr nz, .updateCanAttack
-; .canAttack:
-;     inc a
-; .updateCanAttack:
-;     ldh [hEnemyParam2], a
-; .endAttack:
+.checkAttack:
+    ldh a, [hGlobalTimer]
+    and	PORCUPINE_ATTACK_TIME
+    ld a, 0
+    jr nz, .updateCanAttack
+.canAttack:
+    ld a, PORCUPINE_EXPRESSION_CONFIDENT
+    ldh [hEnemyAnimationFrame], a
+    xor a ; ld a, 0
+    ldh [hEnemyAnimationTimer], a
+    inc a
+.updateCanAttack:
+    ldh [hEnemyParam3], a
+.endAttack:
 
 .checkString:
     ldh a, [hGlobalTimer]
@@ -596,6 +597,15 @@ BossUpdate::
     ldh a, [hEnemyHitEnemy]
     cp a, 0
     jr nz, .bossDamaged
+.checkHitBullet: ; REMOVE ME *****
+    ld bc, wPlayerBulletOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ld d, 32
+    ld e, 32
+    call CollisionCheck
+    cp a, 0
+    jr nz, .bossDamaged
+    ; ***********
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
@@ -614,6 +624,8 @@ BossUpdate::
     ; Stop enemy hit
     xor a ; ld a, 0
     ldh [hEnemyHitEnemy], a
+    ; Stop speed
+    ldh [hEnemySpeed], a
     ; Decrease life
     ldh a, [hEnemyAlive]
     dec a
@@ -628,24 +640,28 @@ BossUpdate::
     ld a, 40
     ld [wEnemyKnockedOutTimer], a
     ld a, PORCUPINE_EXPRESSION_SCARED
-    ld [wEnemyExpression], a
+    ldh [hEnemyAnimationFrame], a
     xor a ; ld a, 0
-    ld [wEnemyExpressionTimer], a
+    ldh [hEnemyAnimationTimer], a
 .endCollision:
 
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
 
+.checkBossSpawns:
+    ldh a, [hEnemyAlive]
+    cp a, 0
+    jr z, .checkSpawnPointBalloon
 .checkSpawnBossNeedle:
-    ldh a, [hEnemyParam2]
+    ldh a, [hEnemyParam3]
     cp a, 0
     jr z, .endSpawnBossNeedle
 .spawnBossNeedle:
-    ld a, PORCUPINE_EXPRESSION_CONFIDENT
-    ld [wEnemyExpression], a
-    xor a ; ld a, 0
-    ld [wEnemyExpressionTimer], a
+    ; ld a, PORCUPINE_EXPRESSION_CONFIDENT
+    ; ldh [hEnemyAnimationFrame], a
+    ; xor a ; ld a, 0
+    ; ldh [hEnemyAnimationTimer], a
     ld a, BOSS_NEEDLE
     ldh [hEnemyNumber], a
 .topLeftNeedle:
@@ -680,10 +696,10 @@ BossUpdate::
     ; ldh [hEnemyX], a
     ; call SpawnBossNeedle
 .endSpawnBossNeedle:
-
+    jr .endCheckBossSpawns
 
 .checkSpawnPointBalloon:
-    ld a, [wEnemyTriggerBalloon]
+    ld a, [hEnemyParam3]
     cp a, 0
     jr z, .endSpawnPointBalloon
 .spawnPointBalloon:
@@ -698,6 +714,7 @@ BossUpdate::
     add a, 8
     ldh [hEnemyX], a
     call SpawnPointBalloon
-
 .endSpawnPointBalloon:
+
+.endCheckBossSpawns:
     ret
