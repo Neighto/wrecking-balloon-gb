@@ -5,6 +5,7 @@ INCLUDE "enemyConstants.inc"
 INCLUDE "constants.inc"
 
 POINT_BALLOON_OAM_SPRITES EQU 3
+POINT_BALLOON_OAM_BYTES EQU POINT_BALLOON_OAM_SPRITES * 4
 POINT_BALLOON_MOVE_TIME EQU %00000001
 POINT_BALLOON_COLLISION_TIME EQU %00001000
 POINT_BALLOON_STRING_X_OFFSET EQU 4
@@ -127,24 +128,6 @@ SpawnPointBalloon::
     call SetStruct
 .end:
     pop hl
-    ret
-
-Clear:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    xor a ; ld a, 0
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hl], a
-    call InitializeEnemyStructVars
     ret
 
 PointBalloonUpdate::
@@ -283,7 +266,8 @@ PointBalloonUpdate::
     cp a, b
     jr c, .endOffscreen
 .offscreen:
-    call Clear
+    ld bc, POINT_BALLOON_OAM_BYTES
+    call ClearEnemy
     jr .setStruct
 .endOffscreen:
     jr .setStruct
@@ -296,7 +280,8 @@ PointBalloonUpdate::
     call PopBalloonAnimation
     jr .setStruct
 .clear:
-    call Clear
+    ld bc, POINT_BALLOON_OAM_BYTES
+    call ClearEnemy
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct

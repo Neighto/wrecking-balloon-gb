@@ -4,6 +4,7 @@ INCLUDE "enemyConstants.inc"
 INCLUDE "constants.inc"
 
 BIRD_OAM_SPRITES EQU 3
+BIRD_OAM_BYTES EQU BIRD_OAM_SPRITES * 4
 BIRD_MOVE_TIME EQU %00000011
 BIRD_COLLISION_TIME EQU %00001000
 
@@ -174,24 +175,6 @@ SpawnBird::
     pop hl
     ret
 
-Clear:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    xor a ; ld a, 0
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hl], a
-    call InitializeEnemyStructVars
-    ret
-
 UpdateBirdPosition:
 .birdLeft:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
@@ -232,7 +215,8 @@ BirdFall:
 .offscreen:
     xor a ; ld a, 0
     ldh [hEnemyDying], a
-    call Clear
+    ld bc, BIRD_OAM_BYTES
+    call ClearEnemy
 .endOffscreen:
     ret
 
@@ -395,7 +379,8 @@ BirdUpdate::
     cp a, b
     jr c, .endOffscreen
 .offscreen:
-    call Clear
+    ld bc, BIRD_OAM_BYTES
+    call ClearEnemy
     jr z, .setStruct
 .endOffscreen:
     jr .setStruct
@@ -420,7 +405,8 @@ BirdUpdate::
     cp a, b
     jr c, .setStruct
 .offscreenY:
-    call Clear
+    ld bc, BIRD_OAM_BYTES
+    call ClearEnemy
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct

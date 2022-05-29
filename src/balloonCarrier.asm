@@ -5,6 +5,7 @@ INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 
 BALLOON_CARRIER_OAM_SPRITES EQU 4
+BALLOON_CARRIER_OAM_BYTES EQU BALLOON_CARRIER_OAM_SPRITES * 4
 BALLOON_CARRIER_MOVE_TIME EQU %00000011
 BALLOON_CARRIER_COLLISION_TIME EQU %00001000
 
@@ -202,28 +203,6 @@ SpawnBalloonCarrier::
     pop hl
     ret
 
-ClearBalloonCarrier:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    xor a ; ld a, 0
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hl], a
-    call InitializeEnemyStructVars
-    ret
-
 BalloonCarrierUpdate::
     ; Get rest of struct
     ld a, [hli]
@@ -263,7 +242,8 @@ BalloonCarrierUpdate::
     call PopBalloonAnimation
     jp .setStruct
 .clearPopping:
-    call ClearBalloonCarrier
+    ld bc, BALLOON_CARRIER_OAM_BYTES
+    call ClearEnemy
     jp .setStruct
 .isAlive:
 
@@ -438,7 +418,8 @@ BalloonCarrierUpdate::
     cp a, b
     jr c, .endOffscreen
 .offscreen:
-    call ClearBalloonCarrier
+    ld bc, BALLOON_CARRIER_OAM_BYTES
+    call ClearEnemy
 .endOffscreen:
 
 .setStruct:

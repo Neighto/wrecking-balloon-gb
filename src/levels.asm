@@ -343,6 +343,8 @@ SpawnDataHandler:
     jp z, SpawnBossNeedle
     cp a, ANVIL 
     jp z, SpawnAnvil
+    cp a, EXPLOSION 
+    jp z, SpawnExplosion
     ret
 
 LevelDataHandler::

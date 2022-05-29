@@ -127,13 +127,6 @@ SpawnAnvil::
     pop hl
     ret
 
-Clear:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ld bc, ANVIL_OAM_BYTES
-    call ResetHLInRange
-    call InitializeEnemyStructVars
-    ret
-
 AnvilUpdate::
     ; Get rest of struct
     ld a, [hli]
@@ -161,7 +154,8 @@ AnvilUpdate::
     cp a, 40
     jr c, .animateDying
 .clear:
-    call Clear
+    ld bc, ANVIL_OAM_BYTES
+    call ClearEnemy
     jp .setStruct
 .animateDying:
     and %00000111
@@ -177,7 +171,7 @@ AnvilUpdate::
     inc hl
     inc hl
     ld [hli], a
-    jr .setStruct
+    jp .setStruct
 .blinkOn:
 .variantBlinkOn:
     ldh a, [hEnemyVariant]
@@ -256,7 +250,8 @@ AnvilUpdate::
     cp a, b
     jr c, .endOffscreen
 .offscreen:
-    call Clear
+    ld bc, ANVIL_OAM_BYTES
+    call ClearEnemy
 .endOffscreen:
 
 .setStruct:
