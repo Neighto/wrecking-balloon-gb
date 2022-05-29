@@ -6,7 +6,11 @@ INCLUDE "enemyConstants.inc"
 EXPLOSION_OAM_SPRITES EQU 3
 EXPLOSION_OAM_BYTES EQU EXPLOSION_OAM_SPRITES * 4
 
-EXPLOSION_TILE EQU $46
+EXPLOSION_TILE_1 EQU $24
+EXPLOSION_TILE_2 EQU $26
+
+EXPLOSION_TIME EQU 10
+EXPLOSION_WAIT_TIME EQU %00000011
 
 SECTION "explosion", ROM0
 
@@ -22,7 +26,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyOAM]
     ld [hli], a
-    ldh a, [hEnemyAnimationTimer]
+    ldh a, [hEnemyAnimationFrame]
     ld [hl], a
     ret
 
@@ -49,24 +53,40 @@ SpawnExplosion::
     ld a, 1
     ldh [hEnemyActive], a
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-.explosionOAM:
+.explosionLeftOAM:
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
     ld [hli], a
-    ld a, EXPLOSION_TILE
+    ld a, EXPLOSION_TILE_1
     ld [hli], a
-    ld [hl], OAMF_PAL0
+    ld a, OAMF_PAL0
+    ld [hli], a
+.explosionMiddleOAM:
+    ldh a, [hEnemyY]
+    ld [hli], a
+    ldh a, [hEnemyX]
+    add 8
+    ld [hli], a
+    ld a, EXPLOSION_TILE_2
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+.explosionRightOAM:
+    ldh a, [hEnemyY]
+    ld [hli], a
+    ldh a, [hEnemyX]
+    add 16
+    ld [hli], a
+    ld a, EXPLOSION_TILE_1
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hl], a
 .setStruct:
     LD_HL_BC
     call SetStruct
 .end:
     pop hl
-    ret
-  
-Clear:
-    ld bc, EXPLOSION_OAM_BYTES
-    call ClearEnemy
     ret
 
 ExplosionUpdate::
@@ -78,8 +98,43 @@ ExplosionUpdate::
     ld a, [hli]
     ldh [hEnemyOAM], a
     ld a, [hli]
-    ldh [hEnemyAnimationTimer], a
+    ldh [hEnemyAnimationFrame], a
     ld a, [hl]
+
+.animateExplosion:
+    ldh a, [hGlobalTimer]
+    and EXPLOSION_WAIT_TIME
+    jr nz, .endAnimateExplosion
+    ldh a, [hEnemyAnimationFrame]
+    inc a
+    ldh [hEnemyAnimationFrame], a
+    cp a, EXPLOSION_TIME
+    jr nc, .clear
+    and %00000001
+    jr z, .palette1
+.palette0:
+    SET_HL_TO_ADDRESS wOAM+3, hEnemyOAM
+    ld a, OAMF_PAL0
+    jr .paletteEnd
+.palette1:
+    SET_HL_TO_ADDRESS wOAM+3, hEnemyOAM
+    ld a, OAMF_PAL1
+.paletteEnd:
+    ld [hli], a
+    inc hl
+    inc hl
+    inc hl
+    ld [hli], a
+    inc hl
+    inc hl
+    inc hl
+    or OAMF_XFLIP
+    ld [hl], a
+    jr .endAnimateExplosion
+.clear:
+    ld bc, EXPLOSION_OAM_BYTES
+    call ClearEnemy
+.endAnimateExplosion:
 
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset

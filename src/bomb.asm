@@ -5,7 +5,7 @@ INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 
 BOMB_DEFAULT_SPEED EQU 2
-BOMB_OAM_SPRITES EQU 3
+BOMB_OAM_SPRITES EQU 2
 BOMB_OAM_BYTES EQU BOMB_OAM_SPRITES * 4
 BOMB_MOVE_TIME EQU %00000001
 BOMB_FOLLOW_TIME EQU %00000111
@@ -38,9 +38,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyDying]
     ld [hli], a
-    ldh a, [hEnemyAnimationFrame]
-    ld [hli], a
-    ldh a, [hEnemyAnimationTimer]
+    ldh a, [hEnemyParam1] ; Enemy Trigger Explosion
     ld [hli], a
     ldh a, [hEnemyVariant]
     ld [hl], a
@@ -111,14 +109,7 @@ SpawnBomb::
     ld [hli], a
     ld a, e
     or a, OAMF_XFLIP
-    ld [hli], a
-.bombSpaceOAM:
-    ld a, 1
-    ld [hli], a
-    ld [hli], a
-    ld a, EMPTY_TILE
-    ld [hli], a
-    ld [hl], OAMF_PAL0
+    ld [hl], a
 .setStruct:
     LD_HL_BC
     call SetStruct
@@ -139,16 +130,28 @@ BombUpdate::
     ld a, [hli]
     ldh [hEnemyDying], a
     ld a, [hli]
-    ldh [hEnemyAnimationFrame], a
-    ld a, [hli]
-    ldh [hEnemyAnimationTimer], a
+    ldh [hEnemyParam1], a
     ld a, [hl]
     ldh [hEnemyVariant], a
 
 .checkAlive:
     ldh a, [hEnemyAlive]
     cp a, 0
-    jp z, .popped
+    jr nz, .isAlive
+.isPopped:
+    ldh a, [hEnemyDying]
+    cp a, 0
+    jr z, .clear
+.triggerExplosion:
+    xor a ; ld a, 0
+    ldh [hEnemyDying], a
+    ld a, 1
+    ldh [hEnemyParam1], a
+    jp .setStruct
+.clear:
+    ld bc, BOMB_OAM_BYTES
+    call ClearEnemy
+    jp .setStruct
 .isAlive:
 
 .checkMove:
@@ -191,14 +194,6 @@ BombUpdate::
     ld [hli], a
     ldh a, [hEnemyX]
     add 8
-    ld [hli], a
-    inc l
-    inc l
-.bombSpaceOAM:
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 16
     ld [hl], a
 .endMove:
 
@@ -267,21 +262,25 @@ BombUpdate::
 .offscreen:
     ld bc, BOMB_OAM_BYTES
     call ClearEnemy
-    jr .setStruct
 .endOffscreen:
-    jr .setStruct
     
-.popped:
-    ldh a, [hEnemyDying]
-    cp a, 0
-    jr z, .clear
-.animating:
-    call ExplosionAnimation
-    jr .setStruct
-.clear:
-    ld bc, BOMB_OAM_BYTES
-    call ClearEnemy
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
+
+
+.checkSpawnExplosion:
+    ldh a, [hEnemyParam1]
+    cp a, 0
+    jr z, .endCheckSpawnExplosion
+.spawnExplosion:
+    ld a, EXPLOSION
+    ldh [hEnemyNumber], a
+    ld a, NONE
+    ldh [hEnemyVariant], a
+    ldh a, [hEnemyX]
+    sub 4
+    ldh [hEnemyX], a
+    call SpawnExplosion
+.endCheckSpawnExplosion:
     ret

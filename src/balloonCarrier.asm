@@ -430,6 +430,19 @@ BalloonCarrierUpdate::
     ldh a, [hEnemyParam1]
     cp a, 0
     jr z, .variantEndSpawnCarry
+.variantSpawnExplosion:
+    ldh a, [hEnemyVariant]
+    cp a, BOMB_VARIANT
+    jr nz, .endVariantSpawnExplosion
+    ld a, EXPLOSION
+    ldh [hEnemyNumber], a
+    ld a, NONE
+    ldh [hEnemyVariant], a
+    ldh a, [hEnemyX]
+    sub 4
+    ldh [hEnemyX], a
+    call SpawnExplosion
+.endVariantSpawnExplosion:
 .variantSpawnCarry:
     ldh a, [hEnemyVariant]
 .anvilSpawnCarry:
