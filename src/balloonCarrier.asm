@@ -297,11 +297,9 @@ BalloonCarrierUpdate::
     jr c, .moveDown
 .moveUp:
     DECREMENT_POS hEnemyY, 1
-    DECREMENT_POS hEnemyY2, 1
     jr .endMoveVerticalVariant
 .moveDown:
     INCREMENT_POS hEnemyY, 1
-    INCREMENT_POS hEnemyY2, 1
 .endMoveVerticalVariant:
 
 .updatePosition:

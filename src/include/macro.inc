@@ -153,12 +153,6 @@ MACRO UPDATE_OAM_POSITION_ENEMY
     UPDATE_OAM_POSITION_HRAM \1, \2, [hEnemyX], [hEnemyY], 0
 ENDM
 
-MACRO UPDATE_OAM_POSITION_ENEMY2
-    ; argument 1 is # sprites horizontal
-    ; argument 2 is # sprites vertical
-    UPDATE_OAM_POSITION_HRAM \1, \2, [hEnemyX2], [hEnemyY2], 0
-ENDM
-
 MACRO UPDATE_OAM_POSITION_ENEMY_WITH_OFFSET
     ; argument 1 is # sprites horizontal
     ; argument 2 is # sprites vertical

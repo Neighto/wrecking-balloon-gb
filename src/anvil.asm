@@ -208,7 +208,7 @@ AnvilUpdate::
     ldh a, [hEnemySpeed]
     inc a 
     ldh [hEnemySpeed], a
-    ld b, 2
+    ld b, 3
     call DIVISION
     ld b, a
     ldh a, [hEnemyY]

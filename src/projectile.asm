@@ -22,9 +22,9 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyOAM]
     ld [hli], a
-    ldh a, [hEnemyY2] ; Add to Y
+    ldh a, [hEnemyParam1] ; Add to Y
     ld [hli], a
-    ldh a, [hEnemyX2] ; Add to X
+    ldh a, [hEnemyParam2] ; Add to X
     ld [hl], a
     ret
 
@@ -65,7 +65,7 @@ SpawnProjectile::
 .down:
     ld a, 1
 .endY:
-    ldh [hEnemyY2], a
+    ldh [hEnemyParam1], a
 .endSetupY2:
 .setupX2:
     ldh a, [hPlayerX]
@@ -82,7 +82,7 @@ SpawnProjectile::
 .right:
     ld a, 1
 .endX:
-    ldh [hEnemyX2], a
+    ldh [hEnemyParam2], a
 .endSetupX2:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 .projectileOAM:
@@ -119,9 +119,9 @@ ProjectileUpdate::
     ld a, [hli]
     ldh [hEnemyOAM], a
     ld a, [hli]
-    ldh [hEnemyY2], a
+    ldh [hEnemyParam1], a
     ld a, [hli]
-    ldh [hEnemyX2], a
+    ldh [hEnemyParam2], a
     ld a, [hl]
 
 .checkFlicker:
@@ -149,13 +149,13 @@ ProjectileUpdate::
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ldh a, [hEnemyY]
     ld b, a
-    ldh a, [hEnemyY2]
+    ldh a, [hEnemyParam1]
     add a, b
     ldh [hEnemyY], a
     ld [hli], a
     ldh a, [hEnemyX]
     ld b, a
-    ldh a, [hEnemyX2]
+    ldh a, [hEnemyParam2]
     add a, b
     ldh [hEnemyX], a
     ld [hl], a
