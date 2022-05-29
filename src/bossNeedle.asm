@@ -4,6 +4,7 @@ INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 
 BOSS_NEEDLE_OAM_SPRITES EQU 1
+BOSS_NEEDLE_OAM_BYTES EQU BOSS_NEEDLE_OAM_SPRITES * 4
 BOSS_NEEDLE_MOVE_TIME EQU %00000001
 BOSS_NEEDLE_COLLISION_TIME EQU %00001000
 BOSS_NEEDLE_TILE EQU $62
@@ -93,16 +94,6 @@ SpawnBossNeedle::
 .end:
     pop hl
     ret
-  
-Clear:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    xor a ; ld a, 0
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hl], a
-    call InitializeEnemyStructVars
-    ret
 
 BossNeedleUpdate::
     ; Get rest of struct
@@ -171,7 +162,8 @@ BossNeedleUpdate::
     cp a, 0
     jr z, .endCollision
 .deathOfBossNeedle:
-    call Clear
+    ld bc, BOSS_NEEDLE_OAM_BYTES
+    call ClearEnemy
     call CollisionWithPlayer
     jr .setStruct
 .endCollision:
@@ -186,7 +178,8 @@ BossNeedleUpdate::
     cp a, b
     jr c, .endOffscreenY
 .offscreenY:
-    call Clear
+    ld bc, BOSS_NEEDLE_OAM_BYTES
+    call ClearEnemy
 .endOffscreenY:
 .checkOffscreenX:
     ldh a, [hEnemyX]
@@ -198,7 +191,8 @@ BossNeedleUpdate::
     cp a, b
     jr c, .endOffscreenX
 .offscreenX:
-    call Clear
+    ld bc, BOSS_NEEDLE_OAM_BYTES
+    call ClearEnemy
 .endOffscreenX:
 
 .setStruct:

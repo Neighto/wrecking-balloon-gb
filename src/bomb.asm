@@ -126,24 +126,6 @@ SpawnBomb::
     pop hl
     ret
 
-Clear:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    xor a ; ld a, 0
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hl], a
-    call InitializeEnemyStructVars
-    ret
-
 BombUpdate::
     ; Get rest of struct
     ld a, [hli]
@@ -283,7 +265,8 @@ BombUpdate::
     cp a, b
     jr c, .endOffscreen
 .offscreen:
-    call Clear
+    ld bc, BOMB_OAM_BYTES
+    call ClearEnemy
     jr .setStruct
 .endOffscreen:
     jr .setStruct
@@ -296,7 +279,8 @@ BombUpdate::
     call ExplosionAnimation
     jr .setStruct
 .clear:
-    call Clear
+    ld bc, BOMB_OAM_BYTES
+    call ClearEnemy
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct

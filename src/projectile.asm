@@ -4,6 +4,7 @@ INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 
 PROJECTILE_OAM_SPRITES EQU 1
+PROJECTILE_OAM_BYTES EQU PROJECTILE_OAM_SPRITES * 4
 PROJECTILE_MOVE_TIME EQU %00000001
 PROJECTILE_COLLISION_TIME EQU %00001000
 PROJECTILE_TILE EQU $46
@@ -99,16 +100,6 @@ SpawnProjectile::
 .end:
     pop hl
     ret
-  
-Clear:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    xor a ; ld a, 0
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hl], a
-    call InitializeEnemyStructVars
-    ret
 
 ProjectileUpdate::
     ; Get rest of struct
@@ -174,7 +165,8 @@ ProjectileUpdate::
     cp a, 0
     jr z, .endCollision
 .deathOfProjectile:
-    call Clear
+    ld bc, PROJECTILE_OAM_BYTES
+    call ClearEnemy
     call CollisionWithPlayer
     jr .setStruct
 .endCollision:
@@ -189,7 +181,8 @@ ProjectileUpdate::
     cp a, b
     jr c, .endOffscreenY
 .offscreenY:
-    call Clear
+    ld bc, PROJECTILE_OAM_BYTES
+    call ClearEnemy
 .endOffscreenY:
 .checkOffscreenX:
     ldh a, [hEnemyX]
@@ -201,7 +194,8 @@ ProjectileUpdate::
     cp a, b
     jr c, .endOffscreenX
 .offscreenX:
-    call Clear
+    ld bc, PROJECTILE_OAM_BYTES
+    call ClearEnemy
 .endOffscreenX:
 
 .setStruct:

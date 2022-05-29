@@ -278,13 +278,6 @@ SpawnBossNotInLevelData::
     call SpawnBoss
     ret
 
-Clear:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ld bc, PORCUPINE_OAM_BYTES
-    call ResetHLInRange
-    call InitializeEnemyStructVars
-    ret
-
 HelperMoveY:
     ld b, 1 ; speed
     ldh a, [hEnemyDirectionLeft]
@@ -478,7 +471,8 @@ BossUpdate::
 .dyingDone:
     ld a, 1 
     ld [wLevelWaitBoss], a
-    call Clear
+    ld bc, PORCUPINE_OAM_BYTES
+    call ClearEnemy
     jp .setStruct 
 .dying:
     xor a ; ld a, 0

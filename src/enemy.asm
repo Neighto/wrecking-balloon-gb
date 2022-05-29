@@ -121,8 +121,13 @@ EnemyUpdate::
     jr .checkLoop
 .anvil:
     cp a, ANVIL
-    jr nz, .checkLoop
+    jr nz, .explosion
     call AnvilUpdate
+    jr .checkLoop
+.explosion:
+    cp a, EXPLOSION
+    jr nz, .checkLoop
+    call ExplosionUpdate
     jr .checkLoop
 .checkLoop:
     ld a, [wEnemyOffset]
@@ -201,6 +206,13 @@ EnemyInterCollision::
     jp nz, .loop
 .end:
     ; z flag set
+    ret
+
+ClearEnemy::
+    ; bc = Enemy OAM Bytes
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    call ResetHLInRange
+    call InitializeEnemyStructVars
     ret
 
 SECTION "enemy animations", ROM0
