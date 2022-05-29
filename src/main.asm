@@ -108,8 +108,8 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; testing
-	; ld a, 3
-	; ld [wLevel], a
+	ld a, 3
+	ld [wLevel], a
 	; ^^^
 
 	ld a, [wLevel]
@@ -166,10 +166,10 @@ SetupNextLevel::
 	call SpawnCountdown
 	call LCD_ON
 GameCountdownLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateGameCountdown
-	; jp GameCountdownLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateGameCountdown
+	jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA
