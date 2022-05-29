@@ -44,14 +44,12 @@ PORCUPINE_POINTS EQU 50
 
 SECTION "boss temp vars", WRAM0
     wEnemyDirectionUp:: DB
-    wEnemyKnockedOutTimer:: DB
 
 SECTION "boss", ROMX
 
 ClearTempVars:
     xor a ; ld a, 0
     ld [wEnemyDirectionUp], a
-    ld [wEnemyKnockedOutTimer], a
     ret
 
 SetStruct:
@@ -82,7 +80,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyParam1] ; Enemy Invincibility Timer
     ld [hli], a
-    ldh a, [hEnemyParam2] ; 
+    ldh a, [hEnemyParam2] ; Enemy Knocked Out Timer
     ld [hli], a
     ldh a, [hEnemyParam3] ; Enemy Trigger Projectile / Balloon
     ld [hli], a
@@ -447,18 +445,18 @@ BossUpdate::
 .endFaceExpression:
 
 .checkKnockedOut:
-    ld a, [wEnemyKnockedOutTimer]
+    ldh a, [hEnemyParam2]
     cp a, 0
     jr z, .endKnockedOut
     cp a, 1
     jr z, .knockedOutDone
 .knockedOut:
     dec a 
-    ld [wEnemyKnockedOutTimer], a
+    ldh [hEnemyParam2], a
     jp .setStruct
 .knockedOutDone:
     dec a 
-    ld [wEnemyKnockedOutTimer], a
+    ldh [hEnemyParam2], a
     ldh a, [hEnemyDying]
     cp a, 0
     jr z, .knockedOutAndAlive
@@ -638,7 +636,7 @@ BossUpdate::
     ldh [hEnemyDying], a
 .bossDamagedAndAlive:
     ld a, 40
-    ld [wEnemyKnockedOutTimer], a
+    ldh [hEnemyParam2], a
     ld a, PORCUPINE_EXPRESSION_SCARED
     ldh [hEnemyAnimationFrame], a
     xor a ; ld a, 0
