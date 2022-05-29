@@ -42,15 +42,7 @@ PORCUPINE_EXPRESSION_SCARED EQU 3
 
 PORCUPINE_POINTS EQU 50
 
-SECTION "boss temp vars", WRAM0
-    wEnemyDirectionUp:: DB
-
 SECTION "boss", ROMX
-
-ClearTempVars:
-    xor a ; ld a, 0
-    ld [wEnemyDirectionUp], a
-    ret
 
 SetStruct:
     ; Argument hl = start of free enemy struct
@@ -74,7 +66,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyAnimationTimer]
     ld [hli], a
-    ldh a, [hEnemyDirectionLeft]
+    ldh a, [hEnemyDirectionLeft] ; 0th Bit > Left / Right, 1st Bit > Up / Down
     ld [hli], a
     ldh a, [hEnemySpeed]
     ld [hli], a
@@ -204,7 +196,6 @@ SpawnBoss::
     ldh [hEnemyActive], a
     ld a, PORCUPINE_HP
     ldh [hEnemyAlive], a
-    call ClearTempVars ; TEMP
     call UpdateBossPosition
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 .bossTopLeftOAM:
@@ -296,7 +287,9 @@ Clear:
 
 HelperMoveY:
     ld b, 1 ; speed
-    IF_WRAM_Z wEnemyDirectionUp, 0, .moveDown
+    ldh a, [hEnemyDirectionLeft]
+    and %00000010
+    jr z, .moveDown
 .moveUp:
     ldh a, [hEnemyY]
     cp a, PORCUPINE_TOPSIDE_POSITION_Y
@@ -320,7 +313,9 @@ HelperMoveY:
 
 HelperMoveX:
     ld hl, hEnemySpeed
-    IF_HRAM_Z hEnemyDirectionLeft, 0, .handleMovingRight
+    ldh a, [hEnemyDirectionLeft]
+    and %00000001
+    jr z, .handleMovingRight
 .handleMovingLeft:
     ldh a, [hEnemyX]
     cp a, PORCUPINE_LEFTSIDE_POSITION_X
@@ -355,7 +350,9 @@ HelperMoveX:
 .updateSpeed:
     ld [hl], a
 .move:
-    IF_HRAM_Z hEnemyDirectionLeft, 0, .moveRight
+    ldh a, [hEnemyDirectionLeft]
+    and %00000001
+    jr z, .moveRight
 .moveLeft:
     ldh a, [hEnemyX]
     sub a, [hl]
@@ -523,11 +520,13 @@ BossUpdate::
     cp a, SCRN_X / 2
     jr c, .moveToRight
 .moveToLeft:
-    ld a, 1
+    ldh a, [hEnemyDirectionLeft]
+    set 0, a
     ldh [hEnemyDirectionLeft], a
     jr .endCheckDirectionX
 .moveToRight:
-    xor a ; ld a, 0 
+    ldh a, [hEnemyDirectionLeft]
+    res 0, a
     ldh [hEnemyDirectionLeft], a
 .endCheckDirectionX:
 .checkDirectionY:
@@ -538,12 +537,14 @@ BossUpdate::
     cp a, SCRN_Y / 2
     jr c, .moveToDown
 .moveToUp:
-    ld a, 1
-    ld [wEnemyDirectionUp], a
+    ldh a, [hEnemyDirectionLeft]
+    set 1, a
+    ldh [hEnemyDirectionLeft], a
     jr .endCheckDirectionY
 .moveToDown:
-    xor a ; ld a, 0
-    ld [wEnemyDirectionUp], a
+    ldh a, [hEnemyDirectionLeft]
+    res 1, a
+    ldh [hEnemyDirectionLeft], a
 .endCheckDirectionY:
 .endCheckDirection:
 
