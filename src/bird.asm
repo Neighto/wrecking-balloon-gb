@@ -45,9 +45,9 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyDying]
     ld [hli], a
-    ldh a, [hEnemyAnimationFrame]
+    ldh a, [hEnemyHitEnemy]
     ld [hli], a
-    ldh a, [hEnemyParam1] ; Enemy Marked to Die
+    ldh a, [hEnemyAnimationFrame]
     ld [hli], a
     ldh a, [hEnemyVariant]
     ld [hl], a
@@ -251,9 +251,9 @@ BirdUpdate::
     ld a, [hli]
     ldh [hEnemyDying], a
     ld a, [hli]
-    ldh [hEnemyAnimationFrame], a
+    ldh [hEnemyHitEnemy], a
     ld a, [hli]
-    ldh [hEnemyParam1], a
+    ldh [hEnemyAnimationFrame], a
     ld a, [hl]
     ldh [hEnemyVariant], a
 
@@ -341,6 +341,9 @@ BirdUpdate::
     ldh a, [hGlobalTimer]
     and	BIRD_COLLISION_TIME
     jp nz, .endCollision
+    ldh a, [hEnemyHitEnemy]
+    cp a, 0
+    jr nz, .deathOfBird
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
@@ -350,10 +353,6 @@ BirdUpdate::
     cp a, 0
     call nz, CollisionWithPlayer
     jr .endCollision
-.checkHitBySomething:
-    ldh a, [hEnemyParam1]
-    cp a, 0
-    jr z, .endCollision
 .deathOfBird:
     xor a ; ld a, 0
     ldh [hEnemyAlive], a
