@@ -21,7 +21,7 @@ BALLOON_CACTUS_MEDIUM_POINTS EQU 30
 BALLOON_CACTUS_HARD_TILE EQU $22
 BALLOON_CACTUS_HARD_POINTS EQU 50
 
-SECTION "balloon carrier", ROM0
+SECTION "balloon carrier", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
@@ -384,7 +384,7 @@ BalloonCarrierUpdate::
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     LD_BC_HL
     ld hl, wPlayerBulletOAM
-    ld d, 16
+    ld d, 8
     ld e, 4
     call CollisionCheck
     cp a, 0

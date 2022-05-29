@@ -7,7 +7,7 @@ INCLUDE "constants.inc"
 ANVIL_OAM_SPRITES EQU 2
 ANVIL_OAM_BYTES EQU ANVIL_OAM_SPRITES * 4
 ANVIL_MOVE_TIME EQU %00000001
-ANVIL_COLLISION_TIME EQU %00001000
+ANVIL_COLLISION_TIME EQU %00000100
 
 CACTUS_SCREAMING_TILE EQU $16
 
@@ -27,6 +27,10 @@ SetStruct:
     ldh a, [hEnemyX]
     ld [hli], a
     ldh a, [hEnemyOAM]
+    ld [hli], a
+    ldh a, [hEnemyDying]
+    ld [hli], a
+    ldh a, [hEnemyAnimationTimer]
     ld [hli], a
     ldh a, [hEnemySpeed]
     ld [hli], a
@@ -139,9 +143,64 @@ AnvilUpdate::
     ld a, [hli]
     ldh [hEnemyOAM], a
     ld a, [hli]
+    ldh [hEnemyDying], a
+    ld a, [hli]
+    ldh [hEnemyAnimationTimer], a
+    ld a, [hli]
     ldh [hEnemySpeed], a
     ld a, [hl]
     ldh [hEnemyVariant], a
+
+.checkDying:
+    ldh a, [hEnemyDying]
+    cp a, 0
+    jr z, .endCheckDying
+    ldh a, [hEnemyAnimationTimer]
+    inc a
+    ldh [hEnemyAnimationTimer], a
+    cp a, 40
+    jr c, .animateDying
+.clear:
+    call Clear
+    jp .setStruct
+.animateDying:
+    and %00000111
+    jp nz, .setStruct
+    SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM ; Tile
+    ld a, [hl]
+    cp a, EMPTY_TILE
+    jr z, .blinkOn
+.blinkOff:
+    ld a, EMPTY_TILE
+    ld [hli], a
+    inc hl
+    inc hl
+    inc hl
+    ld [hli], a
+    jr .setStruct
+.blinkOn:
+
+.variantBlinkOn:
+    ldh a, [hEnemyVariant]
+.variantCactus:
+    cp a, CACTUS_VARIANT
+    jr nz, .variantAnvil
+    ld d, CACTUS_SCREAMING_TILE
+    ld e, CACTUS_SCREAMING_TILE
+    jr .endVariantBlinkOn
+.variantAnvil:
+    ld d, ANVIL_TILE_1
+    ld e, ANVIL_TILE_2
+.endVariantBlinkOn:
+    ld a, d
+    ld [hli], a
+    inc hl
+    inc hl
+    inc hl
+    ld a, e
+    ld [hli], a
+    jr .setStruct
+.endCheckDying:
 
 .fallingSpeed:
     ldh a, [hGlobalTimer]
@@ -184,9 +243,8 @@ AnvilUpdate::
     call EnemyInterCollision
     jr z, .endCollision
 .hitEnemy:
-    ; mark to blink instead
-    call Clear
-    jr .setStruct
+    ld a, 1
+    ldh [hEnemyDying], a
 .endCollision:
 
 .checkOffscreen:

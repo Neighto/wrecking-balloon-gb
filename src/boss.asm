@@ -604,48 +604,7 @@ BossUpdate::
     call CollisionCheck
     cp a, 0
     call nz, CollisionWithPlayer
-; .checkHitByBullet:
-;     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-;     LD_BC_HL
-;     ld hl, wPlayerBulletOAM
-;     ld d, 16
-;     ld e, 4
-;     call CollisionCheck
-;     cp a, 0
-;     jr z, .endCollision
-;     call ClearBullet
-.checkHitByAnvil:
-    ; *****************************************************
     jr .endCollision
-
-    ; Check for colliding anvil
-;     ld a, [wFallingEnemies]
-;     cp a, 0
-;     jr nz, .fallingEnemiesSet
-;     ld b, a
-;     ld a, [wFallingEnemies+1]
-;     cp a, 0
-;     jr nz, .fallingEnemiesSet
-;     ld c, a
-;     jr .endCollision
-; .fallingEnemiesSet:
-;     SET_HL_TO_ADDRESS wOAM+12, bc
-;     LD_BC_HL
-;     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-;     ld d, 32
-;     ld e, 32
-;     call CollisionCheck
-;     cp a, 0
-;     jr z, .endCollision
-
-    ; we know its falling and we know its type (only 1 falling enemy rn)
-    ; check its OAM...
-    ; check collision
-    ; if yes, here we do bossDamaged etc
-    ; if yes, we need to mark balloonCactus for death, but make sure it still
-    ; removes itself from fallingEnemies
- 
-    ; ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 .bossDamaged:
     ; Points
     ld d, PORCUPINE_POINTS

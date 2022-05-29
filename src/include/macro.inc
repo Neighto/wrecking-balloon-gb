@@ -101,6 +101,23 @@ MACRO SET_HL_TO_ADDRESS
     ADD_TO_HL [\2]
 ENDM
 
+MACRO ADD_TO_BC
+    ; argument 1 is value to add to BC (8 bit)
+    ld a, \1 ; 2 cycles
+    add a, c ; 1 cycle
+    ld c, a ; 1 cycle
+    ld a, b ; 1 cycle
+    adc a, 0 ; 2 cycles
+    ld b, a ; 1 cycle
+ENDM
+
+MACRO SET_BC_TO_ADDRESS
+    ; argument 1 is starting address
+    ; argument 2 is offset
+    ld bc, \1
+    ADD_TO_BC [\2]
+ENDM
+
 MACRO UPDATE_OAM_POSITION_HRAM
     ; argument 1 is # sprites horizontal
     ; argument 2 is # sprites vertical
