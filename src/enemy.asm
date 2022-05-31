@@ -185,7 +185,7 @@ EnemyInterCollision::
     SET_HL_TO_ADDRESS wOAM, bc ; OAM address stored in hl
     SET_BC_TO_ADDRESS wOAM, hEnemyOAM ; OAM address stored in bc
     ld d, 32
-    ld e, 32
+    ld e, 24
     call CollisionCheck
     cp a, 0
     jr z, .checkLoop

@@ -303,7 +303,7 @@ ROM0 bank #0:
            $26a4 = PlayerUpdate.checkAttack
            $26b0 = PlayerUpdate.isChargingAttack
            $26b3 = PlayerUpdate.endAttack
-  SECTION: $26b4-$2a33 ($0380 bytes) ["level data"]
+  SECTION: $26b4-$2a38 ($0385 bytes) ["level data"]
            $26b4 = Level1
            $273c = Level2
            $27f4 = Level3
@@ -325,281 +325,282 @@ ROM0 bank #0:
            $29f0 = LevelDataHandler.wait
            $29fc = LevelDataHandler.waitEnd
            $2a0a = LevelDataHandler.waitBoss
-           $2a1a = LevelDataHandler.end
-           $2a23 = LevelDataHandler.incrementLevel
-           $2a2d = LevelDataHandler.won
-  SECTION: $2a34-$2c67 ($0234 bytes) ["rom"]
-           $2a34 = Start
-           $2a74 = MenuLoopOpening
-           $2a74 = StartMenu
-           $2a8f = MenuLoop
-           $2a8f = StartGame
-           $2af2 = OpeningCutsceneLoop
-           $2af2 = SetupNextLevel
-           $2b1f = SetupNextLevel.level1
-           $2b31 = SetupNextLevel.level2
-           $2b46 = SetupNextLevel.level3
-           $2b5e = SetupNextLevel.level4
-           $2b73 = SetupNextLevel.level5
-           $2b88 = SetupNextLevel.endLevelSetup
-           $2b88 = SetupNextLevel.level6
-           $2b97 = GameLoop
-           $2b97 = GameCountdownLoop
-           $2ba3 = StageClear
-           $2be1 = StageClearLoop
-           $2bea = GameOver
-           $2c17 = GameOverLoop
-           $2c20 = GameWon
-           $2c5c = GameWonLoop
-  SECTION: $2c68-$2e79 ($0212 bytes) ["interrupts"]
-           $2c68 = InitializeInterrupts
-           $2c7e = VBlankInterrupt
-           $2c8e = LCDInterrupt
-           $2c97 = LCDInterruptEnd
-           $2c9a = MenuLCDInterrupt
-           $2caa = MenuLCDInterrupt.reset
-           $2cb3 = MenuLCDInterrupt.far
-           $2cbd = MenuLCDInterrupt.close
-           $2cc5 = MenuLCDInterrupt.end
-           $2cc8 = SetMenuInterrupts
-           $2cd6 = OpeningCutsceneLCDInterrupt
-           $2ce2 = OpeningCutsceneLCDInterrupt.hide
-           $2ced = OpeningCutsceneLCDInterrupt.show
-           $2cf6 = OpeningCutsceneLCDInterrupt.end
-           $2cf9 = SetOpeningCutsceneInterrupts
-           $2d07 = LevelCityLCDInterrupt
-           $2d09 = LevelCityLCDInterrupt.far
-           $2d18 = LevelCityLCDInterrupt.middle
-           $2d27 = LevelCityLCDInterrupt.close
-           $2d36 = LevelCityLCDInterrupt.window
-           $2d4a = SetLevelCityInterrupts
-           $2d58 = LevelNightCityLCDInterrupt
-           $2d5a = LevelNightCityLCDInterrupt.far
-           $2d69 = LevelNightCityLCDInterrupt.middle
-           $2d78 = LevelNightCityLCDInterrupt.close
-           $2d8b = LevelNightCityLCDInterrupt.preWindow
-           $2d9a = LevelNightCityLCDInterrupt.window
-           $2dad = LevelNightCityLCDInterrupt.bottom
-           $2dbd = SetLevelNightCityInterrupts
-           $2dcb = Level2LCDInterrupt
-           $2ddf = Level2LCDInterrupt.reset
-           $2ded = Level2LCDInterrupt.far
-           $2df7 = Level2LCDInterrupt.middle
-           $2e01 = Level2LCDInterrupt.close
-           $2e09 = Level2LCDInterrupt.end
-           $2e0c = SetLevelDesertInterrupts
-           $2e1a = Level3LCDInterrupt
-           $2e2e = Level3LCDInterrupt.reset
-           $2e3c = Level3LCDInterrupt.close
-           $2e46 = Level3LCDInterrupt.middle
-           $2e50 = Level3LCDInterrupt.rain
-           $2e5b = Level3LCDInterrupt.end
-           $2e5e = SetLevelShowdownInterrupts
-           $2e6c = SetEndingCutsceneInterrupts
-  SECTION: $2e7a-$3085 ($020c bytes) ["game"]
-           $2e7a = InitializeGame
-           $2e82 = LoadGameSpriteTiles
-           $2e8f = LoadLevelCityGraphics
-           $2ea8 = LoadLevelDesertGraphics
-           $2ec1 = LoadLevelShowdownGraphics
-           $2ef3 = CanFadeLevel
-           $2ef9 = SpawnCountdown
-           $2f22 = UpdateGameCountdown
-           $2f2d = UpdateGameCountdown.checkFading
-           $2f36 = UpdateGameCountdown.endFading
-           $2f36 = UpdateGameCountdown.checkCountdownAnimation
-           $2f3d = UpdateGameCountdown.countdownSpeed
-           $2f44 = UpdateGameCountdown.countdownBalloonPopSpeed
-           $2f49 = UpdateGameCountdown.frames
-           $2f50 = UpdateGameCountdown.frame0
-           $2f74 = UpdateGameCountdown.frame0End
-           $2f78 = UpdateGameCountdown.frame1
-           $2f9c = UpdateGameCountdown.frame1End
-           $2fa0 = UpdateGameCountdown.frame2
-           $2fc4 = UpdateGameCountdown.frame2End
-           $2fc8 = UpdateGameCountdown.frame3
-           $2fec = UpdateGameCountdown.frame3End
-           $2ff0 = UpdateGameCountdown.frame4
-           $3014 = UpdateGameCountdown.frame4End
-           $3018 = UpdateGameCountdown.frame5
-           $3039 = UpdateGameCountdown.frame5End
-           $3039 = UpdateGameCountdown.clear
-           $3052 = UpdateGameCountdown.gameLoop
-           $3056 = UpdateGame
-           $3056 = UpdateGame.tryToUnpause
-           $305c = UpdateGame.isPaused
-           $306b = UpdateGame.isNotPaused
-           $306b = UpdateGame.updateSprites
-           $3074 = UpdateGame.rest
-  SECTION: $3086-$31cc ($0147 bytes) ["enemy"]
-           $3086 = InitializeEnemies
-           $3090 = EnemyUpdate
-           $3099 = EnemyUpdate.loop
-           $30b1 = EnemyUpdate.pointBalloon
-           $30ba = EnemyUpdate.balloonCarrier
-           $30c3 = EnemyUpdate.bird
-           $30cc = EnemyUpdate.bomb
-           $30d5 = EnemyUpdate.projectile
-           $30de = EnemyUpdate.boss
-           $30e7 = EnemyUpdate.bossNeedle
-           $30f0 = EnemyUpdate.anvil
-           $30f9 = EnemyUpdate.explosion
-           $3102 = EnemyUpdate.checkLoop
-           $3114 = EnemyInterCollision
-           $311d = EnemyInterCollision.loop
-           $312f = EnemyInterCollision.bird
-           $316a = EnemyInterCollision.boss
-           $31a5 = EnemyInterCollision.checkLoop
-           $31b9 = EnemyInterCollision.end
-           $31ba = ClearEnemy
-  SECTION: $31cd-$32f9 ($012d bytes) ["enemy projectile"]
-           $31cd = SetStruct
-           $31e3 = SpawnProjectile
-           $31f0 = SpawnProjectile.availableSpace
-           $31f9 = SpawnProjectile.availableOAMSpace
-           $320a = SpawnProjectile.setupY2
-           $3212 = SpawnProjectile.up
-           $3216 = SpawnProjectile.down
-           $3218 = SpawnProjectile.endY
-           $321a = SpawnProjectile.setupX2
-           $321a = SpawnProjectile.endSetupY2
-           $3222 = SpawnProjectile.left
-           $3226 = SpawnProjectile.right
-           $3228 = SpawnProjectile.endX
-           $322a = SpawnProjectile.endSetupX2
-           $3236 = SpawnProjectile.projectileOAM
-           $3241 = SpawnProjectile.setStruct
-           $3246 = SpawnProjectile.end
-           $3248 = ProjectileUpdate
-           $3258 = ProjectileUpdate.checkFlicker
-           $325e = ProjectileUpdate.canFlicker
-           $326f = ProjectileUpdate.palette0
-           $3273 = ProjectileUpdate.palette1
-           $3275 = ProjectileUpdate.endFlicker
-           $3275 = ProjectileUpdate.checkMove
-           $327b = ProjectileUpdate.canMove
-           $327b = ProjectileUpdate.projectileOAM
-           $3299 = ProjectileUpdate.endMove
-           $3299 = ProjectileUpdate.checkCollision
-           $329f = ProjectileUpdate.checkHit
-           $32b9 = ProjectileUpdate.deathOfProjectile
-           $32c4 = ProjectileUpdate.endCollision
-           $32c4 = ProjectileUpdate.checkOffscreenY
-           $32d1 = ProjectileUpdate.offscreenY
-           $32d7 = ProjectileUpdate.endOffscreenY
-           $32d7 = ProjectileUpdate.checkOffscreenX
-           $32e4 = ProjectileUpdate.offscreenX
-           $32ea = ProjectileUpdate.setStruct
-           $32ea = ProjectileUpdate.endOffscreenX
-  SECTION: $32fa-$341c ($0123 bytes) ["boss needle"]
-           $32fa = SetStruct
-           $330d = SpawnBossNeedle
-           $331a = SpawnBossNeedle.availableSpace
-           $3323 = SpawnBossNeedle.availableOAMSpace
-           $3340 = SpawnBossNeedle.variantDirection
-           $3342 = SpawnBossNeedle.topLeftDirection
-           $334a = SpawnBossNeedle.topRightDirection
-           $3352 = SpawnBossNeedle.bottomLeftDirection
-           $335a = SpawnBossNeedle.bottomRightDirection
-           $335c = SpawnBossNeedle.endVariantDirection
-           $335c = SpawnBossNeedle.bossNeedleOAM
-           $3366 = SpawnBossNeedle.setStruct
-           $336b = SpawnBossNeedle.end
-           $336d = BossNeedleUpdate
-           $337a = BossNeedleUpdate.checkMove
-           $3380 = BossNeedleUpdate.canMove
-           $3380 = BossNeedleUpdate.bossNeedleOAM
-           $338c = BossNeedleUpdate.variantDirection
-           $338e = BossNeedleUpdate.topLeftDirection
-           $3398 = BossNeedleUpdate.topRightDirection
-           $33a2 = BossNeedleUpdate.bottomLeftDirection
-           $33ac = BossNeedleUpdate.bottomRightDirection
-           $33b0 = BossNeedleUpdate.endVariantDirection
-           $33bc = BossNeedleUpdate.endMove
-           $33bc = BossNeedleUpdate.checkCollision
-           $33c2 = BossNeedleUpdate.checkHit
-           $33dc = BossNeedleUpdate.deathOfBossNeedle
-           $33e7 = BossNeedleUpdate.endCollision
-           $33e7 = BossNeedleUpdate.checkOffscreenY
-           $33f4 = BossNeedleUpdate.offscreenY
-           $33fa = BossNeedleUpdate.endOffscreenY
-           $33fa = BossNeedleUpdate.checkOffscreenX
-           $3407 = BossNeedleUpdate.offscreenX
-           $340d = BossNeedleUpdate.setStruct
-           $340d = BossNeedleUpdate.endOffscreenX
-  SECTION: $341d-$3525 ($0109 bytes) ["window"]
-           $341d = RefreshScore
-           $344d = RefreshTotal
-           $347f = LoadWindow.loadTiles
-           $347f = LoadWindow
-           $348b = LoadWindow.drawMap
-           $34a5 = RefreshWindow
-           $34aa = RefreshWindow.refreshScore
-           $34b0 = RefreshWindow.refreshLives
-           $34b7 = RefreshWindow.refreshBoostBar
-           $34c0 = RefreshWindow.isBoostCharging
-           $34cc = RefreshWindow.isBoostEmpty
-           $34d3 = RefreshWindow.isBoost25Percent
-           $34db = RefreshWindow.isBoost50Percent
-           $34e3 = RefreshWindow.isBoost75Percent
-           $34eb = RefreshWindow.isBoostReady
-           $34f0 = RefreshWindow.refreshAttackBar
-           $34f9 = RefreshWindow.isAttackCharging
-           $3505 = RefreshWindow.isAttackEmpty
-           $350b = RefreshWindow.isAttack25Percent
-           $3512 = RefreshWindow.isAttack50Percent
-           $3519 = RefreshWindow.isAttack75Percent
-           $3520 = RefreshWindow.isAttackReady
-  SECTION: $3526-$35fb ($00d6 bytes) ["explosion"]
-           $3526 = SetStruct
-           $3539 = SpawnExplosion
-           $3546 = SpawnExplosion.availableSpace
-           $354f = SpawnExplosion.availableOAMSpace
-           $356c = SpawnExplosion.explosionLeftOAM
-           $3578 = SpawnExplosion.explosionMiddleOAM
-           $3586 = SpawnExplosion.explosionRightOAM
-           $3594 = SpawnExplosion.setStruct
-           $3599 = SpawnExplosion.end
-           $359b = ExplosionUpdate
-           $35a8 = ExplosionUpdate.animateExplosion
-           $35bb = ExplosionUpdate.palette0
-           $35cb = ExplosionUpdate.palette1
-           $35d9 = ExplosionUpdate.paletteEnd
-           $35e6 = ExplosionUpdate.clear
-           $35ec = ExplosionUpdate.endAnimateExplosion
-           $35ec = ExplosionUpdate.setStruct
-  SECTION: $35fc-$3666 ($006b bytes) ["enemy animations"]
-           $35fc = PopBalloonAnimation
-           $360a = PopBalloonAnimation.canSwitchFrames
-           $3615 = PopBalloonAnimation.frame0
-           $3639 = PopBalloonAnimation.frame1
-           $365d = PopBalloonAnimation.clear
-           $3661 = PopBalloonAnimation.endFrame
-  SECTION: $3667-$36c6 ($0060 bytes) ["graphics"]
-           $3667 = AddBGTiles8800Method
-           $3671 = AddBGTiles8800Method.tilesFitBlock
-           $3676 = AddBGTiles8800Method.tilesExceedBlock
-           $3690 = AddBGTiles8800Method.end
-           $3693 = ClearAllTiles
-           $36b3 = ClearMap
-           $36bd = ClearWindow
-  SECTION: $36c7-$36f3 ($002d bytes) ["controller"]
-           $36c7 = InitializeController
-           $36cf = ReadController
-           $36cf = ReadController.dPad
-           $36dd = ReadController.buttons
-           $36ea = ReadController.setControllerVars
-  SECTION: $36f4-$371e ($002b bytes) ["collision"]
-           $36f4 = CollisionCheck
-           $36f4 = CollisionCheck.checkY
-           $36ff = CollisionCheck.tryColliderY
-           $3706 = CollisionCheck.checkX
-           $3713 = CollisionCheck.tryColliderX
-           $371a = CollisionCheck.collision
-           $371d = CollisionCheck.noCollision
-  SECTION: $371f-$373a ($001c bytes) ["enemy struct"]
-           $371f = InitializeEnemyStructVars
-    SLACK: $08ca bytes
+           $2a15 = LevelDataHandler.waitBossEnd
+           $2a1f = LevelDataHandler.end
+           $2a28 = LevelDataHandler.incrementLevel
+           $2a32 = LevelDataHandler.won
+  SECTION: $2a39-$2c74 ($023c bytes) ["rom"]
+           $2a39 = Start
+           $2a7c = MenuLoopOpening
+           $2a7c = StartMenu
+           $2a97 = MenuLoop
+           $2a97 = StartGame
+           $2afa = OpeningCutsceneLoop
+           $2afa = SetupNextLevel
+           $2b2c = SetupNextLevel.level1
+           $2b3e = SetupNextLevel.level2
+           $2b53 = SetupNextLevel.level3
+           $2b6b = SetupNextLevel.level4
+           $2b80 = SetupNextLevel.level5
+           $2b95 = SetupNextLevel.endLevelSetup
+           $2b95 = SetupNextLevel.level6
+           $2ba4 = GameLoop
+           $2ba4 = GameCountdownLoop
+           $2bb0 = StageClear
+           $2bee = StageClearLoop
+           $2bf7 = GameOver
+           $2c24 = GameOverLoop
+           $2c2d = GameWon
+           $2c69 = GameWonLoop
+  SECTION: $2c75-$2e86 ($0212 bytes) ["interrupts"]
+           $2c75 = InitializeInterrupts
+           $2c8b = VBlankInterrupt
+           $2c9b = LCDInterrupt
+           $2ca4 = LCDInterruptEnd
+           $2ca7 = MenuLCDInterrupt
+           $2cb7 = MenuLCDInterrupt.reset
+           $2cc0 = MenuLCDInterrupt.far
+           $2cca = MenuLCDInterrupt.close
+           $2cd2 = MenuLCDInterrupt.end
+           $2cd5 = SetMenuInterrupts
+           $2ce3 = OpeningCutsceneLCDInterrupt
+           $2cef = OpeningCutsceneLCDInterrupt.hide
+           $2cfa = OpeningCutsceneLCDInterrupt.show
+           $2d03 = OpeningCutsceneLCDInterrupt.end
+           $2d06 = SetOpeningCutsceneInterrupts
+           $2d14 = LevelCityLCDInterrupt
+           $2d16 = LevelCityLCDInterrupt.far
+           $2d25 = LevelCityLCDInterrupt.middle
+           $2d34 = LevelCityLCDInterrupt.close
+           $2d43 = LevelCityLCDInterrupt.window
+           $2d57 = SetLevelCityInterrupts
+           $2d65 = LevelNightCityLCDInterrupt
+           $2d67 = LevelNightCityLCDInterrupt.far
+           $2d76 = LevelNightCityLCDInterrupt.middle
+           $2d85 = LevelNightCityLCDInterrupt.close
+           $2d98 = LevelNightCityLCDInterrupt.preWindow
+           $2da7 = LevelNightCityLCDInterrupt.window
+           $2dba = LevelNightCityLCDInterrupt.bottom
+           $2dca = SetLevelNightCityInterrupts
+           $2dd8 = Level2LCDInterrupt
+           $2dec = Level2LCDInterrupt.reset
+           $2dfa = Level2LCDInterrupt.far
+           $2e04 = Level2LCDInterrupt.middle
+           $2e0e = Level2LCDInterrupt.close
+           $2e16 = Level2LCDInterrupt.end
+           $2e19 = SetLevelDesertInterrupts
+           $2e27 = Level3LCDInterrupt
+           $2e3b = Level3LCDInterrupt.reset
+           $2e49 = Level3LCDInterrupt.close
+           $2e53 = Level3LCDInterrupt.middle
+           $2e5d = Level3LCDInterrupt.rain
+           $2e68 = Level3LCDInterrupt.end
+           $2e6b = SetLevelShowdownInterrupts
+           $2e79 = SetEndingCutsceneInterrupts
+  SECTION: $2e87-$3092 ($020c bytes) ["game"]
+           $2e87 = InitializeGame
+           $2e8f = LoadGameSpriteTiles
+           $2e9c = LoadLevelCityGraphics
+           $2eb5 = LoadLevelDesertGraphics
+           $2ece = LoadLevelShowdownGraphics
+           $2f00 = CanFadeLevel
+           $2f06 = SpawnCountdown
+           $2f2f = UpdateGameCountdown
+           $2f3a = UpdateGameCountdown.checkFading
+           $2f43 = UpdateGameCountdown.endFading
+           $2f43 = UpdateGameCountdown.checkCountdownAnimation
+           $2f4a = UpdateGameCountdown.countdownSpeed
+           $2f51 = UpdateGameCountdown.countdownBalloonPopSpeed
+           $2f56 = UpdateGameCountdown.frames
+           $2f5d = UpdateGameCountdown.frame0
+           $2f81 = UpdateGameCountdown.frame0End
+           $2f85 = UpdateGameCountdown.frame1
+           $2fa9 = UpdateGameCountdown.frame1End
+           $2fad = UpdateGameCountdown.frame2
+           $2fd1 = UpdateGameCountdown.frame2End
+           $2fd5 = UpdateGameCountdown.frame3
+           $2ff9 = UpdateGameCountdown.frame3End
+           $2ffd = UpdateGameCountdown.frame4
+           $3021 = UpdateGameCountdown.frame4End
+           $3025 = UpdateGameCountdown.frame5
+           $3046 = UpdateGameCountdown.frame5End
+           $3046 = UpdateGameCountdown.clear
+           $305f = UpdateGameCountdown.gameLoop
+           $3063 = UpdateGame
+           $3063 = UpdateGame.tryToUnpause
+           $3069 = UpdateGame.isPaused
+           $3078 = UpdateGame.isNotPaused
+           $3078 = UpdateGame.updateSprites
+           $3081 = UpdateGame.rest
+  SECTION: $3093-$31d9 ($0147 bytes) ["enemy"]
+           $3093 = InitializeEnemies
+           $309d = EnemyUpdate
+           $30a6 = EnemyUpdate.loop
+           $30be = EnemyUpdate.pointBalloon
+           $30c7 = EnemyUpdate.balloonCarrier
+           $30d0 = EnemyUpdate.bird
+           $30d9 = EnemyUpdate.bomb
+           $30e2 = EnemyUpdate.projectile
+           $30eb = EnemyUpdate.boss
+           $30f4 = EnemyUpdate.bossNeedle
+           $30fd = EnemyUpdate.anvil
+           $3106 = EnemyUpdate.explosion
+           $310f = EnemyUpdate.checkLoop
+           $3121 = EnemyInterCollision
+           $312a = EnemyInterCollision.loop
+           $313c = EnemyInterCollision.bird
+           $3177 = EnemyInterCollision.boss
+           $31b2 = EnemyInterCollision.checkLoop
+           $31c6 = EnemyInterCollision.end
+           $31c7 = ClearEnemy
+  SECTION: $31da-$3306 ($012d bytes) ["enemy projectile"]
+           $31da = SetStruct
+           $31f0 = SpawnProjectile
+           $31fd = SpawnProjectile.availableSpace
+           $3206 = SpawnProjectile.availableOAMSpace
+           $3217 = SpawnProjectile.setupY2
+           $321f = SpawnProjectile.up
+           $3223 = SpawnProjectile.down
+           $3225 = SpawnProjectile.endY
+           $3227 = SpawnProjectile.setupX2
+           $3227 = SpawnProjectile.endSetupY2
+           $322f = SpawnProjectile.left
+           $3233 = SpawnProjectile.right
+           $3235 = SpawnProjectile.endX
+           $3237 = SpawnProjectile.endSetupX2
+           $3243 = SpawnProjectile.projectileOAM
+           $324e = SpawnProjectile.setStruct
+           $3253 = SpawnProjectile.end
+           $3255 = ProjectileUpdate
+           $3265 = ProjectileUpdate.checkFlicker
+           $326b = ProjectileUpdate.canFlicker
+           $327c = ProjectileUpdate.palette0
+           $3280 = ProjectileUpdate.palette1
+           $3282 = ProjectileUpdate.endFlicker
+           $3282 = ProjectileUpdate.checkMove
+           $3288 = ProjectileUpdate.canMove
+           $3288 = ProjectileUpdate.projectileOAM
+           $32a6 = ProjectileUpdate.endMove
+           $32a6 = ProjectileUpdate.checkCollision
+           $32ac = ProjectileUpdate.checkHit
+           $32c6 = ProjectileUpdate.deathOfProjectile
+           $32d1 = ProjectileUpdate.endCollision
+           $32d1 = ProjectileUpdate.checkOffscreenY
+           $32de = ProjectileUpdate.offscreenY
+           $32e4 = ProjectileUpdate.endOffscreenY
+           $32e4 = ProjectileUpdate.checkOffscreenX
+           $32f1 = ProjectileUpdate.offscreenX
+           $32f7 = ProjectileUpdate.setStruct
+           $32f7 = ProjectileUpdate.endOffscreenX
+  SECTION: $3307-$3429 ($0123 bytes) ["boss needle"]
+           $3307 = SetStruct
+           $331a = SpawnBossNeedle
+           $3327 = SpawnBossNeedle.availableSpace
+           $3330 = SpawnBossNeedle.availableOAMSpace
+           $334d = SpawnBossNeedle.variantDirection
+           $334f = SpawnBossNeedle.topLeftDirection
+           $3357 = SpawnBossNeedle.topRightDirection
+           $335f = SpawnBossNeedle.bottomLeftDirection
+           $3367 = SpawnBossNeedle.bottomRightDirection
+           $3369 = SpawnBossNeedle.endVariantDirection
+           $3369 = SpawnBossNeedle.bossNeedleOAM
+           $3373 = SpawnBossNeedle.setStruct
+           $3378 = SpawnBossNeedle.end
+           $337a = BossNeedleUpdate
+           $3387 = BossNeedleUpdate.checkMove
+           $338d = BossNeedleUpdate.canMove
+           $338d = BossNeedleUpdate.bossNeedleOAM
+           $3399 = BossNeedleUpdate.variantDirection
+           $339b = BossNeedleUpdate.topLeftDirection
+           $33a5 = BossNeedleUpdate.topRightDirection
+           $33af = BossNeedleUpdate.bottomLeftDirection
+           $33b9 = BossNeedleUpdate.bottomRightDirection
+           $33bd = BossNeedleUpdate.endVariantDirection
+           $33c9 = BossNeedleUpdate.endMove
+           $33c9 = BossNeedleUpdate.checkCollision
+           $33cf = BossNeedleUpdate.checkHit
+           $33e9 = BossNeedleUpdate.deathOfBossNeedle
+           $33f4 = BossNeedleUpdate.endCollision
+           $33f4 = BossNeedleUpdate.checkOffscreenY
+           $3401 = BossNeedleUpdate.offscreenY
+           $3407 = BossNeedleUpdate.endOffscreenY
+           $3407 = BossNeedleUpdate.checkOffscreenX
+           $3414 = BossNeedleUpdate.offscreenX
+           $341a = BossNeedleUpdate.setStruct
+           $341a = BossNeedleUpdate.endOffscreenX
+  SECTION: $342a-$3532 ($0109 bytes) ["window"]
+           $342a = RefreshScore
+           $345a = RefreshTotal
+           $348c = LoadWindow.loadTiles
+           $348c = LoadWindow
+           $3498 = LoadWindow.drawMap
+           $34b2 = RefreshWindow
+           $34b7 = RefreshWindow.refreshScore
+           $34bd = RefreshWindow.refreshLives
+           $34c4 = RefreshWindow.refreshBoostBar
+           $34cd = RefreshWindow.isBoostCharging
+           $34d9 = RefreshWindow.isBoostEmpty
+           $34e0 = RefreshWindow.isBoost25Percent
+           $34e8 = RefreshWindow.isBoost50Percent
+           $34f0 = RefreshWindow.isBoost75Percent
+           $34f8 = RefreshWindow.isBoostReady
+           $34fd = RefreshWindow.refreshAttackBar
+           $3506 = RefreshWindow.isAttackCharging
+           $3512 = RefreshWindow.isAttackEmpty
+           $3518 = RefreshWindow.isAttack25Percent
+           $351f = RefreshWindow.isAttack50Percent
+           $3526 = RefreshWindow.isAttack75Percent
+           $352d = RefreshWindow.isAttackReady
+  SECTION: $3533-$3608 ($00d6 bytes) ["explosion"]
+           $3533 = SetStruct
+           $3546 = SpawnExplosion
+           $3553 = SpawnExplosion.availableSpace
+           $355c = SpawnExplosion.availableOAMSpace
+           $3579 = SpawnExplosion.explosionLeftOAM
+           $3585 = SpawnExplosion.explosionMiddleOAM
+           $3593 = SpawnExplosion.explosionRightOAM
+           $35a1 = SpawnExplosion.setStruct
+           $35a6 = SpawnExplosion.end
+           $35a8 = ExplosionUpdate
+           $35b5 = ExplosionUpdate.animateExplosion
+           $35c8 = ExplosionUpdate.palette0
+           $35d8 = ExplosionUpdate.palette1
+           $35e6 = ExplosionUpdate.paletteEnd
+           $35f3 = ExplosionUpdate.clear
+           $35f9 = ExplosionUpdate.endAnimateExplosion
+           $35f9 = ExplosionUpdate.setStruct
+  SECTION: $3609-$3673 ($006b bytes) ["enemy animations"]
+           $3609 = PopBalloonAnimation
+           $3617 = PopBalloonAnimation.canSwitchFrames
+           $3622 = PopBalloonAnimation.frame0
+           $3646 = PopBalloonAnimation.frame1
+           $366a = PopBalloonAnimation.clear
+           $366e = PopBalloonAnimation.endFrame
+  SECTION: $3674-$36d3 ($0060 bytes) ["graphics"]
+           $3674 = AddBGTiles8800Method
+           $367e = AddBGTiles8800Method.tilesFitBlock
+           $3683 = AddBGTiles8800Method.tilesExceedBlock
+           $369d = AddBGTiles8800Method.end
+           $36a0 = ClearAllTiles
+           $36c0 = ClearMap
+           $36ca = ClearWindow
+  SECTION: $36d4-$3700 ($002d bytes) ["controller"]
+           $36d4 = InitializeController
+           $36dc = ReadController
+           $36dc = ReadController.dPad
+           $36ea = ReadController.buttons
+           $36f7 = ReadController.setControllerVars
+  SECTION: $3701-$372b ($002b bytes) ["collision"]
+           $3701 = CollisionCheck
+           $3701 = CollisionCheck.checkY
+           $370c = CollisionCheck.tryColliderY
+           $3713 = CollisionCheck.checkX
+           $3720 = CollisionCheck.tryColliderX
+           $3727 = CollisionCheck.collision
+           $372a = CollisionCheck.noCollision
+  SECTION: $372c-$3747 ($001c bytes) ["enemy struct"]
+           $372c = InitializeEnemyStructVars
+    SLACK: $08bd bytes
 
 ROMX bank #1:
   SECTION: $4000-$582f ($1830 bytes) ["tilesets 2"]
@@ -1353,14 +1354,18 @@ ROMX bank #1:
            $7d30 = LoadGameOverGraphics
            $7d48 = InitializeGameOver
            $7d52 = UpdateGameOver
-  SECTION: $7d65-$7d8a ($0026 bytes) ["lcd"]
-           $7d65 = LCD_OFF
-           $7d6a = LCD_ON
-           $7d6f = LCD_ON_NO_WINDOW
-           $7d74 = WaitVBlank
-           $7d79 = WaitVBlank.loop
-           $7d82 = SetupWindow
-    SLACK: $0275 bytes
+  SECTION: $7d65-$7d8c ($0028 bytes) ["endless"]
+           $7d65 = InitializeEndlessVars
+           $7d6a = BossKiller
+           $7d79 = BossKiller.spawnBalloonCarrier
+  SECTION: $7d8d-$7db2 ($0026 bytes) ["lcd"]
+           $7d8d = LCD_OFF
+           $7d92 = LCD_ON
+           $7d97 = LCD_ON_NO_WINDOW
+           $7d9c = WaitVBlank
+           $7da1 = WaitVBlank.loop
+           $7daa = SetupWindow
+    SLACK: $024d bytes
 
 WRAM0 bank #0:
   SECTION: $c000-$c08b ($008c bytes) ["enemy data vars"]
@@ -1470,6 +1475,8 @@ WRAM0 bank #0:
   SECTION: $c0f6-$c0f7 ($0002 bytes) ["ending cutscene vars"]
            $c0f6 = wHandClappingFrame
            $c0f7 = wHandClapOAM
+  SECTION: $c0f8-$c0f8 ($0001 byte) ["endless vars"]
+           $c0f8 = wEndlessTimer
   SECTION: $c100-$c19f ($00a0 bytes) ["OAM vars"]
            $c100 = wPlayerCactusOAM
            $c108 = wPlayerBalloonOAM
@@ -1477,7 +1484,7 @@ WRAM0 bank #0:
            $c114 = OAMVars
            $c114 = wOAM
            $c1a0 = OAMVarsEnd
-    SLACK: $0e68 bytes
+    SLACK: $0e67 bytes
 
 HRAM bank #0:
   SECTION: $ff80-$ff91 ($0012 bytes) ["player vars"]
@@ -1533,7 +1540,7 @@ HRAM bank #0:
     SLACK: $004c bytes
 
 USED:
-    ROM0: $3736 bytes in 1 bank
-    ROMX: $3d8b bytes in 1 bank
-    WRAM0: $0198 bytes in 1 bank
+    ROM0: $3743 bytes in 1 bank
+    ROMX: $3db3 bytes in 1 bank
+    WRAM0: $0199 bytes in 1 bank
     HRAM: $0033 bytes in 1 bank

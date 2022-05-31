@@ -23,6 +23,7 @@ Start::
 	call InitializePalettes
 	call InitializeController
 	call InitializeMenu
+	call InitializeEndlessVars
 	ld hl, menuTheme
 	call hUGE_init
 	call LCD_ON_NO_WINDOW
@@ -108,8 +109,8 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; testing
-	; ld a, 3
-	; ld [wLevel], a
+	ld a, 3
+	ld [wLevel], a
 	; ^^^
 
 	ld a, [wLevel]
