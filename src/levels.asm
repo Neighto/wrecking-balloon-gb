@@ -121,7 +121,7 @@ Level2:
 Level3:
     ; LEVEL_SPAWN BALLOON_CARRIER, 32, 60, ANVIL_VARIANT
     LEVEL_WAIT_BOSS
-    LEVEL_WAIT 10
+    LEVEL_WAIT 6
     LEVEL_END
 
     ; Desert Levels
@@ -403,7 +403,10 @@ LevelDataHandler::
 .waitBoss:
     ld a, [wLevelWaitBoss]
     cp a, 0
-    ret z
+    jr nz, .waitBossEnd
+    call BossKiller
+    ret
+.waitBossEnd:
     inc hl
     ld a, l
     ld [wLevelDataAddress], a
