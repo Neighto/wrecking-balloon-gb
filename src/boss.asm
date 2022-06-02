@@ -40,6 +40,8 @@ PORCUPINE_EXPRESSION_RIGHT EQU 1
 PORCUPINE_EXPRESSION_CONFIDENT EQU 2
 PORCUPINE_EXPRESSION_SCARED EQU 3
 
+PORCUPINE_KNOCKED_OUT_TIME EQU 40
+
 PORCUPINE_POINTS EQU 50
 
 SECTION "boss", ROMX
@@ -449,7 +451,7 @@ BossUpdate::
     jp .setStruct 
 .dying:
     xor a ; ld a, 0
-    ld [hEnemyParam3], a
+    ldh [hEnemyParam3], a
 .dyingOffscreen:
     ld a, SCRN_Y + 16 ; buffer
     ld hl, hEnemyY
@@ -464,9 +466,9 @@ BossUpdate::
     and %00000001
     jp nz, .setStruct
 .canFall:
-    ld a, [hEnemySpeed]
+    ldh a, [hEnemySpeed]
     inc a 
-    ld [hEnemySpeed], a
+    ldh [hEnemySpeed], a
     ld b, 5
     call DIVISION
     ld b, a
@@ -478,9 +480,9 @@ BossUpdate::
 .isAlive:
 
 .checkDirection:
-    ld hl, hGlobalTimer
+    ldh a, [hGlobalTimer]
+    ld b, a
 .checkDirectionX:
-    ld a, [hl]
     cp a, 50
     jr nz, .endCheckDirectionX
     ldh a, [hEnemyX]
@@ -497,7 +499,7 @@ BossUpdate::
     ldh [hEnemyDirectionLeft], a
 .endCheckDirectionX:
 .checkDirectionY:
-    ld a, [hl]
+    ld a, b
     and %00011111
     jr nz, .endCheckDirectionY
     ldh a, [hEnemyY]
@@ -596,14 +598,13 @@ BossUpdate::
     ldh a, [hEnemyAlive]
     dec a
     ldh [hEnemyAlive], a
-    ; Animation trigger
     cp a, 0
     jr nz, .bossDamagedAndAlive
 .bossDamagedAndDead:
     ld a, 1
     ldh [hEnemyDying], a
 .bossDamagedAndAlive:
-    ld a, 40
+    ld a, PORCUPINE_KNOCKED_OUT_TIME
     ldh [hEnemyParam2], a
     ld a, PORCUPINE_EXPRESSION_SCARED
     ldh [hEnemyAnimationFrame], a
@@ -665,7 +666,7 @@ BossUpdate::
     jr .endCheckBossSpawns
 
 .checkSpawnPointBalloon:
-    ld a, [hEnemyParam3]
+    ldh a, [hEnemyParam3]
     cp a, 0
     jr z, .endSpawnPointBalloon
 .spawnPointBalloon:
