@@ -30,6 +30,8 @@ PORCUPINE_START_SPEED EQU 1
 PORCUPINE_INCREASE_SPEED EQU 2
 PORCUPINE_MAX_SPEED EQU 4
 
+PORCUPINE_VERTICAL_SPEED EQU 1
+
 PORCUPINE_LEFTSIDE_POSITION_X EQU 10
 PORCUPINE_RIGHTSIDE_POSITION_X EQU 132
 PORCUPINE_TOPSIDE_POSITION_Y EQU 25
@@ -204,85 +206,6 @@ SpawnBossNotInLevelData::
 	ld a, 112
 	ldh [hEnemyX], a
     call SpawnBoss
-    ret
-
-HelperMoveY:
-    ld b, 1 ; speed
-    ldh a, [hEnemyDirectionLeft]
-    and %00000010
-    jr z, .moveDown
-.moveUp:
-    ldh a, [hEnemyY]
-    cp a, PORCUPINE_TOPSIDE_POSITION_Y
-    jr nc, .moveUpStopSkip
-.moveUpStop:
-    ld b, 0
-.moveUpStopSkip:
-    sub a, b
-    ldh [hEnemyY], a
-    ret
-.moveDown:
-    ldh a, [hEnemyY]
-    cp a, PORCUPINE_DOWNSIDE_POSITION_Y
-    jr c, .moveDownStopSkip
-.moveDownStop:
-    ld b, 0
-.moveDownStopSkip:
-    add a, b
-    ldh [hEnemyY], a
-    ret
-
-HelperMoveX:
-    ld hl, hEnemySpeed
-    ldh a, [hEnemyDirectionLeft]
-    and %00000001
-    jr z, .handleMovingRight
-.handleMovingLeft:
-    ldh a, [hEnemyX]
-    cp a, PORCUPINE_LEFTSIDE_POSITION_X
-    jr c, .stopSpeed
-    cp a, PORCUPINE_LEFTSIDE_POSITION_X + PORCUPINE_MAX_SPEED * 2
-    jr c, .slowDown
-    jr .speedUp
-.handleMovingRight:
-    ldh a, [hEnemyX]
-    cp a, PORCUPINE_RIGHTSIDE_POSITION_X
-    jr nc, .stopSpeed
-    cp a, PORCUPINE_RIGHTSIDE_POSITION_X - PORCUPINE_MAX_SPEED * 2
-    jr nc, .slowDown
-.speedUp:
-    ld a, [hl]
-    add a, PORCUPINE_INCREASE_SPEED
-    ld b, PORCUPINE_MAX_SPEED
-    cp a, b
-    jr c, .updateSpeed
-    ld a, b
-    jr .updateSpeed
-.slowDown:
-    ld a, [hl]
-    sub a, PORCUPINE_INCREASE_SPEED
-    ld b, PORCUPINE_START_SPEED
-    cp a, b
-    jr c, .updateSpeed
-    ld a, b
-    jr .updateSpeed
-.stopSpeed:
-    xor a ; ld a, 0
-.updateSpeed:
-    ld [hl], a
-.move:
-    ldh a, [hEnemyDirectionLeft]
-    and %00000001
-    jr z, .moveRight
-.moveLeft:
-    ldh a, [hEnemyX]
-    sub a, [hl]
-    ldh [hEnemyX], a
-    ret
-.moveRight:
-    ldh a, [hEnemyX]
-    add a, [hl]
-    ldh [hEnemyX], a
     ret
 
 BossUpdate::
@@ -522,8 +445,84 @@ BossUpdate::
     and	PORCUPINE_MOVE_TIME
     jr nz, .endMove
 .canMove: 
-    call HelperMoveX
-    call HelperMoveY
+
+.moveX:
+    ld hl, hEnemySpeed
+    ldh a, [hEnemyDirectionLeft]
+    and ENEMY_DIRECTION_HORIZONTAL_MASK
+    jr z, .handleMovingRight
+.handleMovingLeft:
+    ldh a, [hEnemyX]
+    cp a, PORCUPINE_LEFTSIDE_POSITION_X
+    jr c, .moveXStopSpeed
+    cp a, PORCUPINE_LEFTSIDE_POSITION_X + PORCUPINE_MAX_SPEED * 2
+    jr c, .moveXSlowDown
+    jr .moveXSpeedUp
+.handleMovingRight:
+    ldh a, [hEnemyX]
+    cp a, PORCUPINE_RIGHTSIDE_POSITION_X
+    jr nc, .moveXStopSpeed
+    cp a, PORCUPINE_RIGHTSIDE_POSITION_X - PORCUPINE_MAX_SPEED * 2
+    jr nc, .moveXSlowDown
+.moveXSpeedUp:
+    ld a, [hl]
+    add a, PORCUPINE_INCREASE_SPEED
+    ld b, PORCUPINE_MAX_SPEED
+    cp a, b
+    jr c, .moveXUpdateSpeed
+    ld a, b
+    jr .moveXUpdateSpeed
+.moveXSlowDown:
+    ld a, [hl]
+    sub a, PORCUPINE_INCREASE_SPEED
+    ld b, PORCUPINE_START_SPEED
+    cp a, b
+    jr c, .moveXUpdateSpeed
+    ld a, b
+    jr .moveXUpdateSpeed
+.moveXStopSpeed:
+    xor a ; ld a, 0
+.moveXUpdateSpeed:
+    ld [hl], a
+    ldh a, [hEnemyDirectionLeft]
+    and %00000001
+    jr z, .moveXRight
+.moveXLeft:
+    ldh a, [hEnemyX]
+    sub a, [hl]
+    jr .moveXUpdate
+.moveXRight:
+    ldh a, [hEnemyX]
+    add a, [hl]
+.moveXUpdate:
+    ldh [hEnemyX], a
+.endMoveX:
+
+.moveY:
+    ld b, PORCUPINE_VERTICAL_SPEED
+    ldh a, [hEnemyDirectionLeft]
+    and ENEMY_DIRECTION_VERTICAL_MASK
+    jr z, .moveYDown
+.moveYUp:
+    ldh a, [hEnemyY]
+    cp a, PORCUPINE_TOPSIDE_POSITION_Y
+    jr nc, .moveYUpStopSkip
+.moveYUpStop:
+    ld b, 0
+.moveYUpStopSkip:
+    sub a, b
+    jr .moveYUpdate
+.moveYDown:
+    ldh a, [hEnemyY]
+    cp a, PORCUPINE_DOWNSIDE_POSITION_Y
+    jr c, .moveYDownStopSkip
+.moveYDownStop:
+    ld b, 0
+.moveYDownStopSkip:
+    add a, b
+.moveYUpdate:
+    ldh [hEnemyY], a
+.endMoveY:
     call UpdateBossPosition
 .endMove:
 
