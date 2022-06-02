@@ -93,80 +93,6 @@ UpdateBossPosition:
     ld [hli], a
     ret
 
-MakeBossConfident:
-    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
-    ld a, PORCUPINE_CONFIDENT_FACE_TILE
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-    inc l
-    inc l
-    ld a, PORCUPINE_CONFIDENT_FACE_TILE
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hli], a
-    ret
-
-MakeBossScared:
-    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
-    ld a, PORCUPINE_SCARED_FACE_TILE
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-    inc l
-    inc l
-    ld a, PORCUPINE_SCARED_FACE_TILE
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hli], a
-    ret
-
-MakeBossFaceRight:
-    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
-    ld a, PORCUPINE_FACE_LEFT_TILE_2
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hli], a
-    inc l
-    inc l
-    ld a, PORCUPINE_FACE_LEFT_TILE_1
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hli], a
-    ret
-
-MakeBossFaceLeft:
-    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
-    ld a, PORCUPINE_FACE_LEFT_TILE_1
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-    inc l
-    inc l
-    ld a, PORCUPINE_FACE_LEFT_TILE_2
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-    ret
-
-MakeBossShowFeetAndRemoveBalloon:
-    SET_HL_TO_ADDRESS wOAM+22, hEnemyOAM
-    ld a, PORCUPINE_TILE_3_FEET_ALT
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-    inc l
-    inc l
-    ld a, PORCUPINE_TILE_3_FEET_ALT
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hli], a
-
-    SET_HL_TO_ADDRESS wOAM+34, hEnemyOAM
-    ld a, EMPTY_TILE
-    ld [hl], a
-    ret
-
 SpawnBoss::
     push hl
     ld hl, wEnemies
@@ -398,27 +324,64 @@ BossUpdate::
     ldh [hEnemyAnimationTimer], a
     jr .endFaceExpression
 .canUpdateFaceExpression:
+    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
     ldh a, [hEnemyAnimationFrame]
 .faceExpressionLeft:
     cp a, PORCUPINE_EXPRESSION_LEFT
     jr nz, .faceExpressionRight
-    call MakeBossFaceLeft
+    ld a, PORCUPINE_FACE_LEFT_TILE_1
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+    inc l
+    inc l
+    ld a, PORCUPINE_FACE_LEFT_TILE_2
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
     ld a, 30
     jr .setExpressionTimer
 .faceExpressionRight:
     cp a, PORCUPINE_EXPRESSION_RIGHT
     jr nz, .faceExpressionConfident
-    call MakeBossFaceRight
+    ld a, PORCUPINE_FACE_LEFT_TILE_2
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
+    inc l
+    inc l
+    ld a, PORCUPINE_FACE_LEFT_TILE_1
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
     ld a, 30
     jr .setExpressionTimer
 .faceExpressionConfident:
     cp a, PORCUPINE_EXPRESSION_CONFIDENT
     jr nz, .faceExpressionScared
-    call MakeBossConfident
+    ld a, PORCUPINE_CONFIDENT_FACE_TILE
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+    inc l
+    inc l
+    ld a, PORCUPINE_CONFIDENT_FACE_TILE
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
     ld a, 30
     jr .setExpressionTimer
 .faceExpressionScared:
-    call MakeBossScared
+    ld a, PORCUPINE_SCARED_FACE_TILE
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+    inc l
+    inc l
+    ld a, PORCUPINE_SCARED_FACE_TILE
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
     ld a, 255
 .setExpressionTimer:
     ldh [hEnemyAnimationTimer], a
@@ -438,22 +401,32 @@ BossUpdate::
     ldh a, [hEnemyParam2]
     cp a, 0
     jr z, .endKnockedOut
-    cp a, 1
-    jr z, .knockedOutDone
-.knockedOut:
     dec a 
     ldh [hEnemyParam2], a
-    jp .setStruct
+    cp a, 0
+    jp nz, .setStruct
 .knockedOutDone:
-    dec a 
-    ldh [hEnemyParam2], a
     ldh a, [hEnemyDying]
     cp a, 0
     jr z, .knockedOutAndAlive
 .knockedOutAndDead:
     ld a, 1
-    ld [hEnemyParam3], a
-    call MakeBossShowFeetAndRemoveBalloon
+    ldh [hEnemyParam3], a
+.knockedOutAndDeadShowBossFeetAndRemoveBalloon:
+    SET_HL_TO_ADDRESS wOAM+22, hEnemyOAM
+    ld a, PORCUPINE_TILE_3_FEET_ALT
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+    inc l
+    inc l
+    ld a, PORCUPINE_TILE_3_FEET_ALT
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hli], a
+    SET_HL_TO_ADDRESS wOAM+34, hEnemyOAM
+    ld a, EMPTY_TILE
+    ld [hl], a
     jp .setStruct
 .knockedOutAndAlive:
     xor a ; ld a, 0
