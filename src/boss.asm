@@ -124,6 +124,7 @@ SpawnBoss::
     LD_BC_DE
     ld a, 1
     ldh [hEnemyActive], a
+    ; ldh [hEnemyDirectionLeft], a
     ld a, PORCUPINE_HP
     ldh [hEnemyAlive], a
     call UpdateBossPosition
@@ -406,24 +407,24 @@ BossUpdate::
     ldh a, [hGlobalTimer]
     ld b, a
 .checkDirectionX:
-    cp a, 50
+    ; TODO changes depending on countdown included
+    ; instead maybe use hEnemyParam4 here as a timer
+    and 255
     jr nz, .endCheckDirectionX
-    ldh a, [hEnemyX]
-    cp a, SCRN_X / 2
-    jr c, .moveToRight
-.moveToLeft:
     ldh a, [hEnemyDirectionLeft]
+    and ENEMY_DIRECTION_HORIZONTAL_MASK
+    jr nz, .moveToRight
+.moveToLeft:
     set 0, a
     ldh [hEnemyDirectionLeft], a
     jr .endCheckDirectionX
 .moveToRight:
-    ldh a, [hEnemyDirectionLeft]
     res 0, a
     ldh [hEnemyDirectionLeft], a
 .endCheckDirectionX:
 .checkDirectionY:
     ld a, b
-    and %00011111
+    and %01111111
     jr nz, .endCheckDirectionY
     ldh a, [hEnemyY]
     cp a, SCRN_Y / 2
@@ -443,7 +444,7 @@ BossUpdate::
 .checkMove:
     ldh a, [hGlobalTimer]
     and	PORCUPINE_MOVE_TIME
-    jr nz, .endMove
+    jp nz, .endMove
 .canMove: 
 
 .moveX:
@@ -500,6 +501,18 @@ BossUpdate::
 
 .moveY:
     ld b, PORCUPINE_VERTICAL_SPEED
+    ldh a, [hEnemySpeed]
+    cp a, 0
+    jr z, .handleProwling 
+.handleDashing:
+    ldh a, [hPlayerY]
+    ld c, a
+    ldh a, [hEnemyY]
+    cp a, c
+    jr z, .endMoveY
+    jr c, .moveYDown
+    jr .moveYUp
+.handleProwling:
     ldh a, [hEnemyDirectionLeft]
     and ENEMY_DIRECTION_VERTICAL_MASK
     jr z, .moveYDown
@@ -564,15 +577,15 @@ BossUpdate::
     ldh a, [hEnemyHitEnemy]
     cp a, 0
     jr nz, .bossDamaged
-.checkHitBullet: ; REMOVE ME *****
-    ld bc, wPlayerBulletOAM
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ld d, 32
-    ld e, 32
-    call CollisionCheck
-    cp a, 0
-    jr nz, .bossDamaged
-    ; ***********
+; .checkHitBullet: ; REMOVE ME *****
+;     ld bc, wPlayerBulletOAM
+;     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+;     ld d, 32
+;     ld e, 32
+;     call CollisionCheck
+;     cp a, 0
+;     jr nz, .bossDamaged
+;     ; ***********
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
@@ -624,29 +637,25 @@ BossUpdate::
     cp a, 0
     jr z, .endSpawnBossNeedle
 .spawnBossNeedle:
-    ; ld a, PORCUPINE_EXPRESSION_CONFIDENT
-    ; ldh [hEnemyAnimationFrame], a
-    ; xor a ; ld a, 0
-    ; ldh [hEnemyAnimationTimer], a
     ld a, BOSS_NEEDLE
     ldh [hEnemyNumber], a
 .topLeftNeedle:
-    ld a, NONE ; Alias for aim top-left
-    ldh [hEnemyVariant], a
-    ldh a, [hEnemyY]
-    add a, 8
-    ldh [hEnemyY], a
-    ldh a, [hEnemyX]
-    add a, 8
-    ldh [hEnemyX], a
-    call SpawnBossNeedle
+    ; ld a, NONE ; Alias for aim top-left
+    ; ldh [hEnemyVariant], a
+    ; ldh a, [hEnemyY]
+    ; add a, 8
+    ; ldh [hEnemyY], a
+    ; ldh a, [hEnemyX]
+    ; add a, 8
+    ; ldh [hEnemyX], a
+    ; call SpawnBossNeedle
 .topRightNeedle:
-    ld a, EASY ; Alias for aim top-right
-    ldh [hEnemyVariant], a
-    ldh a, [hEnemyX]
-    add a, 8
-    ldh [hEnemyX], a
-    call SpawnBossNeedle
+    ; ld a, EASY ; Alias for aim top-right
+    ; ldh [hEnemyVariant], a
+    ; ldh a, [hEnemyX]
+    ; add a, 8
+    ; ldh [hEnemyX], a
+    ; call SpawnBossNeedle
 .bottomRightNeedle:
     ; ld a, HARD ; Alias for aim bottom-right
     ; ldh [hEnemyVariant], a

@@ -28,7 +28,6 @@ SECTION "level data", ROM0
 ; City Levels
 
 Level1:
-    LEVEL_SPAWN BALLOON_CARRIER, 50, 120, BOMB_VARIANT
     LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_C, EASY
     LEVEL_WAIT 8
     LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B, MEDIUM
@@ -119,7 +118,6 @@ Level2:
     LEVEL_END
 
 Level3:
-    ; LEVEL_SPAWN BALLOON_CARRIER, 32, 60, ANVIL_VARIANT
     LEVEL_WAIT_BOSS
     LEVEL_WAIT 6
     LEVEL_END
@@ -163,8 +161,6 @@ Level4:
     LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B + 20, HARD
     LEVEL_SPAWN BIRD, SPAWN_Y_C + 5, SCRN_X, EASY
     LEVEL_SPAWN POINT_BALLOON, OFFSCREEN_BOTTOM_Y, SPAWN_X_B + 36, HARD
-    LEVEL_WAIT 2
-
     LEVEL_WAIT 16
     LEVEL_END
 
@@ -294,8 +290,13 @@ InitializeNewLevel::
     jr .setLevelDataAddress
 .level4:
     cp a, 4
-    jr nz, .end
+    jr nz, .level5
     ld bc, Level4
+    jr .setLevelDataAddress
+.level5
+    cp a, 5
+    jr nz, .end
+    ld bc, Level5
     jr .setLevelDataAddress
 .setLevelDataAddress:
     ld hl, wLevelDataAddress

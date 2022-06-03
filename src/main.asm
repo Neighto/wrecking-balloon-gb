@@ -29,9 +29,9 @@ Start::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	; call WaitVBlank
-	; call UpdateMenuOpening
-	; jp MenuLoopOpening
+	call WaitVBlank
+	call UpdateMenuOpening
+	jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
 	call WaveSound
@@ -44,10 +44,10 @@ StartMenu::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateMenu
-	; jp MenuLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateMenu
+	jp MenuLoop
 
 StartGame::
 	call WaitVBlank
@@ -87,10 +87,10 @@ StartGame::
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateOpeningCutscene
-	; jp OpeningCutsceneLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateOpeningCutscene
+	jp OpeningCutsceneLoop
 
 SetupNextLevel::
 	call WaitVBlank
@@ -108,10 +108,10 @@ SetupNextLevel::
 	call InitializeBullet
 	call SpawnPlayer
 
-	; testing
-	ld a, 3
-	ld [wLevel], a
-	; ^^^
+	; ; testing
+	; ld a, 3
+	; ld [wLevel], a
+	; ; ^^^
 
 	ld a, [wLevel]
 .level1:
@@ -152,7 +152,7 @@ SetupNextLevel::
 	jr .endLevelSetup
 .level5:
 	cp a, 5
-	jr nz, .level5
+	jr nz, .level6
 	call SetLevelDesertInterrupts
 	call LoadLevelDesertGraphics
 	call InitializeFlicker
@@ -167,10 +167,10 @@ SetupNextLevel::
 	call SpawnCountdown
 	call LCD_ON
 GameCountdownLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateGameCountdown
-	; jp GameCountdownLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateGameCountdown
+	jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA
