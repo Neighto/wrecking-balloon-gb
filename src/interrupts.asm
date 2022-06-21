@@ -216,7 +216,7 @@ LevelNightCityLCDInterrupt:
 .close:
     cp a, GAME_CITY_LCD_SCROLL_CLOSE
     jr nz, .preWindow
-    ld a, %11010100
+    ld a, %11101100
 	ldh [rBGP], a
     ldh a, [hParallaxClose]
 	ldh [rSCX], a
@@ -244,7 +244,7 @@ LevelNightCityLCDInterrupt:
 .bottom:
     cp a, SCRN_Y
     jp nz, LCDInterruptEnd
-    ld a, %11010010
+    ld a, %11100001
 	ldh [rBGP], a
     ld a, GAME_CITY_LCD_SCROLL_FAR
 	ldh [rLYC], a

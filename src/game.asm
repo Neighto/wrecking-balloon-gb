@@ -3,6 +3,8 @@ INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "balloonConstants.inc"
 
+COUNTDOWN_OAM_SPRITES EQU 2
+COUNTDOWN_OAM_BYTES EQU COUNTDOWN_OAM_SPRITES * 4
 COUNTDOWN_START_X EQU 80
 COUNTDOWN_START_Y EQU 40
 COUNTDOWN_SPEED EQU %00011111
@@ -78,13 +80,6 @@ LoadLevelShowdownGraphics::
 	call MEMCPY_WITH_OFFSET
     ret
 
-CanFadeLevel::
-	; Returns z flag as cannot / nz flag as can
-    ; For levels that have interrupts that mess with the palettes
-    ld a, [wLevel]
-    cp a, 2
-    ret
-
 SpawnCountdown::
 	ld b, 2
 	call RequestOAMSpace
@@ -108,15 +103,7 @@ SpawnCountdown::
 
 UpdateGameCountdown::
     UPDATE_GLOBAL_TIMER
-    call RefreshWindow
     call IncrementScrollOffset
-
-.checkFading:
-    call CanFadeLevel
-    jr z, .endFading
-    call FadeInPalettes
-	ret z
-.endFading:
 
 .checkCountdownAnimation:
     ld a, [wCountdownFrame]
@@ -209,18 +196,10 @@ UpdateGameCountdown::
     inc a 
     ld [wCountdownFrame], a
     SET_HL_TO_ADDRESS wOAM, wCountdownOAM
-    xor a ; ld a, 0
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
+    ld bc, COUNTDOWN_OAM_BYTES
+    call ResetHLInRange
 .gameLoop:
     jp GameLoop
-    ret
 
 UpdateGame::
 
@@ -228,6 +207,9 @@ UpdateGame::
     ldh a, [hPaused]
 	cp a, 0
 	jr z, .isNotPaused
+    ldh a, [rBGP]
+    cp a, 0
+    jr z, .isNotPaused
 .isPaused:
     call ClearSound
 	call ReadController
