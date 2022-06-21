@@ -156,8 +156,7 @@ UpdateOpeningCutscene::
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
     jr .endFrame
 .fadeOut:
-    call FadeOutPalettes
-    ret z
+    call InitializeEmptyPalettes
 .endFrame:
     ld a, [wOpeningCutsceneFrame]
     inc a

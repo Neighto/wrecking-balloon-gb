@@ -540,6 +540,7 @@ BossUpdate::
 .endMove:
 
 .checkAttack:
+    ; TODO only attack if we are on the sides
     ldh a, [hGlobalTimer]
     and	PORCUPINE_ATTACK_TIME
     ld a, 0
@@ -640,15 +641,15 @@ BossUpdate::
     ld a, BOSS_NEEDLE
     ldh [hEnemyNumber], a
 .topLeftNeedle:
-    ; ld a, NONE ; Alias for aim top-left
-    ; ldh [hEnemyVariant], a
-    ; ldh a, [hEnemyY]
-    ; add a, 8
-    ; ldh [hEnemyY], a
-    ; ldh a, [hEnemyX]
-    ; add a, 8
-    ; ldh [hEnemyX], a
-    ; call SpawnBossNeedle
+    ld a, NONE ; Alias for aim top-left
+    ldh [hEnemyVariant], a
+    ldh a, [hEnemyY]
+    add a, 8
+    ldh [hEnemyY], a
+    ldh a, [hEnemyX]
+    add a, 8
+    ldh [hEnemyX], a
+    call SpawnBossNeedle
 .topRightNeedle:
     ; ld a, EASY ; Alias for aim top-right
     ; ldh [hEnemyVariant], a
@@ -664,12 +665,12 @@ BossUpdate::
     ; ldh [hEnemyY], a
     ; call SpawnBossNeedle
 .bottomLeftNeedle:
-    ; ld a, MEDIUM ; Alias for aim bottom-left
-    ; ldh [hEnemyVariant], a
-    ; ldh a, [hEnemyX]
-    ; sub a, 8
-    ; ldh [hEnemyX], a
-    ; call SpawnBossNeedle
+    ld a, MEDIUM ; Alias for aim bottom-left
+    ldh [hEnemyVariant], a
+    ldh a, [hEnemyX]
+    sub a, 8
+    ldh [hEnemyX], a
+    call SpawnBossNeedle
 .endSpawnBossNeedle:
     jr .endCheckBossSpawns
 

@@ -442,6 +442,9 @@ BalloonCarrierUpdate::
     sub 4
     ldh [hEnemyX], a
     call SpawnExplosion
+    ldh a, [hEnemyX]
+    add 4
+    ldh [hEnemyX], a
 .endVariantSpawnExplosion:
 .variantSpawnCarry:
     ldh a, [hEnemyVariant]
