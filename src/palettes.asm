@@ -46,6 +46,13 @@ InitializePalettes::
 	ldh [rOBP1], a
 	ret
 
+InitializeEmptyPalettes::
+	xor a ; ld a, 0
+	ldh [rBGP], a
+	ldh [rOBP0], a
+	ldh [rOBP1], a
+	ret
+
 InitializeFadedPalettes::
 	ld a, FADE_PALETTE_4
 	ldh [rBGP], a
