@@ -9,15 +9,11 @@ BOSS_NEEDLE_MOVE_TIME EQU %00000001
 BOSS_NEEDLE_COLLISION_TIME EQU %00001000
 BOSS_NEEDLE_TILE EQU $62
 
-BOSS_NEEDLE_SPEED EQU 2
+BOSS_NEEDLE_SPEED EQU 3
+
+BOSS_NEEDLE_VERTICAL_MOVEMENT_TIME EQU 10
 
 SECTION "boss needle", ROM0
-
-; Enemy variant / Effect
-; NONE - Shoot top-left
-; EASY - Shoot top-right
-; MEDIUM - Shoot bottom-left
-; HARD - Shoot bottom-right
 
 SetStruct:
     ; Argument hl = start of free enemy struct
@@ -30,6 +26,8 @@ SetStruct:
     ldh a, [hEnemyX]
     ld [hli], a
     ldh a, [hEnemyOAM]
+    ld [hli], a
+    ldh a, [hEnemyParam1] ; Vertical Movement Counter
     ld [hli], a
     ldh a, [hEnemyVariant]
     ld [hl], a
@@ -61,23 +59,21 @@ SpawnBossNeedle::
 
 .variantDirection:
     ldh a, [hEnemyVariant]
-.topLeftDirection:
-    cp a, NONE
-    jr nz, .topRightDirection
+.leftDirection:
+    cp a, NEEDLE_UP_MOVE_LEFT_VARIANT
+    jr z, .isLeftDirection
+    cp a, NEEDLE_DOWN_MOVE_LEFT_VARIANT
+    jr nz, .rightDirection
+.isLeftDirection:
     ld e, OAMF_PAL0
     jr .endVariantDirection
-.topRightDirection:
-    cp a, EASY
-    jr nz, .bottomLeftDirection
+.rightDirection:
+    cp a, NEEDLE_UP_MOVE_RIGHT_VARIANT
+    jr z, .isRightDirection
+    cp a, NEEDLE_DOWN_MOVE_RIGHT_VARIANT
+    jr nz, .endVariantDirection
+.isRightDirection:
     ld e, OAMF_PAL0 | OAMF_XFLIP
-    jr .endVariantDirection
-.bottomLeftDirection:
-    cp a, MEDIUM
-    jr nz, .bottomRightDirection
-    ld e, OAMF_PAL0 | OAMF_XFLIP
-    jr .endVariantDirection
-.bottomRightDirection:
-    ld e, OAMF_PAL0
 .endVariantDirection:
 
 .bossNeedleOAM:
@@ -104,6 +100,8 @@ BossNeedleUpdate::
     ld a, [hli]
     ldh [hEnemyOAM], a
     ld a, [hli]
+    ldh [hEnemyParam1], a
+    ld a, [hli]
     ldh [hEnemyVariant], a
     ld a, [hl]
 
@@ -117,28 +115,43 @@ BossNeedleUpdate::
 
 .variantDirection:
     ldh a, [hEnemyVariant]
-.topLeftDirection:
-    cp a, NONE
-    jr nz, .topRightDirection
+.upLeftDirection:
+    cp a, NEEDLE_UP_MOVE_LEFT_VARIANT
+    jr nz, .upRightDirection
     ld b, BOSS_NEEDLE_SPEED * -1
     ld c, BOSS_NEEDLE_SPEED * -1
     jr .endVariantDirection
-.topRightDirection:
-    cp a, EASY
-    jr nz, .bottomLeftDirection
+.upRightDirection:
+    cp a, NEEDLE_UP_MOVE_RIGHT_VARIANT
+    jr nz, .downLeftDirection
     ld b, BOSS_NEEDLE_SPEED * -1
     ld c, BOSS_NEEDLE_SPEED
     jr .endVariantDirection
-.bottomLeftDirection:
-    cp a, MEDIUM
-    jr nz, .bottomRightDirection
+.downLeftDirection:
+    cp a, NEEDLE_DOWN_MOVE_LEFT_VARIANT
+    jr nz, .downRightDirection
     ld b, BOSS_NEEDLE_SPEED
     ld c, BOSS_NEEDLE_SPEED * -1
     jr .endVariantDirection
-.bottomRightDirection:
+.downRightDirection:
+    cp a, NEEDLE_DOWN_MOVE_RIGHT_VARIANT
+    jr nz, .endVariantDirection
     ld b, BOSS_NEEDLE_SPEED
     ld c, BOSS_NEEDLE_SPEED
 .endVariantDirection:
+
+.checkVerticalMovement:
+    ldh a, [hEnemyParam1]
+    cp a, BOSS_NEEDLE_VERTICAL_MOVEMENT_TIME
+    jr c, .strayingVerticalMovement
+.noMoreVerticalMovement:
+    ld b, 0
+    jr .endCheckVerticalMovement
+.strayingVerticalMovement:
+    inc a
+    ldh [hEnemyParam1], a
+.endCheckVerticalMovement:
+
     ldh a, [hEnemyY]
     add a, b
     ldh [hEnemyY], a
@@ -156,7 +169,7 @@ BossNeedleUpdate::
 .checkHit:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ld d, 8 ; should be 4... Maybe make collision that can read flipped
+    ld d, 8
     ld e, 16
     call CollisionCheck
     cp a, 0
@@ -168,19 +181,6 @@ BossNeedleUpdate::
     jr .setStruct
 .endCollision:
 
-.checkOffscreenY:
-    ldh a, [hEnemyY]
-    ld b, a
-    ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
-    cp a, b
-    jr nc, .endOffscreenY
-    ld a, SCRN_VY - OFF_SCREEN_ENEMY_BUFFER
-    cp a, b
-    jr c, .endOffscreenY
-.offscreenY:
-    ld bc, BOSS_NEEDLE_OAM_BYTES
-    call ClearEnemy
-.endOffscreenY:
 .checkOffscreenX:
     ldh a, [hEnemyX]
     ld b, a

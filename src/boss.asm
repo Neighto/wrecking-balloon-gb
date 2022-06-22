@@ -7,10 +7,10 @@ INCLUDE "constants.inc"
 PORCUPINE_OAM_SPRITES EQU 9
 PORCUPINE_OAM_BYTES EQU PORCUPINE_OAM_SPRITES * 4
 PORCUPINE_MOVE_TIME EQU %00000001
-PORCUPINE_ATTACK_TIME EQU %01111111
-PORCUPINE_COLLISION_TIME EQU %00001000
+PORCUPINE_ATTACK_TIME EQU %00111111
+PORCUPINE_COLLISION_TIME EQU %00000111
 
-PORCUPINE_HP EQU 2
+PORCUPINE_HP EQU 1
 
 PORCUPINE_TILE_1 EQU $52
 PORCUPINE_TILE_2 EQU $54
@@ -30,7 +30,7 @@ PORCUPINE_START_SPEED EQU 1
 PORCUPINE_INCREASE_SPEED EQU 2
 PORCUPINE_MAX_SPEED EQU 4
 
-PORCUPINE_VERTICAL_SPEED EQU 1
+PORCUPINE_VERTICAL_SPEED EQU 2
 
 PORCUPINE_LEFTSIDE_POSITION_X EQU 10
 PORCUPINE_RIGHTSIDE_POSITION_X EQU 132
@@ -80,7 +80,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyParam3] ; Enemy Trigger Projectile / Balloon
     ld [hli], a
-    ldh a, [hEnemyParam4] ; 
+    ldh a, [hEnemyParam4] ; Enemy Direction Change Timer
     ld [hli], a
     ldh a, [hEnemyVariant]
     ld [hl], a
@@ -404,11 +404,11 @@ BossUpdate::
 .isAlive:
 
 .checkDirection:
-    ldh a, [hGlobalTimer]
+    ldh a, [hEnemyParam4]
+    inc a 
+    ldh [hEnemyParam4], a
     ld b, a
 .checkDirectionX:
-    ; TODO changes depending on countdown included
-    ; instead maybe use hEnemyParam4 here as a timer
     and 255
     jr nz, .endCheckDirectionX
     ldh a, [hEnemyDirectionLeft]
@@ -445,6 +445,10 @@ BossUpdate::
     ldh a, [hGlobalTimer]
     and	PORCUPINE_MOVE_TIME
     jp nz, .endMove
+    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
+    ld a, [hl]
+    cp a, PORCUPINE_CONFIDENT_FACE_TILE
+    jp z, .endMove
 .canMove: 
 
 .moveX:
@@ -486,7 +490,7 @@ BossUpdate::
 .moveXUpdateSpeed:
     ld [hl], a
     ldh a, [hEnemyDirectionLeft]
-    and %00000001
+    and ENEMY_DIRECTION_HORIZONTAL_MASK
     jr z, .moveXRight
 .moveXLeft:
     ldh a, [hEnemyX]
@@ -540,10 +544,11 @@ BossUpdate::
 .endMove:
 
 .checkAttack:
-    ; TODO only attack if we are on the sides
     ldh a, [hGlobalTimer]
     and	PORCUPINE_ATTACK_TIME
-    ld a, 0
+    jr nz, .updateCanAttack
+    ldh a, [hEnemySpeed]
+    cp a, 0
     jr nz, .updateCanAttack
 .canAttack:
     ld a, PORCUPINE_EXPRESSION_CONFIDENT
@@ -551,7 +556,10 @@ BossUpdate::
     xor a ; ld a, 0
     ldh [hEnemyAnimationTimer], a
     inc a
+    ldh [hEnemyParam3], a
+    jr .endAttack
 .updateCanAttack:
+    xor a ; ld a, 0
     ldh [hEnemyParam3], a
 .endAttack:
 
@@ -640,8 +648,12 @@ BossUpdate::
 .spawnBossNeedle:
     ld a, BOSS_NEEDLE
     ldh [hEnemyNumber], a
-.topLeftNeedle:
-    ld a, NONE ; Alias for aim top-left
+
+    ldh a, [hEnemyDirectionLeft]
+    and ENEMY_DIRECTION_HORIZONTAL_MASK
+    jr nz, .upRightNeedle
+.upLeftNeedle:
+    ld a, NEEDLE_UP_MOVE_LEFT_VARIANT
     ldh [hEnemyVariant], a
     ldh a, [hEnemyY]
     add a, 8
@@ -650,26 +662,27 @@ BossUpdate::
     add a, 8
     ldh [hEnemyX], a
     call SpawnBossNeedle
-.topRightNeedle:
-    ; ld a, EASY ; Alias for aim top-right
-    ; ldh [hEnemyVariant], a
-    ; ldh a, [hEnemyX]
-    ; add a, 8
-    ; ldh [hEnemyX], a
-    ; call SpawnBossNeedle
-.bottomRightNeedle:
-    ; ld a, HARD ; Alias for aim bottom-right
-    ; ldh [hEnemyVariant], a
-    ; ldh a, [hEnemyY]
-    ; add a, 16
-    ; ldh [hEnemyY], a
-    ; call SpawnBossNeedle
-.bottomLeftNeedle:
-    ld a, MEDIUM ; Alias for aim bottom-left
+.downLeftNeedle:
+    ld a, NEEDLE_DOWN_MOVE_LEFT_VARIANT
+    ldh [hEnemyVariant], a
+    ldh a, [hEnemyY]
+    add a, 8
+    ldh [hEnemyY], a
+    call SpawnBossNeedle
+    jr .endSpawnBossNeedle
+.upRightNeedle:
+    ld a, NEEDLE_DOWN_MOVE_RIGHT_VARIANT
     ldh [hEnemyVariant], a
     ldh a, [hEnemyX]
-    sub a, 8
+    add a, 16
     ldh [hEnemyX], a
+    call SpawnBossNeedle
+.downRightNeedle:
+    ld a, NEEDLE_UP_MOVE_RIGHT_VARIANT
+    ldh [hEnemyVariant], a
+    ldh a, [hEnemyY]
+    sub a, 8
+    ldh [hEnemyY], a
     call SpawnBossNeedle
 .endSpawnBossNeedle:
     jr .endCheckBossSpawns
