@@ -261,43 +261,41 @@ SetLevelNightCityInterrupts::
     ld [hl], a
     ret
 
-Level2LCDInterrupt:
+LevelDesertLCDInterrupt::
     ldh a, [rLYC]
-    cp a, GAME_DESERT_LCD_SCROLL_RESET
-    jr z, .reset
-	cp a, GAME_DESERT_LCD_SCROLL_FAR
-    jr z, .far
+.far:
+    cp a, GAME_DESERT_LCD_SCROLL_FAR
+    jr nz, .middle
+    ld a, GAME_DESERT_LCD_SCROLL_MIDDLE
+    ldh [rLYC], a
+    ldh a, [hParallaxFar]
+	ldh [rSCX], a
+    jp LCDInterruptEnd
+.middle:
     cp a, GAME_DESERT_LCD_SCROLL_MIDDLE
-    jr z, .middle
+    jr nz, .close
+    ld a, GAME_DESERT_LCD_SCROLL_CLOSE
+    ldh [rLYC], a
+    ldh a, [hParallaxMiddle]
+	ldh [rSCX], a
+    jp LCDInterruptEnd
+.close:
     cp a, GAME_DESERT_LCD_SCROLL_CLOSE
-    jr z, .close
-    jr .end
-.reset:
+    jr nz, .window
+    ld a, GAME_DESERT_LCD_SCROLL_RESET
+	ldh [rLYC], a
+    ldh a, [hParallaxClose]
+	ldh [rSCX], a
+    jp LCDInterruptEnd
+.window:
+    cp a, GAME_DESERT_LCD_SCROLL_RESET
+    jp nz, LCDInterruptEnd
     ld a, GAME_DESERT_LCD_SCROLL_FAR
 	ldh [rLYC], a
     xor a ; ld a, 0
     ldh [rSCX], a
     ld hl, rLCDC
     res 1, [hl]
-    jr .end
-.far:
-    ld a, GAME_DESERT_LCD_SCROLL_MIDDLE
-    ldh [rLYC], a
-    ldh a, [hParallaxFar]
-	ldh [rSCX], a
-    jr .end
-.middle:
-    ld a, GAME_DESERT_LCD_SCROLL_CLOSE
-    ldh [rLYC], a
-    ldh a, [hParallaxMiddle]
-	ldh [rSCX], a
-    jr .end
-.close:
-    ld a, GAME_DESERT_LCD_SCROLL_RESET
-	ldh [rLYC], a
-    ldh a, [hParallaxClose]
-	ldh [rSCX], a
-.end:
     jp LCDInterruptEnd
 
 SetLevelDesertInterrupts::
@@ -305,9 +303,73 @@ SetLevelDesertInterrupts::
     ldh [rLYC], a
 
     ld hl, wLCDInterrupt
-    ld a, LOW(Level2LCDInterrupt)
+    ld a, LOW(LevelDesertLCDInterrupt)
     ld [hli], a
-    ld a, HIGH(Level2LCDInterrupt)
+    ld a, HIGH(LevelDesertLCDInterrupt)
+    ld [hl], a
+    ret
+
+LevelNightDesertLCDInterrupt::
+    ldh a, [rLYC]
+.far:
+    cp a, GAME_DESERT_LCD_SCROLL_FAR
+    jr nz, .middle
+    ld a, GAME_DESERT_LCD_SCROLL_MIDDLE
+    ldh [rLYC], a
+    ldh a, [hParallaxFar]
+	ldh [rSCX], a
+    jp LCDInterruptEnd
+.middle:
+    cp a, GAME_DESERT_LCD_SCROLL_MIDDLE
+    jr nz, .close
+    ld a, GAME_DESERT_LCD_SCROLL_CLOSE
+    ldh [rLYC], a
+    ldh a, [hParallaxMiddle]
+	ldh [rSCX], a
+    jp LCDInterruptEnd
+.close:
+    cp a, GAME_DESERT_LCD_SCROLL_CLOSE
+    jr nz, .preWindow
+    ld a, GAME_DESERT_LCD_SCROLL_RESET - 1
+	ldh [rLYC], a
+    ldh a, [hParallaxClose]
+	ldh [rSCX], a
+    jp LCDInterruptEnd
+.preWindow:
+    cp a, GAME_DESERT_LCD_SCROLL_RESET - 1
+    jr nz, .window
+    ld a, MAIN_PALETTE
+    ldh [rBGP], a
+    ld a, GAME_DESERT_LCD_SCROLL_RESET
+	ldh [rLYC], a
+    jp LCDInterruptEnd
+.window:
+    cp a, GAME_DESERT_LCD_SCROLL_RESET
+    jr nz, .bottom
+    ld a, SCRN_Y
+	ldh [rLYC], a
+    xor a ; ld a, 0
+    ldh [rSCX], a
+    ld hl, rLCDC
+    res 1, [hl]
+    jp LCDInterruptEnd
+.bottom:
+    cp a, SCRN_Y
+    jp nz, LCDInterruptEnd
+    ld a, %11100111
+	ldh [rBGP], a
+    ld a, GAME_DESERT_LCD_SCROLL_FAR
+	ldh [rLYC], a
+    jp LCDInterruptEnd
+
+SetLevelNightDesertInterrupts::
+    ld a, GAME_DESERT_LCD_SCROLL_FAR
+    ldh [rLYC], a
+
+    ld hl, wLCDInterrupt
+    ld a, LOW(LevelNightDesertLCDInterrupt)
+    ld [hli], a
+    ld a, HIGH(LevelNightDesertLCDInterrupt)
     ld [hl], a
     ret
 
