@@ -10,7 +10,7 @@ PORCUPINE_MOVE_TIME EQU %00000001
 PORCUPINE_ATTACK_TIME EQU %00111111
 PORCUPINE_COLLISION_TIME EQU %00000111
 
-PORCUPINE_HP EQU 1
+PORCUPINE_HP EQU 2
 
 PORCUPINE_TILE_1 EQU $52
 PORCUPINE_TILE_2 EQU $54
@@ -27,7 +27,7 @@ PORCUPINE_STRING_Y_OFFSET EQU 31
 PORCUPINE_STRING_X_OFFSET EQU 12
 
 PORCUPINE_START_SPEED EQU 1
-PORCUPINE_INCREASE_SPEED EQU 2
+PORCUPINE_INCREASE_SPEED EQU 1
 PORCUPINE_MAX_SPEED EQU 4
 
 PORCUPINE_VERTICAL_SPEED EQU 2
@@ -404,12 +404,15 @@ BossUpdate::
 .isAlive:
 
 .checkDirection:
+    ldh a, [hGlobalTimer]
+    and %00000011
+    jr nz, .endCheckDirection
     ldh a, [hEnemyParam4]
     inc a 
     ldh [hEnemyParam4], a
     ld b, a
 .checkDirectionX:
-    and 255
+    and %00111111
     jr nz, .endCheckDirectionX
     ldh a, [hEnemyDirectionLeft]
     and ENEMY_DIRECTION_HORIZONTAL_MASK
@@ -424,7 +427,7 @@ BossUpdate::
 .endCheckDirectionX:
 .checkDirectionY:
     ld a, b
-    and %01111111
+    and %00001111
     jr nz, .endCheckDirectionY
     ldh a, [hEnemyY]
     cp a, SCRN_Y / 2
@@ -505,18 +508,6 @@ BossUpdate::
 
 .moveY:
     ld b, PORCUPINE_VERTICAL_SPEED
-    ldh a, [hEnemySpeed]
-    cp a, 0
-    jr z, .handleProwling 
-.handleDashing:
-    ldh a, [hPlayerY]
-    ld c, a
-    ldh a, [hEnemyY]
-    cp a, c
-    jr z, .endMoveY
-    jr c, .moveYDown
-    jr .moveYUp
-.handleProwling:
     ldh a, [hEnemyDirectionLeft]
     and ENEMY_DIRECTION_VERTICAL_MASK
     jr z, .moveYDown

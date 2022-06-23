@@ -130,7 +130,6 @@ SetupNextLevel::
 	call LoadLevelCityGraphics
 	ld hl, angryTheme
 	call hUGE_init
-	call InitializePalettes
 	jr .endLevelSetup
 .level3:
 	cp a, 3
@@ -147,18 +146,17 @@ SetupNextLevel::
 	jr nz, .level5
 	call SetLevelDesertInterrupts
 	call LoadLevelDesertGraphics
-	call InitializeFlicker
 	ld hl, angryTheme
 	call hUGE_init
 	jr .endLevelSetup
 .level5:
 	cp a, 5
 	jr nz, .level6
-	call SetLevelDesertInterrupts
+	call SetLevelNightDesertInterrupts
 	call LoadLevelDesertGraphics
-	call InitializeFlicker
 	ld hl, angryTheme
 	call hUGE_init
+	call InitializeNightSpritePalettes
 	jr .endLevelSetup
 .level6:
 .endLevelSetup:
@@ -169,10 +167,10 @@ SetupNextLevel::
 	call RefreshWindow
 	call LCD_ON
 GameCountdownLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateGameCountdown
-	; jp GameCountdownLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateGameCountdown
+	jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA
