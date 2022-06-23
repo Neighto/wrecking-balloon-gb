@@ -39,6 +39,8 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyDying]
     ld [hli], a
+    ldh a, [hEnemyHitEnemy]
+    ld [hli], a
     ldh a, [hEnemyAnimationFrame]
     ld [hli], a
     ldh a, [hEnemyAnimationTimer]
@@ -143,6 +145,8 @@ PointBalloonUpdate::
     ld a, [hli]
     ldh [hEnemyDying], a
     ld a, [hli]
+    ldh [hEnemyHitEnemy], a
+    ld a, [hli]
     ldh [hEnemyAnimationFrame], a
     ld a, [hli]
     ldh [hEnemyAnimationTimer], a
@@ -208,6 +212,9 @@ PointBalloonUpdate::
     ldh a, [hGlobalTimer]
     and	POINT_BALLOON_COLLISION_TIME
     jr nz, .endCollision
+    ldh a, [hEnemyHitEnemy]
+    cp a, 0
+    jr nz, .deathOfPointBalloon
 .checkHit:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     LD_BC_HL

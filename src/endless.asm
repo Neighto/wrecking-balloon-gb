@@ -30,7 +30,7 @@ BossKiller::
     ldh [hEnemyNumber], a
     ld a, ANVIL_VARIANT
     ldh [hEnemyVariant], a
-    ld a, 32
+    ld a, 28
     ldh [hEnemyY], a
     ld a, 0
     ldh [hEnemyX], a

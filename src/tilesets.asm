@@ -35,6 +35,7 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/BossScared.2bpp"
     INCBIN "incbin/sprite/BossFeet.2bpp"
     INCBIN "incbin/sprite/BossNeedle.2bpp"
+    INCBIN "incbin/sprite/EnemyCactus3.2bpp"
 GameSpriteTilesEnd::
 
 LevelCityTiles::

@@ -109,7 +109,7 @@ SpawnBalloonCarrier::
     ld e, OAMF_PAL0
     jr .endVariantVisualBalloon
 .anvilVisualBalloon:
-    ld d, $3A
+    ld d, $64
     ld e, OAMF_PAL0
 .endVariantVisualBalloon:
 
@@ -136,21 +136,14 @@ SpawnBalloonCarrier::
 
 .variantVisualCarryLeft:
     ldh a, [hEnemyVariant]
-.followVisualCarryLeft:
-    cp a, FOLLOW_VARIANT
-    jr z, .cactusVisualCarryLeft
-.projectileVisualCarryLeft:
-    cp a, PROJECTILE_VARIANT
-    jr z, .cactusVisualCarryLeft
-.bombVisualCarryLeft:
-    cp a, BOMB_VARIANT
-    jr nz, .anvilVisualCarryLeft
-.cactusVisualCarryLeft:
-    ld d, BALLOON_CACTUS_TILE
+    cp a, ANVIL_VARIANT
+    jr nz, .cactusVisualCarryLeft
+.anvilVisualCarryLeft:
+    ld d, ANVIL_TILE_1
     ld e, OAMF_PAL0
     jr .endVariantVisualCarryLeft
-.anvilVisualCarryLeft:
-    ld d, $48
+.cactusVisualCarryLeft:
+    ld d, BALLOON_CACTUS_TILE
     ld e, OAMF_PAL0
 .endVariantVisualCarryLeft:
 
@@ -167,22 +160,15 @@ SpawnBalloonCarrier::
 
 .variantVisualCarryRight:
     ldh a, [hEnemyVariant]
-.followVisualCarryRight:
-    cp a, FOLLOW_VARIANT
-    jr z, .cactusVisualCarryRight
-.projectileVisualCarryRight:
-    cp a, PROJECTILE_VARIANT
-    jr z, .cactusVisualCarryRight
-.bombVisualCarryRight:
-    cp a, BOMB_VARIANT
-    jr nz, .anvilVisualCarryRight
+    cp a, ANVIL_VARIANT
+    jr nz, .cactusVisualCarryRight
+.anvilVisualCarryRight:
+    ld d, ANVIL_TILE_2
+    ld e, OAMF_PAL0
+    jr .endVariantVisualCarryRight
 .cactusVisualCarryRight:
     ld d, BALLOON_CACTUS_TILE
     ld e, OAMF_PAL0 | OAMF_XFLIP
-    jr .endVariantVisualCarryRight
-.anvilVisualCarryRight:
-    ld d, $4A
-    ld e, OAMF_PAL0
 .endVariantVisualCarryRight:
 
 .cactusRightOAM:

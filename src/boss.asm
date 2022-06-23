@@ -32,10 +32,10 @@ PORCUPINE_MAX_SPEED EQU 4
 
 PORCUPINE_VERTICAL_SPEED EQU 2
 
-PORCUPINE_LEFTSIDE_POSITION_X EQU 10
-PORCUPINE_RIGHTSIDE_POSITION_X EQU 132
-PORCUPINE_TOPSIDE_POSITION_Y EQU 25
-PORCUPINE_DOWNSIDE_POSITION_Y EQU 100
+PORCUPINE_MIN_POSITION_X EQU 10
+PORCUPINE_MAX_POSITION_X EQU 132
+PORCUPINE_MAX_POSITION_Y EQU 50
+PORCUPINE_MIN_POSITION_Y EQU 90
 
 PORCUPINE_EXPRESSION_LEFT EQU 0
 PORCUPINE_EXPRESSION_RIGHT EQU 1
@@ -425,23 +425,23 @@ BossUpdate::
     res 0, a
     ldh [hEnemyDirectionLeft], a
 .endCheckDirectionX:
-.checkDirectionY:
-    ld a, b
-    and %00001111
-    jr nz, .endCheckDirectionY
-    ldh a, [hEnemyY]
-    cp a, SCRN_Y / 2
-    jr c, .moveToDown
-.moveToUp:
-    ldh a, [hEnemyDirectionLeft]
-    set 1, a
-    ldh [hEnemyDirectionLeft], a
-    jr .endCheckDirectionY
-.moveToDown:
-    ldh a, [hEnemyDirectionLeft]
-    res 1, a
-    ldh [hEnemyDirectionLeft], a
-.endCheckDirectionY:
+; .checkDirectionY:
+;     ld a, b
+;     and %00001111
+;     jr nz, .endCheckDirectionY
+;     ldh a, [hEnemyY]
+;     cp a, SCRN_Y / 2
+;     jr c, .moveToDown
+; .moveToUp:
+;     ldh a, [hEnemyDirectionLeft]
+;     set 1, a
+;     ldh [hEnemyDirectionLeft], a
+;     jr .endCheckDirectionY
+; .moveToDown:
+;     ldh a, [hEnemyDirectionLeft]
+;     res 1, a
+;     ldh [hEnemyDirectionLeft], a
+; .endCheckDirectionY:
 .endCheckDirection:
 
 .checkMove:
@@ -461,16 +461,16 @@ BossUpdate::
     jr z, .handleMovingRight
 .handleMovingLeft:
     ldh a, [hEnemyX]
-    cp a, PORCUPINE_LEFTSIDE_POSITION_X
+    cp a, PORCUPINE_MIN_POSITION_X
     jr c, .moveXStopSpeed
-    cp a, PORCUPINE_LEFTSIDE_POSITION_X + PORCUPINE_MAX_SPEED * 2
+    cp a, PORCUPINE_MIN_POSITION_X + PORCUPINE_MAX_SPEED * 2
     jr c, .moveXSlowDown
     jr .moveXSpeedUp
 .handleMovingRight:
     ldh a, [hEnemyX]
-    cp a, PORCUPINE_RIGHTSIDE_POSITION_X
+    cp a, PORCUPINE_MAX_POSITION_X
     jr nc, .moveXStopSpeed
-    cp a, PORCUPINE_RIGHTSIDE_POSITION_X - PORCUPINE_MAX_SPEED * 2
+    cp a, PORCUPINE_MAX_POSITION_X - PORCUPINE_MAX_SPEED * 2
     jr nc, .moveXSlowDown
 .moveXSpeedUp:
     ld a, [hl]
@@ -507,29 +507,34 @@ BossUpdate::
 .endMoveX:
 
 .moveY:
+    ld hl, hEnemyY
     ld b, PORCUPINE_VERTICAL_SPEED
     ldh a, [hEnemyDirectionLeft]
     and ENEMY_DIRECTION_VERTICAL_MASK
     jr z, .moveYDown
 .moveYUp:
-    ldh a, [hEnemyY]
-    cp a, PORCUPINE_TOPSIDE_POSITION_Y
+    ld a, [hl]
+    ld c, PORCUPINE_MAX_POSITION_Y
+    cp a, c
     jr nc, .moveYUpStopSkip
 .moveYUpStop:
-    ld b, 0
+    ld a, c
+    jr .moveYUpdate
 .moveYUpStopSkip:
     sub a, b
     jr .moveYUpdate
 .moveYDown:
-    ldh a, [hEnemyY]
-    cp a, PORCUPINE_DOWNSIDE_POSITION_Y
+    ld a, [hl]
+    ld c, PORCUPINE_MIN_POSITION_Y
+    cp a, c
     jr c, .moveYDownStopSkip
 .moveYDownStop:
-    ld b, 0
+    ld a, c
+    jr .moveYUpdate
 .moveYDownStopSkip:
     add a, b
 .moveYUpdate:
-    ldh [hEnemyY], a
+    ld [hl], a
 .endMoveY:
     call UpdateBossPosition
 .endMove:
