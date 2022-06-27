@@ -46,6 +46,10 @@ PORCUPINE_KNOCKED_OUT_TIME EQU 40
 
 PORCUPINE_POINTS EQU 50
 
+PORCUPINE_POINT_Y1 EQU 50
+PORCUPINE_POINT_Y2 EQU 70
+PORCUPINE_POINT_Y3 EQU 90
+
 SECTION "boss", ROMX
 
 SetStruct:
@@ -74,7 +78,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemySpeed]
     ld [hli], a
-    ldh a, [hEnemyParam1] ; Enemy Invincibility Timer
+    ldh a, [hEnemyParam1] ; Enemy To Point Y
     ld [hli], a
     ldh a, [hEnemyParam2] ; Enemy Knocked Out Timer
     ld [hli], a
@@ -242,6 +246,11 @@ BossUpdate::
     ld a, [hl]
     ldh [hEnemyVariant], a
 
+.resetSpawn:
+    xor a ; ld a, 0
+    ldh [hEnemyParam3], a
+.endResetSpawn:
+
 .faceExpression:
     ldh a, [hEnemyAnimationTimer]
     cp a, 0
@@ -295,7 +304,7 @@ BossUpdate::
     ld [hli], a
     ld a, OAMF_PAL0 | OAMF_XFLIP
     ld [hli], a
-    ld a, 30
+    ld a, 20
     jr .setExpressionTimer
 .faceExpressionScared:
     ld a, PORCUPINE_SCARED_FACE_TILE
@@ -425,33 +434,40 @@ BossUpdate::
     res 0, a
     ldh [hEnemyDirectionLeft], a
 .endCheckDirectionX:
-; .checkDirectionY:
-;     ld a, b
-;     and %00001111
-;     jr nz, .endCheckDirectionY
-;     ldh a, [hEnemyY]
-;     cp a, SCRN_Y / 2
-;     jr c, .moveToDown
-; .moveToUp:
-;     ldh a, [hEnemyDirectionLeft]
-;     set 1, a
-;     ldh [hEnemyDirectionLeft], a
-;     jr .endCheckDirectionY
-; .moveToDown:
-;     ldh a, [hEnemyDirectionLeft]
-;     res 1, a
-;     ldh [hEnemyDirectionLeft], a
-; .endCheckDirectionY:
+
+.checkDirectionY:
+    ld a, b
+    and %00001111
+    jr nz, .endCheckDirectionY
+    ldh a, [hEnemyParam1]
+.pointY1:
+    cp a, PORCUPINE_POINT_Y1
+    jr nz, .pointY2
+    ld a, PORCUPINE_POINT_Y2
+    ldh [hEnemyParam1], a
+    jr .endCheckDirectionY
+.pointY2:
+    cp a, PORCUPINE_POINT_Y2
+    jr nz, .pointY3
+    ld a, PORCUPINE_POINT_Y3
+    ldh [hEnemyParam1], a
+    jr .endCheckDirectionY
+.pointY3:
+    ; cp a, PORCUPINE_POINT_Y3
+    ; jr nz, .endCheckDirectionY
+    ld a, PORCUPINE_POINT_Y1
+    ldh [hEnemyParam1], a
+.endCheckDirectionY:
 .endCheckDirection:
 
 .checkMove:
     ldh a, [hGlobalTimer]
     and	PORCUPINE_MOVE_TIME
     jp nz, .endMove
-    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
-    ld a, [hl]
-    cp a, PORCUPINE_CONFIDENT_FACE_TILE
-    jp z, .endMove
+    ; SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
+    ; ld a, [hl]
+    ; cp a, PORCUPINE_CONFIDENT_FACE_TILE
+    ; jp z, .endMove
 .canMove: 
 
 .moveX:
@@ -507,45 +523,21 @@ BossUpdate::
 .endMoveX:
 
 .moveY:
-    ld hl, hEnemyY
-    ld b, PORCUPINE_VERTICAL_SPEED
-    ldh a, [hEnemyDirectionLeft]
-    and ENEMY_DIRECTION_VERTICAL_MASK
-    jr z, .moveYDown
-.moveYUp:
-    ld a, [hl]
-    ld c, PORCUPINE_MAX_POSITION_Y
-    cp a, c
-    jr nc, .moveYUpStopSkip
-.moveYUpStop:
-    ld a, c
-    jr .moveYUpdate
-.moveYUpStopSkip:
-    sub a, b
-    jr .moveYUpdate
-.moveYDown:
-    ld a, [hl]
-    ld c, PORCUPINE_MIN_POSITION_Y
-    cp a, c
-    jr c, .moveYDownStopSkip
-.moveYDownStop:
-    ld a, c
-    jr .moveYUpdate
-.moveYDownStopSkip:
-    add a, b
-.moveYUpdate:
-    ld [hl], a
-.endMoveY:
-    call UpdateBossPosition
-.endMove:
+    ldh a, [hEnemyParam1]
+    ld b, a
 
-.checkAttack:
-    ldh a, [hGlobalTimer]
-    and	PORCUPINE_ATTACK_TIME
-    jr nz, .updateCanAttack
+    ld hl, hEnemyY
+    ld a, [hl]
+    cp a, b
+    jr nz, .moveYContinue
+.moveYStoppedAndAttack:
+    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
+    ld a, [hl]
+    cp a, PORCUPINE_CONFIDENT_FACE_TILE
+    jr z, .endMoveY
     ldh a, [hEnemySpeed]
     cp a, 0
-    jr nz, .updateCanAttack
+    jr nz, .endMoveY
 .canAttack:
     ld a, PORCUPINE_EXPRESSION_CONFIDENT
     ldh [hEnemyAnimationFrame], a
@@ -553,11 +545,19 @@ BossUpdate::
     ldh [hEnemyAnimationTimer], a
     inc a
     ldh [hEnemyParam3], a
-    jr .endAttack
-.updateCanAttack:
-    xor a ; ld a, 0
-    ldh [hEnemyParam3], a
-.endAttack:
+    jr .endMoveY
+.moveYContinue:
+    jr c, .moveYDown
+.moveYUp:
+    sub a, PORCUPINE_VERTICAL_SPEED
+    jr .moveYUpdate
+.moveYDown:
+    add a, PORCUPINE_VERTICAL_SPEED
+.moveYUpdate:
+    ld [hl], a
+.endMoveY:
+    call UpdateBossPosition
+.endMove:
 
 .checkString:
     ldh a, [hGlobalTimer]
@@ -667,17 +667,20 @@ BossUpdate::
     call SpawnBossNeedle
     jr .endSpawnBossNeedle
 .upRightNeedle:
-    ld a, NEEDLE_DOWN_MOVE_RIGHT_VARIANT
-    ldh [hEnemyVariant], a
-    ldh a, [hEnemyX]
-    add a, 16
-    ldh [hEnemyX], a
-    call SpawnBossNeedle
-.downRightNeedle:
     ld a, NEEDLE_UP_MOVE_RIGHT_VARIANT
     ldh [hEnemyVariant], a
     ldh a, [hEnemyY]
-    sub a, 8
+    add a, 8
+    ldh [hEnemyY], a
+    ldh a, [hEnemyX]
+    add a, 24
+    ldh [hEnemyX], a
+    call SpawnBossNeedle
+.downRightNeedle:
+    ld a, NEEDLE_DOWN_MOVE_RIGHT_VARIANT
+    ldh [hEnemyVariant], a
+    ldh a, [hEnemyY]
+    add a, 8
     ldh [hEnemyY], a
     call SpawnBossNeedle
 .endSpawnBossNeedle:
