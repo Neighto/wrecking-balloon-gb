@@ -46,8 +46,8 @@ PORCUPINE_KNOCKED_OUT_TIME EQU 40
 
 PORCUPINE_POINTS EQU 50
 
-PORCUPINE_POINT_Y1 EQU 50
-PORCUPINE_POINT_Y2 EQU 70
+PORCUPINE_POINT_Y1 EQU 40
+PORCUPINE_POINT_Y2 EQU 66
 PORCUPINE_POINT_Y3 EQU 90
 
 SECTION "boss", ROMX
@@ -128,7 +128,8 @@ SpawnBoss::
     LD_BC_DE
     ld a, 1
     ldh [hEnemyActive], a
-    ; ldh [hEnemyDirectionLeft], a
+    ld a, PORCUPINE_POINT_Y1
+    ldh [hEnemyParam1], a
     ld a, PORCUPINE_HP
     ldh [hEnemyAlive], a
     call UpdateBossPosition
@@ -304,7 +305,7 @@ BossUpdate::
     ld [hli], a
     ld a, OAMF_PAL0 | OAMF_XFLIP
     ld [hli], a
-    ld a, 20
+    ld a, 40
     jr .setExpressionTimer
 .faceExpressionScared:
     ld a, PORCUPINE_SCARED_FACE_TILE
@@ -464,10 +465,6 @@ BossUpdate::
     ldh a, [hGlobalTimer]
     and	PORCUPINE_MOVE_TIME
     jp nz, .endMove
-    ; SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
-    ; ld a, [hl]
-    ; cp a, PORCUPINE_CONFIDENT_FACE_TILE
-    ; jp z, .endMove
 .canMove: 
 
 .moveX:
@@ -556,6 +553,7 @@ BossUpdate::
 .moveYUpdate:
     ld [hl], a
 .endMoveY:
+
     call UpdateBossPosition
 .endMove:
 
@@ -582,7 +580,7 @@ BossUpdate::
     ldh a, [hEnemyHitEnemy]
     cp a, 0
     jr nz, .bossDamaged
-; .checkHitBullet: ; REMOVE ME *****
+; .checkHitBullet: ; FOR DEBUGGING *****
 ;     ld bc, wPlayerBulletOAM
 ;     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 ;     ld d, 32
@@ -661,9 +659,6 @@ BossUpdate::
 .downLeftNeedle:
     ld a, NEEDLE_DOWN_MOVE_LEFT_VARIANT
     ldh [hEnemyVariant], a
-    ldh a, [hEnemyY]
-    add a, 8
-    ldh [hEnemyY], a
     call SpawnBossNeedle
     jr .endSpawnBossNeedle
 .upRightNeedle:
@@ -679,9 +674,6 @@ BossUpdate::
 .downRightNeedle:
     ld a, NEEDLE_DOWN_MOVE_RIGHT_VARIANT
     ldh [hEnemyVariant], a
-    ldh a, [hEnemyY]
-    add a, 8
-    ldh [hEnemyY], a
     call SpawnBossNeedle
 .endSpawnBossNeedle:
     jr .endCheckBossSpawns
