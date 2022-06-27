@@ -522,12 +522,18 @@ BossUpdate::
 .moveY:
     ldh a, [hEnemyParam1]
     ld b, a
-
     ld hl, hEnemyY
     ld a, [hl]
     cp a, b
     jr nz, .moveYContinue
 .moveYStoppedAndAttack:
+
+; .checkMoveVariant:
+;     ldh a, [hEnemyVariant]
+;     cp a, PORCUPINE_HARD
+;     jr nz, .endMoveY
+; .endCheckMoveVariant:
+
     SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
     ld a, [hl]
     cp a, PORCUPINE_CONFIDENT_FACE_TILE
