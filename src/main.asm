@@ -110,7 +110,7 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; ; testing
-	ld a, 3
+	ld a, 2
 	ld [wLevel], a
 	; ; ^^^
 
@@ -122,7 +122,7 @@ SetupNextLevel::
 	call LoadLevelCityGraphics
 	ld hl, angryTheme
 	call hUGE_init
-	jr .endLevelSetup
+	jp .endLevelSetup
 .level2:
 	cp a, 2
 	jr nz, .level3
@@ -134,8 +134,8 @@ SetupNextLevel::
 .level3:
 	cp a, 3
 	jr nz, .level4
-	call SetLevelShowdownInterrupts
-	call LoadLevelShowdownGraphics
+	call SetLevelCityInterrupts
+	call LoadLevelCityGraphics
 	ld hl, bossTheme
 	call hUGE_init
 	call SpawnBossNotInLevelData
@@ -159,6 +159,32 @@ SetupNextLevel::
 	call InitializeNightSpritePalettes
 	jr .endLevelSetup
 .level6:
+	cp a, 6
+	jr nz, .level7
+	call SetLevelDesertInterrupts
+	call LoadLevelDesertGraphics
+	ld hl, bossTheme
+	call hUGE_init
+	call SpawnBossNotInLevelData
+	call SetPlayerPositionBoss
+	jr .endLevelSetup
+.level7:
+	cp a, 7
+	jr nz, .level8
+	; 
+	jr .endLevelSetup
+.level8:
+	cp a, 8
+	jr nz, .level9
+	; 
+	jr .endLevelSetup
+.level9:
+	call SetLevelShowdownInterrupts
+	call LoadLevelShowdownGraphics
+	ld hl, bossTheme
+	call hUGE_init
+	call SpawnBossNotInLevelData
+	call SetPlayerPositionBoss
 .endLevelSetup:
 	call InitializeGame
 	call InitializeScore
@@ -167,10 +193,10 @@ SetupNextLevel::
 	call RefreshWindow
 	call LCD_ON
 GameCountdownLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateGameCountdown
-	jp GameCountdownLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateGameCountdown
+	; jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA
