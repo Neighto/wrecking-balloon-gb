@@ -61,7 +61,7 @@ SpawnAnvil::
 .variantSpeed:
     ldh a, [hEnemyVariant]
 .cactusSpeed:
-    cp a, CACTUS_VARIANT
+    cp a, ANVIL_CACTUS_VARIANT
     jr nz, .anvilSpeed
     ld a, 1
     jr .endVariantSpeed
@@ -74,7 +74,7 @@ SpawnAnvil::
 .variantVisualLeft:
     ldh a, [hEnemyVariant]
 .cactusVisual:
-    cp a, CACTUS_VARIANT
+    cp a, ANVIL_CACTUS_VARIANT
     jr nz, .anvilVisualLeft
     ld d, CACTUS_SCREAMING_TILE
     ld e, OAMF_PAL0
@@ -97,7 +97,7 @@ SpawnAnvil::
 .variantVisualRight:
     ldh a, [hEnemyVariant]
 .cactusVisualRight:
-    cp a, CACTUS_VARIANT
+    cp a, ANVIL_CACTUS_VARIANT
     jr nz, .anvilVisualRight
     ld d, CACTUS_SCREAMING_TILE
     ld e, OAMF_PAL0 | OAMF_XFLIP
@@ -173,7 +173,7 @@ AnvilUpdate::
 .variantBlinkOn:
     ldh a, [hEnemyVariant]
 .variantCactus:
-    cp a, CACTUS_VARIANT
+    cp a, ANVIL_CACTUS_VARIANT
     jr nz, .variantAnvil
     ld d, CACTUS_SCREAMING_TILE
     ld e, CACTUS_SCREAMING_TILE

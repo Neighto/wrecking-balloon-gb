@@ -13,14 +13,17 @@ PROJECTILE_RESPAWN_TIME EQU %01011111
 
 BALLOON_CACTUS_TILE EQU $14
 
-BALLOON_CACTUS_EASY_TILE EQU $44
-BALLOON_CACTUS_EASY_POINTS EQU 15
+BALLOON_CARRIER_NORMAL_TILE EQU $64
+BALLOON_CARRIER_NORMAL_POINTS EQU 10
 
-BALLOON_CACTUS_MEDIUM_TILE EQU ENEMY_BALLOON_TILE
-BALLOON_CACTUS_MEDIUM_POINTS EQU 30
+BALLOON_CARRIER_PROJECTILE_TILE EQU $44
+BALLOON_CARRIER_PROJECTILE_POINTS EQU 15
 
-BALLOON_CACTUS_HARD_TILE EQU $22
-BALLOON_CACTUS_HARD_POINTS EQU 50
+BALLOON_CARRIER_FOLLOW_TILE EQU ENEMY_BALLOON_TILE
+BALLOON_CARRIER_FOLLOW_POINTS EQU 30
+
+BALLOON_CARRIER_BOMB_TILE EQU $22
+BALLOON_CARRIER_BOMB_POINTS EQU 50
 
 SECTION "balloon carrier", ROMX
 
@@ -91,25 +94,25 @@ SpawnBalloonCarrier::
 .variantVisualBalloon:
     ldh a, [hEnemyVariant]
 .followVisualBalloon:
-    cp a, FOLLOW_VARIANT
+    cp a, CARRIER_FOLLOW_VARIANT
     jr nz, .projectileVisualBalloon
-    ld d, BALLOON_CACTUS_MEDIUM_TILE
+    ld d, BALLOON_CARRIER_FOLLOW_TILE
     ld e, OAMF_PAL1
     jr .endVariantVisualBalloon
 .projectileVisualBalloon:
-    cp a, PROJECTILE_VARIANT
+    cp a, CARRIER_PROJECTILE_VARIANT
     jr nz, .bombVisualBalloon
-    ld d, BALLOON_CACTUS_EASY_TILE
+    ld d, BALLOON_CARRIER_PROJECTILE_TILE
     ld e, OAMF_PAL0
     jr .endVariantVisualBalloon
 .bombVisualBalloon:
-    cp a, BOMB_VARIANT
-    jr nz, .anvilVisualBalloon
-    ld d, BALLOON_CACTUS_HARD_TILE
+    cp a, CARRIER_BOMB_VARIANT
+    jr nz, .normalVisualBalloon
+    ld d, BALLOON_CARRIER_BOMB_TILE
     ld e, OAMF_PAL0
     jr .endVariantVisualBalloon
-.anvilVisualBalloon:
-    ld d, $64
+.normalVisualBalloon:
+    ld d, BALLOON_CARRIER_NORMAL_TILE
     ld e, OAMF_PAL0
 .endVariantVisualBalloon:
 
@@ -136,7 +139,7 @@ SpawnBalloonCarrier::
 
 .variantVisualCarryLeft:
     ldh a, [hEnemyVariant]
-    cp a, ANVIL_VARIANT
+    cp a, CARRIER_ANVIL_VARIANT
     jr nz, .cactusVisualCarryLeft
 .anvilVisualCarryLeft:
     ld d, ANVIL_TILE_1
@@ -160,7 +163,7 @@ SpawnBalloonCarrier::
 
 .variantVisualCarryRight:
     ldh a, [hEnemyVariant]
-    cp a, ANVIL_VARIANT
+    cp a, CARRIER_ANVIL_VARIANT
     jr nz, .cactusVisualCarryRight
 .anvilVisualCarryRight:
     ld d, ANVIL_TILE_2
@@ -252,7 +255,7 @@ BalloonCarrierUpdate::
 .moveVerticalVariant:
     ldh a, [hEnemyVariant]
 .followMoveVertical:
-    cp a, FOLLOW_VARIANT
+    cp a, CARRIER_FOLLOW_VARIANT
     jr nz, .endMoveVerticalVariant
     ; Follow player
     ldh a, [hEnemyY]
@@ -307,7 +310,7 @@ BalloonCarrierUpdate::
 .checkProjectileVariant:
     ldh a, [hEnemyVariant]
 .projectileVariant:
-    cp a, PROJECTILE_VARIANT 
+    cp a, CARRIER_PROJECTILE_VARIANT 
     jr nz, .endProjectileVariant
     ldh a, [hEnemyParam2]
     inc a
@@ -340,7 +343,7 @@ BalloonCarrierUpdate::
     jr z, .checkHitByBullet
 .checkHitVariant:
     ldh a, [hEnemyVariant]
-    cp a, BOMB_VARIANT 
+    cp a, CARRIER_BOMB_VARIANT 
     call z, CollisionWithPlayer
 .endHitVariant:
     jr .deathOfBalloonCarrier
@@ -359,20 +362,25 @@ BalloonCarrierUpdate::
     ld d, 0
 .variantPoints:
     ldh a, [hEnemyVariant]
+.normalPoints:
+    cp a, CARRIER_NORMAL_VARIANT
+    jr nz, .followPoints
+    ld d, BALLOON_CARRIER_NORMAL_POINTS
+    jr .endVariantPoints
 .followPoints:
-    cp a, FOLLOW_VARIANT
+    cp a, CARRIER_FOLLOW_VARIANT
     jr nz, .projectilePoints
-    ld d, BALLOON_CACTUS_EASY_POINTS
+    ld d, BALLOON_CARRIER_PROJECTILE_POINTS
     jr .endVariantPoints
 .projectilePoints:
-    cp a, PROJECTILE_VARIANT
+    cp a, CARRIER_PROJECTILE_VARIANT
     jr nz, .bombPoints
-    ld d, BALLOON_CACTUS_MEDIUM_POINTS
+    ld d, BALLOON_CARRIER_FOLLOW_POINTS
     jr .endVariantPoints
 .bombPoints:
-    cp a, BOMB_VARIANT
+    cp a, CARRIER_BOMB_VARIANT
     jr nz, .endVariantPoints
-    ld d, BALLOON_CACTUS_HARD_POINTS
+    ld d, BALLOON_CARRIER_BOMB_POINTS
 .endVariantPoints:
     call AddPoints
 
@@ -418,7 +426,7 @@ BalloonCarrierUpdate::
     jr z, .variantEndSpawnCarry
 .variantSpawnExplosion:
     ldh a, [hEnemyVariant]
-    cp a, BOMB_VARIANT
+    cp a, CARRIER_BOMB_VARIANT
     jr nz, .endVariantSpawnExplosion
     ld a, EXPLOSION
     ldh [hEnemyNumber], a
@@ -435,13 +443,13 @@ BalloonCarrierUpdate::
 .variantSpawnCarry:
     ldh a, [hEnemyVariant]
 .anvilSpawnCarry:
-    cp a, ANVIL_VARIANT
+    cp a, CARRIER_ANVIL_VARIANT
     jr nz, .cactusSpawnCarry
-    ld a, NONE
+    ld a, ANVIL_NORMAL_VARIANT
     ldh [hEnemyVariant], a
     jr .spawnCarryEnd
 .cactusSpawnCarry:
-    ld a, CACTUS_VARIANT
+    ld a, ANVIL_CACTUS_VARIANT
     ldh [hEnemyVariant], a
 .spawnCarryEnd:
     ld a, ANVIL
