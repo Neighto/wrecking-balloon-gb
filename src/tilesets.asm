@@ -81,3 +81,8 @@ MenuTilesEnd::
 MenuTitleTiles::
     INCBIN "incbin/background/Menu.2bpp"
 MenuTitleTilesEnd::
+
+GameOverTiles::
+    INCBIN "incbin/window/GameOver.2bpp"
+    INCBIN "incbin/window/GameOverTotal.2bpp"
+GameOverTilesEnd::

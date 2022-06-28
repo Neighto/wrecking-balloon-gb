@@ -61,6 +61,7 @@ StartGame::
 	call ResetGlobalTimer
 	call SetOpeningCutsceneInterrupts
 	call LoadGameSpriteTiles
+	call LoadGameOverTiles
 	call LoadWindow
 	call LoadOpeningCutsceneGraphics
 	call ResetFading
@@ -110,7 +111,7 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; ; testing
-	ld a, 4
+	ld a, 2
 	ld [wLevel], a
 	; ; ^^^
 
@@ -234,11 +235,8 @@ StageClearLoop:
 GameOver::
 	call WaitVBlank
 	call LCD_OFF
-	call ResetScroll
 	call ResetGlobalTimer
-	call ClearMap
 	call ClearOAM
-	call ClearRAM
 	call ClearSound
 	call InitializeInterrupts
 	call LoadGameOverGraphics
@@ -246,7 +244,7 @@ GameOver::
 	call InitializeGameOver
 	ld hl, gameOverTheme
 	call hUGE_init
-	call LCD_ON_NO_WINDOW
+	call LCD_ON
 GameOverLoop:
 	call WaitVBlank
 	call UpdateGameOver
