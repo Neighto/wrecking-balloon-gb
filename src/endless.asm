@@ -28,7 +28,7 @@ BossKiller::
 .spawnBalloonCarrier:
     ld a, BALLOON_CARRIER
     ldh [hEnemyNumber], a
-    ld a, ANVIL_VARIANT
+    ld a, CARRIER_ANVIL_VARIANT
     ldh [hEnemyVariant], a
     ld a, 28
     ldh [hEnemyY], a

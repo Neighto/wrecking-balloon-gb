@@ -77,19 +77,19 @@ SpawnPointBalloon::
 .variantVisual:
     ldh a, [hEnemyVariant]
 .easyVisual:
-    cp a, EASY
+    cp a, BALLOON_EASY_VARIANT
     jr nz, .mediumVisual
     ld d, POINT_BALLOON_EASY_TILE
     ld e, OAMF_PAL0
     jr .endVariantVisual
 .mediumVisual:
-    cp a, MEDIUM
+    cp a, BALLOON_MEDIUM_VARIANT
     jr nz, .hardVisual
     ld d, POINT_BALLOON_MEDIUM_TILE
     ld e, OAMF_PAL0
     jr .endVariantVisual
 .hardVisual:
-    cp a, HARD
+    cp a, BALLOON_HARD_VARIANT
     jr nz, .endVariantVisual
     ld d, POINT_BALLOON_HARD_TILE
     ld e, OAMF_PAL1
@@ -167,18 +167,18 @@ PointBalloonUpdate::
     ld hl, hEnemyY
     ldh a, [hEnemyVariant]
 .moveEasy:
-    cp a, EASY
+    cp a, BALLOON_EASY_VARIANT
     jr nz, .moveMedium
     dec [hl]
     jr .setOAM
 .moveMedium:
-    cp a, MEDIUM
+    cp a, BALLOON_MEDIUM_VARIANT
     jr nz, .moveHard
     dec [hl]
     dec [hl]
     jr .setOAM
 .moveHard:
-    cp a, HARD
+    cp a, BALLOON_HARD_VARIANT
     jr nz, .setOAM
     dec [hl]
     dec [hl]
@@ -241,17 +241,17 @@ PointBalloonUpdate::
 .variantPoints:
     ldh a, [hEnemyVariant]
 .easyPoints:
-    cp a, EASY
+    cp a, BALLOON_EASY_VARIANT
     jr nz, .mediumPoints
     ld d, POINT_BALLOON_EASY_POINTS
     jr .endVariantPoints
 .mediumPoints:
-    cp a, MEDIUM
+    cp a, BALLOON_MEDIUM_VARIANT
     jr nz, .hardPoints
     ld d, POINT_BALLOON_MEDIUM_POINTS
     jr .endVariantPoints
 .hardPoints:
-    cp a, HARD
+    cp a, BALLOON_HARD_VARIANT
     jr nz, .endVariantPoints
     ld d, POINT_BALLOON_HARD_POINTS
 .endVariantPoints:

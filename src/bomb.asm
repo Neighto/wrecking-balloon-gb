@@ -11,14 +11,11 @@ BOMB_MOVE_TIME EQU %00000001
 BOMB_FOLLOW_TIME EQU %00000111
 BOMB_COLLISION_TIME EQU %00000111
 
-BOMB_EASY_TILE EQU $22
-BOMB_EASY_POINTS EQU 10
+BOMB_DIRECT_TILE EQU $22
+BOMB_DIRECT_POINTS EQU 10
 
-BOMB_MEDIUM_TILE EQU $4C
-BOMB_MEDIUM_POINTS EQU 20
-
-BOMB_HARD_TILE EQU $4C
-BOMB_HARD_POINTS EQU 30
+BOMB_FOLLOW_TILE EQU $4C
+BOMB_FOLLOW_POINTS EQU 20
 
 SECTION "bomb", ROMX
 
@@ -71,22 +68,16 @@ SpawnBomb::
 
 .variantVisual:
     ldh a, [hEnemyVariant]
-.easyVisual:
-    cp a, EASY
-    jr nz, .mediumVisual
-    ld d, BOMB_EASY_TILE
+.directVisual:
+    cp a, BOMB_DIRECT_VARIANT
+    jr nz, .followVisual
+    ld d, BOMB_DIRECT_TILE
     ld e, OAMF_PAL0
     jr .endVariantVisual
-.mediumVisual:
-    cp a, MEDIUM
-    jr nz, .hardVisual
-    ld d, BOMB_MEDIUM_TILE
-    ld e, OAMF_PAL0
-    jr .endVariantVisual
-.hardVisual:
-    cp a, HARD
+.followVisual:
+    cp a, BOMB_FOLLOW_VARIANT
     jr nz, .endVariantVisual
-    ld d, BOMB_HARD_TILE
+    ld d, BOMB_FOLLOW_TILE
     ld e, OAMF_PAL0
 .endVariantVisual:
 
@@ -163,9 +154,9 @@ BombUpdate::
     
 .variantMove:
     ldh a, [hEnemyVariant]
-    cp a, MEDIUM
+    cp a, BOMB_FOLLOW_VARIANT
     jr nz, .endVariantMove
-.horizontalMedium:
+.horizontalFollow:
     ldh a, [hGlobalTimer]
     and BOMB_FOLLOW_TIME
     jr nz, .endVariantMove
@@ -227,20 +218,15 @@ BombUpdate::
     ; Points
 .variantPoints:
     ldh a, [hEnemyVariant]
-.easyPoints:
-    cp a, EASY
-    jr nz, .mediumPoints
-    ld d, BOMB_EASY_POINTS
+.directPoints:
+    cp a, BOMB_DIRECT_VARIANT
+    jr nz, .followPoints
+    ld d, BOMB_DIRECT_POINTS
     jr .endVariantPoints
-.mediumPoints:
-    cp a, MEDIUM
-    jr nz, .hardPoints
-    ld d, BOMB_MEDIUM_POINTS
-    jr .endVariantPoints
-.hardPoints:
-    cp a, HARD
+.followPoints:
+    cp a, BOMB_FOLLOW_VARIANT
     jr nz, .endVariantPoints
-    ld d, BOMB_HARD_POINTS
+    ld d, BOMB_FOLLOW_POINTS
 .endVariantPoints:
     call AddPoints
     ; Animation trigger

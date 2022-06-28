@@ -82,19 +82,14 @@ SpawnBird::
 .variantVisual:
     ldh a, [hEnemyVariant]
 .easyVisual:
-    cp a, EASY
-    jr nz, .mediumVisual
-    ld e, OAMF_PAL0
-    jr .endVariantVisual
-.mediumVisual:
-    cp a, MEDIUM
+    cp a, BIRD_EASY_VARIANT
     jr nz, .hardVisual
-    ld e, OAMF_PAL1
+    ld e, OAMF_PAL0
     jr .endVariantVisual
 .hardVisual:
-    cp a, HARD
+    cp a, BIRD_HARD_VARIANT
     jr nz, .endVariantVisual
-    ld e, OAMF_PAL0
+    ld e, OAMF_PAL1
 .endVariantVisual:
 
 .setupByDirection:
@@ -269,8 +264,8 @@ BirdUpdate::
 .variantMove:
     ldh a, [hEnemyVariant]    
 .moveEasy:
-    cp a, EASY 
-    jr nz, .moveMedium
+    cp a, BIRD_EASY_VARIANT 
+    jr nz, .moveHard
     ld b, BIRD_VERTICAL_SPEED
     ld c, BIRD_FLAP_UP_SPEED
     ldh a, [hEnemyAnimationFrame]
@@ -284,8 +279,8 @@ BirdUpdate::
     xor a
     ldh [hEnemyAnimationFrame], a
     jr .endVerticalMovement
-.moveMedium:
-    cp a, MEDIUM 
+.moveHard:
+    cp a, BIRD_HARD_VARIANT 
     jr nz, .endVerticalMovement
     ld b, BIRD_VERTICAL_SPEED * 2
     ld c, BIRD_FLAP_UP_SPEED * 2

@@ -691,7 +691,7 @@ BossUpdate::
 .spawnPointBalloon:
     ld a, POINT_BALLOON
     ldh [hEnemyNumber], a
-    ld a, MEDIUM
+    ld a, BALLOON_MEDIUM_VARIANT
     ldh [hEnemyVariant], a
     ldh a, [hEnemyY]
     add a, 19
