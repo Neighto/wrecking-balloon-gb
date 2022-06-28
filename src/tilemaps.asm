@@ -35,3 +35,11 @@ CloudsMapEnd::
 RainCloudsMap::
     INCBIN "incbin/background/RainClouds.tilemap"
 RainCloudsMapEnd::
+
+GameOverMap::
+    INCBIN "incbin/window/GameOver.tilemap"
+GameOverMapEnd::
+
+GameOverTotalMap::
+    INCBIN "incbin/window/GameOverTotal.tilemap"
+GameOverTotalMapEnd::
