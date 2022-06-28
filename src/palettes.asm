@@ -52,7 +52,7 @@ InitializeNightSpritePalettes::
     ld a, %00110011
     ldh [rOBP1], a
 	ret
-
+	
 InitializeEmptyPalettes::
 	xor a ; ld a, 0
 	ldh [rBGP], a
