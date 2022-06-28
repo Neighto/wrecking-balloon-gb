@@ -7,16 +7,18 @@ STAGE_CLEAR_UPDATE_TIME EQU %00000010
 STAGE_CLEAR_PAUSE_LENGTH EQU 40
 
 PLUS_TILE EQU $FF
-SCORE_SC_INDEX_ONE_ADDRESS EQU $98EF
-TOTAL_SC_INDEX_ONE_ADDRESS EQU $992F
-LIVES_SC_ADDRESS EQU $996C
-LIVES_TO_ADD_SC_ADDRESS EQU $996E
+SCORE_SC_INDEX_ONE_ADDRESS EQU $98CF
+TOTAL_SC_INDEX_ONE_ADDRESS EQU $990F
+LIVES_SC_ADDRESS EQU $994C
+LIVES_TO_ADD_SC_ADDRESS EQU $994E
+STAGE_NUMBER_ADDRESS EQU $9889
 
 SECTION "stage clear vars", WRAM0
     wStageClearTimer:: DB
     wStageClearFrame:: DB
     wLivesToAdd:: DB
     wPointSound:: DB
+    wStageNumberOAM:: DB
 
 SECTION "stage clear", ROMX
 
@@ -27,6 +29,7 @@ InitializeStageClear::
     ld [wStageClearFrame], a
     ld [wLivesToAdd], a
     ld [wPointSound], a
+    ld [wStageNumberOAM], a
     call RefreshStageClear
     ret
 
@@ -39,6 +42,26 @@ LoadStageClearGraphics::
 	ld hl, _SCRN0
     ld d, SCRN_Y_B
 	call MEMCPY_SINGLE_SCREEN
+	ret
+
+SpawnStageNumber::
+	ld b, 1
+	call RequestOAMSpace
+	jr z, .end
+.availableSpace:
+	ld a, b
+	ld [wStageNumberOAM], a
+	SET_HL_TO_ADDRESS wOAM, wStageNumberOAM
+	ld a, 48 ; y
+	ld [hli], a
+	ld a, 84 ; x
+	ld [hli], a
+    ld a, [wLevel]
+    dec a
+    add NUMBERS_TILE_OFFSET
+	ld [hli], a
+	ld [hl], OAMF_PAL0
+.end:
 	ret
 
 RefreshAddLives::
@@ -68,6 +91,11 @@ RefreshStageClear::
 	ldh a, [hPlayerLives]
 	add NUMBERS_TILE_OFFSET
 	ld [LIVES_SC_ADDRESS], a
+
+    ; ld a, [wLevel]
+    ; dec a
+    ; add NUMBERS_TILE_OFFSET
+	; ld [STAGE_NUMBER_ADDRESS], a
 
 	call RefreshAddLives
 	ret
