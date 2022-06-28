@@ -262,7 +262,7 @@ BombUpdate::
 .spawnExplosion:
     ld a, EXPLOSION
     ldh [hEnemyNumber], a
-    ld a, NONE
+    ld a, EXPLOSION_BOMB_VARIANT
     ldh [hEnemyVariant], a
     ldh a, [hEnemyX]
     sub 4

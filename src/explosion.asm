@@ -6,8 +6,11 @@ INCLUDE "enemyConstants.inc"
 EXPLOSION_OAM_SPRITES EQU 3
 EXPLOSION_OAM_BYTES EQU EXPLOSION_OAM_SPRITES * 4
 
-EXPLOSION_TILE_1 EQU $24
-EXPLOSION_TILE_2 EQU $26
+EXPLOSION_BOMB_TILE_1 EQU $24
+EXPLOSION_BOMB_TILE_2 EQU $26
+
+EXPLOSION_CONGRATULATIONS_TILE_1 EQU $66
+EXPLOSION_CONGRATULATIONS_TILE_2 EQU $68
 
 EXPLOSION_TIME EQU 10
 EXPLOSION_WAIT_TIME EQU %00000011
@@ -27,6 +30,8 @@ SetStruct:
     ldh a, [hEnemyOAM]
     ld [hli], a
     ldh a, [hEnemyAnimationFrame]
+    ld [hli], a
+    ldh a, [hEnemyVariant]
     ld [hl], a
     ret
 
@@ -53,12 +58,28 @@ SpawnExplosion::
     ld a, 1
     ldh [hEnemyActive], a
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+
+.variantVisual:
+    ldh a, [hEnemyVariant]
+.bombVisual:
+    cp a, EXPLOSION_BOMB_VARIANT
+    jr nz, .congratulationsVisual
+    ld d, EXPLOSION_BOMB_TILE_1
+    ld e, EXPLOSION_BOMB_TILE_2
+    jr .endVariantVisual
+.congratulationsVisual:
+    ; cp a, EXPLOSION_CONGRATULATIONS_VARIANT
+    ; jr nz, .endVariantVisual
+    ld d, EXPLOSION_CONGRATULATIONS_TILE_1
+    ld e, EXPLOSION_CONGRATULATIONS_TILE_2
+.endVariantVisual:
+
 .explosionLeftOAM:
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
     ld [hli], a
-    ld a, EXPLOSION_TILE_1
+    ld a, d
     ld [hli], a
     ld a, OAMF_PAL0
     ld [hli], a
@@ -68,7 +89,7 @@ SpawnExplosion::
     ldh a, [hEnemyX]
     add 8
     ld [hli], a
-    ld a, EXPLOSION_TILE_2
+    ld a, e
     ld [hli], a
     ld a, OAMF_PAL0
     ld [hli], a
@@ -78,7 +99,7 @@ SpawnExplosion::
     ldh a, [hEnemyX]
     add 16
     ld [hli], a
-    ld a, EXPLOSION_TILE_1
+    ld a, d
     ld [hli], a
     ld a, OAMF_PAL0 | OAMF_XFLIP
     ld [hl], a
@@ -99,6 +120,8 @@ ExplosionUpdate::
     ldh [hEnemyOAM], a
     ld a, [hli]
     ldh [hEnemyAnimationFrame], a
+    ld a, [hli]
+    ldh [hEnemyVariant], a
     ld a, [hl]
 
 .animateExplosion:
