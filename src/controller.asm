@@ -19,9 +19,9 @@ ReadController::
 .dPad:
 	ld a, P1F_GET_DPAD
 	; Recommended to read multiple times
-	ld [_IO], a
-	ld a, [_IO]
-	ld a, [_IO]
+	ldh [_IO], a
+	ldh a, [_IO]
+	ldh a, [_IO]
 	cpl
 	and HIGH_HALF_BYTE_MASK
 	swap a
@@ -29,9 +29,9 @@ ReadController::
 .buttons:
 	ld a, P1F_GET_BTN
 	; Recommended to read multiple times
-	ld [_IO], a  
-	ld a, [_IO]
-	ld a, [_IO]
+	ldh [_IO], a  
+	ldh a, [_IO]
+	ldh a, [_IO]
 	cpl
 	and HIGH_HALF_BYTE_MASK
 	or b 

@@ -1,5 +1,6 @@
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
+INCLUDE "constants.inc"
 
 SECTION "memory", ROMX
 
@@ -80,13 +81,22 @@ ResetHLInRange::
 
 ClearOAM::
     ld hl, _OAMRAM
-    ld bc, $A0 
+    ld bc, OAM_COUNT * OAM_ATTRIBUTES_COUNT
+    call ResetHLInRange
+    ld hl, $C100
+    ld bc, OAM_COUNT * OAM_ATTRIBUTES_COUNT
     call ResetHLInRange
     ret
 
 ClearRAM::
-    ld hl, $C100
-    ld bc, $A0
+    ld hl, _RAM
+    ld bc, _RAMBANK - _RAM
+    call ResetHLInRange
+    ret
+
+ClearHRAM::
+    ld hl, _HRAM
+    ld bc, $FFFC - _HRAM
     call ResetHLInRange
     ret
 
