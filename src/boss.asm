@@ -26,16 +26,12 @@ PORCUPINE_SCARED_FACE_TILE EQU $5E
 PORCUPINE_STRING_Y_OFFSET EQU 31
 PORCUPINE_STRING_X_OFFSET EQU 12
 
-PORCUPINE_START_SPEED EQU 1
-PORCUPINE_INCREASE_SPEED EQU 1
-PORCUPINE_MAX_SPEED EQU 4
-
+PORCUPINE_START_SPEED EQU 2
+PORCUPINE_INCREASE_SPEED EQU 2
 PORCUPINE_VERTICAL_SPEED EQU 2
 
 PORCUPINE_MIN_POSITION_X EQU 10
 PORCUPINE_MAX_POSITION_X EQU 132
-PORCUPINE_MAX_POSITION_Y EQU 50
-PORCUPINE_MIN_POSITION_Y EQU 90
 
 PORCUPINE_EXPRESSION_LEFT EQU 0
 PORCUPINE_EXPRESSION_RIGHT EQU 1
@@ -128,7 +124,7 @@ SpawnBoss::
     LD_BC_DE
     ld a, 1
     ldh [hEnemyActive], a
-    ld a, PORCUPINE_POINT_Y1
+    ld a, PORCUPINE_POINT_Y3
     ldh [hEnemyParam1], a
     ld a, PORCUPINE_HP
     ldh [hEnemyAlive], a
@@ -422,7 +418,7 @@ BossUpdate::
     ldh [hEnemyParam4], a
     ld b, a
 .checkDirectionX:
-    and %00111111
+    and %01111111 ; 01111111
     jr nz, .endCheckDirectionX
     ldh a, [hEnemyDirectionLeft]
     and ENEMY_DIRECTION_HORIZONTAL_MASK
@@ -475,48 +471,55 @@ BossUpdate::
 .handleMovingLeft:
     ldh a, [hEnemyX]
     cp a, PORCUPINE_MIN_POSITION_X
-    jr c, .moveXStopSpeed
-    cp a, PORCUPINE_MIN_POSITION_X + PORCUPINE_MAX_SPEED * 2
-    jr c, .moveXSlowDown
+    jr c, .moveXStop
+    cp a, SCRN_X / 2
+    jr c, .moveXSpeedDown
     jr .moveXSpeedUp
 .handleMovingRight:
     ldh a, [hEnemyX]
     cp a, PORCUPINE_MAX_POSITION_X
-    jr nc, .moveXStopSpeed
-    cp a, PORCUPINE_MAX_POSITION_X - PORCUPINE_MAX_SPEED * 2
-    jr nc, .moveXSlowDown
+    jr nc, .moveXStop
+    cp a, SCRN_X / 2
+    jr nc, .moveXSpeedDown
 .moveXSpeedUp:
     ld a, [hl]
     add a, PORCUPINE_INCREASE_SPEED
-    ld b, PORCUPINE_MAX_SPEED
-    cp a, b
-    jr c, .moveXUpdateSpeed
-    ld a, b
     jr .moveXUpdateSpeed
-.moveXSlowDown:
+.moveXSpeedDown:
     ld a, [hl]
-    sub a, PORCUPINE_INCREASE_SPEED
-    ld b, PORCUPINE_START_SPEED
-    cp a, b
-    jr c, .moveXUpdateSpeed
-    ld a, b
+    cp a, PORCUPINE_INCREASE_SPEED
+    jr nc, .speedDownContinue
+.speedDownMin:
+    ld a, PORCUPINE_START_SPEED
     jr .moveXUpdateSpeed
-.moveXStopSpeed:
-    xor a ; ld a, 0
+.speedDownContinue:
+    sub a, PORCUPINE_INCREASE_SPEED
 .moveXUpdateSpeed:
     ld [hl], a
+    ld b, 8
+    call DIVISION
+    cp a, 0
+    jr nz, .valueOneOrGreater
+.valueZero:
+    inc a
+.valueOneOrGreater:
+    ld b, a
     ldh a, [hEnemyDirectionLeft]
     and ENEMY_DIRECTION_HORIZONTAL_MASK
     jr z, .moveXRight
 .moveXLeft:
     ldh a, [hEnemyX]
-    sub a, [hl]
+    sub a, b
     jr .moveXUpdate
 .moveXRight:
     ldh a, [hEnemyX]
-    add a, [hl]
+    add a, b
 .moveXUpdate:
     ldh [hEnemyX], a
+    jr .endMoveX
+.moveXStop:
+    xor a ; ld a, 0
+    ld [hl], a
 .endMoveX:
 
 .moveY:
@@ -527,13 +530,6 @@ BossUpdate::
     cp a, b
     jr nz, .moveYContinue
 .moveYStoppedAndAttack:
-
-; .checkMoveVariant:
-;     ldh a, [hEnemyVariant]
-;     cp a, PORCUPINE_HARD
-;     jr nz, .endMoveY
-; .endCheckMoveVariant:
-
     SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
     ld a, [hl]
     cp a, PORCUPINE_CONFIDENT_FACE_TILE
@@ -655,9 +651,6 @@ BossUpdate::
 .upLeftNeedle:
     ld a, NEEDLE_UP_MOVE_LEFT_VARIANT
     ldh [hEnemyVariant], a
-    ldh a, [hEnemyY]
-    add a, 8
-    ldh [hEnemyY], a
     ldh a, [hEnemyX]
     add a, 8
     ldh [hEnemyX], a
@@ -665,14 +658,14 @@ BossUpdate::
 .downLeftNeedle:
     ld a, NEEDLE_DOWN_MOVE_LEFT_VARIANT
     ldh [hEnemyVariant], a
+    ldh a, [hEnemyY]
+    add a, 16
+    ldh [hEnemyY], a
     call SpawnBossNeedle
     jr .endSpawnBossNeedle
 .upRightNeedle:
     ld a, NEEDLE_UP_MOVE_RIGHT_VARIANT
     ldh [hEnemyVariant], a
-    ldh a, [hEnemyY]
-    add a, 8
-    ldh [hEnemyY], a
     ldh a, [hEnemyX]
     add a, 24
     ldh [hEnemyX], a
@@ -680,6 +673,9 @@ BossUpdate::
 .downRightNeedle:
     ld a, NEEDLE_DOWN_MOVE_RIGHT_VARIANT
     ldh [hEnemyVariant], a
+    ldh a, [hEnemyY]
+    add a, 16
+    ldh [hEnemyY], a
     call SpawnBossNeedle
 .endSpawnBossNeedle:
     jr .endCheckBossSpawns
