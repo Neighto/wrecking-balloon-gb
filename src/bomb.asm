@@ -35,6 +35,8 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyDying]
     ld [hli], a
+    ldh a, [hEnemyHitEnemy]
+    ld [hli], a
     ldh a, [hEnemyParam1] ; Enemy Trigger Explosion
     ld [hli], a
     ldh a, [hEnemyVariant]
@@ -121,6 +123,8 @@ BombUpdate::
     ld a, [hli]
     ldh [hEnemyDying], a
     ld a, [hli]
+    ldh [hEnemyHitEnemy], a
+    ld a, [hli]
     ldh [hEnemyParam1], a
     ld a, [hl]
     ldh [hEnemyVariant], a
@@ -192,6 +196,9 @@ BombUpdate::
     ldh a, [hGlobalTimer]
     and	BOMB_COLLISION_TIME
     jr nz, .endCollision
+    ldh a, [hEnemyHitEnemy]
+    cp a, 0
+    jr nz, .deathOfBomb
 .checkHit:
     ld bc, wPlayerCactusOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM

@@ -5,7 +5,7 @@ SECTION "rom", ROM0
 
 Start::
 	di
-	ld sp, $FFFE
+	ld sp, $FFFE ; $E000
 	call InitializeInterrupts
 	call WaitVBlank
 	call LCD_OFF
@@ -13,6 +13,7 @@ Start::
 	call ClearWindow
 	call ClearOAM
 	call ClearRAM
+	call ClearHRAM
 	call ClearAllTiles
 	call ResetScroll
 	call ResetGlobalTimer
@@ -54,7 +55,6 @@ StartGame::
 	call LCD_OFF
 	call ClearMap
 	call ClearOAM
-	call ClearRAM
 	call ClearSound
 	call ClearAllTiles
 	call ResetScroll
@@ -100,7 +100,6 @@ SetupNextLevel::
 	call ResetGlobalTimer
 	call ClearMap
 	call ClearOAM
-	call ClearRAM
 	call ClearSound
 	call SetupWindow
 	call ResetFading
@@ -111,8 +110,8 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; ; testing
-	ld a, 3
-	ld [wLevel], a
+	; ld a, 9
+	; ld [wLevel], a
 	; ; ^^^
 
 	ld a, [wLevel]
@@ -216,7 +215,6 @@ StageClear::
 	call ResetScroll
 	call ClearMap
 	call ClearOAM
-	call ClearRAM
 	call ClearSound
 	call InitializeInterrupts
 	call LoadStageClearGraphics
@@ -224,6 +222,7 @@ StageClear::
 	call ResetGlobalTimer
 	call InitializeFadedPalettes
 	call InitializeStageClear
+	call SpawnStageNumber
 	ld hl, menuTheme
 	call hUGE_init
 	ld b, 3
@@ -233,10 +232,9 @@ StageClear::
 	ld c, 1
 	call hUGE_mute_channel
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
-	call SpawnStageNumber ; testing
-	call OAMDMA ; testing
 StageClearLoop:
 	call WaitVBlank
+	call OAMDMA
 	call UpdateStageClear
 	jp StageClearLoop
 
@@ -265,7 +263,6 @@ GameWon::
 	call ResetGlobalTimer
 	call ClearMap
 	call ClearOAM
-	call ClearRAM
 	call ClearSound
 	call SetEndingCutsceneInterrupts
 	call LoadEndingCutsceneGraphics

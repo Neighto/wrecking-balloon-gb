@@ -178,7 +178,7 @@ EnemyInterCollision::
     ret
 .bird:
     cp a, BIRD
-    jr nz, .boss
+    jr nz, .bomb
     inc hl
     inc hl
     LD_BC_HL ; hEnemyOAM stored in bc
@@ -188,8 +188,27 @@ EnemyInterCollision::
     ld e, 8
     call CollisionCheck
     cp a, 0
-    jr z, .checkLoop
+    jp z, .checkLoop
     SET_HL_TO_ADDRESS wEnemies+8, wEnemyOffset2 ; hEnemyHitEnemy
+    ld a, 1 
+    ld [hl], a
+    cp a, 0
+    ; nz flag set
+    ret
+.bomb:
+    cp a, BOMB
+    jr nz, .boss
+    inc hl
+    inc hl
+    LD_BC_HL ; hEnemyOAM stored in bc
+    SET_HL_TO_ADDRESS wOAM, bc ; OAM address stored in hl
+    SET_BC_TO_ADDRESS wOAM, hEnemyOAM ; OAM address stored in bc
+    ld d, 16
+    ld e, 16
+    call CollisionCheck
+    cp a, 0
+    jr z, .checkLoop
+    SET_HL_TO_ADDRESS wEnemies+7, wEnemyOffset2 ; hEnemyHitEnemy
     ld a, 1 
     ld [hl], a
     cp a, 0
