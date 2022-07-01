@@ -226,7 +226,7 @@ LevelNightCityLCDInterrupt:
 .preWindow:
     cp a, GAME_CITY_LCD_SCROLL_RESET - 1
     jr nz, .window
-    ld a, MAIN_PALETTE
+    ld a, MAIN_PAL0
     ldh [rBGP], a
     ld a, GAME_CITY_LCD_SCROLL_RESET
 	ldh [rLYC], a
@@ -338,7 +338,7 @@ LevelNightDesertLCDInterrupt::
 .preWindow:
     cp a, GAME_DESERT_LCD_SCROLL_RESET - 1
     jr nz, .window
-    ld a, MAIN_PALETTE
+    ld a, MAIN_PAL0
     ldh [rBGP], a
     ld a, GAME_DESERT_LCD_SCROLL_RESET
 	ldh [rLYC], a

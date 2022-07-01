@@ -74,14 +74,23 @@ SpawnBomb::
     cp a, BOMB_DIRECT_VARIANT
     jr nz, .followVisual
     ld d, BOMB_DIRECT_TILE
-    ld e, OAMF_PAL0
     jr .endVariantVisual
 .followVisual:
     cp a, BOMB_FOLLOW_VARIANT
     jr nz, .endVariantVisual
     ld d, BOMB_FOLLOW_TILE
-    ld e, OAMF_PAL0
 .endVariantVisual:
+
+.checkNightSprite:
+    ldh a, [rOBP1]
+    cp a, NIGHT_SPRITE_PAL1
+    jr nz, .isNotNightSprite
+.isNightSprite:
+    ld e, OAMF_PAL0
+    jr .endCheckNightSprite
+.isNotNightSprite:
+    ld e, OAMF_PAL1
+.endCheckNightSprite:
 
 .balloonLeftOAM:
     ldh a, [hEnemyY]

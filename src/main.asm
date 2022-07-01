@@ -5,14 +5,14 @@ SECTION "rom", ROM0
 
 Start::
 	di
-	ld sp, $FFFE ; $E000
+	ld sp, $E000 ; Stack pointer to WRAM ; OLD: $FFFE
 	call InitializeInterrupts
 	call WaitVBlank
 	call LCD_OFF
 	call ClearMap
 	call ClearWindow
 	call ClearOAM
-	call ClearRAM
+	; call ClearRAM
 	call ClearHRAM
 	call ClearAllTiles
 	call ResetScroll
@@ -110,8 +110,8 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; ; testing
-	; ld a, 9
-	; ld [wLevel], a
+	ld a, 4
+	ld [wLevel], a
 	; ; ^^^
 
 	ld a, [wLevel]
