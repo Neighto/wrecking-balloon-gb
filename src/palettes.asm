@@ -4,21 +4,21 @@ INCLUDE "constants.inc"
 FADE_SPEED EQU %00000011
 
 ; PAL0
-FADE_PALETTE_1 EQU MAIN_PALETTE
+FADE_PALETTE_1 EQU MAIN_PAL0
 FADE_PALETTE_2 EQU %10000100
 FADE_PALETTE_3 EQU %01000000
 FADE_PALETTE_4 EQU %00000000
 
 ; PAL1
-FADE_PALETTE2_1 EQU MAIN_PALETTE2
+FADE_PALETTE2_1 EQU MAIN_PAL1
 FADE_PALETTE2_2 EQU %10000001
 FADE_PALETTE2_3 EQU %01000000
 FADE_PALETTE2_4 EQU %00000000
 
 ; Flicker
 TIME_UNTIL_FLICKER EQU 150
-FLICKER_PALETTE_BGP EQU %10110001
-FLICKER_PALETTE_OBP EQU %11111111
+FLICKER_BGP EQU %10110001
+FLICKER_OBP EQU %11111111
 
 SECTION "palettes vars", WRAM0
 	wFadeInFrame:: DB
@@ -39,17 +39,17 @@ ResetFading::
 
 InitializePalettes::
 	call ResetFading
-	ld a, MAIN_PALETTE
+	ld a, MAIN_PAL0
 	ldh [rBGP], a
 	ldh [rOBP0], a
-	ld a, MAIN_PALETTE2
+	ld a, MAIN_PAL1
 	ldh [rOBP1], a
 	ret
 
 InitializeNightSpritePalettes::
-	ld a, %00111111
+	ld a, NIGHT_SPRITE_PAL0
     ldh [rOBP0], a
-    ld a, %00110011
+    ld a, NIGHT_SPRITE_PAL1
     ldh [rOBP1], a
 	ret
 	
@@ -197,9 +197,9 @@ FlickerBackgroundPalette::
 	jr z, .flickerEnd
 	ret
 .flickerOn:
-	ld a, FLICKER_PALETTE_BGP
+	ld a, FLICKER_BGP
 	ldh [rBGP], a
-	ld a, FLICKER_PALETTE_OBP
+	ld a, FLICKER_OBP
 	ldh [rOBP0], a
 	ldh [rOBP1], a
 	ret

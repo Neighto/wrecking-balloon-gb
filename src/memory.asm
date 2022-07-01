@@ -90,7 +90,7 @@ ClearOAM::
 
 ClearRAM::
     ld hl, _RAM
-    ld bc, _RAMBANK - _RAM
+    ld bc, _OAMRAM - _RAM
     call ResetHLInRange
     ret
 
