@@ -109,7 +109,16 @@ SpawnBalloonCarrier::
     cp a, CARRIER_BOMB_VARIANT
     jr nz, .normalVisualBalloon
     ld d, BALLOON_CARRIER_BOMB_TILE
+.bombVisualBalloonCheckNightSprite:
+    ldh a, [rOBP1]
+    cp a, NIGHT_SPRITE_PAL1
+    jr nz, .bombVisualBalloonIsNotNightSprite
+.bombVisualBalloonIsNightSprite:
     ld e, OAMF_PAL0
+    jr .endCheckNightSprite
+.bombVisualBalloonIsNotNightSprite:
+    ld e, OAMF_PAL1
+.endCheckNightSprite:
     jr .endVariantVisualBalloon
 .normalVisualBalloon:
     ld d, BALLOON_CARRIER_NORMAL_TILE
