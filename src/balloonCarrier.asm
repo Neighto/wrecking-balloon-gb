@@ -85,6 +85,8 @@ SpawnBalloonCarrier::
     ldh a, [hEnemyX]
     cp a, SCRN_X / 2
     jr c, .endUpdateDirection
+    cp a, SPAWN_ENEMY_LEFT_BUFFER
+    jr nc, .endUpdateDirection
     ld a, 1
     ldh [hEnemyDirectionLeft], a
 .endUpdateDirection:

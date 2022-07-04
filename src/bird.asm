@@ -96,6 +96,8 @@ SpawnBird::
     ldh a, [hEnemyX]
     cp a, SCRN_X / 2
     jr c, .isLeftside
+    cp a, SPAWN_ENEMY_LEFT_BUFFER
+    jr nc, .isLeftside
 .isRightside:
     ld a, 1
     ldh [hEnemyDirectionLeft], a
