@@ -110,7 +110,7 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; ; testing
-	ld a, 4
+	ld a, 5
 	ld [wLevel], a
 	; ; ^^^
 
