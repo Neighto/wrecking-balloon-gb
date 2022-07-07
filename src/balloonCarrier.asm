@@ -9,7 +9,8 @@ BALLOON_CARRIER_OAM_BYTES EQU BALLOON_CARRIER_OAM_SPRITES * 4
 BALLOON_CARRIER_MOVE_TIME EQU %00000011
 BALLOON_CARRIER_COLLISION_TIME EQU %00000111
 
-PROJECTILE_RESPAWN_TIME EQU %01011111
+PROJECTILE_RESPAWN_TIME EQU %01111111
+PROJECTILE_RESPAWN_FLICKER_TIME EQU %01101111
 
 BALLOON_CACTUS_TILE EQU $14
 
@@ -324,11 +325,14 @@ BalloonCarrierUpdate::
     cp a, CARRIER_PROJECTILE_VARIANT 
     jr nz, .endProjectileVariant
     ldh a, [hEnemyParam2]
-    inc a
-    ldh [hEnemyParam2], a
     cp a, PROJECTILE_RESPAWN_TIME + 1
-    jr c, .endProjectileVariant
+    jr c, .skipResetSpawn
+.resetSpawn:
     xor a ; ld a, 0
+    ldh [hEnemyParam2], a
+    jr .endProjectileVariant
+.skipResetSpawn:
+    inc a
     ldh [hEnemyParam2], a
 .endProjectileVariant:
 
@@ -473,31 +477,26 @@ BalloonCarrierUpdate::
 
 .checkSpawnProjectile:
     ldh a, [hEnemyParam2]
-    cp a, PROJECTILE_RESPAWN_TIME - 20
+    cp a, PROJECTILE_RESPAWN_FLICKER_TIME
     jr c, .endFlicker
     cp a, PROJECTILE_RESPAWN_TIME
     jr nc, .endFlicker
 .canFlicker:
-    and	%00000001
-    jr nz, .flickerOff
-.flickerOn:
     SET_HL_TO_ADDRESS wOAM+3, hEnemyOAM
-    ld a, OAMF_PAL0
-    ld [hli], a
-    inc l
-    inc l
-    inc l
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hli], a
-    jr .endFlicker
+    ldh a, [hEnemyParam2]
+    and	%00000011
+    jr nz, .flickerOn
 .flickerOff:
-    SET_HL_TO_ADDRESS wOAM+3, hEnemyOAM
     ld a, OAMF_PAL1
+    jr .flickerCommon
+.flickerOn:
+    ld a, OAMF_PAL0
+.flickerCommon:
     ld [hli], a
     inc l
     inc l
     inc l
-    ld a, OAMF_PAL1 | OAMF_XFLIP
+    or a, OAMF_XFLIP
     ld [hli], a
 .endFlicker:
     ldh a, [hEnemyParam2]
