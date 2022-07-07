@@ -203,18 +203,6 @@ UpdateGameCountdown::
 
 UpdateGame::
 
-    ; TODO bug where game KEEPS pausing...
-    ; hPaused could be getting overridden
-    ; we are accidentally jumping to isPaused
-
-    ; clue: happening NOT in player
-    ; clue runs for a few seconds after unpausing
-    ; clue: maybe whenever boss shoots???
-    ; clue: balloon cactus NOT spawning???
-    ; winning fails to load level...
-
-    ; also this time one hit got 2 in...
-
 .tryToUnpause:
     ldh a, [hPaused]
 	cp a, 0

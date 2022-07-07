@@ -108,10 +108,11 @@ SetupNextLevel::
 	call InitializeBullet
 	call InitializePalettes
 	call SpawnPlayer
+	call SpawnCountdown
 
 	; ; testing
-	; ld a, 5
-	; ld [wLevel], a
+	ld a, 3
+	ld [wLevel], a
 	; ; ^^^
 
 	ld a, [wLevel]
@@ -195,7 +196,6 @@ SetupNextLevel::
 	call InitializeGame
 	call InitializeScore
 	call InitializeNewLevel
-	call SpawnCountdown
 	call RefreshWindow
 	call LCD_ON
 GameCountdownLoop:

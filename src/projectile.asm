@@ -8,6 +8,8 @@ PROJECTILE_OAM_BYTES EQU PROJECTILE_OAM_SPRITES * 4
 PROJECTILE_MOVE_TIME EQU %00000001
 PROJECTILE_COLLISION_TIME EQU %00000111
 PROJECTILE_FLICKER_TIME EQU %00000111
+PROJECTILE_VERTICAL_SPEED EQU 1
+PROJECTILE_HORIZONTAL_SPEED EQU 2
 PROJECTILE_TILE EQU $46
 
 SECTION "enemy projectile", ROM0
@@ -56,16 +58,20 @@ SpawnProjectile::
     ldh a, [hPlayerY]
     ld d, a
     ldh a, [hEnemyY]
+    sub a, 8
+    cp a, d
+    jr nc, .up
+    add a, 16
     cp a, d
     jr c, .down
-.up:
-    ld a, -1
+.middleY:
+    xor a ; ld a, 0
     jr .endY
-; .middleY:
-;     xor a ; ld a, 0
-;     jr .endY
+.up:
+    ld a, -PROJECTILE_VERTICAL_SPEED
+    jr .endY
 .down:
-    ld a, 1
+    ld a, PROJECTILE_VERTICAL_SPEED
 .endY:
     ldh [hEnemyParam1], a
 .endSetupY2:
@@ -76,13 +82,10 @@ SpawnProjectile::
     cp a, d
     jr c, .right
 .left:
-    ld a, -1
+    ld a, -PROJECTILE_HORIZONTAL_SPEED
     jr .endX
-; .middleX:
-;     xor a ; ld a, 0
-;     jr .endX
 .right:
-    ld a, 1
+    ld a, PROJECTILE_HORIZONTAL_SPEED
 .endX:
     ldh [hEnemyParam2], a
 .endSetupX2:
