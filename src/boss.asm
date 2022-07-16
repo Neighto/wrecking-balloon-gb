@@ -605,7 +605,7 @@ BossUpdate::
     ld d, PORCUPINE_POINTS
     call AddPoints
     ; Sound
-    call PercussionSound
+    call CountdownSound ; CHANGE ME
     ; Stop enemy hit
     xor a ; ld a, 0
     ldh [hEnemyHitEnemy], a

@@ -4,184 +4,169 @@ SECTION "sound", ROMX
 
 AUDIO_OFF::
 	xor a ; ld a, 0
-	ld [rNR52], a
+	ldh [rNR52], a
 	ret
 
 AUDIO_ON::
   ld a, 1
-	ld [rNR52], a
+	ldh [rNR52], a
 	ret
 
 PopSound::
-    ; Volume envelope
-    ld a, %11110001
-    ld [rNR42], a
-    ; Polynomial counter
-    ld a, %01111011
-    ld [rNR43], a
-    ; Counter/consecutive initial
-    ld a, %10000000
-    ld [rNR44], a
-    ; Master volume
-    ld  a,%11111111
-    ld  [rNR50],a
-    ld  [rNR51],a
-    ret
+  ; Volume envelope
+  ld a, %11110001
+  ldh [rNR42], a
+  ; Polynomial counter
+  ld a, %01111011
+  ldh [rNR43], a
+  ; Counter/consecutive initial
+  ld a, %10000000
+  ldh [rNR44], a
+  ; Master volume
+  ld a, %11111111
+  ldh [rNR50], a
+  ldh [rNR51], a
+  ret
 
 ExplosionSound::
   ; Volume envelope
   ld a, %10110111
-  ld [rNR42], a
+  ldh [rNR42], a
   ; Polynomial counter
   ld a, %01110001
-  ld [rNR43], a
+  ldh [rNR43], a
   ; Counter/consecutive initial
   ld a, %10000000
-  ld [rNR44], a
+  ldh [rNR44], a
   ret
 
 WaveSound::
   ; Volume envelope
   ld a, %10110111
-  ld [rNR42], a
+  ldh [rNR42], a
   ; Polynomial counter
   ld a, %01110000
-  ld [rNR43], a
+  ldh [rNR43], a
   ; Counter/consecutive initial
   ld a, %10000000
-  ld [rNR44], a
+  ldh [rNR44], a
   ret
 
 FallingSound::
   ; Sweep register
   ld a, %01111111
-  ld [rNR10], a
+  ldh [rNR10], a
   ; Sound length / wave pattern duty
   ld a, %11000000
-  ld [rNR11], a
+  ldh [rNR11], a
   ; Volume envelope
   ld a, %11111000
-  ld [rNR12], a
+  ldh [rNR12], a
   ; Frequency lo
   ld a,%11111111
-  ld [rNR13], a
+  ldh [rNR13], a
   ; Frequency hi
-  ld a,%10001101
-  ld [rNR14], a
+  ld a,%10000101
+  ldh [rNR14], a
   ret
 
 RisingSound::
   ; Sweep register
   ld a, %01110111
-  ld [rNR10], a
+  ldh [rNR10], a
   ; Sound length / wave pattern duty
   ld a, %11000000
-  ld [rNR11], a
+  ldh [rNR11], a
   ; Volume envelope
   ld a, %11111000
-  ld [rNR12], a
+  ldh [rNR12], a
   ; Frequency lo
   ld a,%10111111
-  ld [rNR13], a
+  ldh [rNR13], a
   ; Frequency hi
-  ld a,%10001100
-  ld [rNR14], a
+  ld a,%10000100
+  ldh [rNR14], a
   ret
 
 StopSweepSound::
   ld a, %00000000
-  ld [rNR12], a
+  ldh [rNR12], a
   ret
 
 CollectSound::
-  ; Borrowed sound / more like collected item
-  ld  a,%10010110
-  ld  [rNR10],a
-  ld  a,%10000000
-  ld  [rNR11],a
-  ld  a,%01001001
-  ld  [rNR12],a
-  ld  a,%11111111
-  ld  [rNR13],a
-  ld  a,%10001101
-  ld  [rNR14],a
+  ; Sweep register
+  ld a, %11110110
+  ldh [rNR10], a
+  ; Sound length / wave pattern duty
+  ld a, %11000000
+  ldh [rNR11], a
+  ; Volume envelope
+  ld a, %11110010
+  ldh [rNR12], a
+  ; Frequency lo
+  ld a, %11111111
+  ldh [rNR13], a
+  ; Frequency hi
+  ld a, %10000110
+  ldh [rNR14], a
   ret
 
-WrongAnswerSound::
-  ; Sound on/off
-  ld a, %10000000
-  ld [rNR30], a
-  ; Sound length
-  ld a, %11000001
-  ld [rNR31], a
-  ; Select output level
-  ld a, %00100000 ; 100% volume
-  ld [rNR32], a
-  ; Frequency's higher data
-  ld a, %11000010
-  ld [rNR34], a
-  ; Master volume
-  ld  a,%11111111
-  ld  [rNR50],a
-  ld  [rNR51],a
-  ret
-
-PercussionSound::
+CountdownSound::
   ; Volume envelope
   ld a, %10000001
-  ld [rNR42], a
+  ldh [rNR42], a
   ; Polynomial counter
   ld a, %00111111
-  ld [rNR43], a
+  ldh [rNR43], a
   ; Counter/consecutive initial
   ld a, %10000000
-  ld [rNR44], a
+  ldh [rNR44], a
   ret
 
 BassSoundA::
   ; Sound on/off
   ld a, %10000000
-  ld [rNR30], a
+  ldh [rNR30], a
   ; Sound length
   ld a, %11110010
-  ld [rNR31], a
+  ldh [rNR31], a
   ; Select output level
   ld a, %00100000
-  ld [rNR32], a
+  ldh [rNR32], a
   ; Frequency's lower data
   ld a, %00001000
-  ld [rNR33], a
+  ldh [rNR33], a
   ; Frequency's higher data
   ld a, %11000101
-  ld [rNR34], a
+  ldh [rNR34], a
   ret
 
 BassSoundB::
   ; Sound on/off
   ld a, %10000000
-  ld [rNR30], a
+  ldh [rNR30], a
   ; Sound length
   ld a, %11110010
-  ld [rNR31], a
+  ldh [rNR31], a
   ; Select output level
   ld a, %00100000
-  ld [rNR32], a
+  ldh [rNR32], a
   ; Frequency's lower data
   ld a, %00101000
-  ld [rNR33], a
+  ldh [rNR33], a
   ; Frequency's higher data
   ld a, %11000101
-  ld [rNR34], a
+  ldh [rNR34], a
   ret
 
 ClearSound::
-  ld a, %00000000
+  xor a ; ld a, 0
   ; C1
-  ld [rNR12], a
+  ldh [rNR12], a
   ; C2
-  ld [rNR22], a
+  ldh [rNR22], a
   ; C3
-  ld [rNR30], a
+  ldh [rNR30], a
   ; C4
-  ld [rNR42], a
+  ldh [rNR42], a
   ret

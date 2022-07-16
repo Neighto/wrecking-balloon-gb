@@ -125,7 +125,7 @@ UpdateGameCountdown::
 .frame0:
     inc a 
     ld [wCountdownFrame], a
-    call PercussionSound
+    call CountdownSound
     SET_HL_TO_ADDRESS wOAM+2, wCountdownOAM
     ld [hl], COUNTDOWN_3_TILE_1
     SET_HL_TO_ADDRESS wOAM+6, wCountdownOAM
@@ -137,7 +137,7 @@ UpdateGameCountdown::
 .frame1:
     inc a 
     ld [wCountdownFrame], a
-    call PercussionSound
+    call CountdownSound
     SET_HL_TO_ADDRESS wOAM+2, wCountdownOAM
     ld [hl], COUNTDOWN_2_TILE_1
     SET_HL_TO_ADDRESS wOAM+6, wCountdownOAM
@@ -149,7 +149,7 @@ UpdateGameCountdown::
 .frame2:
     inc a 
     ld [wCountdownFrame], a
-    call PercussionSound
+    call CountdownSound
     SET_HL_TO_ADDRESS wOAM+2, wCountdownOAM
     ld [hl], COUNTDOWN_1_TILE_1
     SET_HL_TO_ADDRESS wOAM+6, wCountdownOAM
