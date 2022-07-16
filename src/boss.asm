@@ -609,6 +609,8 @@ BossUpdate::
     ; Stop enemy hit
     xor a ; ld a, 0
     ldh [hEnemyHitEnemy], a
+    ; Stop attack
+    ldh [hEnemyParam3], a
     ; Stop speed
     ldh [hEnemySpeed], a
     ; Decrease life
@@ -637,10 +639,11 @@ BossUpdate::
     ldh a, [hEnemyAlive]
     cp a, 0
     jr z, .checkSpawnPointBalloon
+
 .checkSpawnBossNeedle:
     ldh a, [hEnemyParam3]
     cp a, 0
-    jr z, .endSpawnBossNeedle
+    ret z
 .spawnBossNeedle:
     ld a, BOSS_NEEDLE
     ldh [hEnemyNumber], a
@@ -678,12 +681,12 @@ BossUpdate::
     ldh [hEnemyY], a
     call SpawnBossNeedle
 .endSpawnBossNeedle:
-    jr .endCheckBossSpawns
+    ret
 
 .checkSpawnPointBalloon:
     ldh a, [hEnemyParam3]
     cp a, 0
-    jr z, .endSpawnPointBalloon
+    ret z
 .spawnPointBalloon:
     ld a, POINT_BALLOON
     ldh [hEnemyNumber], a
@@ -697,6 +700,4 @@ BossUpdate::
     ldh [hEnemyX], a
     call SpawnPointBalloon
 .endSpawnPointBalloon:
-
-.endCheckBossSpawns:
     ret
