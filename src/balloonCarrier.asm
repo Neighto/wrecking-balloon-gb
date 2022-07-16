@@ -342,7 +342,7 @@ BalloonCarrierUpdate::
     jp nz, .endCollision
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
-    SET_HL_TO_ADDRESS wOAM+12, hEnemyOAM
+    SET_HL_TO_ADDRESS wOAM+8, hEnemyOAM
     ld d, 16
     ld e, 16
     call CollisionCheck
