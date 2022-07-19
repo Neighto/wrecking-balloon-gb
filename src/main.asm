@@ -25,20 +25,24 @@ Start::
 	call InitializeController
 	call InitializeMenu
 	call InitializeEndlessVars
+	call InitializeSound
+	call AUDIO_ON ; Not actually required
 	ld hl, menuTheme
 	call hUGE_init
-
-; 	call CollectSound ; TESTING SOUND
-	
-; .loopy: ; TEST
-; 	jr .loopy ; TEST
-
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
+
+
+; 	; call BassSoundA
+; 	; call WaitVBlank
+; 	call BassSoundB
+; .loopy:
+; 	jr .loopy
+
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	call WaitVBlank
-	call UpdateMenuOpening
-	jp MenuLoopOpening
+	; call WaitVBlank
+	; call UpdateMenuOpening
+	; jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
 	call WaveSound
@@ -51,10 +55,10 @@ StartMenu::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateMenu
-	jp MenuLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateMenu
+	; jp MenuLoop
 
 StartGame::
 	call WaitVBlank
@@ -117,8 +121,8 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	ld a, 1
-	ld [wLevel], a
+	; ld a, 1
+	; ld [wLevel], a
 	; ; ^^^
 
 	ld a, [wLevel]
@@ -205,10 +209,10 @@ SetupNextLevel::
 	call RefreshWindow
 	call LCD_ON
 GameCountdownLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateGameCountdown
-	jp GameCountdownLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateGameCountdown
+	; jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA
@@ -238,6 +242,47 @@ StageClear::
 	ld c, 1
 	call hUGE_mute_channel
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
+
+
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	
 StageClearLoop:
 	call WaitVBlank
 	call OAMDMA

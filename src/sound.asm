@@ -8,24 +8,27 @@ AUDIO_OFF::
 	ret
 
 AUDIO_ON::
-  ld a, 1
+  ld a, %10001111
 	ldh [rNR52], a
 	ret
+
+InitializeSound::
+  ; Master volume
+  ld a, %11111111
+  ldh [rNR50], a
+  ldh [rNR51], a
+  ret
 
 PopSound::
   ; Volume envelope
   ld a, %11110001
   ldh [rNR42], a
   ; Polynomial counter
-  ld a, %01111011
+  ld a, %01101011
   ldh [rNR43], a
   ; Counter/consecutive initial
   ld a, %10000000
   ldh [rNR44], a
-  ; Master volume
-  ld a, %11111111
-  ldh [rNR50], a
-  ldh [rNR51], a
   ret
 
 ExplosionSound::
@@ -89,11 +92,18 @@ RisingSound::
   ret
 
 StopSweepSound::
-  ld a, %00000000
+  xor a ; ld a, 0
   ldh [rNR12], a
   ret
 
 CollectSound::
+
+  ; TODO add in relevant areas
+  ; ld b, 0
+	; ld c, 1
+	; call hUGE_mute_channel
+
+
   ; Sweep register
   ld a, %11110110
   ldh [rNR10], a
@@ -134,10 +144,10 @@ BassSoundA::
   ld a, %00100000
   ldh [rNR32], a
   ; Frequency's lower data
-  ld a, %00001000
+  ld a, %01011000 ; 0110 1000
   ldh [rNR33], a
   ; Frequency's higher data
-  ld a, %11000101
+  ld a, %11000100
   ldh [rNR34], a
   ret
 
@@ -152,10 +162,10 @@ BassSoundB::
   ld a, %00100000
   ldh [rNR32], a
   ; Frequency's lower data
-  ld a, %00101000
+  ld a, %01101000
   ldh [rNR33], a
   ; Frequency's higher data
-  ld a, %11000101
+  ld a, %11000100
   ldh [rNR34], a
   ret
 
@@ -169,4 +179,8 @@ ClearSound::
   ldh [rNR30], a
   ; C4
   ldh [rNR42], a
+
+  ld hl, _AUD3WAVERAM
+  ld bc, $F
+  call ResetHLInRange
   ret
