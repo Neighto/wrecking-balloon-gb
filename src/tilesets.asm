@@ -63,6 +63,7 @@ StageEndTilesEnd::
 
 LevelDesertTiles::
     INCBIN "incbin/background/Desert.2bpp"
+    INCBIN "incbin/background/DesertStar.2bpp"
 LevelDesertTilesEnd::
 
 LevelShowdownTiles::
