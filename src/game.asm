@@ -16,6 +16,7 @@ COUNTDOWN_2_TILE_2 EQU $34
 COUNTDOWN_1_TILE_1 EQU $2E
 COUNTDOWN_1_TILE_2 EQU $30
 COUNTDOWN_NEUTRAL_BALLOON_TILE EQU $3A
+DESERT_STAR_TILE EQU $4E
 
 SECTION "game vars", WRAM0
     wCountdownFrame:: DB
@@ -56,6 +57,29 @@ LoadLevelDesertGraphics::
 	ld hl, _SCRN0
 	ld de, LevelDesertMapEnd - LevelDesertMap
 	call MEMCPY
+    ret
+
+LoadLevelNightDesertGraphics::
+	ld bc, LevelDesertTiles
+	ld hl, _VRAM9000
+	ld de, LevelDesertTilesEnd - LevelDesertTiles
+	call MEMCPY
+    ld bc, LevelDesertMap
+	ld hl, _SCRN0
+	ld de, LevelDesertMapEnd - LevelDesertMap
+	call MEMCPY
+    ld hl, $9826
+    ld [hl], DESERT_STAR_TILE
+    ld hl, $9832
+    ld [hl], DESERT_STAR_TILE
+    ld hl, $9842
+    ld [hl], DESERT_STAR_TILE
+    ld hl, $984E
+    ld [hl], DESERT_STAR_TILE
+    ld hl, $9864
+    ld [hl], DESERT_STAR_TILE
+    ld hl, $9871
+    ld [hl], DESERT_STAR_TILE
     ret
 
 LoadLevelShowdownGraphics::

@@ -121,8 +121,8 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	; ld a, 1
-	; ld [wLevel], a
+	ld a, 5
+	ld [wLevel], a
 	; ; ^^^
 
 	ld a, [wLevel]
@@ -164,7 +164,7 @@ SetupNextLevel::
 	cp a, 5
 	jr nz, .level6
 	call SetLevelNightDesertInterrupts
-	call LoadLevelDesertGraphics
+	call LoadLevelNightDesertGraphics
 	ld hl, angryTheme
 	call hUGE_init
 	call InitializeNightSpritePalettes
