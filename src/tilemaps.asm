@@ -36,6 +36,10 @@ RainCloudsMap::
     INCBIN "incbin/background/RainClouds.tilemap"
 RainCloudsMapEnd::
 
+ShowdownWaterMap::
+    INCBIN "incbin/background/ShowdownWater.tilemap"
+ShowdownWaterMapEnd::
+
 GameOverMap::
     INCBIN "incbin/window/GameOver.tilemap"
 GameOverMapEnd::

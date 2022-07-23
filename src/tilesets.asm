@@ -52,6 +52,10 @@ RainCloudsTiles::
     INCBIN "incbin/background/RainClouds.2bpp"
 RainCloudsTilesEnd::
 
+ShowdownWaterTiles::
+    INCBIN "incbin/background/ShowdownWater.2bpp"
+ShowdownWaterTilesEnd::
+
 SECTION "tilesets 2", ROMX
 
 CutsceneTiles::

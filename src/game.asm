@@ -122,11 +122,20 @@ LoadLevelShowdownGraphics::
 	ld hl, _VRAM8800
 	ld de, RainCloudsTilesEnd - RainCloudsTiles
 	call MEMCPY
-
 	ld bc, RainCloudsMap
 	ld hl, _SCRN0
 	ld de, RainCloudsMapEnd - RainCloudsMap
 	ld a, $80
+	call MEMCPY_WITH_OFFSET
+
+    ld bc, ShowdownWaterTiles
+	ld hl, _VRAM8800 + $100
+	ld de, ShowdownWaterTilesEnd - ShowdownWaterTiles
+	call MEMCPY
+	ld bc, ShowdownWaterMap
+	ld hl, $9BC0
+	ld de, ShowdownWaterMapEnd - ShowdownWaterMap
+	ld a, $90
 	call MEMCPY_WITH_OFFSET
     ret
 
