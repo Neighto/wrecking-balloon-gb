@@ -133,7 +133,7 @@ LoadLevelShowdownGraphics::
 	ld de, ShowdownWaterTilesEnd - ShowdownWaterTiles
 	call MEMCPY
 	ld bc, ShowdownWaterMap
-	ld hl, $9BC0
+	ld hl, $9BA0
 	ld de, ShowdownWaterMapEnd - ShowdownWaterMap
 	ld a, $90
 	call MEMCPY_WITH_OFFSET
