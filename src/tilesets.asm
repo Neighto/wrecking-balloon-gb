@@ -41,6 +41,7 @@ GameSpriteTilesEnd::
 
 LevelCityTiles::
     INCBIN "incbin/background/City.2bpp"
+    INCBIN "incbin/background/DesertStar.2bpp"
 LevelCityTilesEnd::
 
 CloudsTiles::

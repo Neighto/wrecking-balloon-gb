@@ -16,6 +16,7 @@ COUNTDOWN_2_TILE_2 EQU $34
 COUNTDOWN_1_TILE_1 EQU $2E
 COUNTDOWN_1_TILE_2 EQU $30
 COUNTDOWN_NEUTRAL_BALLOON_TILE EQU $3A
+CITY_STAR_TILE EQU $48
 DESERT_STAR_TILE EQU $4E
 
 SECTION "game vars", WRAM0
@@ -46,6 +47,31 @@ LoadLevelCityGraphics::
 	ld hl, _SCRN0
 	ld de, LevelCityMapEnd - LevelCityMap
 	call MEMCPY
+	ret
+
+LoadLevelNightCityGraphics::
+	ld bc, LevelCityTiles
+	ld hl, _VRAM9000
+	ld de, LevelCityTilesEnd - LevelCityTiles
+	call MEMCPY
+	ld bc, LevelCityMap
+	ld hl, _SCRN0
+	ld de, LevelCityMapEnd - LevelCityMap
+	call MEMCPY
+    ld hl, $9821
+    ld [hl], CITY_STAR_TILE
+    ld hl, $982D
+    ld [hl], CITY_STAR_TILE
+    ld hl, $9844
+    ld [hl], CITY_STAR_TILE
+    ld hl, $984A
+    ld [hl], CITY_STAR_TILE
+    ld hl, $9853
+    ld [hl], CITY_STAR_TILE
+    ld hl, $9866
+    ld [hl], CITY_STAR_TILE
+    ld hl, $986F
+    ld [hl], CITY_STAR_TILE
 	ret
 
 LoadLevelDesertGraphics::

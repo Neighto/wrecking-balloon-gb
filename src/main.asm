@@ -121,7 +121,7 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	ld a, 5
+	ld a, 7
 	ld [wLevel], a
 	; ; ^^^
 
@@ -138,15 +138,15 @@ SetupNextLevel::
 	cp a, 2
 	jr nz, .level3
 	call SetLevelNightCityInterrupts
-	call LoadLevelCityGraphics
+	call LoadLevelNightCityGraphics
 	ld hl, angryTheme
 	call hUGE_init
 	jp .endLevelSetup
 .level3:
 	cp a, 3
 	jr nz, .level4
-	call SetLevelCityInterrupts
-	call LoadLevelCityGraphics
+	call SetLevelNightCityInterrupts
+	call LoadLevelNightCityGraphics
 	ld hl, bossTheme
 	call hUGE_init
 	call SpawnBossNotInLevelData
@@ -244,44 +244,44 @@ StageClear::
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 
 
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
+	; ld d, 80
+	; call AddPoints
+	; ld d, 80
+	; call AddPoints
+	; ld d, 80
+	; call AddPoints
+	; ld d, 80
+	; call AddPoints
+	; ld d, 80
+	; call AddPoints
+	; ld d, 80
+	; call AddPoints
+	; ld d, 80
+	; call AddPoints
+	; ld d, 80
+	; call AddPoints
+	; ld d, 80
+	; call AddPoints
+	; ld d, 80
+	; call AddPoints
+	; ld d, 80
+	; call AddPoints
+	; ld d, 80
+	; call AddPoints
+	; ld d, 80
+	; call AddPoints
+	; ld d, 80
+	; call AddPoints
+	; ld d, 80
+	; call AddPoints
+	; ld d, 80
+	; call AddPoints
+	; ld d, 80
+	; call AddPoints
+	; ld d, 80
+	; call AddPoints
+	; ld d, 80
+	; call AddPoints
 	
 StageClearLoop:
 	call WaitVBlank
