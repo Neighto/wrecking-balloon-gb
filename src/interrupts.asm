@@ -18,9 +18,10 @@ GAME_DESERT_LCD_SCROLL_MIDDLE EQU 96
 GAME_DESERT_LCD_SCROLL_CLOSE EQU 110
 GAME_DESERT_LCD_SCROLL_RESET EQU WINDOW_START_Y
 
-GAME_SHOWDOWN_LCD_SCROLL_CLOSE EQU 0
-GAME_SHOWDOWN_LCD_SCROLL_MIDDLE EQU 24
+GAME_SHOWDOWN_LCD_SCROLL_MIDDLE EQU 0
+GAME_SHOWDOWN_LCD_SCROLL_CLOSE EQU 24
 GAME_SHOWDOWN_LCD_SCROLL_RAIN EQU 32
+GAME_SHOWDOWN_LCD_SCROLL_RAIN_STOP EQU 110
 GAME_SHOWDOWN_LCD_SCROLL_RESET EQU WINDOW_START_Y
 
 ENDING_CUTSCENE_SCROLL_FAR EQU 103
@@ -373,55 +374,63 @@ SetLevelNightDesertInterrupts::
     ld [hl], a
     ret
 
-Level3LCDInterrupt:
-    ld a, [rLYC]
-    cp a, GAME_SHOWDOWN_LCD_SCROLL_RESET
-    jr z, .reset
-    cp a, GAME_SHOWDOWN_LCD_SCROLL_CLOSE
-    jr z, .close
+LevelShowdownLCDInterrupt:
+    ldh a, [rLYC]
+.middle:
     cp a, GAME_SHOWDOWN_LCD_SCROLL_MIDDLE
-    jr z, .middle
-    cp a, GAME_SHOWDOWN_LCD_SCROLL_RAIN
-    jr z, .rain
-    jr .end
-.reset:
+    jr nz, .close
     ld a, GAME_SHOWDOWN_LCD_SCROLL_CLOSE
-    ldh [rLYC], a
-    xor a ; ld a, 0
-    ldh [rSCY], a
-    ld hl, rLCDC
-    res 1, [hl]
-    jr .end
-.close:
-    ld a, GAME_SHOWDOWN_LCD_SCROLL_MIDDLE
     ldh [rLYC], a
     ldh a, [hParallaxClose]
 	ldh [rSCX], a
-    jr .end
-.middle:
+    jp LCDInterruptEnd
+.close:
+    cp a, GAME_SHOWDOWN_LCD_SCROLL_CLOSE
+    jr nz, .rain
     ld a, GAME_SHOWDOWN_LCD_SCROLL_RAIN
     ldh [rLYC], a
     ldh a, [hParallaxMiddle]
 	ldh [rSCX], a
-    jr .end
+    jp LCDInterruptEnd
 .rain:
-    ld a, GAME_SHOWDOWN_LCD_SCROLL_RESET
+    cp a, GAME_SHOWDOWN_LCD_SCROLL_RAIN
+    ; jr nz, .window
+    jr nz, .rainStop
+    ld a, GAME_SHOWDOWN_LCD_SCROLL_RAIN_STOP
     ldh [rLYC], a
     ldh a, [hRain]    
     ldh [rSCY], a
     xor a ; ld a, 0
     ldh [rSCX], a
-.end:
+    jp LCDInterruptEnd
+.rainStop:
+    cp a, GAME_SHOWDOWN_LCD_SCROLL_RAIN_STOP
+    jr nz, .window
+    ld a, GAME_SHOWDOWN_LCD_SCROLL_RESET
+    ldh [rLYC], a
+    ; xor a ; ld a, 0
+    ld a, 128
+    ldh [rSCY], a
+    jp LCDInterruptEnd
+.window:
+    cp a, GAME_SHOWDOWN_LCD_SCROLL_RESET
+    jp nz, LCDInterruptEnd
+    ld a, GAME_SHOWDOWN_LCD_SCROLL_MIDDLE
+    ldh [rLYC], a
+    xor a ; ld a, 0
+    ldh [rSCY], a
+    ld hl, rLCDC
+    res 1, [hl]
     jp LCDInterruptEnd
 
 SetLevelShowdownInterrupts::
-    ld a, GAME_SHOWDOWN_LCD_SCROLL_CLOSE
+    ld a, GAME_SHOWDOWN_LCD_SCROLL_MIDDLE
     ldh [rLYC], a
 
     ld hl, wLCDInterrupt
-    ld a, LOW(Level3LCDInterrupt)
+    ld a, LOW(LevelShowdownLCDInterrupt)
     ld [hli], a
-    ld a, HIGH(Level3LCDInterrupt)
+    ld a, HIGH(LevelShowdownLCDInterrupt)
     ld [hl], a
     ret
 
