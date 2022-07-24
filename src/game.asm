@@ -287,9 +287,8 @@ UpdateGame::
 .rest:
     UPDATE_GLOBAL_TIMER
     call LevelDataHandler
-    ; call FlickerBackgroundPalette ; testing
     call RefreshWindow
     call IncrementScrollOffset
     call SoundUpdate
-    ; call _hUGE_dosound
+    call _hUGE_dosound
     ret

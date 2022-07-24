@@ -15,11 +15,6 @@ FADE_PALETTE2_2 EQU %10000001
 FADE_PALETTE2_3 EQU %01000000
 FADE_PALETTE2_4 EQU %00000000
 
-; Flicker
-TIME_UNTIL_FLICKER EQU 150
-FLICKER_BGP EQU %10110001
-FLICKER_OBP EQU %11111111
-
 SECTION "palettes vars", WRAM0
 	wFadeInFrame:: DB
 	wFadeOutFrame:: DB
@@ -64,11 +59,6 @@ InitializeFadedPalettes::
 	ld a, FADE_PALETTE_4
 	ldh [rBGP], a
 	ldh [rOBP0], a
-	ret
-
-InitializeFlicker::
-	ld a, TIME_UNTIL_FLICKER
-	ld [wFlickerTimer], a
 	ret
 
 FadeOutPalettes::
@@ -181,32 +171,4 @@ FadeInPalettes::
 .end:
 	xor a ; ld a, 0
 	and a
-	ret
-
-FlickerBackgroundPalette::
-	ld a, [wFlickerTimer]
-	dec a 
-	ld [wFlickerTimer], a
-	cp a, 20
-	jr z, .flickerOn
-	cp a, 10
-	jr z, .flickerOff
-	cp a, 5
-	jr z, .flickerOn
-	cp a, 0
-	jr z, .flickerEnd
-	ret
-.flickerOn:
-	ld a, FLICKER_BGP
-	ldh [rBGP], a
-	ld a, FLICKER_OBP
-	ldh [rOBP0], a
-	ldh [rOBP1], a
-	ret
-.flickerOff:
-	call InitializePalettes
-	ret
-.flickerEnd:
-	call InitializePalettes
-	call InitializeFlicker
 	ret
