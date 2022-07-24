@@ -4,7 +4,7 @@ INCLUDE "macro.inc"
 SECTION "game over", ROMX
 
 GAME_OVER_DISTANCE_FROM_TOP_IN_TILES EQU 18
-TOTAL_SC_INDEX_ONE_ADDRESS EQU $98CF
+TOTAL_SC_INDEX_ONE_ADDRESS EQU $98EF
 
 LoadGameOverTiles::
     ld bc, GameOverTiles
@@ -15,12 +15,12 @@ LoadGameOverTiles::
 
 LoadGameOverGraphics::
     ld bc, GameOverMap
-	ld hl, _SCRN0 + $80
+	ld hl, _SCRN0 + $A0
 	ld de, GameOverMapEnd - GameOverMap
     ld a, $D0
     call MEMCPY_WITH_OFFSET
     ld bc, GameOverTotalMap
-	ld hl, _SCRN0 + $C0
+	ld hl, _SCRN0 + $E0
 	ld de, GameOverTotalMapEnd - GameOverTotalMap
     ld a, $D9
     call MEMCPY_WITH_OFFSET

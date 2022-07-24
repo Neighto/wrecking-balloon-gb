@@ -161,7 +161,7 @@ BulletSound::
   ld a, %00000111
   ldh [rNR41], a
   ; Volume envelope
-  ld a, %11110001
+  ld a, %10000001
   ldh [rNR42], a
   ; Polynomial counter
   ld a, %00110010
