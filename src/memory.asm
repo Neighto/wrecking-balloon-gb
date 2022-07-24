@@ -79,6 +79,19 @@ ResetHLInRange::
     jr nz, .loop
     ret
 
+SetInRange::
+    ; hl = starting address
+    ; bc = distance
+    ; d = value
+.loop:
+    ld a, d
+    ld [hli], a
+    dec bc
+    ld a, b
+    or c
+    jr nz, .loop
+    ret
+
 ClearOAM::
     ld hl, _OAMRAM
     ld bc, OAM_COUNT * OAM_ATTRIBUTES_COUNT

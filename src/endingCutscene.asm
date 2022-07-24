@@ -30,7 +30,10 @@ LoadEndingCutsceneGraphics::
 	ld de, CutsceneTilesEnd - CutsceneTiles
 	call MEMCPY
 
-    SET_IN_RANGE _SCRN0, _SCRN1 - _SCRN0, $01
+    ld hl, _SCRN0
+    ld bc, _SCRN1 - _SCRN0
+    ld d, $01
+    call SetInRange
 
 	ld bc, CutsceneMap + SCRN_X_B * CUTSCENE_DISTANCE_FROM_TOP_IN_TILES
 	ld hl, _SCRN0

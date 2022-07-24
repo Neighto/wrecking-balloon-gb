@@ -37,7 +37,7 @@ MenuLoopOpening:
 	; jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
-	call WaveSound
+	call TitleSplashSound
 	call ResetScroll
 	call SetMenuInterrupts
 	call ResetFading
@@ -58,7 +58,6 @@ StartGame::
 	call ClearMap
 	call ClearOAM
 	call ClearSound
-	call ClearSoundRAM
 	call ClearAllTiles
 	call ResetScroll
 	call ResetGlobalTimer
@@ -132,7 +131,7 @@ SetupNextLevel::
 	jr nz, .level3
 	call SetLevelNightCityInterrupts
 	call LoadLevelNightCityGraphics
-	ld hl, bossTheme
+	ld hl, angryTheme
 	call hUGE_init
 	jp .endLevelSetup
 .level3:
@@ -219,22 +218,23 @@ StageClear::
 	call ClearMap
 	call ClearOAM
 	call ClearSound
-	call ClearSoundRAM
 	call InitializeInterrupts
+	call InitializeSound
+	call SetWaveRAMToSquareWave
 	call LoadStageClearGraphics
 	call ResetFading
 	call ResetGlobalTimer
 	call InitializeFadedPalettes
 	call InitializeStageClear
 	call SpawnStageNumber
-	ld hl, menuTheme
-	call hUGE_init
-	ld b, 3 ; Channel 4
-	ld c, 1 ; Mute
-	call hUGE_mute_channel
-	ld b, 2 ; Channel 3
-	ld c, 1 ; Mute
-	call hUGE_mute_channel
+	; ld hl, menuTheme
+	; call hUGE_init
+	; ld b, 3 ; Channel 4
+	; ld c, 1 ; Mute
+	; call hUGE_mute_channel
+	; ld b, 2 ; Channel 3
+	; ld c, 1 ; Mute
+	; call hUGE_mute_channel
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 
 
