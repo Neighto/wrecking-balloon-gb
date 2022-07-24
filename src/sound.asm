@@ -3,6 +3,7 @@ INCLUDE "hardware.inc"
 POP_SOUND_TIMER EQU 40
 EXPLOSION_SOUND_TIMER EQU 40
 PROJECTILE_SOUND_TIMER EQU 20
+BULLET_SOUND_TIMER EQU 20
 
 SECTION "sound vars", WRAM0
   wChannel4SoundTimer:: DB
@@ -145,6 +146,25 @@ ProjectileSound::
   ldh [rNR42], a
   ; Polynomial counter
   ld a, %00111111
+  ldh [rNR43], a
+  ; Counter/consecutive initial
+  ld a, %11000000
+  ldh [rNR44], a
+  ret
+
+BulletSound::
+  ld b, 3 ; Channel 4
+	ld c, 1 ; Mute
+	call hUGE_mute_channel
+  ld a, BULLET_SOUND_TIMER
+  ; Sound length
+  ld a, %00000111
+  ldh [rNR41], a
+  ; Volume envelope
+  ld a, %11110001
+  ldh [rNR42], a
+  ; Polynomial counter
+  ld a, %00110010
   ldh [rNR43], a
   ; Counter/consecutive initial
   ld a, %11000000
