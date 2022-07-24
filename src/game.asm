@@ -291,5 +291,5 @@ UpdateGame::
     call RefreshWindow
     call IncrementScrollOffset
     call SoundUpdate
-    call _hUGE_dosound
+    ; call _hUGE_dosound
     ret

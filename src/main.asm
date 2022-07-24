@@ -113,8 +113,8 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	ld a, 2
-	ld [wLevel], a
+	; ld a, 2
+	; ld [wLevel], a
 	; ; ^^^
 
 	ld a, [wLevel]
@@ -200,6 +200,7 @@ SetupNextLevel::
 	call InitializeNewLevel
 	call RefreshWindow
 	call LCD_ON
+	; Comment out GameCountdownLoop to skip countdown
 GameCountdownLoop:
 	; call WaitVBlank
 	; call OAMDMA
@@ -236,47 +237,6 @@ StageClear::
 	; ld c, 1 ; Mute
 	; call hUGE_mute_channel
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
-
-
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	ld d, 80
-	call AddPoints
-	
 StageClearLoop:
 	call WaitVBlank
 	call OAMDMA

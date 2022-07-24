@@ -20,6 +20,7 @@ InitializeBullet::
     ret
 
 SpawnBullet::
+    call BulletSound
     ld a, 1 
     ld [wPlayerBulletAlive], a
     ldh a, [hPlayerY2]
