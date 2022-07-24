@@ -107,7 +107,7 @@ AddTotal::
     jr nc, .checkLoop
     inc a
     ld [wLivesToAdd], a
-    call WaveSound
+    call PopSound
 .checkLoop:
     pop af
     ret nc
