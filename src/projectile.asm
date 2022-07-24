@@ -102,6 +102,7 @@ SpawnProjectile::
     LD_HL_BC
     call SetStruct
 .end:
+    call ProjectileSound
     pop hl
     ret
 
