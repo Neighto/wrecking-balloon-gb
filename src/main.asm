@@ -113,7 +113,7 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	ld a, 5
+	ld a, 7
 	ld [wLevel], a
 	; ; ^^^
 
@@ -182,8 +182,8 @@ SetupNextLevel::
 .level8:
 	cp a, 8
 	jr nz, .level9
-	call SetLevelDesertInterrupts
-	call LoadLevelDesertGraphics
+	call SetLevelShowdownInterrupts
+	call LoadLevelShowdownGraphics
 	ld hl, angryTheme
 	call hUGE_init
 	jr .endLevelSetup
