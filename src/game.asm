@@ -290,5 +290,6 @@ UpdateGame::
     ; call FlickerBackgroundPalette ; testing
     call RefreshWindow
     call IncrementScrollOffset
+    call SoundUpdate
     call _hUGE_dosound
     ret

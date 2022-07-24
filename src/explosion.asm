@@ -107,6 +107,7 @@ SpawnExplosion::
     LD_HL_BC
     call SetStruct
 .end:
+    call ExplosionSound
     pop hl
     ret
 

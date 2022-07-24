@@ -248,8 +248,6 @@ BombUpdate::
     ; Animation trigger
     ld a, 1
     ldh [hEnemyDying], a
-    ; Sound
-    call ExplosionSound ; conflicts with the pop sound
 .endCollision:
 
 .checkOffscreen:

@@ -30,14 +30,6 @@ Start::
 	ld hl, menuTheme
 	call hUGE_init
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
-
-
-; 	; call BassSoundA
-; 	; call WaitVBlank
-; 	call BassSoundB
-; .loopy:
-; 	jr .loopy
-
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
 	; call WaitVBlank
@@ -66,6 +58,7 @@ StartGame::
 	call ClearMap
 	call ClearOAM
 	call ClearSound
+	call ClearSoundRAM
 	call ClearAllTiles
 	call ResetScroll
 	call ResetGlobalTimer
@@ -86,14 +79,14 @@ StartGame::
 	call SpawnHandWave
 	ld hl, menuTheme
 	call hUGE_init
-	ld b, 0
-	ld c, 1
+	ld b, 0 ; Channel 1
+	ld c, 1 ; Mute
 	call hUGE_mute_channel
-	ld b, 1
-	ld c, 1
+	ld b, 1 ; Channel 2
+	ld c, 1 ; Mute
 	call hUGE_mute_channel
-	ld b, 3
-	ld c, 1
+	ld b, 3 ; Channel 4
+	ld c, 1 ; Mute
 	call hUGE_mute_channel
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
@@ -121,7 +114,7 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	ld a, 7
+	ld a, 2
 	ld [wLevel], a
 	; ; ^^^
 
@@ -139,14 +132,14 @@ SetupNextLevel::
 	jr nz, .level3
 	call SetLevelNightCityInterrupts
 	call LoadLevelNightCityGraphics
-	ld hl, angryTheme
+	ld hl, bossTheme
 	call hUGE_init
 	jp .endLevelSetup
 .level3:
 	cp a, 3
 	jr nz, .level4
-	call SetLevelNightCityInterrupts
-	call LoadLevelNightCityGraphics
+	call SetLevelShowdownInterrupts
+	call LoadLevelShowdownGraphics
 	ld hl, bossTheme
 	call hUGE_init
 	call SpawnBossNotInLevelData
@@ -226,6 +219,7 @@ StageClear::
 	call ClearMap
 	call ClearOAM
 	call ClearSound
+	call ClearSoundRAM
 	call InitializeInterrupts
 	call LoadStageClearGraphics
 	call ResetFading
@@ -235,53 +229,53 @@ StageClear::
 	call SpawnStageNumber
 	ld hl, menuTheme
 	call hUGE_init
-	ld b, 3
-	ld c, 1
+	ld b, 3 ; Channel 4
+	ld c, 1 ; Mute
 	call hUGE_mute_channel
-	ld b, 2
-	ld c, 1
+	ld b, 2 ; Channel 3
+	ld c, 1 ; Mute
 	call hUGE_mute_channel
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 
 
-	; ld d, 80
-	; call AddPoints
-	; ld d, 80
-	; call AddPoints
-	; ld d, 80
-	; call AddPoints
-	; ld d, 80
-	; call AddPoints
-	; ld d, 80
-	; call AddPoints
-	; ld d, 80
-	; call AddPoints
-	; ld d, 80
-	; call AddPoints
-	; ld d, 80
-	; call AddPoints
-	; ld d, 80
-	; call AddPoints
-	; ld d, 80
-	; call AddPoints
-	; ld d, 80
-	; call AddPoints
-	; ld d, 80
-	; call AddPoints
-	; ld d, 80
-	; call AddPoints
-	; ld d, 80
-	; call AddPoints
-	; ld d, 80
-	; call AddPoints
-	; ld d, 80
-	; call AddPoints
-	; ld d, 80
-	; call AddPoints
-	; ld d, 80
-	; call AddPoints
-	; ld d, 80
-	; call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
+	ld d, 80
+	call AddPoints
 	
 StageClearLoop:
 	call WaitVBlank

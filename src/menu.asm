@@ -83,7 +83,6 @@ UpdateMenuOpening::
 	ldh a, [hControllerDown]
     and PADF_START | PADF_A
 	jr z, .endSkip
-	call StopSweepSound
 	ld a, 5
 	ld [wMenuFrame], a
 .endSkip:
@@ -181,6 +180,9 @@ UpdateMenu::
 .start:
 	ld a, 1 
 	ld [wTriggerFadeOut], a
+	ld b, 0
+	ld c, 1
+	call hUGE_mute_channel
 	call CollectSound
 	ret
 .fadeOut:
