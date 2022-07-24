@@ -113,8 +113,8 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	ld a, 7
-	ld [wLevel], a
+	; ld a, 7
+	; ld [wLevel], a
 	; ; ^^^
 
 	ld a, [wLevel]
@@ -137,8 +137,8 @@ SetupNextLevel::
 .level3:
 	cp a, 3
 	jr nz, .level4
-	call SetLevelShowdownInterrupts
-	call LoadLevelShowdownGraphics
+	call SetLevelBossInterrupts
+	call LoadLevelBossGraphics
 	ld hl, bossTheme
 	call hUGE_init
 	call SpawnBossNotInLevelData
@@ -164,8 +164,8 @@ SetupNextLevel::
 .level6:
 	cp a, 6
 	jr nz, .level7
-	call SetLevelDesertInterrupts
-	call LoadLevelDesertGraphics
+	call SetLevelBossInterrupts
+	call LoadLevelBossGraphics
 	ld hl, bossTheme
 	call hUGE_init
 	call SpawnBossNotInLevelData
@@ -188,8 +188,8 @@ SetupNextLevel::
 	call hUGE_init
 	jr .endLevelSetup
 .level9:
-	call SetLevelShowdownInterrupts
-	call LoadLevelShowdownGraphics
+	call SetLevelBossInterrupts
+	call LoadLevelBossGraphics
 	ld hl, bossTheme
 	call hUGE_init
 	call SpawnBossNotInLevelData

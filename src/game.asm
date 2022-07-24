@@ -139,6 +139,21 @@ LoadLevelShowdownGraphics::
 	call MEMCPY_WITH_OFFSET
     ret
 
+LoadLevelBossGraphics::
+	ld bc, CloudsTiles
+	ld hl, _VRAM8800
+	ld de, CloudsTilesEnd - CloudsTiles
+	call MEMCPY
+    ld hl, _VRAM9000
+    ld bc, $10
+    call ResetHLInRange
+	ld bc, CloudsMap
+	ld hl, $99C0
+	ld de, CloudsMapEnd - CloudsMap
+	ld a, $80
+	call MEMCPY_WITH_OFFSET
+    ret
+
 SpawnCountdown::
 	ld b, 2
 	call RequestOAMSpace

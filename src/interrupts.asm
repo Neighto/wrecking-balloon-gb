@@ -25,6 +25,11 @@ GAME_SHOWDOWN_LCD_SCROLL_FAR2 EQU 102
 GAME_SHOWDOWN_LCD_SCROLL_CLOSE EQU 110
 GAME_SHOWDOWN_LCD_SCROLL_RESET EQU WINDOW_START_Y
 
+GAME_BOSS_LCD_SCROLL_FAR EQU 111
+; GAME_BOSS_LCD_SCROLL_MIDDLE EQU 111
+GAME_BOSS_LCD_SCROLL_CLOSE EQU 119
+GAME_BOSS_LCD_SCROLL_RESET EQU WINDOW_START_Y
+
 ENDING_CUTSCENE_SCROLL_FAR EQU 103
 ENDING_CUTSCENE_SCROLL_CLOSE EQU 111
 ENDING_CUTSCENE_SCROLL_RESET EQU 119
@@ -78,7 +83,7 @@ LCDInterruptEnd:
     reti
 
 MenuLCDInterrupt:
-    ld a, [rLYC]
+    ldh a, [rLYC]
     cp a, MENU_LCD_SCROLL_RESET
     jr z, .reset
 	cp a, MENU_LCD_SCROLL_FAR
@@ -118,7 +123,7 @@ SetMenuInterrupts::
     ret 
 
 OpeningCutsceneLCDInterrupt:
-    ld a, [rLYC]
+    ldh a, [rLYC]
     cp a, OPENING_CUTSCENE_HIDE
     jr z, .hide
 	cp a, OPENING_CUTSCENE_SHOW
@@ -443,6 +448,46 @@ SetLevelShowdownInterrupts::
     ld a, HIGH(LevelShowdownLCDInterrupt)
     ld [hl], a
     ret
+
+LevelBossLCDInterrupt:
+    ldh a, [rLYC]
+.far:
+    cp a, GAME_BOSS_LCD_SCROLL_FAR
+    jr nz, .close 
+    ld a, GAME_BOSS_LCD_SCROLL_CLOSE
+    ldh [rLYC], a
+    ldh a, [hParallaxFar]
+	ldh [rSCX], a
+    jp LCDInterruptEnd
+.close:
+    cp a, GAME_BOSS_LCD_SCROLL_CLOSE
+    jr nz, .window 
+    ld a, GAME_BOSS_LCD_SCROLL_RESET
+    ldh [rLYC], a
+    ldh a, [hParallaxClose]
+	ldh [rSCX], a
+    jp LCDInterruptEnd
+.window:
+    cp a, GAME_BOSS_LCD_SCROLL_RESET
+    jp nz, LCDInterruptEnd
+    ld a, GAME_BOSS_LCD_SCROLL_FAR
+    ldh [rLYC], a
+    xor a ; ld a, 0
+    ldh [rSCX], a
+    ld hl, rLCDC
+    res 1, [hl]
+    jp LCDInterruptEnd
+
+SetLevelBossInterrupts::
+    ld a, GAME_BOSS_LCD_SCROLL_FAR
+	ldh [rLYC], a
+
+    ld hl, wLCDInterrupt
+    ld a, LOW(LevelBossLCDInterrupt)
+    ld [hli], a
+    ld a, HIGH(LevelBossLCDInterrupt)
+    ld [hl], a
+    ret 
 
 SetEndingCutsceneInterrupts::
     ld a, ENDING_CUTSCENE_SCROLL_FAR
