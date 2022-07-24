@@ -436,6 +436,7 @@ PlayerControls:
   ldh [hPlayerBoost], a
   ld hl, hPlayerSpeed
   ld [hl], PLAYER_DEFAULT_SPEED * 2
+  call BoostSound
 .endB:
   ret
 
