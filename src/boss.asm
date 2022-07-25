@@ -681,6 +681,7 @@ BossUpdate::
     ldh [hEnemyY], a
     call SpawnBossNeedle
 .endSpawnBossNeedle:
+    call BossNeedleSound
     ret
 
 .checkSpawnPointBalloon:

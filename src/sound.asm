@@ -172,6 +172,25 @@ BulletSound::
   ldh [rNR44], a
   ret
 
+BossNeedleSound::
+  ld b, 3 ; Channel 4
+	ld c, 1 ; Mute
+	call hUGE_mute_channel
+  ld a, BULLET_SOUND_TIMER
+  ; Sound length
+  ld a, %000001111
+  ldh [rNR41], a
+  ; Volume envelope
+  ld a, %10100001
+  ldh [rNR42], a
+  ; Polynomial counter
+  ld a, %01010011
+  ldh [rNR43], a
+  ; Counter/consecutive initial
+  ld a, %11000000
+  ldh [rNR44], a
+  ret
+
 BoostSound::
   ld b, 3 ; Channel 4
 	ld c, 1 ; Mute
