@@ -118,7 +118,6 @@ PointSound::
 
 UpdateStageClear::
     UPDATE_GLOBAL_TIMER
-    ; call _hUGE_dosound
     call RefreshStageClear
 .fadeIn:
     call FadeInPalettes

@@ -113,8 +113,8 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	ld a, 7
-	ld [wLevel], a
+	; ld a, 1
+	; ld [wLevel], a
 	; ; ^^^
 
 	ld a, [wLevel]
@@ -228,14 +228,6 @@ StageClear::
 	call InitializeFadedPalettes
 	call InitializeStageClear
 	call SpawnStageNumber
-	; ld hl, menuTheme
-	; call hUGE_init
-	; ld b, 3 ; Channel 4
-	; ld c, 1 ; Mute
-	; call hUGE_mute_channel
-	; ld b, 2 ; Channel 3
-	; ld c, 1 ; Mute
-	; call hUGE_mute_channel
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 StageClearLoop:
 	call WaitVBlank

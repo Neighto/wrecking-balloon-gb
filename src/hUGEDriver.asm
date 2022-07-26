@@ -1299,18 +1299,6 @@ _hUGE_dosound_with_end::
     call _load_note_data
     cp a, STOP_SONG
     ret z
-    loadShort pattern2, b, c
-    call _load_note_data
-    cp a, STOP_SONG
-    ret z
-    loadShort pattern3, b, c
-    call _load_note_data
-    cp a, STOP_SONG
-    ret z
-    loadShort pattern4, b, c
-    call _load_note_data
-    cp a, STOP_SONG
-    ret z
 
 _hUGE_dosound_banked::
 _hUGE_dosound::
