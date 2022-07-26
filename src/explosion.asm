@@ -106,8 +106,17 @@ SpawnExplosion::
 .setStruct:
     LD_HL_BC
     call SetStruct
-.end:
+.variantSound:
+    ldh a, [hEnemyVariant]
+.bombSound:
+    cp a, EXPLOSION_BOMB_VARIANT
+    jr nz, .congratulationsSound
     call ExplosionSound
+    jr .endVariantSound
+.congratulationsSound:
+    call FireworkSound
+.endVariantSound:
+.end:
     pop hl
     ret
 

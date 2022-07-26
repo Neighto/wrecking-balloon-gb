@@ -124,7 +124,24 @@ ExplosionSound::
   ld a, EXPLOSION_SOUND_TIMER
   ld [wChannel4SoundTimer], a
   ; Volume envelope
-  ld a, %10110111
+  ld a, %11000110
+  ldh [rNR42], a
+  ; Polynomial counter
+  ld a, %01111100
+  ldh [rNR43], a
+  ; Counter/consecutive initial
+  ld a, %10000000
+  ldh [rNR44], a
+  ret
+
+FireworkSound::
+  ld b, 3 ; Channel 4
+	ld c, 1 ; Mute
+	call hUGE_mute_channel
+  ld a, EXPLOSION_SOUND_TIMER
+  ld [wChannel4SoundTimer], a
+  ; Volume envelope
+  ld a, %10110110
   ldh [rNR42], a
   ; Polynomial counter
   ld a, %01110001
@@ -279,7 +296,7 @@ BassSoundA::
   ld a, %11110010
   ldh [rNR31], a
   ; Select output level
-  ld a, %01000000
+  ld a, %00100000
   ldh [rNR32], a
   ; Frequency's lower data
   ld a, %11111100
@@ -297,7 +314,7 @@ BassSoundB::
   ld a, %11110010
   ldh [rNR31], a
   ; Select output level
-  ld a, %01000000
+  ld a, %00100000
   ldh [rNR32], a
   ; Frequency's lower data
   ld a, %00000000
