@@ -51,8 +51,9 @@ InitializePlayer::
   ldh [hPlayerLookRight], a
 
   call SetPlayerPositionOpeningDefault
-  ld hl, hPlayerSpeed
-  ld [hl], PLAYER_DEFAULT_SPEED
+
+  ld a, PLAYER_DEFAULT_SPEED
+  ldh [hPlayerSpeed], a
   ret
 
 UpdateBalloonPosition:
@@ -212,32 +213,6 @@ SpawnPlayer::
   ld [hl], PLAYER_BALLOON_TILE
   inc l
   ld [hl], OAMF_PAL1 | OAMF_XFLIP
-  ret
-
-ClearPlayerCactus:
-  xor a ; ld a, 0
-  ld hl, wPlayerCactusOAM
-  ld [hli], a
-  ld [hli], a
-  ld [hli], a
-  ld [hli], a
-  ld [hli], a
-  ld [hli], a
-  ld [hli], a
-  ld [hl], a
-  ret
-
-ClearPlayerBalloon:
-  xor a ; ld a, 0
-  ld hl, wPlayerBalloonOAM
-  ld [hli], a
-  ld [hli], a
-  ld [hli], a
-  ld [hli], a
-  ld [hli], a
-  ld [hli], a
-  ld [hli], a
-  ld [hl], a
   ret
 
 PlayerControls:
@@ -482,13 +457,16 @@ PopPlayerBalloonAnimation:
   jr .endFrame
 .clear:
   ; Remove sprites
-  call ClearPlayerBalloon
+.clearPlayerBalloon
+  xor a ; ld a, 0
+  ld hl, wPlayerBalloonOAM
+  ld bc, PLAYER_BALLOON_OAM_BYTES
+  call ResetHLInRange
   ; Reset variables
-  ld hl, hPlayerPopping
-  ld [hl], a
+  ldh [hPlayerPopping], a
   ret
 .endFrame:
-  ldh [hPlayerPoppingFrame], a
+  ldh a, [hPlayerPoppingFrame]
   inc a 
   ldh [hPlayerPoppingFrame], a
   ret
@@ -503,16 +481,14 @@ CollisionWithPlayer::
   ret z
 .deathOfPlayer:
   xor a ; ld a, 0
-  ld hl, hPlayerAlive
-  ld [hl], a
-  ld hl, hPlayerLives
-  dec [hl]
+  ldh [hPlayerAlive], a
+  ldh a, [hPlayerLives]
+  dec a
+  ldh [hPlayerLives], a
   ; Animation trigger
   ld a, 1
-  ld hl, hPlayerPopping
-  ld [hl], a
-  ld hl, hPlayerFalling
-  ld [hl], a
+  ldh [hPlayerPopping], a
+  ldh [hPlayerFalling], a
   ; Screaming cactus
   ld hl, wPlayerCactusOAM+2
   ld [hl], PLAYER_CACTUS_SCREAMING_TILE
@@ -567,7 +543,10 @@ PlayerUpdate::
 .fellOffscreen:
   xor a ; ld a, 0
   ldh [hPlayerFalling], a
-  call ClearPlayerCactus
+.clearPlayerCactus:
+  ld hl, wPlayerCactusOAM
+  ld bc, PLAYER_CACTUS_OAM_BYTES
+  call ResetHLInRange
   ret
 .respawning:
   ldh a, [hPlayerLives]
@@ -655,8 +634,8 @@ PlayerUpdate::
   cp a, PLAYER_BOOST_EFFECT_ENDS
   jr nc, .endBoost
 .resetBoost:
-  ld hl, hPlayerSpeed
-  ld [hl], PLAYER_DEFAULT_SPEED
+  ld a, PLAYER_DEFAULT_SPEED
+  ldh [hPlayerSpeed], a
 .endBoost:
 
 .checkAttack:
