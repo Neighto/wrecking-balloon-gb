@@ -20,6 +20,7 @@ SECTION "player vars", HRAM
   hPlayerLives:: DB
   hPlayerLookRight:: DB
   hPlayerBobbedUp:: DB
+  hPlayerStunnedTimer:: DB
 
   ; Operate like timers
   hPlayerInvincible:: DB
@@ -44,6 +45,7 @@ InitializePlayer::
   ldh [hPlayerBoost], a
   ldh [hPlayerAttack], a
   ldh [hPlayerBobbedUp], a
+  ldh [hPlayerStunnedTimer], a
 
   ld a, 1
   ldh [hPlayerAlive], a
@@ -499,6 +501,23 @@ CollisionWithPlayer::
   call FallingSound
   ret
 
+CollisionWithPlayerCactus::
+  ; Check if player is invincible
+  ldh a, [hPlayerInvincible]
+  cp a, 0
+  ret nz
+  ldh a, [hPlayerAlive]
+  cp a, 0
+  ret z
+.stunPlayer:
+  ldh a, [hPlayerStunnedTimer]
+  cp a, 0
+  ret nz
+  ld a, PLAYER_STUNNED_TIME
+  ldh [hPlayerStunnedTimer], a
+  call HitSound
+  ret
+
 PlayerUpdate::
 
 .checkAlive:
@@ -564,6 +583,37 @@ PlayerUpdate::
   ret
 .isAlive:
 
+.checkStunned:
+  ldh a, [hPlayerStunnedTimer]
+  cp a, 0
+  jr z, .endCheckStunned
+.isStunned:
+  dec a
+  ldh [hPlayerStunnedTimer], a
+  and PLAYER_STUNNED_SLOW_TIME
+  jr nz, .endCheckStunned
+.blinking:
+  ld hl, wPlayerCactusOAM + 2
+  ld a, [hl]
+  cp a, EMPTY_TILE
+  jr z, .blinkOn
+.blinkOff:
+  ld a, EMPTY_TILE
+  ld [hli], a
+  inc l
+  inc l
+  inc l
+  ld [hli], a
+  jr .endCheckStunned
+.blinkOn:
+  ld a, PLAYER_CACTUS_TILE
+  ld [hli], a
+  inc l
+  inc l
+  inc l
+  ld [hli], a
+.endCheckStunned:
+
 .checkInvincible:
   ldh a, [hPlayerInvincible]
   cp a, 0
@@ -608,6 +658,9 @@ PlayerUpdate::
 .checkMove:
   ldh a, [hGlobalTimer]
 	and	PLAYER_MOVE_TIME
+  jr nz, .endMove
+  ldh a, [hPlayerStunnedTimer]
+  cp a, 0
   jr nz, .endMove
 .canMove:
   call ReadController

@@ -161,18 +161,28 @@ ProjectileUpdate::
     ldh a, [hGlobalTimer]
     and	PROJECTILE_COLLISION_TIME
     jr nz, .endCollision
-.checkHit:
+.checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ld d, 8
     ld e, 8
     call CollisionCheck
     cp a, 0
+    jr z, .checkHitCactus
+    call CollisionWithPlayer
+    jr .deathOfProjectile
+.checkHitCactus:
+    ld bc, wPlayerCactusOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ld d, 8
+    ld e, 8
+    call CollisionCheck
+    cp a, 0
     jr z, .endCollision
+    call CollisionWithPlayerCactus
 .deathOfProjectile:
     ld bc, PROJECTILE_OAM_BYTES
     call ClearEnemy
-    call CollisionWithPlayer
     jr .setStruct
 .endCollision:
 
