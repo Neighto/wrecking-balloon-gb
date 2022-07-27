@@ -332,7 +332,18 @@ BirdUpdate::
     ld e, 8
     call CollisionCheck
     cp a, 0
-    call nz, CollisionWithPlayer
+    jr z, .checkHitCactus
+    call CollisionWithPlayer
+    jp .endCollision
+.checkHitCactus:
+    ld bc, wPlayerCactusOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ld d, 24
+    ld e, 8
+    call CollisionCheck
+    cp a, 0
+    jr z, .endCollision
+    call CollisionWithPlayerCactus
     jr .endCollision
 .deathOfBird:
     xor a ; ld a, 0

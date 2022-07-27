@@ -5,6 +5,7 @@ EXPLOSION_SOUND_TIMER EQU 40
 PROJECTILE_SOUND_TIMER EQU 20
 BULLET_SOUND_TIMER EQU 20
 BOOST_SOUND_TIMER EQU 40
+HIT_SOUND_TIMER EQU 40
 
 SECTION "sound vars", WRAM0
   wChannel4SoundTimer:: DB
@@ -117,6 +118,23 @@ PopSound::
   ldh [rNR44], a
   ret
 
+HitSound::
+  ld b, 3 ; Channel 4
+	ld c, 1 ; Mute
+	call hUGE_mute_channel
+  ld a, HIT_SOUND_TIMER
+  ld [wChannel4SoundTimer], a
+  ; Volume envelope
+  ld a, 101110001
+  ldh [rNR42], a
+  ; Polynomial counter
+  ld a, %01000100
+  ldh [rNR43], a
+  ; Counter/consecutive initial
+  ld a, %10000000
+  ldh [rNR44], a
+  ret
+
 ExplosionSound::
   ld b, 3 ; Channel 4
 	ld c, 1 ; Mute
@@ -124,7 +142,7 @@ ExplosionSound::
   ld a, EXPLOSION_SOUND_TIMER
   ld [wChannel4SoundTimer], a
   ; Volume envelope
-  ld a, %11000110
+  ld a, %11100110
   ldh [rNR42], a
   ; Polynomial counter
   ld a, %01111100
@@ -182,7 +200,7 @@ BulletSound::
   ld a, %10100001
   ldh [rNR42], a
   ; Polynomial counter
-  ld a, %00110010
+  ld a, %01000010
   ldh [rNR43], a
   ; Counter/consecutive initial
   ld a, %11000000
