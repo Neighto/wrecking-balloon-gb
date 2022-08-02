@@ -9,8 +9,8 @@ PORCUPINE_OAM_BYTES EQU PORCUPINE_OAM_SPRITES * OAM_ATTRIBUTES_COUNT
 PORCUPINE_OAM_BUFFER_FOR_SPAWNS_SPRITES EQU 3
 PORCUPINE_OAM_BUFFER_FOR_SPAWNS_BYTES EQU PORCUPINE_OAM_BUFFER_FOR_SPAWNS_SPRITES * OAM_ATTRIBUTES_COUNT
 PORCUPINE_MOVE_TIME EQU %00000001
-PORCUPINE_ATTACK_TIME EQU %00111111
 PORCUPINE_COLLISION_TIME EQU %00000111
+PORCUPINE_ATTACK_COOLDOWN_TIMER EQU 50
 
 PORCUPINE_HP EQU 2
 
@@ -44,9 +44,9 @@ PORCUPINE_KNOCKED_OUT_TIME EQU 40
 
 PORCUPINE_POINTS EQU 50
 
-PORCUPINE_POINT_Y1 EQU 40
+PORCUPINE_POINT_Y1 EQU 46
 PORCUPINE_POINT_Y2 EQU 66
-PORCUPINE_POINT_Y3 EQU 90
+PORCUPINE_POINT_Y3 EQU 86
 
 SECTION "boss", ROMX
 
@@ -83,6 +83,8 @@ SetStruct:
     ldh a, [hEnemyParam3] ; Enemy Trigger Projectile / Balloon
     ld [hli], a
     ldh a, [hEnemyParam4] ; Enemy Direction Change Timer
+    ld [hli], a
+    ldh a, [hEnemyParam5] ; Enemy Attack Cooldown Timer
     ld [hli], a
     ldh a, [hEnemyVariant]
     ld [hl], a
@@ -201,6 +203,7 @@ SpawnBoss::
     ret
 
 SpawnBossNotInLevelData::
+.spawnBoss:
 	ld a, BOSS
 	ldh [hEnemyNumber], a
 	ld a, 68
@@ -240,6 +243,8 @@ BossUpdate::
     ldh [hEnemyParam3], a
     ld a, [hli]
     ldh [hEnemyParam4], a
+    ld a, [hli]
+    ldh [hEnemyParam5], a
     ld a, [hl]
     ldh [hEnemyVariant], a
 
@@ -317,7 +322,7 @@ BossUpdate::
     ld a, 255
 .setExpressionTimer:
     ldh [hEnemyAnimationTimer], a
-    ld a, [hEnemyX]
+    ldh a, [hEnemyX]
     cp a, SCRN_X / 2
     jr c, .lookRight
 .lookLeft:
@@ -411,14 +416,14 @@ BossUpdate::
 
 .checkDirection:
     ldh a, [hGlobalTimer]
-    and %00000011
+    and %00000001
     jr nz, .endCheckDirection
     ldh a, [hEnemyParam4]
     inc a 
     ldh [hEnemyParam4], a
     ld b, a
 .checkDirectionX:
-    and %01111111 ; 01111111
+    and %11111111
     jr nz, .endCheckDirectionX
     ldh a, [hEnemyDirectionLeft]
     and ENEMY_DIRECTION_HORIZONTAL_MASK
@@ -434,7 +439,7 @@ BossUpdate::
 
 .checkDirectionY:
     ld a, b
-    and %00001111
+    and %00011111
     jr nz, .endCheckDirectionY
     ldh a, [hEnemyParam1]
 .pointY1:
@@ -530,11 +535,15 @@ BossUpdate::
     cp a, b
     jr nz, .moveYContinue
 .moveYStoppedAndAttack:
-    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
-    ld a, [hl]
-    cp a, PORCUPINE_CONFIDENT_FACE_TILE
-    jr z, .endMoveY
+    ; TODO fix this, it should shoot when we first come to a stop and that's it
+    ; SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
+    ; ld a, [hl]
+    ; cp a, PORCUPINE_CONFIDENT_FACE_TILE
+    ; jr z, .endMoveY
     ldh a, [hEnemySpeed]
+    cp a, 0
+    jr nz, .endMoveY
+    ldh a, [hEnemyParam5]
     cp a, 0
     jr nz, .endMoveY
 .canAttack:
@@ -544,6 +553,8 @@ BossUpdate::
     ldh [hEnemyAnimationTimer], a
     inc a
     ldh [hEnemyParam3], a
+    ld a, PORCUPINE_ATTACK_COOLDOWN_TIMER
+    ldh [hEnemyParam5], a
     jr .endMoveY
 .moveYContinue:
     jr c, .moveYDown
@@ -555,7 +566,6 @@ BossUpdate::
 .moveYUpdate:
     ld [hl], a
 .endMoveY:
-
     call UpdateBossPosition
 .endMove:
 
@@ -574,6 +584,14 @@ BossUpdate::
     ld a, OAMF_XFLIP | OAMF_PAL0
     ld [hl], a
 .endString:
+
+.checkAttackCooldown:
+    ldh a, [hEnemyParam5]
+    cp a, 0
+    jr z, .endCheckAttackCooldown
+    dec a
+    ldh [hEnemyParam5], a
+.endCheckAttackCooldown:
 
 .checkCollision:
     ldh a, [hGlobalTimer]
@@ -605,7 +623,7 @@ BossUpdate::
     ld d, PORCUPINE_POINTS
     call AddPoints
     ; Sound
-    call CountdownSound ; CHANGE ME
+    call HitSound
     ; Stop enemy hit
     xor a ; ld a, 0
     ldh [hEnemyHitEnemy], a

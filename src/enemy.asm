@@ -28,6 +28,7 @@ SECTION "enemy struct vars", HRAM
     hEnemyParam2:: DB
     hEnemyParam3:: DB
     hEnemyParam4:: DB
+    hEnemyParam5:: DB
 
 SECTION "enemy struct", ROM0
 
@@ -48,6 +49,7 @@ InitializeEnemyStructVars::
     ldh [hEnemyParam2], a
     ldh [hEnemyParam3], a
     ldh [hEnemyParam4], a
+    ldh [hEnemyParam5], a
     ret
 
 SECTION "enemy data vars", WRAM0
