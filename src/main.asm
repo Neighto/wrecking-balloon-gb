@@ -24,7 +24,6 @@ Start::
 	call InitializePalettes
 	call InitializeController
 	call InitializeMenu
-	call InitializeEndlessVars
 	call InitializeSound
 	call AUDIO_ON ; Not actually required
 	ld hl, menuTheme
@@ -109,12 +108,13 @@ SetupNextLevel::
 	call InitializePlayer
 	call InitializeBullet
 	call InitializePalettes
+	call InitializeEndlessVars
 	call SpawnPlayer
 	call SpawnCountdown
 
 	; ; testing
-	; ld a, 2
-	; ld [wLevel], a
+	ld a, 3
+	ld [wLevel], a
 	; ; ^^^
 
 	ld a, [wLevel]

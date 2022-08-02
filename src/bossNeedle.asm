@@ -11,7 +11,7 @@ BOSS_NEEDLE_TILE EQU $62
 
 BOSS_NEEDLE_SPEED EQU 4
 
-BOSS_NEEDLE_VERTICAL_MOVEMENT_TIME EQU 5
+BOSS_NEEDLE_VERTICAL_MOVEMENT_TIME EQU 6
 
 SECTION "boss needle", ROM0
 
@@ -166,18 +166,38 @@ BossNeedleUpdate::
     ldh a, [hGlobalTimer]
     and	BOSS_NEEDLE_COLLISION_TIME
     jr nz, .endCollision
-.checkHit:
+.checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ld d, 8
     ld e, 16
     call CollisionCheck
     cp a, 0
+    jr z, .checkHitCactus
+    call CollisionWithPlayer
+    jr .deathOfBossNeedle
+.checkHitCactus:
+    ld bc, wPlayerCactusOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ld d, 8
+    ld e, 16
+    call CollisionCheck
+    cp a, 0
+    jr z, .checkHitBullet
+    call CollisionWithPlayerCactus
+    jr .deathOfBossNeedle
+.checkHitBullet:
+    ld bc, wPlayerBulletOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ld d, 8
+    ld e, 16
+    call CollisionCheck
+    cp a, 0
     jr z, .endCollision
+    call ClearBullet
 .deathOfBossNeedle:
     ld bc, BOSS_NEEDLE_OAM_BYTES
     call ClearEnemy
-    call CollisionWithPlayer
     jr .setStruct
 .endCollision:
 

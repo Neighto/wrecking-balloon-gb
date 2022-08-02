@@ -35,4 +35,15 @@ BossKiller::
     ld a, 0
     ldh [hEnemyX], a
     call SpawnBalloonCarrier
+
+; .spawnBird:
+;     ld a, BIRD
+;     ldh [hEnemyNumber], a
+;     ld a, BIRD_EASY_VARIANT
+;     ldh [hEnemyVariant], a
+;     ld a, 20
+;     ldh [hEnemyY], a
+;     ld a, 160
+;     ldh [hEnemyX], a
+;     call SpawnBird
     ret
