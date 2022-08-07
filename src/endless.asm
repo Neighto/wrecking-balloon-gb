@@ -1,7 +1,7 @@
 INCLUDE "hardware.inc"
 INCLUDE "enemyConstants.inc"
 
-BOSS_KILLER_START_TIME EQU %0001100
+BOSS_KILLER_START_TIME EQU %00001100
 BOSS_KILLER_WAIT_TIME EQU %00111111
 
 SECTION "endless vars", WRAM0
@@ -22,7 +22,7 @@ BossKiller::
     ret nz
     call FindBalloonCarrier
     ret nz
-    ; TODO BOB ANVIL
+    
 .spawnBalloonCarrier:
     ld a, BALLOON_CARRIER
     ldh [hEnemyNumber], a
