@@ -52,7 +52,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyParam1] ; Trigger Carry
     ld [hli], a
-    ldh a, [hEnemyParam2] ; Enemy Projectile Timer
+    ldh a, [hEnemyParam2] ; Enemy Projectile Timer / Bobbing Index
     ld [hli], a
     ldh a, [hEnemyVariant]
     ld [hl], a
@@ -274,7 +274,30 @@ BalloonCarrierUpdate::
     ldh a, [hEnemyY]
     cp a, 28
     jr c, .moveDown
+.checkBobbing:
+    ldh a, [hGlobalTimer]
+    and %00111111
+    jr nz, .endCheckBobbing
+    ldh a, [hEnemyParam2]
+    cp a, 0
+    jr nz, .bobUp
+.bobDown:
+    ld a, 1
+    ldh [hEnemyParam2], a
+    ldh a, [hEnemyY]
+    inc a
+    ldh [hEnemyY], a
+    jr .endCheckBobbing
+.bobUp:
+    ld a, 0
+    ldh [hEnemyParam2], a
+    ldh a, [hEnemyY]
+    dec a
+    ldh [hEnemyY], a
+
+.endCheckBobbing:
     jr .endMoveVerticalVariant
+
 .followMoveVertical:
     cp a, CARRIER_FOLLOW_VARIANT
     jr nz, .endMoveVerticalVariant
