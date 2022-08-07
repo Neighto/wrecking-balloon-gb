@@ -558,7 +558,7 @@ SpawnDataHandler:
     ; Argument hl = source address
     ld a, [hli]
     ; Update enemy number
-    ldh [hEnemyNumber], a
+    ldh [hEnemyNumber], a ; TODO this should just be done in the spawn for that given enemy
     ld b, a
     ; Update enemy Y/X
     ld a, [hli]
@@ -570,24 +570,53 @@ SpawnDataHandler:
     ld [hEnemyVariant], a
     ld a, b
     ; Spawns
+    push hl
+.pointBalloon:
     cp a, POINT_BALLOON
-    jp z, SpawnPointBalloon
+    jr nz, .balloonCarrier
+    call SpawnPointBalloon
+    jr .end
+.balloonCarrier:
     cp a, BALLOON_CARRIER
-    jp z, SpawnBalloonCarrier
+    jr nz, .bird
+    call SpawnBalloonCarrier
+    jr .end
+.bird:
     cp a, BIRD
-    jp z, SpawnBird
+    jr nz, .bomb
+    call SpawnBird
+    jr .end
+.bomb:
     cp a, BOMB
-    jp z, SpawnBomb
-    cp a, PROJECTILE
-    jp z, SpawnProjectile
-    cp a, BOSS
-    jp z, SpawnBoss
-    cp a, BOSS_NEEDLE
-    jp z, SpawnBossNeedle
+    jr nz, .anvil
+    call SpawnBomb
+    jr .end
+.anvil: 
     cp a, ANVIL 
-    jp z, SpawnAnvil
+    jr nz, .explosion
+    call SpawnAnvil
+    jr .end
+.explosion:
     cp a, EXPLOSION 
-    jp z, SpawnExplosion
+    jr nz, .projectile
+    call SpawnExplosion
+    jr .end
+.projectile:
+    cp a, PROJECTILE
+    jr nz, .boss
+    call SpawnProjectile
+    jr .end
+.boss:
+    cp a, BOSS
+    jr nz, .bossNeedle
+    call SpawnBoss
+    jr .end
+.bossNeedle:
+    cp a, BOSS_NEEDLE
+    jr nz, .end
+    call SpawnBossNeedle
+.end:
+    pop hl
     ret
 
 LevelDataHandler::

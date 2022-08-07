@@ -33,18 +33,17 @@ SetStruct:
     ret
 
 SpawnProjectile::
-    push hl
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
     ld e, ENEMY_STRUCT_SIZE
     call RequestRAMSpace ; hl now contains free RAM space address
-    jr z, .end
+    ret z
 .availableSpace:
     ld b, PROJECTILE_OAM_SPRITES
     push hl
 	call RequestOAMSpace ; b now contains OAM address
     pop hl
-    jr z, .end
+    ret z
 .availableOAMSpace:
     LD_DE_HL
     call InitializeEnemyStructVars
@@ -103,7 +102,6 @@ SpawnProjectile::
     call SetStruct
 .end:
     call ProjectileSound
-    pop hl
     ret
 
 ProjectileUpdate::
