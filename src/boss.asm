@@ -12,7 +12,7 @@ PORCUPINE_MOVE_TIME EQU %00000001
 PORCUPINE_COLLISION_TIME EQU %00000111
 PORCUPINE_ATTACK_COOLDOWN_TIMER EQU 50
 
-PORCUPINE_HP EQU 2
+PORCUPINE_HP EQU 3
 
 PORCUPINE_TILE_1 EQU $52
 PORCUPINE_TILE_2 EQU $54
@@ -47,6 +47,9 @@ PORCUPINE_POINTS EQU 50
 PORCUPINE_POINT_Y1 EQU 46
 PORCUPINE_POINT_Y2 EQU 66
 PORCUPINE_POINT_Y3 EQU 86
+
+PORCUPINE_CHANGE_DIRECTION_X_TIME EQU %11111111
+PORCUPINE_ABOUT_TO_CHANGE_DIRECTION_X_TIME EQU %11110000
 
 SECTION "boss", ROMX
 
@@ -102,12 +105,11 @@ UpdateBossPosition:
     ret
 
 SpawnBoss::
-    push hl
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
     ld e, ENEMY_STRUCT_SIZE
     call RequestRAMSpace ; hl now contains free RAM space address
-    jp z, .end
+    ret z
 .availableSpace:
     ld b, PORCUPINE_OAM_SPRITES + PORCUPINE_OAM_BUFFER_FOR_SPAWNS_SPRITES
     push hl
@@ -116,7 +118,7 @@ SpawnBoss::
     add a, PORCUPINE_OAM_BUFFER_FOR_SPAWNS_BYTES
     ld b, a
     pop hl
-    jp z, .end
+    ret z
 .availableOAMSpace:
     LD_DE_HL
     call InitializeEnemyStructVars
@@ -198,8 +200,6 @@ SpawnBoss::
 .setStruct:
     LD_HL_BC
     call SetStruct
-.end:
-    pop hl
     ret
 
 SpawnBossNotInLevelData::
@@ -423,18 +423,23 @@ BossUpdate::
     ldh [hEnemyParam4], a
     ld b, a
 .checkDirectionX:
-    and %11111111
+    and PORCUPINE_CHANGE_DIRECTION_X_TIME
     jr nz, .endCheckDirectionX
+.aimLowWhenChangingDirection:
+    ld a, PORCUPINE_POINT_Y3
+    ldh [hEnemyParam1], a
+.changeDirection:
     ldh a, [hEnemyDirectionLeft]
     and ENEMY_DIRECTION_HORIZONTAL_MASK
     jr nz, .moveToRight
 .moveToLeft:
     set 0, a
     ldh [hEnemyDirectionLeft], a
-    jr .endCheckDirectionX
+    jr .endCheckDirection
 .moveToRight:
     res 0, a
     ldh [hEnemyDirectionLeft], a
+    jr .endCheckDirection
 .endCheckDirectionX:
 
 .checkDirectionY:
@@ -535,17 +540,16 @@ BossUpdate::
     cp a, b
     jr nz, .moveYContinue
 .moveYStoppedAndAttack:
-    ; TODO fix this, it should shoot when we first come to a stop and that's it
-    ; SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
-    ; ld a, [hl]
-    ; cp a, PORCUPINE_CONFIDENT_FACE_TILE
-    ; jr z, .endMoveY
     ldh a, [hEnemySpeed]
     cp a, 0
     jr nz, .endMoveY
     ldh a, [hEnemyParam5]
     cp a, 0
     jr nz, .endMoveY
+    ; About to swoop
+    ldh a, [hEnemyParam4]
+    cp a, PORCUPINE_ABOUT_TO_CHANGE_DIRECTION_X_TIME
+    jr nc, .endMoveY
 .canAttack:
     ld a, PORCUPINE_EXPRESSION_CONFIDENT
     ldh [hEnemyAnimationFrame], a
@@ -553,6 +557,7 @@ BossUpdate::
     ldh [hEnemyAnimationTimer], a
     inc a
     ldh [hEnemyParam3], a
+    ; Set attack cooldown timer
     ld a, PORCUPINE_ATTACK_COOLDOWN_TIMER
     ldh [hEnemyParam5], a
     jr .endMoveY

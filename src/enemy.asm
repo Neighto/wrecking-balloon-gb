@@ -12,7 +12,7 @@ SECTION "enemy struct vars", HRAM
     hEnemyActive:: DB
     hEnemyNumber:: DB
 
-    ; These can be in any order
+    ; These can be in any order in an enemy
     hEnemyY:: DB
     hEnemyX:: DB
     hEnemyOAM:: DB
@@ -57,8 +57,10 @@ SECTION "enemy data vars", WRAM0
     wEnemies:: DS ENEMY_DATA_SIZE
     wEnemyOffset:: DB ; Offset for looping through enemy data
     wEnemyOffset2:: DB ; Offset for looping through enemy data within enemy
+    wEnemyOffset3:: DB ; Offset for looping through enemy data for balloon carrier
     wEnemyLoopIndex:: DB
     wEnemyLoopIndex2:: DB
+    wEnemyLoopIndex3:: DB
 
 SECTION "enemy", ROM0
 
@@ -244,6 +246,34 @@ EnemyInterCollision::
     ld [wEnemyLoopIndex2], a
     cp a, 0
     jp nz, .loop
+.end:
+    ; z flag set
+    ret
+
+FindBalloonCarrier::
+    ; Returns z flag as failed / nz flag as succeeded
+    ld a, NUMBER_OF_ENEMIES
+    ld [wEnemyLoopIndex3], a
+    xor a ; ld a, 0
+    ld [wEnemyOffset3], a
+.loop:
+    ; Get enemy number
+    SET_HL_TO_ADDRESS wEnemies+1, wEnemyOffset3
+    ld a, [hl]
+    cp a, BALLOON_CARRIER
+    jr nz, .checkLoop
+    or 1
+    ; nz flag set
+    ret
+.checkLoop:
+    ld a, [wEnemyOffset3]
+    add a, ENEMY_STRUCT_SIZE
+    ld [wEnemyOffset3], a
+    ld a, [wEnemyLoopIndex3]
+    dec a
+    ld [wEnemyLoopIndex3], a
+    cp a, 0
+    jr nz, .loop
 .end:
     ; z flag set
     ret

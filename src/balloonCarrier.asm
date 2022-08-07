@@ -59,18 +59,17 @@ SetStruct:
     ret
 
 SpawnBalloonCarrier::
-    push hl
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
     ld e, ENEMY_STRUCT_SIZE
     call RequestRAMSpace ; hl now contains free RAM space address
-    jp z, .end
+    ret z
 .availableSpace:
     ld b, BALLOON_CARRIER_OAM_SPRITES
     push hl
 	call RequestOAMSpace ; b now contains OAM address
     pop hl
-    jp z, .end
+    ret z
 .availableOAMSpace:
     LD_DE_HL
     call InitializeEnemyStructVars
@@ -200,8 +199,6 @@ SpawnBalloonCarrier::
 .setStruct:
     LD_HL_BC
     call SetStruct
-.end:
-    pop hl
     ret
 
 BalloonCarrierUpdate::
@@ -254,18 +251,30 @@ BalloonCarrierUpdate::
     jp nz, .endMove
 .canMove:
 
+.moveHorizontalVariant:
+    ldh a, [hEnemyVariant]
+.anvilMoveHorizontal:
+    cp a, CARRIER_ANVIL_VARIANT
+    jr z, .endMoveHorizontalVariant
 .moveHorizontal:
     ldh a, [hEnemyDirectionLeft]
     cp a, 0
     jr z, .isLeftside
     DECREMENT_POS hEnemyX, 1
-    jr .endMoveHorizontal
+    jr .endMoveHorizontalVariant
 .isLeftside:
     INCREMENT_POS hEnemyX, 1
-.endMoveHorizontal:
+.endMoveHorizontalVariant:
 
 .moveVerticalVariant:
     ldh a, [hEnemyVariant]
+.anvilMoveVertical:
+    cp a, CARRIER_ANVIL_VARIANT
+    jr nz, .followMoveVertical
+    ldh a, [hEnemyY]
+    cp a, 28
+    jr c, .moveDown
+    jr .endMoveVerticalVariant
 .followMoveVertical:
     cp a, CARRIER_FOLLOW_VARIANT
     jr nz, .endMoveVerticalVariant

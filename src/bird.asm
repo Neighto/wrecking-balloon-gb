@@ -55,18 +55,17 @@ SetStruct:
     ret
 
 SpawnBird::
-    push hl
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
     ld e, ENEMY_STRUCT_SIZE
     call RequestRAMSpace ; hl now contains free RAM space address
-    jp z, .end
+    ret z
 .availableSpace:
     ld b, BIRD_OAM_SPRITES
     push hl
 	call RequestOAMSpace ; b now contains OAM address
     pop hl
-    jp z, .end
+    ret z
 .availableOAMSpace:
     LD_DE_HL
     call InitializeEnemyStructVars
@@ -168,8 +167,6 @@ SpawnBird::
 .setStruct:
     LD_HL_BC
     call SetStruct
-.end:
-    pop hl
     ret
 
 UpdateBirdPosition:

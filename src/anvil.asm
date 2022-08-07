@@ -7,7 +7,7 @@ INCLUDE "constants.inc"
 ANVIL_OAM_SPRITES EQU 2
 ANVIL_OAM_BYTES EQU ANVIL_OAM_SPRITES * OAM_ATTRIBUTES_COUNT
 ANVIL_MOVE_TIME EQU %00000001
-ANVIL_COLLISION_TIME EQU %00000011
+ANVIL_COLLISION_TIME EQU %00000001
 
 CACTUS_SCREAMING_TILE EQU $16
 
@@ -36,18 +36,17 @@ SetStruct:
     ret
 
 SpawnAnvil::
-    push hl
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
     ld e, ENEMY_STRUCT_SIZE
     call RequestRAMSpace ; hl now contains free RAM space address
-    jr z, .end
+    ret z
 .availableSpace:
     ld b, ANVIL_OAM_SPRITES
     push hl
 	call RequestOAMSpace ; b now contains OAM address
     pop hl
-    jr z, .end
+    ret z
 .availableOAMSpace:
     LD_DE_HL
     call InitializeEnemyStructVars
@@ -120,8 +119,6 @@ SpawnAnvil::
 .setStruct:
     LD_HL_BC
     call SetStruct
-.end:
-    pop hl
     ret
 
 AnvilUpdate::

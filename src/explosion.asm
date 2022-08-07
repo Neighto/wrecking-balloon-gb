@@ -36,18 +36,17 @@ SetStruct:
     ret
 
 SpawnExplosion::
-    push hl
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
     ld e, ENEMY_STRUCT_SIZE
     call RequestRAMSpace ; hl now contains free RAM space address
-    jr z, .end
+    ret z
 .availableSpace:
     ld b, EXPLOSION_OAM_SPRITES
     push hl
 	call RequestOAMSpace ; b now contains OAM address
     pop hl
-    jr z, .end
+    ret z
 .availableOAMSpace:
     LD_DE_HL
     call InitializeEnemyStructVars
@@ -116,8 +115,6 @@ SpawnExplosion::
 .congratulationsSound:
     call FireworkSound
 .endVariantSound:
-.end:
-    pop hl
     ret
 
 ExplosionUpdate::
