@@ -20,21 +20,41 @@ LevelShowdownMap::
     INCBIN "incbin/background/Showdown.tilemap"
 LevelShowdownMapEnd::
 
-MenuMap::
-    INCBIN "incbin/background/Menu.tilemap"
-MenuMapEnd::
+TitleMap::
+    INCBIN "incbin/background/Title.tilemap"
+TitleMapEnd::
+
+StartMap::
+    INCBIN "incbin/background/Start.tilemap"
+StartMapEnd::
+
+NameMap::
+    INCBIN "incbin/background/Name.tilemap"
+NameMapEnd::
 
 WindowMap::
     INCBIN "incbin/window/Window.tilemap"
 WindowMapEnd::
 
-CloudsMap::
-    INCBIN "incbin/background/Clouds.tilemap"
-CloudsMapEnd::
+DarkCloudsMap::
+    INCBIN "incbin/background/DarkClouds.tilemap"
+DarkCloudsMapEnd::
+
+LightCloudsMap::
+    INCBIN "incbin/background/LightClouds.tilemap"
+LightCloudsMapEnd::
 
 RainCloudsMap::
     INCBIN "incbin/background/RainClouds.tilemap"
 RainCloudsMapEnd::
+
+ThinCloudsMap::
+    INCBIN "incbin/background/ThinClouds.tilemap"
+ThinCloudsMapEnd::
+
+SunMap::
+    INCBIN "incbin/background/Sun.tilemap"
+SunMapEnd::
 
 ShowdownWaterMap::
     INCBIN "incbin/background/ShowdownWater.tilemap"
