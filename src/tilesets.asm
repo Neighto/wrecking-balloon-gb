@@ -44,13 +44,25 @@ LevelCityTiles::
     INCBIN "incbin/background/DesertStar.2bpp"
 LevelCityTilesEnd::
 
-CloudsTiles::
-    INCBIN "incbin/background/Clouds.2bpp"
-CloudsTilesEnd::
+DarkCloudsTiles::
+    INCBIN "incbin/background/DarkClouds.2bpp"
+DarkCloudsTilesEnd::
+
+LightCloudsTiles::
+    INCBIN "incbin/background/LightClouds.2bpp"
+LightCloudsTilesEnd::
 
 RainCloudsTiles::
     INCBIN "incbin/background/RainClouds.2bpp"
 RainCloudsTilesEnd::
+
+ThinCloudsTiles::
+    INCBIN "incbin/background/ThinClouds.2bpp"
+ThinCloudsTilesEnd::
+
+SunTiles::
+    INCBIN "incbin/background/Sun.2bpp"
+SunTilesEnd::
 
 ShowdownWaterTiles::
     INCBIN "incbin/background/ShowdownWater.2bpp"
@@ -85,7 +97,9 @@ MenuTiles::
 MenuTilesEnd::
 
 MenuTitleTiles::
-    INCBIN "incbin/background/Menu.2bpp"
+    INCBIN "incbin/background/Title.2bpp"
+    INCBIN "incbin/background/Start.2bpp"
+    INCBIN "incbin/background/Name.2bpp"
 MenuTitleTilesEnd::
 
 GameOverTiles::

@@ -8,7 +8,7 @@ MENU_CURSOR_TILE EQU $02
 TITLE_ADDRESS EQU $9880
 TITLE_ADDRESS_OFFSET EQU TITLE_ADDRESS - _SCRN0
 TITLE_DISTANCE_FROM_TOP_IN_TILES EQU 4
-TITLE_HEIGHT_IN_TILES EQU 6
+TITLE_HEIGHT_IN_TILES EQU 5
 
 SECTION "menu vars", WRAM0
 	wMenuFrame:: DB
@@ -26,36 +26,76 @@ InitializeMenu::
 	ret
 
 LoadMenuOpeningGraphics::
+.tiles:
+	; Required for LoadMenuGraphics*
 	ld bc, MenuTitleTiles
 	ld hl, _VRAM9000
 	ld de, MenuTitleTilesEnd - MenuTitleTiles
 	call MEMCPY
-	ld bc, MenuMap + SCRN_X_B * TITLE_DISTANCE_FROM_TOP_IN_TILES
+.tilemap:
+	; Add WRECKING BALLOON title
+	ld bc, TitleMap
 	ld hl, TITLE_ADDRESS
 	ld d, TITLE_HEIGHT_IN_TILES
 	call MEMCPY_SINGLE_SCREEN
 	ret
 
 LoadMenuGraphics::
+.tiles:
 	ld bc, MenuTiles
 	ld hl, _VRAM8000 + $20
 	ld de, MenuTilesEnd - MenuTiles
 	call MEMCPY
-	ld bc, MenuMap
-	ld hl, _SCRN0
-	ld d, SCRN_Y_B
-	call MEMCPY_SINGLE_SCREEN
-
-	ld bc, CloudsTiles
+	ld bc, DarkCloudsTiles
 	ld hl, _VRAM8800
-	ld de, CloudsTilesEnd - CloudsTiles
+	ld de, DarkCloudsTilesEnd - DarkCloudsTiles
 	call MEMCPY
-
-	ld bc, CloudsMap
-	ld hl, $99C0
-	ld de, CloudsMapEnd - CloudsMap
+	ld bc, LightCloudsTiles
+	ld hl, _VRAM8800 + $40
+	ld de, LightCloudsTilesEnd - LightCloudsTiles
+	call MEMCPY
+.tilemap:
+	; Add WRECKING BALLOON title
+	ld bc, TitleMap
+	ld hl, TITLE_ADDRESS
+	ld d, TITLE_HEIGHT_IN_TILES
+	call MEMCPY_SINGLE_SCREEN
+	; Add scrolling dark clouds
+	ld bc, DarkCloudsMap
+	ld hl, $99E0
+	ld de, DarkCloudsMapEnd - DarkCloudsMap
 	ld a, $80
 	call MEMCPY_WITH_OFFSET
+	; Add scrolling light clouds
+	ld bc, LightCloudsMap
+	ld hl, $99C0
+	ld de, LightCloudsMapEnd - LightCloudsMap
+	ld a, $84
+	call MEMCPY_WITH_OFFSET
+	; Fill in dark clouds space
+	ld hl, $9A00
+    ld bc, $40
+    ld d, $81
+    call SetInRange
+	; Add texts
+	ld bc, StartMap
+	ld hl, $9968
+	ld de, StartMapEnd - StartMap
+	ld a, $4D
+	call MEMCPY_WITH_OFFSET
+	ld bc, NameMap
+	ld hl, $9A0B
+	ld de, NameMapEnd - NameMap
+	ld a, $51
+	call MEMCPY_WITH_OFFSET 
+	ld hl, $9A04
+	ld a, 2 + NUMBERS_TILE_OFFSET
+	ld [hli], a
+	ld a, 0 + NUMBERS_TILE_OFFSET
+	ld [hli], a
+	ld a, 2 + NUMBERS_TILE_OFFSET
+	ld [hli], a
+	ld [hl], a
 	ret
 
 SpawnMenuCursor::

@@ -75,12 +75,14 @@ LoadLevelNightCityGraphics::
 	ret
 
 LoadLevelDesertGraphics::
+.tiles:
 	ld bc, LevelDesertTiles
 	ld hl, _VRAM9000
 	ld de, LevelDesertTilesEnd - LevelDesertTiles
 	call MEMCPY
+.tilemap:
 	ld bc, LevelDesertMap
-	ld hl, _SCRN0
+	ld hl, $98E0
 	ld de, LevelDesertMapEnd - LevelDesertMap
 	call MEMCPY
     ret
@@ -140,17 +142,60 @@ LoadLevelShowdownGraphics::
     ret
 
 LoadLevelBossGraphics::
-	ld bc, CloudsTiles
+.tiles:
+	ld bc, DarkCloudsTiles
 	ld hl, _VRAM8800
-	ld de, CloudsTilesEnd - CloudsTiles
+	ld de, DarkCloudsTilesEnd - DarkCloudsTiles
+	call MEMCPY
+	ld bc, LightCloudsTiles
+	ld hl, _VRAM8800 + $40
+	ld de, LightCloudsTilesEnd - LightCloudsTiles
+	call MEMCPY
+    ld bc, ThinCloudsTiles
+	ld hl, _VRAM8800 + $80
+	ld de, ThinCloudsTilesEnd - ThinCloudsTiles
+	call MEMCPY
+    ld bc, SunTiles
+	ld hl, _VRAM8800 + $C0
+	ld de, SunTilesEnd - SunTiles
 	call MEMCPY
     ld hl, _VRAM9000
     ld bc, $10
     call ResetHLInRange
-	ld bc, CloudsMap
+.tilemap:
+    ; Add scrolling dark clouds
+	ld bc, DarkCloudsMap
 	ld hl, $99C0
-	ld de, CloudsMapEnd - CloudsMap
+	ld de, DarkCloudsMapEnd - DarkCloudsMap
 	ld a, $80
+	call MEMCPY_WITH_OFFSET
+    ; Fill in dark clouds space
+    ld hl, $99E0
+    ld bc, $20
+    ld d, $81
+    call SetInRange
+    ; Add scrolling light clouds
+    ld bc, LightCloudsMap
+	ld hl, $9980
+	ld de, LightCloudsMapEnd - LightCloudsMap
+	ld a, $84
+	call MEMCPY_WITH_OFFSET
+    ; Fill in light clouds space
+    ld hl, $99A0
+    ld bc, $20
+    ld d, $87
+    call SetInRange
+    ; Add scrolling thin clouds
+	ld bc, ThinCloudsMap
+	ld hl, $9900
+	ld de, ThinCloudsMapEnd - ThinCloudsMap
+	ld a, $88
+	call MEMCPY_WITH_OFFSET
+    ; Add sun
+    ld bc, SunMap
+	ld hl, _SCRN0
+    ld de, SunMapEnd - SunMap
+    ld a, $8C
 	call MEMCPY_WITH_OFFSET
     ret
 
@@ -305,5 +350,5 @@ UpdateGame::
     call RefreshWindow
     call IncrementScrollOffset
     call SoundUpdate
-    ; call _hUGE_dosound_with_end
+    call _hUGE_dosound_with_end
     ret

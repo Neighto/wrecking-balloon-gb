@@ -19,6 +19,7 @@ Start::
 	call ResetGlobalTimer
 	call CopyDMARoutine
 	call LoadMenuOpeningGraphics
+	call LoadWindow
 	call InitializeLives
 	call InitializeParallaxScrolling
 	call InitializePalettes
@@ -57,13 +58,11 @@ StartGame::
 	call ClearMap
 	call ClearOAM
 	call ClearSound
-	call ClearAllTiles
 	call ResetScroll
 	call ResetGlobalTimer
 	call SetOpeningCutsceneInterrupts
 	call LoadGameSpriteTiles
 	call LoadGameOverTiles
-	call LoadWindow
 	call LoadOpeningCutsceneGraphics
 	call ResetFading
 	call InitializeOpeningCutscene
@@ -200,12 +199,13 @@ SetupNextLevel::
 	call InitializeNewLevel
 	call RefreshWindow
 	call LCD_ON
+
 	; Comment out GameCountdownLoop to skip countdown
 GameCountdownLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateGameCountdown
-	; jp GameCountdownLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateGameCountdown
+	jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA

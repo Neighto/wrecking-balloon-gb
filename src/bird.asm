@@ -352,7 +352,7 @@ BirdUpdate::
     ld a, 1
     ldh [hEnemyDying], a
     ; Sound
-    call ExplosionSound
+    call FireworkSound
     ; Screaming bird
     ldh a, [hEnemyDirectionLeft]
     cp a, 0
