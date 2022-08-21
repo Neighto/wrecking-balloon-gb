@@ -16,8 +16,8 @@ COUNTDOWN_2_TILE_2 EQU $34
 COUNTDOWN_1_TILE_1 EQU $2E
 COUNTDOWN_1_TILE_2 EQU $30
 COUNTDOWN_NEUTRAL_BALLOON_TILE EQU $3A
-CITY_STAR_TILE EQU $48
-DESERT_STAR_TILE EQU $4E
+STAR_TILE EQU $99
+SUN_ADDRESS EQU $9848
 
 SECTION "game vars", WRAM0
     wCountdownFrame:: DB
@@ -37,6 +37,13 @@ LoadGameSpriteTiles::
 	ld de, GameSpriteTilesEnd - GameSpriteTiles
 	call MEMCPY
 	ret
+
+LoadGameMiscellaneousTiles::
+	ld bc, MiscellaneousTiles
+	ld hl, _VRAM8800
+	ld de, MiscellaneousTilesEnd - MiscellaneousTiles
+	call MEMCPY
+    ret
     
 LoadLevelCityGraphics::
 	ld bc, LevelCityTiles
@@ -59,19 +66,19 @@ LoadLevelNightCityGraphics::
 	ld de, LevelCityMapEnd - LevelCityMap
 	call MEMCPY
     ld hl, $9821
-    ld [hl], CITY_STAR_TILE
+    ld [hl], STAR_TILE
     ld hl, $982D
-    ld [hl], CITY_STAR_TILE
+    ld [hl], STAR_TILE
     ld hl, $9844
-    ld [hl], CITY_STAR_TILE
+    ld [hl], STAR_TILE
     ld hl, $984A
-    ld [hl], CITY_STAR_TILE
+    ld [hl], STAR_TILE
     ld hl, $9853
-    ld [hl], CITY_STAR_TILE
+    ld [hl], STAR_TILE
     ld hl, $9866
-    ld [hl], CITY_STAR_TILE
+    ld [hl], STAR_TILE
     ld hl, $986F
-    ld [hl], CITY_STAR_TILE
+    ld [hl], STAR_TILE
 	ret
 
 LoadLevelDesertGraphics::
@@ -81,88 +88,70 @@ LoadLevelDesertGraphics::
 	ld de, LevelDesertTilesEnd - LevelDesertTiles
 	call MEMCPY
 .tilemap:
+    ; Add in desert
 	ld bc, LevelDesertMap
 	ld hl, $98E0
 	ld de, LevelDesertMapEnd - LevelDesertMap
 	call MEMCPY
+    ; Add in sun
+    call SpawnSun
     ret
 
 LoadLevelNightDesertGraphics::
+.tiles:
 	ld bc, LevelDesertTiles
 	ld hl, _VRAM9000
 	ld de, LevelDesertTilesEnd - LevelDesertTiles
 	call MEMCPY
+.tilemap:
     ld bc, LevelDesertMap
-	ld hl, _SCRN0
+	ld hl, $98E0
 	ld de, LevelDesertMapEnd - LevelDesertMap
 	call MEMCPY
     ld hl, $9826
-    ld [hl], DESERT_STAR_TILE
+    ld [hl], STAR_TILE
     ld hl, $9832
-    ld [hl], DESERT_STAR_TILE
+    ld [hl], STAR_TILE
     ld hl, $9842
-    ld [hl], DESERT_STAR_TILE
+    ld [hl], STAR_TILE
     ld hl, $984E
-    ld [hl], DESERT_STAR_TILE
+    ld [hl], STAR_TILE
     ld hl, $9864
-    ld [hl], DESERT_STAR_TILE
+    ld [hl], STAR_TILE
     ld hl, $9871
-    ld [hl], DESERT_STAR_TILE
+    ld [hl], STAR_TILE
+    ; Add in sun
+    call SpawnSun
     ret
 
 LoadLevelShowdownGraphics::
+.tiles:
 	ld bc, LevelShowdownTiles
 	ld hl, _VRAM9000
 	ld de, LevelShowdownTilesEnd - LevelShowdownTiles
 	call MEMCPY
+.tilemap:
+    ; Add in rain
 	ld bc, LevelShowdownMap
 	ld hl, _SCRN0
-    ld d, SCRN_VY_B
+    ld d, SCRN_VY_B - 4 ; height of scrolling water on the bottom
+    ld e, SCRN_X_B
 	call MEMCPY_SINGLE_SCREEN
-
-    ld bc, RainCloudsTiles
-	ld hl, _VRAM8800
-	ld de, RainCloudsTilesEnd - RainCloudsTiles
-	call MEMCPY
+    ; Add scrolling rain clouds
 	ld bc, RainCloudsMap
 	ld hl, _SCRN0
 	ld de, RainCloudsMapEnd - RainCloudsMap
-	ld a, $80
+	ld a, $9A
 	call MEMCPY_WITH_OFFSET
-
-    ld bc, ShowdownWaterTiles
-	ld hl, _VRAM8800 + $100
-	ld de, ShowdownWaterTilesEnd - ShowdownWaterTiles
-	call MEMCPY
+    ; Add scrolling water
 	ld bc, ShowdownWaterMap
 	ld hl, $9BA0
 	ld de, ShowdownWaterMapEnd - ShowdownWaterMap
-	ld a, $90
+	ld a, $A2
 	call MEMCPY_WITH_OFFSET
     ret
 
 LoadLevelBossGraphics::
-.tiles:
-	ld bc, DarkCloudsTiles
-	ld hl, _VRAM8800
-	ld de, DarkCloudsTilesEnd - DarkCloudsTiles
-	call MEMCPY
-	ld bc, LightCloudsTiles
-	ld hl, _VRAM8800 + $40
-	ld de, LightCloudsTilesEnd - LightCloudsTiles
-	call MEMCPY
-    ld bc, ThinCloudsTiles
-	ld hl, _VRAM8800 + $80
-	ld de, ThinCloudsTilesEnd - ThinCloudsTiles
-	call MEMCPY
-    ld bc, SunTiles
-	ld hl, _VRAM8800 + $C0
-	ld de, SunTilesEnd - SunTiles
-	call MEMCPY
-    ld hl, _VRAM9000
-    ld bc, $10
-    call ResetHLInRange
-.tilemap:
     ; Add scrolling dark clouds
 	ld bc, DarkCloudsMap
 	ld hl, $99C0
@@ -192,10 +181,23 @@ LoadLevelBossGraphics::
 	ld a, $88
 	call MEMCPY_WITH_OFFSET
     ; Add sun
+    call SpawnSun
+    ret
+
+SpawnSun:
     ld bc, SunMap
-	ld hl, _SCRN0
-    ld de, SunMapEnd - SunMap
+	ld hl, SUN_ADDRESS
+    ld de, 4
     ld a, $8C
+	call MEMCPY_WITH_OFFSET
+	ld hl, SUN_ADDRESS + $20
+    ld de, 4
+	call MEMCPY_WITH_OFFSET
+	ld hl, SUN_ADDRESS + $40
+    ld de, 4
+	call MEMCPY_WITH_OFFSET
+	ld hl, SUN_ADDRESS + $60
+    ld de, 4
 	call MEMCPY_WITH_OFFSET
     ret
 

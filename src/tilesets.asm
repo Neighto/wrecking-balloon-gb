@@ -37,36 +37,22 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/BossNeedle.2bpp"
     INCBIN "incbin/sprite/EnemyCactus3.2bpp"
     INCBIN "incbin/sprite/Explosion.2bpp"
+    INCBIN "incbin/sprite/MenuSprite.2bpp"
 GameSpriteTilesEnd::
+
+MiscellaneousTiles::
+    INCBIN "incbin/background/DarkClouds.2bpp"
+    INCBIN "incbin/background/LightClouds.2bpp"
+    INCBIN "incbin/background/ThinClouds.2bpp"
+    INCBIN "incbin/background/Sun.2bpp"
+    INCBIN "incbin/background/DesertStar.2bpp"
+    INCBIN "incbin/background/RainClouds.2bpp"
+    INCBIN "incbin/background/ShowdownWater.2bpp"
+MiscellaneousTilesEnd::
 
 LevelCityTiles::
     INCBIN "incbin/background/City.2bpp"
-    INCBIN "incbin/background/DesertStar.2bpp"
 LevelCityTilesEnd::
-
-DarkCloudsTiles::
-    INCBIN "incbin/background/DarkClouds.2bpp"
-DarkCloudsTilesEnd::
-
-LightCloudsTiles::
-    INCBIN "incbin/background/LightClouds.2bpp"
-LightCloudsTilesEnd::
-
-RainCloudsTiles::
-    INCBIN "incbin/background/RainClouds.2bpp"
-RainCloudsTilesEnd::
-
-ThinCloudsTiles::
-    INCBIN "incbin/background/ThinClouds.2bpp"
-ThinCloudsTilesEnd::
-
-SunTiles::
-    INCBIN "incbin/background/Sun.2bpp"
-SunTilesEnd::
-
-ShowdownWaterTiles::
-    INCBIN "incbin/background/ShowdownWater.2bpp"
-ShowdownWaterTilesEnd::
 
 SECTION "tilesets 2", ROMX
 
@@ -80,7 +66,6 @@ StageEndTilesEnd::
 
 LevelDesertTiles::
     INCBIN "incbin/background/Desert.2bpp"
-    INCBIN "incbin/background/DesertStar.2bpp"
 LevelDesertTilesEnd::
 
 LevelShowdownTiles::
@@ -93,14 +78,10 @@ WindowTiles::
 WindowTilesEnd::
 
 MenuTiles::
-    INCBIN "incbin/sprite/MenuSprite.2bpp"
-MenuTilesEnd::
-
-MenuTitleTiles::
     INCBIN "incbin/background/Title.2bpp"
     INCBIN "incbin/background/Start.2bpp"
     INCBIN "incbin/background/Name.2bpp"
-MenuTitleTilesEnd::
+MenuTilesEnd::
 
 GameOverTiles::
     INCBIN "incbin/window/GameOver.2bpp"

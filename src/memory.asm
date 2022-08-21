@@ -46,11 +46,12 @@ MEMCPY_WITH_OFFSET::
     ret
 
 MEMCPY_SINGLE_SCREEN::
-    ; Assumes source is 160x144
     ; bc = source address
     ; hl = destination address
-    ; d = Y counter (set to SCRN_Y_B if you want the entire screen)
-    ld e, SCRN_X_B ; X counter
+    ; d = Y counter (set to SCRN_Y_B if you want the entire screen height 144)
+    ; e = X counter (set to SCRN_X_B if you want the entire screen width 166)
+    ld a, e
+    push af
 .loop:
     ld a, [bc]
     ld [hli], a
@@ -60,12 +61,17 @@ MEMCPY_SINGLE_SCREEN::
     cp a, 0
     jr nz, .checkLoop
     dec d
-    ld e, SCRN_X_B
-    ADD_TO_HL SCRN_VX_B - SCRN_X_B
+    pop af
+    ld e, a
+    push af
+    ld a, SCRN_VX_B
+    sub e
+    ADD_TO_HL a
 .checkLoop:
 	ld a, d
     cp a, 0
 	jr nz, .loop
+    pop af
     ret
 
 ResetHLInRange::
