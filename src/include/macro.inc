@@ -45,6 +45,11 @@ MACRO LD_BC_DE
     ld c, e
 ENDM
 
+MACRO LD_DE_BC
+    ld d, b
+    ld e, c
+ENDM
+
 MACRO ADD_TO_HL
     ; argument 1 is value to add to HL (8 bit)
     ld a, \1 ; 2 cycles

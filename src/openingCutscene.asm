@@ -36,6 +36,7 @@ LoadOpeningCutsceneGraphics::
 	ld bc, CutsceneMap
 	ld hl, _SCRN0
     ld d, SCRN_Y_B
+    ld e, SCRN_X_B
 	call MEMCPY_SINGLE_SCREEN
 	ret
 

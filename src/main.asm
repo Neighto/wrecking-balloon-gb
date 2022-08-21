@@ -14,12 +14,17 @@ Start::
 	call ClearOAM
 	; call ClearRAM
 	call ClearHRAM
-	call ClearAllTiles
+	call ClearVRAM8000
+	call ClearVRAM8800
+	call ClearVRAM9000
 	call ResetScroll
 	call ResetGlobalTimer
 	call CopyDMARoutine
 	call LoadMenuOpeningGraphics
 	call LoadWindow
+	call LoadGameSpriteTiles
+	call LoadGameOverTiles
+	call LoadGameMiscellaneousTiles
 	call InitializeLives
 	call InitializeParallaxScrolling
 	call InitializePalettes
@@ -61,8 +66,6 @@ StartGame::
 	call ResetScroll
 	call ResetGlobalTimer
 	call SetOpeningCutsceneInterrupts
-	call LoadGameSpriteTiles
-	call LoadGameOverTiles
 	call LoadOpeningCutsceneGraphics
 	call ResetFading
 	call InitializeOpeningCutscene
@@ -101,6 +104,7 @@ SetupNextLevel::
 	call ClearMap
 	call ClearOAM
 	call ClearSound
+	call ClearVRAM9000
 	call SetupWindow
 	call ResetFading
 	call InitializeEnemies
@@ -112,7 +116,7 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	ld a, 3
+	ld a, 7
 	ld [wLevel], a
 	; ; ^^^
 
@@ -199,7 +203,6 @@ SetupNextLevel::
 	call InitializeNewLevel
 	call RefreshWindow
 	call LCD_ON
-
 	; Comment out GameCountdownLoop to skip countdown
 GameCountdownLoop:
 	call WaitVBlank

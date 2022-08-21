@@ -3,7 +3,7 @@ INCLUDE "macro.inc"
 INCLUDE "hardware.inc"
 
 MENU_MODES EQU 2
-MENU_CURSOR_TILE EQU $02
+MENU_CURSOR_TILE EQU $6A
 
 TITLE_ADDRESS EQU $9880
 TITLE_ADDRESS_OFFSET EQU TITLE_ADDRESS - _SCRN0
@@ -27,38 +27,31 @@ InitializeMenu::
 
 LoadMenuOpeningGraphics::
 .tiles:
-	; Required for LoadMenuGraphics*
-	ld bc, MenuTitleTiles
+	ld bc, MenuTiles
 	ld hl, _VRAM9000
-	ld de, MenuTitleTilesEnd - MenuTitleTiles
+	ld de, MenuTilesEnd - MenuTiles
 	call MEMCPY
 .tilemap:
 	; Add WRECKING BALLOON title
 	ld bc, TitleMap
 	ld hl, TITLE_ADDRESS
 	ld d, TITLE_HEIGHT_IN_TILES
+	ld e, SCRN_X_B
 	call MEMCPY_SINGLE_SCREEN
 	ret
 
 LoadMenuGraphics::
 .tiles:
 	ld bc, MenuTiles
-	ld hl, _VRAM8000 + $20
+	ld hl, _VRAM9000
 	ld de, MenuTilesEnd - MenuTiles
-	call MEMCPY
-	ld bc, DarkCloudsTiles
-	ld hl, _VRAM8800
-	ld de, DarkCloudsTilesEnd - DarkCloudsTiles
-	call MEMCPY
-	ld bc, LightCloudsTiles
-	ld hl, _VRAM8800 + $40
-	ld de, LightCloudsTilesEnd - LightCloudsTiles
 	call MEMCPY
 .tilemap:
 	; Add WRECKING BALLOON title
 	ld bc, TitleMap
 	ld hl, TITLE_ADDRESS
 	ld d, TITLE_HEIGHT_IN_TILES
+	ld e, SCRN_X_B
 	call MEMCPY_SINGLE_SCREEN
 	; Add scrolling dark clouds
 	ld bc, DarkCloudsMap
