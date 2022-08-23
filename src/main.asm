@@ -44,6 +44,7 @@ StartMenu::
 	call LCD_OFF
 	call TitleSplashSound
 	call ResetScroll
+	call StopSweepSound
 	call SetMenuInterrupts
 	call ResetFading
 	call ResetGlobalTimer
@@ -52,12 +53,12 @@ StartMenu::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateMenu
-	; jp MenuLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateMenu
+	jp MenuLoop
 
-StartGame::
+StartClassic::
 	call WaitVBlank
 	call LCD_OFF
 	call ClearMap
@@ -91,10 +92,10 @@ StartGame::
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateOpeningCutscene
-	; jp OpeningCutsceneLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateOpeningCutscene
+	jp OpeningCutsceneLoop
 
 SetupNextLevel::
 	call WaitVBlank
@@ -116,8 +117,8 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	ld a, 7
-	ld [wLevel], a
+	; ld a, 7
+	; ld [wLevel], a
 	; ; ^^^
 
 	ld a, [wLevel]
@@ -281,3 +282,8 @@ GameWonLoop:
 	call OAMDMA
 	call UpdateEndingCutscene
 	jp GameWonLoop
+
+
+StartEndless::
+
+	ret

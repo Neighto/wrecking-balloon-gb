@@ -2,10 +2,15 @@ INCLUDE "constants.inc"
 INCLUDE "macro.inc"
 INCLUDE "hardware.inc"
 
-MENU_MODES EQU 2
 MENU_CURSOR_TILE EQU $6A
+MODES_ADDRESS EQU $9926
 
-TITLE_ADDRESS EQU $9880
+MENU_SPRITE_CLASSIC_Y EQU 88
+MENU_SPRITE_ENDLESS_Y EQU 104
+MENU_SPRITE_X EQU 48
+MENU_SPRITE_BLINK_TIMER EQU %00011111
+
+TITLE_ADDRESS EQU $9860
 TITLE_ADDRESS_OFFSET EQU TITLE_ADDRESS - _SCRN0
 TITLE_DISTANCE_FROM_TOP_IN_TILES EQU 4
 TITLE_HEIGHT_IN_TILES EQU 5
@@ -14,6 +19,7 @@ SECTION "menu vars", WRAM0
 	wMenuFrame:: DB
 	wSelectedMode:: DB
 	wMenuCursorOAM:: DB
+	wMenuCursorTimer:: DB
 
 SECTION "menu", ROMX
 
@@ -21,6 +27,7 @@ InitializeMenu::
 	xor a ; ld a, 0
 	ld [wMenuFrame], a
 	ld [wSelectedMode], a
+	ld [wMenuCursorTimer], a
 	ld a, 140
 	ld [rSCY], a
 	ret
@@ -71,15 +78,18 @@ LoadMenuGraphics::
     ld d, $81
     call SetInRange
 	; Add texts
-	ld bc, StartMap
-	ld hl, $9968
-	ld de, StartMapEnd - StartMap
-	ld a, $4D
+	ld bc, ModesMap
+	ld hl, MODES_ADDRESS
+	ld de, 7
+	ld a, $51
+	call MEMCPY_WITH_OFFSET
+	ld hl, MODES_ADDRESS + $40
+	ld de, 7
 	call MEMCPY_WITH_OFFSET
 	ld bc, NameMap
 	ld hl, $9A0B
 	ld de, NameMapEnd - NameMap
-	ld a, $51
+	ld a, $4D
 	call MEMCPY_WITH_OFFSET 
 	ld hl, $9A04
 	ld a, 2 + NUMBERS_TILE_OFFSET
@@ -99,9 +109,9 @@ SpawnMenuCursor::
 	ld a, b
 	ld [wMenuCursorOAM], a
 	SET_HL_TO_ADDRESS wOAM, wMenuCursorOAM
-	ld a, 104 ; y
+	ld a, MENU_SPRITE_CLASSIC_Y
 	ld [hli], a
-	ld a, 56 ; x
+	ld a, MENU_SPRITE_X
 	ld [hli], a
 	ld [hl], MENU_CURSOR_TILE
 	inc l
@@ -188,11 +198,15 @@ UpdateMenu::
 	jr nz, .fadeOut
 
 .blinkMenuCursor:
-	ldh a, [hGlobalTimer]
-	and %00011111
+	ld a, [wMenuCursorTimer]
+	inc a
+	ld [wMenuCursorTimer], a
+	and MENU_SPRITE_BLINK_TIMER
 	jr nz, .blinkMenuCursorEnd
 .blink:
-	SET_HL_TO_ADDRESS wOAM+2, wMenuCursorOAM
+	ld hl, wOAM+2
+	ld a, [wMenuCursorOAM]
+	call AddToHL
 	ld a, [hl]
 	cp a, EMPTY_TILE
 	jr nz, .empty
@@ -207,6 +221,35 @@ UpdateMenu::
 
 .menuInput:
 	call ReadController
+.checkSelect:
+	ldh a, [hControllerPressed]
+	and PADF_SELECT | PADB_UP | PADB_DOWN
+	jr z, .checkStart
+.select:
+	xor a ; ld a, 0
+	ld [wMenuCursorTimer], a
+	ld hl, wOAM+2
+	ld a, [wMenuCursorOAM]
+	call AddToHL
+	ld a, MENU_CURSOR_TILE
+	ld [hld], a
+	dec hl ; Now pointing to Y
+	ld a, [wSelectedMode]
+	cp a, 0
+	jr z, .selectEndless
+.selectClassic:
+	xor a ; ld a, 0
+	ld [wSelectedMode], a
+	ld a, MENU_SPRITE_CLASSIC_Y
+	ld [hl], a
+	ret
+.selectEndless:
+	ld a, 1
+	ld [wSelectedMode], a
+	ld a, MENU_SPRITE_ENDLESS_Y
+	ld [hl], a
+	ret
+.checkStart:
 	ldh a, [hControllerDown]
 	and PADF_START | PADF_A
 	ret z
@@ -220,5 +263,12 @@ UpdateMenu::
 	ret
 .fadeOut:
 	call FadeOutPalettes
-	jp nz, StartGame
+	ret z
+	ld a, [wSelectedMode]
+	cp a, 0
+	jr nz, .startEndless
+.startClassic:
+	jp StartClassic
+.startEndless:
+	jp StartEndless
 	ret
