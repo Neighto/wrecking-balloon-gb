@@ -351,6 +351,5 @@ UpdateGame::
     call LevelDataHandler
     call RefreshWindow
     call IncrementScrollOffset
-    call SoundUpdate
     call _hUGE_dosound_with_end
     ret

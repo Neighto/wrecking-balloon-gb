@@ -7,9 +7,6 @@ BULLET_SOUND_TIMER EQU 20
 BOOST_SOUND_TIMER EQU 40
 HIT_SOUND_TIMER EQU 40
 
-SECTION "sound vars", WRAM0
-  wChannel4SoundTimer:: DB
-
 SECTION "sound", ROMX
 
 AUDIO_OFF::
@@ -27,8 +24,6 @@ InitializeSound::
   ld a, %11111111
   ldh [rNR50], a
   ldh [rNR51], a
-  xor a ; ld a, 0
-  ld [wChannel4SoundTimer], a
   ret
 
 StopSweepSound::
@@ -62,22 +57,6 @@ SetWaveRAMToSquareWave::
   ldh [rNR30], a
   ret
 
-SoundUpdate::
-.channel4Sound:
-  ld a, [wChannel4SoundTimer]
-  cp a, 0
-  ret z
-  cp a, 1
-  jr nz, .updateChannel4SoundTimer
-.unmuteChannel4:
-  ld b, 3 ; Channel 4
-	ld c, 0 ; Unmute
-	call hUGE_mute_channel
-.updateChannel4SoundTimer:
-  dec a
-  ld [wChannel4SoundTimer], a
-  ret
-
 ; Gameplay Sound Effects (CH1)
 ; Channel 1 is only used for this during a level
 
@@ -102,11 +81,6 @@ FallingSound::
 ; Level Sound Effects (CH4)
 
 PopSound::
-  ld b, 3 ; Channel 4
-	ld c, 1 ; Mute
-	call hUGE_mute_channel
-  ld a, POP_SOUND_TIMER
-  ld [wChannel4SoundTimer], a
   ; Volume envelope
   ld a, %11110001
   ldh [rNR42], a
@@ -119,11 +93,6 @@ PopSound::
   ret
 
 HitSound::
-  ld b, 3 ; Channel 4
-	ld c, 1 ; Mute
-	call hUGE_mute_channel
-  ld a, HIT_SOUND_TIMER
-  ld [wChannel4SoundTimer], a
   ; Volume envelope
   ld a, 101110001
   ldh [rNR42], a
@@ -136,11 +105,6 @@ HitSound::
   ret
 
 ExplosionSound::
-  ld b, 3 ; Channel 4
-	ld c, 1 ; Mute
-	call hUGE_mute_channel
-  ld a, EXPLOSION_SOUND_TIMER
-  ld [wChannel4SoundTimer], a
   ; Volume envelope
   ld a, %11100110
   ldh [rNR42], a
@@ -153,11 +117,6 @@ ExplosionSound::
   ret
 
 FireworkSound::
-  ld b, 3 ; Channel 4
-	ld c, 1 ; Mute
-	call hUGE_mute_channel
-  ld a, EXPLOSION_SOUND_TIMER
-  ld [wChannel4SoundTimer], a
   ; Volume envelope
   ld a, %10110110
   ldh [rNR42], a
@@ -170,10 +129,6 @@ FireworkSound::
   ret
 
 ProjectileSound::
-  ld b, 3 ; Channel 4
-	ld c, 1 ; Mute
-	call hUGE_mute_channel
-  ld a, PROJECTILE_SOUND_TIMER
   ; Sound length
   ld a, %00000010
   ldh [rNR41], a
@@ -189,10 +144,6 @@ ProjectileSound::
   ret
 
 BulletSound::
-  ld b, 3 ; Channel 4
-	ld c, 1 ; Mute
-	call hUGE_mute_channel
-  ld a, BULLET_SOUND_TIMER
   ; Sound length
   ld a, %00000111
   ldh [rNR41], a
@@ -208,10 +159,6 @@ BulletSound::
   ret
 
 BossNeedleSound::
-  ld b, 3 ; Channel 4
-	ld c, 1 ; Mute
-	call hUGE_mute_channel
-  ld a, BULLET_SOUND_TIMER
   ; Sound length
   ld a, %000001111
   ldh [rNR41], a
@@ -227,10 +174,6 @@ BossNeedleSound::
   ret
 
 BoostSound::
-  ld b, 3 ; Channel 4
-	ld c, 1 ; Mute
-	call hUGE_mute_channel
-  ld a, BOOST_SOUND_TIMER
   ; Volume envelope
   ld a, %10000011
   ldh [rNR42], a

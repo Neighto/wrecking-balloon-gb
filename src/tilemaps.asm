@@ -24,9 +24,9 @@ TitleMap::
     INCBIN "incbin/background/Title.tilemap"
 TitleMapEnd::
 
-StartMap::
-    INCBIN "incbin/background/Start.tilemap"
-StartMapEnd::
+ModesMap::
+    INCBIN "incbin/background/Modes.tilemap"
+ModesMapEnd::
 
 NameMap::
     INCBIN "incbin/background/Name.tilemap"
