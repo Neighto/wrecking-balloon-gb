@@ -2,6 +2,7 @@ INCLUDE "constants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "balloonConstants.inc"
+INCLUDE "enemyConstants.inc"
 
 COUNTDOWN_OAM_SPRITES EQU 2
 COUNTDOWN_OAM_BYTES EQU COUNTDOWN_OAM_SPRITES * 4
@@ -19,9 +20,19 @@ COUNTDOWN_NEUTRAL_BALLOON_TILE EQU $3A
 STAR_TILE EQU $99
 SUN_ADDRESS EQU $9848
 
+ENDLESS_START_DIFFICULTY EQU 1
+ENDLESS_MAX_DIFFICULTY EQU 3
+
 SECTION "game vars", WRAM0
     wCountdownFrame:: DB
     wCountdownOAM:: DB
+    wEndlessTimer:: DB
+    wEndlessDelayTimer:: DB
+    wEndlessDifficulty:: DB
+    wEndlessEnemyNumber:: DB
+    wEndlessEnemyVariant:: DB
+    wEndlessEnemyPosition:: DB
+    wEndlessEnemyDirection:: DB
 
 SECTION "game", ROM0
 
@@ -29,6 +40,14 @@ InitializeGame::
 	xor a ; ld a, 0
 	ld [wHandWavingFrame], a
 	ld [wCountdownFrame], a
+    ld [wEndlessTimer], a
+    ld [wEndlessDelayTimer], a
+    ld [wEndlessEnemyNumber], a
+    ld [wEndlessEnemyVariant], a
+    ld [wEndlessEnemyPosition], a
+    ld [wEndlessEnemyDirection], a
+    ld a, ENDLESS_START_DIFFICULTY
+    ld [wEndlessDifficulty], a
     ret
 
 LoadGameSpriteTiles::
@@ -46,12 +65,14 @@ LoadGameMiscellaneousTiles::
     ret
     
 LoadLevelCityGraphics::
+.tiles:
 	ld bc, LevelCityTiles
 	ld hl, _VRAM9000
 	ld de, LevelCityTilesEnd - LevelCityTiles
 	call MEMCPY
+.tilemap:
 	ld bc, LevelCityMap
-	ld hl, _SCRN0
+	ld hl, _SCRN0 + $C0
 	ld de, LevelCityMapEnd - LevelCityMap
 	call MEMCPY
 	ret
@@ -151,7 +172,7 @@ LoadLevelShowdownGraphics::
 	call MEMCPY_WITH_OFFSET
     ret
 
-LoadLevelBossGraphics::
+LoadEndlessGraphics::
     ; Add scrolling dark clouds
 	ld bc, DarkCloudsMap
 	ld hl, $99C0
@@ -221,6 +242,8 @@ SpawnCountdown::
     ld [hli], a
     ld [hl], EMPTY_TILE
 	ret
+
+; UPDATE GAME COUNTDOWN ======================================
 
 UpdateGameCountdown::
     UPDATE_GLOBAL_TIMER
@@ -322,6 +345,8 @@ UpdateGameCountdown::
 .gameLoop:
     jp GameLoop
 
+; UPDATE GAME ======================================
+
 UpdateGame::
 
 .tryToUnpause:
@@ -348,8 +373,178 @@ UpdateGame::
     call EnemyUpdate
 .rest:
     UPDATE_GLOBAL_TIMER
+
+.modeSpecific:
+    ld a, [wSelectedMode]
+    cp a, 0
+    jr nz, .endlessMode
+.classicMode:
     call LevelDataHandler
+    jr .endModeSpecific
+.endlessMode:
+    call EndlessUpdate
+.endModeSpecific:
     call RefreshWindow
     call IncrementScrollOffset
     call _hUGE_dosound_with_end
+    ret
+
+; UPDATE ENDLESS ======================================
+
+EndlessUpdate:
+    ; Increase difficulty and gradually spawn harder enemies
+
+.checkDifficultyRaise:
+    ld a, [wEndlessDelayTimer]
+    inc a
+    ld [wEndlessDelayTimer], a
+    and %01111111
+    jr nz, .endCheckDifficultyRaise
+    ld a, [wEndlessTimer]
+    inc a
+    ld [wEndlessTimer], a
+    and %00000111
+    jr nz, .endCheckDifficultyRaise
+.difficultyRaise:
+    ld a, [wEndlessDifficulty]
+    cp a, ENDLESS_MAX_DIFFICULTY
+    jr nc, .endCheckDifficultyRaise
+    inc a
+    ld [wEndlessDifficulty], a
+.endCheckDifficultyRaise:
+
+.prepareEnemyToSpawn:
+    ld a, [wEndlessDelayTimer]
+    and %11111110
+    jp nz, .endPrepareEnemyToSpawn
+    ; load next enemy to spawn, where, and its variant
+    ld a, [wEndlessDifficulty]
+    RANDOM a
+.prepareBalloonCarrierNormal:
+    cp a, 0
+    jr nz, .prepareBalloonCarrierFollow
+    ; Save enemy number
+    ld a, BALLOON_CARRIER
+    ld [wEndlessEnemyNumber], a
+    ; Save enemy variant
+    ld a, CARRIER_NORMAL_VARIANT
+    ld [wEndlessEnemyVariant], a
+    ; Save enemy direction
+    RANDOM 2
+    ld b, a
+    ld c, 168
+    call MULTIPLY
+    ld [wEndlessEnemyDirection], a
+    ; Save enemy position
+    RANDOM 89
+    add 24
+    ld [wEndlessEnemyPosition], a
+    jr .endPrepareEnemyToSpawn
+.prepareBalloonCarrierFollow:
+    cp a, 1
+    jr nz, .prepareBird
+    ; Save enemy number
+    ld a, BALLOON_CARRIER
+    ld [wEndlessEnemyNumber], a
+    ; Save enemy variant
+    ld a, CARRIER_FOLLOW_VARIANT
+    ld [wEndlessEnemyVariant], a
+    ; Save enemy direction
+    RANDOM 2
+    ld b, a
+    ld c, 168
+    call MULTIPLY
+    ld [wEndlessEnemyDirection], a
+    ; Save enemy position
+    RANDOM 89
+    add 24
+    ld [wEndlessEnemyPosition], a
+    jr .endPrepareEnemyToSpawn
+.prepareBird:
+    cp a, 2
+    jr nz, .prepareBomb
+    ; Save enemy number
+    ld a, BIRD
+    ld [wEndlessEnemyNumber], a
+    ; Save enemy variant
+    ld a, BIRD_EASY_VARIANT
+    ld [wEndlessEnemyVariant], a
+    ; Save enemy direction
+    RANDOM 2
+    ld b, a
+    ld c, 168
+    call MULTIPLY
+    ld [wEndlessEnemyDirection], a
+    ; Save enemy position
+    RANDOM 89
+    add 24
+    ld [wEndlessEnemyPosition], a
+    jr .endPrepareEnemyToSpawn
+.prepareBomb:
+.endPrepareEnemyToSpawn:
+
+.checkEnemyToSpawn:
+    ld a, [wEndlessDelayTimer]
+    and %11111111
+    jr nz, .endCheckEnemyToSpawn
+    ld a, [wEndlessEnemyNumber]
+.balloonCarrier:
+    cp a, BALLOON_CARRIER
+    jr nz, .bird
+    ldh [hEnemyNumber], a
+    ld a, [wEndlessEnemyVariant]
+    ldh [hEnemyVariant], a
+    ld a, [wEndlessEnemyPosition]
+    ldh [hEnemyY], a
+    ld a, [wEndlessEnemyDirection]
+    ldh [hEnemyX], a
+    call SpawnBalloonCarrier
+    jr .endCheckEnemyToSpawn
+.bird:
+    cp a, BIRD
+    jr nz, .endCheckEnemyToSpawn
+    ldh [hEnemyNumber], a
+    ld a, [wEndlessEnemyVariant]
+    ldh [hEnemyVariant], a
+    ld a, [wEndlessEnemyPosition]
+    ldh [hEnemyY], a
+    ld a, [wEndlessEnemyDirection]
+    ldh [hEnemyX], a
+    call SpawnBird
+.endCheckEnemyToSpawn:
+
+.checkPointBalloonToSpawn:
+    ld a, [wEndlessDelayTimer]
+    and %00111111
+    jr nz, .endCheckPointBalloonToSpawn
+.tryToSpawnPointBalloon:
+    RANDOM 2
+    cp a, 0
+    jr nz, .endCheckPointBalloonToSpawn
+.canSpawnPointBalloon:
+    ld a, POINT_BALLOON
+    ldh [hEnemyNumber], a
+.checkPointBalloonVariant:
+    RANDOM 3
+.pointBalloonEasy:
+    cp a, 0
+    jr nz, .pointBalloonMedium
+    ld a, BALLOON_EASY_VARIANT
+    jr .endCheckPointBalloonVariant
+.pointBalloonMedium:
+    cp a, 1
+    jr nz, .pointBalloonHard
+    ld a, BALLOON_MEDIUM_VARIANT
+    jr .endCheckPointBalloonVariant
+.pointBalloonHard:
+    ld a, BALLOON_HARD_VARIANT
+.endCheckPointBalloonVariant:
+    ldh [hEnemyVariant], a
+    ld a, 156 ; offscreen_bottom
+    ldh [hEnemyY], a
+    RANDOM 137
+    add 12
+    ldh [hEnemyX], a
+    call SpawnPointBalloon
+.endCheckPointBalloonToSpawn:
     ret

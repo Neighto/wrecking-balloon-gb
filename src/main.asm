@@ -3,34 +3,40 @@ INCLUDE "header.inc"
 
 SECTION "rom", ROM0
 
+Common::
+	call ClearMap
+	call ClearOAM
+	call ClearVRAM9000
+	call ClearSound
+	call ResetGlobalTimer
+	call ResetScroll
+	call ResetFading
+	ret
+
 Start::
 	di
 	ld sp, $E000 ; Stack pointer to WRAM ; OLD: $FFFE
 	call InitializeInterrupts
 	call WaitVBlank
 	call LCD_OFF
-	call ClearMap
+	call Common
 	call ClearWindow
-	call ClearOAM
-	; call ClearRAM
 	call ClearHRAM
 	call ClearVRAM8000
 	call ClearVRAM8800
-	call ClearVRAM9000
-	call ResetScroll
-	call ResetGlobalTimer
 	call CopyDMARoutine
 	call LoadMenuOpeningGraphics
 	call LoadWindow
 	call LoadGameSpriteTiles
 	call LoadGameOverTiles
 	call LoadGameMiscellaneousTiles
+	call SetupWindow
 	call InitializeLives
 	call InitializeParallaxScrolling
-	call InitializePalettes
 	call InitializeController
 	call InitializeMenu
 	call InitializeSound
+	call InitializePalettes
 	call AUDIO_ON ; Not actually required
 	ld hl, menuTheme
 	call hUGE_init
@@ -47,7 +53,6 @@ StartMenu::
 	call StopSweepSound
 	call SetMenuInterrupts
 	call ResetFading
-	call ResetGlobalTimer
 	call LoadMenuGraphics
 	call SpawnMenuCursor
 	call LCD_ON_NO_WINDOW
@@ -61,14 +66,9 @@ MenuLoop:
 StartClassic::
 	call WaitVBlank
 	call LCD_OFF
-	call ClearMap
-	call ClearOAM
-	call ClearSound
-	call ResetScroll
-	call ResetGlobalTimer
+	call Common
 	call SetOpeningCutsceneInterrupts
 	call LoadOpeningCutsceneGraphics
-	call ResetFading
 	call InitializeOpeningCutscene
 	call InitializeTotal
 	call InitializeLevelVars
@@ -100,24 +100,17 @@ OpeningCutsceneLoop:
 SetupNextLevel::
 	call WaitVBlank
 	call LCD_OFF
-	call ResetScroll
-	call ResetGlobalTimer
-	call ClearMap
-	call ClearOAM
-	call ClearSound
-	call ClearVRAM9000
-	call SetupWindow
-	call ResetFading
+	call Common
 	call InitializeEnemies
 	call InitializePlayer
 	call InitializeBullet
 	call InitializePalettes
-	call InitializeEndlessVars
+	call InitializeBossMiscellaneous
 	call SpawnPlayer
 	call SpawnCountdown
 
 	; ; testing
-	; ld a, 7
+	; ld a, 3
 	; ld [wLevel], a
 	; ; ^^^
 
@@ -141,8 +134,8 @@ SetupNextLevel::
 .level3:
 	cp a, 3
 	jr nz, .level4
-	call SetLevelBossInterrupts
-	call LoadLevelBossGraphics
+	call SetEndlessInterrupts
+	call LoadEndlessGraphics
 	ld hl, bossTheme
 	call hUGE_init
 	call SpawnBossNotInLevelData
@@ -168,8 +161,8 @@ SetupNextLevel::
 .level6:
 	cp a, 6
 	jr nz, .level7
-	call SetLevelBossInterrupts
-	call LoadLevelBossGraphics
+	call SetEndlessInterrupts
+	call LoadEndlessGraphics
 	ld hl, bossTheme
 	call hUGE_init
 	call SpawnBossNotInLevelData
@@ -192,8 +185,8 @@ SetupNextLevel::
 	call hUGE_init
 	jr .endLevelSetup
 .level9:
-	call SetLevelBossInterrupts
-	call LoadLevelBossGraphics
+	call SetEndlessInterrupts
+	call LoadEndlessGraphics
 	ld hl, bossTheme
 	call hUGE_init
 	call SpawnBossNotInLevelData
@@ -219,16 +212,11 @@ GameLoop::
 StageClear::
 	call WaitVBlank
 	call LCD_OFF
-	call ResetScroll
-	call ClearMap
-	call ClearOAM
-	call ClearSound
+	call Common
 	call InitializeInterrupts
 	call InitializeSound
 	call SetWaveRAMToSquareWave
 	call LoadStageClearGraphics
-	call ResetFading
-	call ResetGlobalTimer
 	call InitializeFadedPalettes
 	call InitializeStageClear
 	call SpawnStageNumber
@@ -260,11 +248,7 @@ GameOverLoop:
 GameWon::
 	call WaitVBlank
 	call LCD_OFF
-	call ResetScroll
-	call ResetGlobalTimer
-	call ClearMap
-	call ClearOAM
-	call ClearSound
+	call Common
 	call SetEndingCutsceneInterrupts
 	call LoadEndingCutsceneGraphics
 	call InitializePalettes
@@ -283,7 +267,32 @@ GameWonLoop:
 	call UpdateEndingCutscene
 	jp GameWonLoop
 
-
 StartEndless::
-
+	; TODO maybe if endless just go down normal path but skip opening cutscene
+	call WaitVBlank
+	call LCD_OFF
+	call Common
+	call InitializeEnemies
+	call InitializePlayer
+	call InitializeBullet
+	call InitializePalettes
+	call SpawnPlayer
+	call SpawnCountdown
+	call SetEndlessInterrupts
+	call LoadEndlessGraphics
+	call InitializeGame
+	call InitializeScore
+	call RefreshWindow
+	call LCD_ON
+	; Comment out EndlessCountdownLoop to skip countdown
+EndlessCountdownLoop:
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateGameCountdown
+	; jp EndlessCountdownLoop
+EndlessGameLoop::
+	call WaitVBlank
+	call OAMDMA
+	call UpdateGame
+	jp EndlessGameLoop
 	ret
