@@ -259,11 +259,12 @@ BalloonCarrierUpdate::
 .moveHorizontal:
     ldh a, [hEnemyDirectionLeft]
     cp a, 0
+    ld hl, hEnemyX
     jr z, .isLeftside
-    DECREMENT_POS hEnemyX, 1
+    dec [hl]
     jr .endMoveHorizontalVariant
 .isLeftside:
-    INCREMENT_POS hEnemyX, 1
+    inc [hl]
 .endMoveHorizontalVariant:
 
 .moveVerticalVariant:
@@ -309,10 +310,12 @@ BalloonCarrierUpdate::
     jr z, .endMoveVerticalVariant
     jr c, .moveDown
 .moveUp:
-    DECREMENT_POS hEnemyY, 1
+    ld hl, hEnemyY
+    dec [hl]
     jr .endMoveVerticalVariant
 .moveDown:
-    INCREMENT_POS hEnemyY, 1
+    ld hl, hEnemyY
+    inc [hl]
 .endMoveVerticalVariant:
 
 .updatePosition:

@@ -1,25 +1,5 @@
 ; General Macros
 
-MACRO INCREMENT_POS
-    ; argument 1 is address
-    ; argument 2 is amount
-    ld hl, \1
-    ld a, \2
-    add [hl]
-    ld [hl], a
-ENDM
-
-MACRO DECREMENT_POS
-    ; argument 1 is address
-    ; argument 2 is amount
-    ld hl, \1
-    ld a, \2
-    cpl
-    inc a
-    add [hl]
-    ld [hl], a
-ENDM
-
 MACRO RANDOM
     ; argument 1 is range
     ; returns a as # 0-(range-1)

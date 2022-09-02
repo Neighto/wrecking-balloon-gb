@@ -195,7 +195,9 @@ UpdateBirdPosition:
     ret
 
 BirdFall:
-    INCREMENT_POS hEnemyY, 2
+    ldh a, [hEnemyY]
+    add a, 2
+    ldh [hEnemyY], a
     call UpdateBirdPosition
 .checkOffscreen:
     ldh a, [hEnemyY]
@@ -250,11 +252,15 @@ BirdUpdate::
     cp a, 0
     jr z, .isLeftside
 .isRightside:
-    DECREMENT_POS hEnemyX, BIRD_HORIZONTAL_SPEED
+    ldh a, [hEnemyX]
+    sub a, BIRD_HORIZONTAL_SPEED
+    ldh [hEnemyX], a
     SET_HL_TO_ADDRESS wOAM+10, hEnemyOAM
     jr .verticalMovement
 .isLeftside:
-    INCREMENT_POS hEnemyX, BIRD_HORIZONTAL_SPEED
+    ldh a, [hEnemyX]
+    add a, BIRD_HORIZONTAL_SPEED
+    ldh [hEnemyX], a
     SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM
 .verticalMovement:
     ldh a, [hGlobalTimer]
@@ -299,14 +305,18 @@ BirdUpdate::
     SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
     ld [hl], BIRD_TILE_2_ALT
 .moveDown:
-    INCREMENT_POS hEnemyY, b
+    ldh a, [hEnemyY]
+    add a, b
+    ldh [hEnemyY], a
     jr .endFrame
 .flap:
     ld [hl], BIRD_TILE_3
     SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
     ld [hl], BIRD_TILE_2
 .moveUp:
-    DECREMENT_POS hEnemyY, c
+    ldh a, [hEnemyY]
+    sub a, c
+    ldh [hEnemyY], a
 .endFrame:
     ldh a, [hEnemyAnimationFrame]
     inc a
@@ -398,7 +408,9 @@ BirdUpdate::
     and BIRD_FALLING_WAIT_TIME
     jr nz, .setStruct
 .animating:
-    INCREMENT_POS hEnemyY, 2
+    ldh a, [hEnemyY]
+    add a, 2
+    ldh [hEnemyY], a
     call UpdateBirdPosition
 .checkOffscreenY:
     ldh a, [hEnemyY]
