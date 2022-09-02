@@ -78,10 +78,12 @@ LoadLevelCityGraphics::
 	ret
 
 LoadLevelNightCityGraphics::
+.tiles:
 	ld bc, LevelCityTiles
 	ld hl, _VRAM9000
 	ld de, LevelCityTilesEnd - LevelCityTiles
 	call MEMCPY
+.tilemap:
 	ld bc, LevelCityMap
 	ld hl, _SCRN0
 	ld de, LevelCityMapEnd - LevelCityMap

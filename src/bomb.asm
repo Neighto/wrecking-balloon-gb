@@ -160,8 +160,9 @@ BombUpdate::
     and	BOMB_MOVE_TIME
     jr nz, .endMove
 .canMove:
-    DECREMENT_POS hEnemyY, BOMB_DEFAULT_SPEED
-    
+    ldh a, [hEnemyY]
+    sub a, BOMB_DEFAULT_SPEED
+    ldh [hEnemyY], a    
 .variantMove:
     ldh a, [hEnemyVariant]
     cp a, BOMB_FOLLOW_VARIANT
@@ -174,12 +175,13 @@ BombUpdate::
     ld hl, hPlayerX
     cp a, [hl]
     jr z, .endVariantMove
+    ld hl, hEnemyX
     jr c, .moveRight
 .moveLeft:
-    DECREMENT_POS hEnemyX, 1
+    dec [hl]
     jr .endVariantMove
 .moveRight:
-    INCREMENT_POS hEnemyX, 1
+    inc [hl]
 .endVariantMove:
 
 .balloonLeftOAM:

@@ -239,8 +239,14 @@ PlayerControls:
   cp a, b
   jr c, .endRight
 .moveRight:
-  INCREMENT_POS hPlayerX, [hPlayerSpeed]
-  INCREMENT_POS hPlayerX2, [hPlayerSpeed]
+  ldh a, [hPlayerSpeed]
+  ld b, a
+  ldh a, [hPlayerX]
+  add a, b
+  ldh [hPlayerX], a
+  ldh a, [hPlayerX2]
+  add a, b
+  ldh [hPlayerX2], a
 .canCactusDriftLeft:
   ld hl, hPlayerX
   ld a, PLAYER_MAX_DRIFT_X
@@ -272,8 +278,14 @@ PlayerControls:
   cp a, b
   jr c, .endLeft
 .moveLeft:
-  DECREMENT_POS hPlayerX, [hPlayerSpeed]
-  DECREMENT_POS hPlayerX2, [hPlayerSpeed]
+  ldh a, [hPlayerSpeed]
+  ld b, a
+  ldh a, [hPlayerX]
+  sub a, b
+  ldh [hPlayerX], a
+  ldh a, [hPlayerX2]
+  sub a, b
+  ldh [hPlayerX2], a
 .canCactusDriftRight:
   ld hl, hPlayerX
   ld a, PLAYER_MAX_DRIFT_X
@@ -301,8 +313,14 @@ PlayerControls:
   cp a, b
   jr c, .endUp
 .moveUp:
-  DECREMENT_POS hPlayerY, [hPlayerSpeed]
-  DECREMENT_POS hPlayerY2, [hPlayerSpeed]
+  ldh a, [hPlayerSpeed]
+  ld b, a
+  ldh a, [hPlayerY]
+  sub a, b
+  ldh [hPlayerY], a
+  ldh a, [hPlayerY2]
+  sub a, b
+  ldh [hPlayerY2], a
 .endUp:
 
 .down:
@@ -320,8 +338,14 @@ PlayerControls:
   cp a, b
   jr c, .endDown
 .moveDown:
-  INCREMENT_POS hPlayerY, [hPlayerSpeed]
-  INCREMENT_POS hPlayerY2, [hPlayerSpeed]
+  ldh a, [hPlayerSpeed]
+  ld b, a
+  ldh a, [hPlayerY]
+  add a, b
+  ldh [hPlayerY], a
+  ldh a, [hPlayerY2]
+  add a, b
+  ldh [hPlayerY2], a
 .canCactusDriftUp:
   ld hl, hPlayerY  
   ld a, PLAYER_MAX_DRIFT_Y-16
