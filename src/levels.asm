@@ -545,7 +545,6 @@ InitializeNewLevel::
     ld [hli], a
     ld a, HIGH(bc)
     ld [hl], a
-.end:
     ret
 
 InitializeLevelVars::
@@ -677,7 +676,7 @@ LevelDataHandler::
     ld a, [wLevelWaitBoss]
     cp a, 0
     jr nz, .waitBossEnd
-    call BossKiller
+    call WaitBossUpdate
     ret
 .waitBossEnd:
     inc hl

@@ -223,7 +223,7 @@ UpdateMenu::
 	call ReadController
 .checkSelect:
 	ldh a, [hControllerPressed]
-	and PADF_SELECT | PADB_UP | PADB_DOWN
+	and PADF_SELECT | PADF_UP | PADF_DOWN
 	jr z, .checkStart
 .select:
 	xor a ; ld a, 0

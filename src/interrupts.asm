@@ -25,10 +25,10 @@ GAME_SHOWDOWN_LCD_SCROLL_FAR2 EQU 102
 GAME_SHOWDOWN_LCD_SCROLL_CLOSE EQU 110
 GAME_SHOWDOWN_LCD_SCROLL_RESET EQU WINDOW_START_Y
 
-GAME_BOSS_LCD_SCROLL_FAR EQU 95
-; GAME_BOSS_LCD_SCROLL_MIDDLE EQU 111
-GAME_BOSS_LCD_SCROLL_CLOSE EQU 111
-GAME_BOSS_LCD_SCROLL_RESET EQU WINDOW_START_Y
+ENDLESS_LCD_SCROLL_FAR EQU 63
+ENDLESS_LCD_SCROLL_MIDDLE EQU 95
+ENDLESS_LCD_SCROLL_CLOSE EQU 111
+ENDLESS_LCD_SCROLL_RESET EQU WINDOW_START_Y
 
 ENDING_CUTSCENE_SCROLL_FAR EQU 103
 ENDING_CUTSCENE_SCROLL_CLOSE EQU 111
@@ -449,28 +449,36 @@ SetLevelShowdownInterrupts::
     ld [hl], a
     ret
 
-LevelBossLCDInterrupt:
+EndlessLCDInterrupt:
     ldh a, [rLYC]
 .far:
-    cp a, GAME_BOSS_LCD_SCROLL_FAR
-    jr nz, .close 
-    ld a, GAME_BOSS_LCD_SCROLL_CLOSE
+    cp a, ENDLESS_LCD_SCROLL_FAR
+    jr nz, .middle 
+    ld a, ENDLESS_LCD_SCROLL_MIDDLE
     ldh [rLYC], a
     ldh a, [hParallaxFar]
 	ldh [rSCX], a
     jp LCDInterruptEnd
+.middle:
+    cp a, ENDLESS_LCD_SCROLL_MIDDLE
+    jr nz, .close 
+    ld a, ENDLESS_LCD_SCROLL_CLOSE
+    ldh [rLYC], a
+    ldh a, [hParallaxMiddle]
+	ldh [rSCX], a
+    jp LCDInterruptEnd
 .close:
-    cp a, GAME_BOSS_LCD_SCROLL_CLOSE
+    cp a, ENDLESS_LCD_SCROLL_CLOSE
     jr nz, .window 
-    ld a, GAME_BOSS_LCD_SCROLL_RESET
+    ld a, ENDLESS_LCD_SCROLL_RESET
     ldh [rLYC], a
     ldh a, [hParallaxClose]
 	ldh [rSCX], a
     jp LCDInterruptEnd
 .window:
-    cp a, GAME_BOSS_LCD_SCROLL_RESET
+    cp a, ENDLESS_LCD_SCROLL_RESET
     jp nz, LCDInterruptEnd
-    ld a, GAME_BOSS_LCD_SCROLL_FAR
+    ld a, ENDLESS_LCD_SCROLL_FAR
     ldh [rLYC], a
     xor a ; ld a, 0
     ldh [rSCX], a
@@ -478,14 +486,14 @@ LevelBossLCDInterrupt:
     res 1, [hl]
     jp LCDInterruptEnd
 
-SetLevelBossInterrupts::
-    ld a, GAME_BOSS_LCD_SCROLL_FAR
+SetEndlessInterrupts::
+    ld a, ENDLESS_LCD_SCROLL_FAR
 	ldh [rLYC], a
 
     ld hl, wLCDInterrupt
-    ld a, LOW(LevelBossLCDInterrupt)
+    ld a, LOW(EndlessLCDInterrupt)
     ld [hli], a
-    ld a, HIGH(LevelBossLCDInterrupt)
+    ld a, HIGH(EndlessLCDInterrupt)
     ld [hl], a
     ret 
 

@@ -20,6 +20,14 @@ MACRO DECREMENT_POS
     ld [hl], a
 ENDM
 
+MACRO RANDOM
+    ; argument 1 is range
+    ; returns a as # 0-(range-1)
+    ld d, \1
+    ldh a, [rDIV]
+    call MODULO
+ENDM
+
 MACRO LD_BC_HL
     ld b, h
     ld c, l
@@ -173,6 +181,7 @@ LEVEL_WAIT_BOSS_KEY EQU 2
 LEVEL_END_KEY EQU 3
 GAME_WON_KEY EQU 4
 LEVEL_VICTORY_SONG_KEY EQU 5
+ENDLESS_KEY EQU 6
 
 MACRO LEVEL_SPAWN
     ; Enemy, Y, X, Variant

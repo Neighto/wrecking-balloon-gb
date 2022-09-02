@@ -51,6 +51,9 @@ PORCUPINE_POINT_Y3 EQU 86
 PORCUPINE_CHANGE_DIRECTION_X_TIME EQU %11111111
 PORCUPINE_ABOUT_TO_CHANGE_DIRECTION_X_TIME EQU %11110000
 
+BOSS_KILLER_START_TIME EQU %00001100
+BOSS_KILLER_WAIT_TIME EQU %00111111
+
 SECTION "boss", ROMX
 
 SetStruct:
@@ -724,4 +727,35 @@ BossUpdate::
     ldh [hEnemyX], a
     call SpawnPointBalloon
 .endSpawnPointBalloon:
+    ret
+
+SECTION "boss miscellaneous vars", WRAM0
+    wWaitBossTimer:: DB
+
+SECTION "boss miscellaneous", ROMX
+
+InitializeBossMiscellaneous::
+    ld a, BOSS_KILLER_START_TIME
+    ld [wWaitBossTimer], a
+    ret
+
+WaitBossUpdate::
+    ld a, [wWaitBossTimer]
+    inc a
+    ld [wWaitBossTimer], a
+    and BOSS_KILLER_WAIT_TIME
+    ret nz
+    call FindBalloonCarrier
+    ret nz
+    
+.spawnBalloonCarrier:
+    ld a, BALLOON_CARRIER
+    ldh [hEnemyNumber], a
+    ld a, CARRIER_ANVIL_VARIANT
+    ldh [hEnemyVariant], a
+    xor a ; ld a, 0
+    ldh [hEnemyY], a
+    ld a, 80
+    ldh [hEnemyX], a
+    call SpawnBalloonCarrier
     ret
