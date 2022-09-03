@@ -37,6 +37,7 @@ Start::
 	call InitializeMenu
 	call InitializeSound
 	call InitializePalettes
+	call InitializeTotal
 	call AUDIO_ON ; Not actually required
 	ld hl, menuTheme
 	call hUGE_init
@@ -70,7 +71,6 @@ StartClassic::
 	call SetOpeningCutsceneInterrupts
 	call LoadOpeningCutsceneGraphics
 	call InitializeOpeningCutscene
-	call InitializeTotal
 	call InitializeLevelVars
 	call InitializeEnemyStructVars
 	call InitializePlayer

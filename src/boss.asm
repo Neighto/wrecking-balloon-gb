@@ -1,5 +1,4 @@
 INCLUDE "hardware.inc"
-INCLUDE "balloonConstants.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 INCLUDE "constants.inc"

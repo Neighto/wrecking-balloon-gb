@@ -1,6 +1,5 @@
 INCLUDE "hardware.inc"
 INCLUDE "playerConstants.inc"
-INCLUDE "balloonConstants.inc"
 INCLUDE "constants.inc"
 INCLUDE "macro.inc"
 
@@ -448,7 +447,7 @@ PopPlayerBalloonAnimation:
   ldh a, [hPlayerPoppingTimer]
   inc	a
   ldh [hPlayerPoppingTimer], a
-  and POPPING_BALLOON_ANIMATION_SPEED
+  and POPPING_BALLOON_ANIMATION_TIME
   ret nz
 .canSwitchFrames:
   ldh a, [hPlayerPoppingFrame]

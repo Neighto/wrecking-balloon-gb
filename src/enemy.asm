@@ -2,7 +2,6 @@ INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
-INCLUDE "balloonConstants.inc"
 
 SECTION "enemy struct vars", HRAM
     ; NOTE: UPDATE ENEMY_STRUCT_SIZE in enemyConstants if we add vars here!
@@ -294,7 +293,7 @@ PopBalloonAnimation::
     ldh a, [hEnemyAnimationTimer]
 	inc	a
 	ldh [hEnemyAnimationTimer], a
-    and POPPING_BALLOON_ANIMATION_SPEED
+    and POPPING_BALLOON_ANIMATION_TIME
     ret nz
 .canSwitchFrames:
     ldh a, [hEnemyAnimationFrame]
