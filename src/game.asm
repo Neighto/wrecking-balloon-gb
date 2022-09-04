@@ -86,7 +86,7 @@ LoadLevelNightCityGraphics::
 	call MEMCPY
 .tilemap:
 	ld bc, LevelCityMap
-	ld hl, _SCRN0
+	ld hl, _SCRN0 + $C0
 	ld de, LevelCityMapEnd - LevelCityMap
 	call MEMCPY
     ld hl, $9821
