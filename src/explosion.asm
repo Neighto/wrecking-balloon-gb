@@ -19,7 +19,7 @@ SECTION "explosion", ROM0
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyActive]
+    ldh a, [hEnemyFlags]
     ld [hli], a
     ldh a, [hEnemyNumber]
     ld [hli], a
@@ -54,8 +54,9 @@ SpawnExplosion::
     ld a, b
     ldh [hEnemyOAM], a
     LD_BC_DE
-    ld a, 1
-    ldh [hEnemyActive], a
+    ldh a, [hEnemyFlags]
+    set ENEMY_FLAG_ACTIVE_BIT, a
+    ldh [hEnemyFlags], a
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
 .variantVisual:

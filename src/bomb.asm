@@ -20,7 +20,7 @@ SECTION "bomb", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyActive]
+    ldh a, [hEnemyFlags]
     ld [hli], a
     ldh a, [hEnemyNumber]
     ld [hli], a
@@ -29,12 +29,6 @@ SetStruct:
     ldh a, [hEnemyX]
     ld [hli], a
     ldh a, [hEnemyOAM]
-    ld [hli], a
-    ldh a, [hEnemyAlive]
-    ld [hli], a
-    ldh a, [hEnemyDying]
-    ld [hli], a
-    ldh a, [hEnemyHitEnemy]
     ld [hli], a
     ldh a, [hEnemyParam1] ; Enemy Trigger Explosion
     ld [hli], a
@@ -61,9 +55,10 @@ SpawnBomb::
     ld a, b
     ldh [hEnemyOAM], a
     LD_BC_DE
-    ld a, 1
-    ldh [hEnemyActive], a
-    ldh [hEnemyAlive], a
+    ldh a, [hEnemyFlags]
+    set ENEMY_FLAG_ACTIVE_BIT, a
+    set ENEMY_FLAG_ALIVE_BIT, a
+    ldh [hEnemyFlags], a
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
 .variantVisual:
@@ -124,27 +119,24 @@ BombUpdate::
     ld a, [hli]
     ldh [hEnemyOAM], a
     ld a, [hli]
-    ldh [hEnemyAlive], a
-    ld a, [hli]
-    ldh [hEnemyDying], a
-    ld a, [hli]
-    ldh [hEnemyHitEnemy], a
-    ld a, [hli]
     ldh [hEnemyParam1], a
     ld a, [hl]
     ldh [hEnemyVariant], a
 
 .checkAlive:
-    ldh a, [hEnemyAlive]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_ALIVE_MASK
     cp a, 0
     jr nz, .isAlive
 .isPopped:
-    ldh a, [hEnemyDying]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_DYING_MASK
     cp a, 0
     jr z, .clear
 .triggerExplosion:
-    xor a ; ld a, 0
-    ldh [hEnemyDying], a
+    ldh a, [hEnemyFlags]
+    res ENEMY_FLAG_DYING_BIT, a
+    ldh [hEnemyFlags], a
     ld a, 1
     ldh [hEnemyParam1], a
     jp .setStruct
@@ -203,7 +195,8 @@ BombUpdate::
     ldh a, [hGlobalTimer]
     and	BOMB_COLLISION_TIME
     jr nz, .endCollision
-    ldh a, [hEnemyHitEnemy]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_HIT_ENEMY_MASK
     cp a, 0
     jr nz, .deathOfBomb
 .checkHit:
@@ -227,8 +220,9 @@ BombUpdate::
     jr z, .endCollision
     call ClearBullet
 .deathOfBomb:
-    xor a ; ld a, 0
-    ldh [hEnemyAlive], a
+    ldh a, [hEnemyFlags]
+    res ENEMY_FLAG_ALIVE_BIT, a
+    ldh [hEnemyFlags], a
     ; Points
 .variantPoints:
     ldh a, [hEnemyVariant]
@@ -244,8 +238,9 @@ BombUpdate::
 .endVariantPoints:
     call AddPoints
     ; Animation trigger
-    ld a, 1
-    ldh [hEnemyDying], a
+    ldh a, [hEnemyFlags]
+    set ENEMY_FLAG_DYING_BIT, a
+    ldh [hEnemyFlags], a
 .endCollision:
 
 .checkOffscreen:
