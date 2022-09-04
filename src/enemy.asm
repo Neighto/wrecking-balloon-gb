@@ -8,7 +8,7 @@ SECTION "enemy struct vars", HRAM
     ; TODO: Can I define a public constant here that is EndStruct - StartStruct instead?
 
     ; These must be in this order in each enemy
-    hEnemyFlags:: DB ; BIT: 0->active 1->alive 2->dying 3->left 4->hit
+    hEnemyFlags:: DB ; BIT #: [0=active] [1=alive] [2=dying] [3=direction] [4=hit enemy] [5-7=generic]
     hEnemyNumber:: DB
 
     ; These can be in any order in an enemy
@@ -23,7 +23,6 @@ SECTION "enemy struct vars", HRAM
     hEnemyParam2:: DB
     hEnemyParam3:: DB
     hEnemyParam4:: DB
-    hEnemyParam5:: DB
 
 SECTION "enemy struct", ROM0
 
@@ -40,7 +39,6 @@ InitializeEnemyStructVars::
     ldh [hEnemyParam2], a
     ldh [hEnemyParam3], a
     ldh [hEnemyParam4], a
-    ldh [hEnemyParam5], a
     ret
 
 SECTION "enemy data vars", WRAM0

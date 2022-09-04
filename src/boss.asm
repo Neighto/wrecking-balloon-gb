@@ -11,8 +11,6 @@ PORCUPINE_MOVE_TIME EQU %00000001
 PORCUPINE_COLLISION_TIME EQU %00000111
 PORCUPINE_ATTACK_COOLDOWN_TIMER EQU 50
 
-PORCUPINE_HP EQU 3
-
 PORCUPINE_TILE_1 EQU $52
 PORCUPINE_TILE_2 EQU $54
 PORCUPINE_TILE_3 EQU $56
@@ -50,6 +48,12 @@ PORCUPINE_POINT_Y3 EQU 86
 PORCUPINE_CHANGE_DIRECTION_X_TIME EQU %11111111
 PORCUPINE_ABOUT_TO_CHANGE_DIRECTION_X_TIME EQU %11110000
 
+PORCUPINE_FLAG_TRIGGER_SPAWN_MASK EQU ENEMY_FLAG_PARAM1_MASK
+PORCUPINE_FLAG_TRIGGER_SPAWN_BIT EQU ENEMY_FLAG_PARAM1_BIT
+PORCUPINE_FLAG_HEALTH_MASK EQU ENEMY_FLAG_PARAM2_MASK | ENEMY_FLAG_PARAM3_MASK
+PORCUPINE_FLAG_HEALTH_BIT1 EQU ENEMY_FLAG_PARAM2_BIT
+PORCUPINE_FLAG_HEALTH_BIT2 EQU ENEMY_FLAG_PARAM3_BIT
+
 BOSS_KILLER_START_TIME EQU %00001100
 BOSS_KILLER_WAIT_TIME EQU %00111111
 
@@ -57,7 +61,7 @@ SECTION "boss", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyFlags]
+    ldh a, [hEnemyFlags] ; BIT #: [5=trigger projectile / balloon] [6-7=health]
     ld [hli], a
     ldh a, [hEnemyNumber]
     ld [hli], a
@@ -77,11 +81,9 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyParam2] ; Enemy Knocked Out Timer
     ld [hli], a
-    ldh a, [hEnemyParam3] ; Enemy Trigger Projectile / Balloon
+    ldh a, [hEnemyParam3] ; Enemy Direction Change Timer
     ld [hli], a
-    ldh a, [hEnemyParam4] ; Enemy Direction Change Timer
-    ld [hli], a
-    ldh a, [hEnemyParam5] ; Enemy Attack Cooldown Timer
+    ldh a, [hEnemyParam4] ; Enemy Attack Cooldown Timer
     ld [hli], a
     ldh a, [hEnemyVariant]
     ld [hl], a
@@ -122,11 +124,12 @@ SpawnBoss::
     LD_BC_DE
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_ACTIVE_BIT, a
+    set ENEMY_FLAG_ALIVE_BIT, a
+    set PORCUPINE_FLAG_HEALTH_BIT1, a ; Boss health + 2
+    set PORCUPINE_FLAG_HEALTH_BIT2, a ; Boss health + 1
     ldh [hEnemyFlags], a
     ld a, PORCUPINE_POINT_Y3
     ldh [hEnemyParam1], a
-    ; ld a, PORCUPINE_HP
-    ; ldh [hEnemyAlive], a
     call UpdateBossPosition
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 .bossTopLeftOAM:
@@ -230,14 +233,13 @@ BossUpdate::
     ldh [hEnemyParam3], a
     ld a, [hli]
     ldh [hEnemyParam4], a
-    ld a, [hli]
-    ldh [hEnemyParam5], a
     ld a, [hl]
     ldh [hEnemyVariant], a
 
 .resetSpawn:
-    xor a ; ld a, 0
-    ldh [hEnemyParam3], a
+    ldh a, [hEnemyFlags]
+    res PORCUPINE_FLAG_TRIGGER_SPAWN_BIT, a
+    ldh [hEnemyFlags], a
 .endResetSpawn:
 
 .faceExpression:
@@ -335,8 +337,9 @@ BossUpdate::
     cp a, 0
     jr z, .knockedOutAndAlive
 .knockedOutAndDead:
-    ld a, 1
-    ldh [hEnemyParam3], a
+    ldh a, [hEnemyFlags]
+    set PORCUPINE_FLAG_TRIGGER_SPAWN_BIT, a
+    ldh [hEnemyFlags], a
 .knockedOutAndDeadShowBossFeetAndRemoveBalloon:
     SET_HL_TO_ADDRESS wOAM+22, hEnemyOAM
     ld a, PORCUPINE_TILE_3_FEET_ALT
@@ -375,8 +378,9 @@ BossUpdate::
     call ClearEnemy
     jp .setStruct 
 .dying:
-    xor a ; ld a, 0
-    ldh [hEnemyParam3], a
+    ldh a, [hEnemyFlags]
+    res PORCUPINE_FLAG_TRIGGER_SPAWN_BIT, a
+    ldh [hEnemyFlags], a
 .dyingOffscreen:
     ld a, SCRN_Y + 16 ; buffer
     ld hl, hEnemyY
@@ -384,7 +388,7 @@ BossUpdate::
     jr nc, .checkFalling
 .isOffScreen:
     ldh a, [hEnemyFlags]
-    res ENEMY_FLAG_ALIVE_BIT, a
+    res ENEMY_FLAG_DYING_BIT, a
     ldh [hEnemyFlags], a
     jp .setStruct
 .checkFalling:
@@ -409,9 +413,9 @@ BossUpdate::
     ldh a, [hGlobalTimer]
     and %00000001
     jr nz, .endCheckDirection
-    ldh a, [hEnemyParam4]
+    ldh a, [hEnemyParam3]
     inc a 
-    ldh [hEnemyParam4], a
+    ldh [hEnemyParam3], a
     ld b, a
 .checkDirectionX:
     and PORCUPINE_CHANGE_DIRECTION_X_TIME
@@ -535,11 +539,11 @@ BossUpdate::
     ldh a, [hEnemySpeed]
     cp a, 0
     jr nz, .endMoveY
-    ldh a, [hEnemyParam5]
+    ldh a, [hEnemyParam4]
     cp a, 0
     jr nz, .endMoveY
     ; About to swoop
-    ldh a, [hEnemyParam4]
+    ldh a, [hEnemyParam3]
     cp a, PORCUPINE_ABOUT_TO_CHANGE_DIRECTION_X_TIME
     jr nc, .endMoveY
 .canAttack:
@@ -547,11 +551,12 @@ BossUpdate::
     ldh [hEnemyAnimationFrame], a
     xor a ; ld a, 0
     ldh [hEnemyAnimationTimer], a
-    inc a
-    ldh [hEnemyParam3], a
+    ldh a, [hEnemyFlags]
+    set PORCUPINE_FLAG_TRIGGER_SPAWN_BIT, a
+    ldh [hEnemyFlags], a
     ; Set attack cooldown timer
     ld a, PORCUPINE_ATTACK_COOLDOWN_TIMER
-    ldh [hEnemyParam5], a
+    ldh [hEnemyParam4], a
     jr .endMoveY
 .moveYContinue:
     jr c, .moveYDown
@@ -583,11 +588,11 @@ BossUpdate::
 .endString:
 
 .checkAttackCooldown:
-    ldh a, [hEnemyParam5]
+    ldh a, [hEnemyParam4]
     cp a, 0
     jr z, .endCheckAttackCooldown
     dec a
-    ldh [hEnemyParam5], a
+    ldh [hEnemyParam4], a
 .endCheckAttackCooldown:
 
 .checkCollision:
@@ -598,15 +603,15 @@ BossUpdate::
     and ENEMY_FLAG_HIT_ENEMY_MASK
     cp a, 0
     jr nz, .bossDamaged
-; .checkHitBullet: ; FOR DEBUGGING *****
-    ; ld bc, wPlayerBulletOAM
-    ; SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ; ld d, 32
-    ; ld e, 32
-    ; call CollisionCheck
-    ; cp a, 0
-    ; jr nz, .bossDamaged
-;     ; ***********
+.checkHitBullet: ; FOR DEBUGGING *****
+    ld bc, wPlayerBulletOAM
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ld d, 32
+    ld e, 32
+    call CollisionCheck
+    cp a, 0
+    jr nz, .bossDamaged
+    ; ***********
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
@@ -622,25 +627,31 @@ BossUpdate::
     call AddPoints
     ; Sound
     call HitSound
-    ; Stop enemy hit
+    ; Stop speed
+    xor a ; ld a, 0
+    ldh [hEnemySpeed], a
+    ; Stop enemy hit and decrease life
     ldh a, [hEnemyFlags]
     res ENEMY_FLAG_HIT_ENEMY_BIT, a
+    res PORCUPINE_FLAG_TRIGGER_SPAWN_BIT, a
+    ld b, a
+    and PORCUPINE_FLAG_HEALTH_MASK
+    rlca
+    rlca
+    dec a
+    rrca
+    rrca
+    ld c, a
+    ld a, b
+    and ENEMY_FLAG_ACTIVE_MASK | ENEMY_FLAG_ALIVE_MASK | ENEMY_FLAG_DYING_MASK | ENEMY_FLAG_DIRECTION_MASK | ENEMY_FLAG_HIT_ENEMY_MASK | PORCUPINE_FLAG_TRIGGER_SPAWN_MASK
+    or c
     ldh [hEnemyFlags], a
-    ; Stop attack
-    ldh [hEnemyParam3], a
-    ; Stop speed
-    ldh [hEnemySpeed], a
-    ; Decrease life
-    ldh a, [hEnemyFlags]
-    res ENEMY_FLAG_ALIVE_BIT, a
-    ldh [hEnemyFlags], a
-    ; ldh a, [hEnemyAlive]
-    ; dec a
-    ; ldh [hEnemyAlive], a
+    and PORCUPINE_FLAG_HEALTH_MASK
     cp a, 0
     jr nz, .bossDamagedAndAlive
 .bossDamagedAndDead:
     ldh a, [hEnemyFlags]
+    res ENEMY_FLAG_ALIVE_BIT, a
     set ENEMY_FLAG_DYING_BIT, a
     ldh [hEnemyFlags], a
 .bossDamagedAndAlive:
@@ -663,7 +674,8 @@ BossUpdate::
     jr z, .checkSpawnPointBalloon
 
 .checkSpawnBossNeedle:
-    ldh a, [hEnemyParam3]
+    ldh a, [hEnemyFlags]
+    and PORCUPINE_FLAG_TRIGGER_SPAWN_MASK
     cp a, 0
     ret z
 .spawnBossNeedle:
@@ -707,7 +719,8 @@ BossUpdate::
     ret
 
 .checkSpawnPointBalloon:
-    ldh a, [hEnemyParam3]
+    ldh a, [hEnemyFlags]
+    and PORCUPINE_FLAG_TRIGGER_SPAWN_MASK
     cp a, 0
     ret z
 .spawnPointBalloon:
