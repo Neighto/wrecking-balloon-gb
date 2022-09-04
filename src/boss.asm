@@ -57,7 +57,7 @@ SECTION "boss", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyActive]
+    ldh a, [hEnemyFlags]
     ld [hli], a
     ldh a, [hEnemyNumber]
     ld [hli], a
@@ -67,17 +67,9 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyOAM]
     ld [hli], a
-    ldh a, [hEnemyAlive]
-    ld [hli], a
-    ldh a, [hEnemyDying]
-    ld [hli], a
-    ldh a, [hEnemyHitEnemy]
-    ld [hli], a
     ldh a, [hEnemyAnimationFrame]
     ld [hli], a
     ldh a, [hEnemyAnimationTimer]
-    ld [hli], a
-    ldh a, [hEnemyDirectionLeft] ; 0th Bit > Left / Right, 1st Bit > Up / Down
     ld [hli], a
     ldh a, [hEnemySpeed]
     ld [hli], a
@@ -128,12 +120,13 @@ SpawnBoss::
     ld a, b
     ldh [hEnemyOAM], a
     LD_BC_DE
-    ld a, 1
-    ldh [hEnemyActive], a
+    ldh a, [hEnemyFlags]
+    set ENEMY_FLAG_ACTIVE_BIT, a
+    ldh [hEnemyFlags], a
     ld a, PORCUPINE_POINT_Y3
     ldh [hEnemyParam1], a
-    ld a, PORCUPINE_HP
-    ldh [hEnemyAlive], a
+    ; ld a, PORCUPINE_HP
+    ; ldh [hEnemyAlive], a
     call UpdateBossPosition
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 .bossTopLeftOAM:
@@ -224,17 +217,9 @@ BossUpdate::
     ld a, [hli]
     ldh [hEnemyOAM], a
     ld a, [hli]
-    ldh [hEnemyAlive], a
-    ld a, [hli]
-    ldh [hEnemyDying], a
-    ld a, [hli]
-    ldh [hEnemyHitEnemy], a
-    ld a, [hli]
     ldh [hEnemyAnimationFrame], a
     ld a, [hli]
     ldh [hEnemyAnimationTimer], a
-    ld a, [hli]
-    ldh [hEnemyDirectionLeft], a
     ld a, [hli]
     ldh [hEnemySpeed], a
     ld a, [hli]
@@ -345,7 +330,8 @@ BossUpdate::
     cp a, 0
     jp nz, .setStruct
 .knockedOutDone:
-    ldh a, [hEnemyDying]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_DYING_MASK
     cp a, 0
     jr z, .knockedOutAndAlive
 .knockedOutAndDead:
@@ -373,11 +359,13 @@ BossUpdate::
 .endKnockedOut:
 
 .checkAlive:
-    ldh a, [hEnemyAlive]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_ALIVE_MASK
     cp a, 0
     jr nz, .isAlive
 .isAtZeroHealth:
-    ldh a, [hEnemyDying]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_DYING_MASK
     cp a, 0
     jr nz, .dying
 .dyingDone:
@@ -395,8 +383,9 @@ BossUpdate::
     cp a, [hl]
     jr nc, .checkFalling
 .isOffScreen:
-    xor a ; ld a, 0
-    ldh [hEnemyDying], a
+    ldh a, [hEnemyFlags]
+    res ENEMY_FLAG_ALIVE_BIT, a
+    ldh [hEnemyFlags], a
     jp .setStruct
 .checkFalling:
     ldh a, [hGlobalTimer]
@@ -431,16 +420,17 @@ BossUpdate::
     ld a, PORCUPINE_POINT_Y3
     ldh [hEnemyParam1], a
 .changeDirection:
-    ldh a, [hEnemyDirectionLeft]
-    and ENEMY_DIRECTION_HORIZONTAL_MASK
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_DIRECTION_MASK
+    ldh a, [hEnemyFlags]
     jr nz, .moveToRight
 .moveToLeft:
-    set 0, a
-    ldh [hEnemyDirectionLeft], a
+    set ENEMY_FLAG_DIRECTION_BIT, a
+    ldh [hEnemyFlags], a
     jr .endCheckDirection
 .moveToRight:
-    res 0, a
-    ldh [hEnemyDirectionLeft], a
+    res ENEMY_FLAG_DIRECTION_BIT, a
+    ldh [hEnemyFlags], a
     jr .endCheckDirection
 .endCheckDirectionX:
 
@@ -477,8 +467,8 @@ BossUpdate::
 
 .moveX:
     ld hl, hEnemySpeed
-    ldh a, [hEnemyDirectionLeft]
-    and ENEMY_DIRECTION_HORIZONTAL_MASK
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_DIRECTION_MASK
     jr z, .handleMovingRight
 .handleMovingLeft:
     ldh a, [hEnemyX]
@@ -516,8 +506,8 @@ BossUpdate::
     inc a
 .valueOneOrGreater:
     ld b, a
-    ldh a, [hEnemyDirectionLeft]
-    and ENEMY_DIRECTION_HORIZONTAL_MASK
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_DIRECTION_MASK
     jr z, .moveXRight
 .moveXLeft:
     ldh a, [hEnemyX]
@@ -604,7 +594,8 @@ BossUpdate::
     ldh a, [hGlobalTimer]
     and	PORCUPINE_COLLISION_TIME
     jp nz, .endCollision
-    ldh a, [hEnemyHitEnemy]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_HIT_ENEMY_MASK
     cp a, 0
     jr nz, .bossDamaged
 ; .checkHitBullet: ; FOR DEBUGGING *****
@@ -632,21 +623,26 @@ BossUpdate::
     ; Sound
     call HitSound
     ; Stop enemy hit
-    xor a ; ld a, 0
-    ldh [hEnemyHitEnemy], a
+    ldh a, [hEnemyFlags]
+    res ENEMY_FLAG_HIT_ENEMY_BIT, a
+    ldh [hEnemyFlags], a
     ; Stop attack
     ldh [hEnemyParam3], a
     ; Stop speed
     ldh [hEnemySpeed], a
     ; Decrease life
-    ldh a, [hEnemyAlive]
-    dec a
-    ldh [hEnemyAlive], a
+    ldh a, [hEnemyFlags]
+    res ENEMY_FLAG_ALIVE_BIT, a
+    ldh [hEnemyFlags], a
+    ; ldh a, [hEnemyAlive]
+    ; dec a
+    ; ldh [hEnemyAlive], a
     cp a, 0
     jr nz, .bossDamagedAndAlive
 .bossDamagedAndDead:
-    ld a, 1
-    ldh [hEnemyDying], a
+    ldh a, [hEnemyFlags]
+    set ENEMY_FLAG_DYING_BIT, a
+    ldh [hEnemyFlags], a
 .bossDamagedAndAlive:
     ld a, PORCUPINE_KNOCKED_OUT_TIME
     ldh [hEnemyParam2], a
@@ -661,7 +657,8 @@ BossUpdate::
     call SetStruct
 
 .checkBossSpawns:
-    ldh a, [hEnemyAlive]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_ALIVE_MASK
     cp a, 0
     jr z, .checkSpawnPointBalloon
 
@@ -673,8 +670,8 @@ BossUpdate::
     ld a, BOSS_NEEDLE
     ldh [hEnemyNumber], a
 
-    ldh a, [hEnemyDirectionLeft]
-    and ENEMY_DIRECTION_HORIZONTAL_MASK
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_DIRECTION_MASK
     jr nz, .upRightNeedle
 .upLeftNeedle:
     ld a, NEEDLE_UP_MOVE_LEFT_VARIANT

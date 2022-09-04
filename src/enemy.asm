@@ -8,20 +8,16 @@ SECTION "enemy struct vars", HRAM
     ; TODO: Can I define a public constant here that is EndStruct - StartStruct instead?
 
     ; These must be in this order in each enemy
-    hEnemyActive:: DB
+    hEnemyFlags:: DB ; BIT: 0->active 1->alive 2->dying 3->left 4->hit
     hEnemyNumber:: DB
 
     ; These can be in any order in an enemy
     hEnemyY:: DB
     hEnemyX:: DB
     hEnemyOAM:: DB
-    hEnemyAlive:: DB
     hEnemyVariant:: DB
-    hEnemyDying:: DB
-    hEnemyHitEnemy:: DB
     hEnemyAnimationFrame:: DB
     hEnemyAnimationTimer:: DB
-    hEnemyDirectionLeft:: DB
     hEnemySpeed:: DB
     hEnemyParam1:: DB
     hEnemyParam2:: DB
@@ -33,16 +29,12 @@ SECTION "enemy struct", ROM0
 
 InitializeEnemyStructVars::
     xor a ; ld a, 0
-    ldh [hEnemyActive], a
+    ldh [hEnemyFlags], a
     ; ldh [hEnemyNumber], a ; Do not clear
     ldh [hEnemyOAM], a
-    ldh [hEnemyAlive], a
     ; ldh [hEnemyVariant], a ; Do not clear
-    ldh [hEnemyDying], a
-    ldh [hEnemyHitEnemy], a
     ldh [hEnemyAnimationFrame], a
     ldh [hEnemyAnimationTimer], a
-    ldh [hEnemyDirectionLeft], a
     ldh [hEnemySpeed], a 
     ldh [hEnemyParam1], a 
     ldh [hEnemyParam2], a
@@ -75,12 +67,12 @@ EnemyUpdate::
     xor a ; ld a, 0
     ld [wEnemyOffset], a
 .loop:
-    ; Get active state
+    ; Get flags
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     ld a, [hli]
-    ldh [hEnemyActive], a
+    ldh [hEnemyFlags], a
     ; Check active
-    ldh a, [hEnemyActive]
+    and ENEMY_FLAG_ACTIVE_MASK
     cp a, 0
     jr z, .checkLoop
     ; Get enemy number
@@ -173,12 +165,7 @@ EnemyInterCollision::
     call CollisionCheck
     cp a, 0
     jp z, .checkLoop
-    SET_HL_TO_ADDRESS wEnemies+7, wEnemyOffset2 ; hEnemyHitEnemy
-    ld a, 1 
-    ld [hl], a
-    cp a, 0
-    ; nz flag set
-    ret
+    jp .hitEnemy
 .bird:
     cp a, BIRD
     jr nz, .bomb
@@ -192,12 +179,7 @@ EnemyInterCollision::
     call CollisionCheck
     cp a, 0
     jp z, .checkLoop
-    SET_HL_TO_ADDRESS wEnemies+8, wEnemyOffset2 ; hEnemyHitEnemy
-    ld a, 1 
-    ld [hl], a
-    cp a, 0
-    ; nz flag set
-    ret
+    jp .hitEnemy
 .bomb:
     cp a, BOMB
     jr nz, .boss
@@ -211,12 +193,7 @@ EnemyInterCollision::
     call CollisionCheck
     cp a, 0
     jr z, .checkLoop
-    SET_HL_TO_ADDRESS wEnemies+7, wEnemyOffset2 ; hEnemyHitEnemy
-    ld a, 1 
-    ld [hl], a
-    cp a, 0
-    ; nz flag set
-    ret
+    jp .hitEnemy
 .boss:
     cp a, BOSS
     jr nz, .checkLoop
@@ -230,12 +207,7 @@ EnemyInterCollision::
     call CollisionCheck
     cp a, 0
     jr z, .checkLoop
-    SET_HL_TO_ADDRESS wEnemies+7, wEnemyOffset2 ; hEnemyHitEnemy
-    ld a, 1 
-    ld [hl], a
-    cp a, 0
-    ; nz flag set
-    ret
+    jp .hitEnemy
 .checkLoop:
     ld a, [wEnemyOffset2]
     add a, ENEMY_STRUCT_SIZE
@@ -245,8 +217,14 @@ EnemyInterCollision::
     ld [wEnemyLoopIndex2], a
     cp a, 0
     jp nz, .loop
-.end:
     ; z flag set
+    ret
+.hitEnemy:
+    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset2
+    set ENEMY_FLAG_HIT_ENEMY_BIT, [hl]
+    ld a, [hl]
+    cp a, 0
+    ; nz flag set
     ret
 
 FindBalloonCarrier::
@@ -327,8 +305,9 @@ PopBalloonAnimation::
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
     jr .endFrame
 .clear:
-    xor a
-    ldh [hEnemyDying], a
+    ldh a, [hEnemyFlags]
+    res ENEMY_FLAG_DYING_BIT, a
+    ldh [hEnemyFlags], a
     ret
 .endFrame:
     ldh a, [hEnemyAnimationFrame]

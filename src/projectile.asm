@@ -16,7 +16,7 @@ SECTION "enemy projectile", ROM0
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyActive]
+    ldh a, [hEnemyFlags]
     ld [hli], a
     ldh a, [hEnemyNumber]
     ld [hli], a
@@ -51,8 +51,9 @@ SpawnProjectile::
     ld a, b
     ldh [hEnemyOAM], a
     LD_BC_DE
-    ld a, 1
-    ldh [hEnemyActive], a
+    ldh a, [hEnemyFlags]
+    set ENEMY_FLAG_ACTIVE_BIT, a
+    ldh [hEnemyFlags], a
 .setupY2:
     ldh a, [hPlayerY]
     ld d, a

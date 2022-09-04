@@ -14,7 +14,7 @@ SECTION "anvil", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyActive]
+    ldh a, [hEnemyFlags]
     ld [hli], a
     ldh a, [hEnemyNumber]
     ld [hli], a
@@ -23,8 +23,6 @@ SetStruct:
     ldh a, [hEnemyX]
     ld [hli], a
     ldh a, [hEnemyOAM]
-    ld [hli], a
-    ldh a, [hEnemyDying]
     ld [hli], a
     ldh a, [hEnemyAnimationTimer]
     ld [hli], a
@@ -53,8 +51,9 @@ SpawnAnvil::
     ld a, b
     ldh [hEnemyOAM], a
     LD_BC_DE
-    ld a, 1
-    ldh [hEnemyActive], a
+    ldh a, [hEnemyFlags]
+    set ENEMY_FLAG_ACTIVE_BIT, a
+    ldh [hEnemyFlags], a
 
 .variantSpeed:
     ldh a, [hEnemyVariant]
@@ -129,8 +128,6 @@ AnvilUpdate::
     ld a, [hli]
     ldh [hEnemyOAM], a
     ld a, [hli]
-    ldh [hEnemyDying], a
-    ld a, [hli]
     ldh [hEnemyAnimationTimer], a
     ld a, [hli]
     ldh [hEnemySpeed], a
@@ -138,7 +135,8 @@ AnvilUpdate::
     ldh [hEnemyVariant], a
 
 .checkDying:
-    ldh a, [hEnemyDying]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_DYING_MASK
     cp a, 0
     jr z, .endCheckDying
     ldh a, [hEnemyAnimationTimer]
@@ -229,8 +227,9 @@ AnvilUpdate::
     call EnemyInterCollision
     jr z, .endCollision
 .hitEnemy:
-    ld a, 1
-    ldh [hEnemyDying], a
+    ldh a, [hEnemyFlags]
+    set ENEMY_FLAG_DYING_BIT, a
+    ldh [hEnemyFlags], a
 .endCollision:
 
 .checkOffscreen:

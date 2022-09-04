@@ -30,7 +30,7 @@ SECTION "bird", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyActive]
+    ldh a, [hEnemyFlags]
     ld [hli], a
     ldh a, [hEnemyNumber]
     ld [hli], a
@@ -39,14 +39,6 @@ SetStruct:
     ldh a, [hEnemyX]
     ld [hli], a
     ldh a, [hEnemyOAM]
-    ld [hli], a
-    ldh a, [hEnemyAlive]
-    ld [hli], a
-    ldh a, [hEnemyDirectionLeft]
-    ld [hli], a
-    ldh a, [hEnemyDying]
-    ld [hli], a
-    ldh a, [hEnemyHitEnemy]
     ld [hli], a
     ldh a, [hEnemyAnimationFrame]
     ld [hli], a
@@ -73,9 +65,10 @@ SpawnBird::
     ld a, b
     ldh [hEnemyOAM], a
     LD_BC_DE
-    ld a, 1
-    ldh [hEnemyActive], a
-    ldh [hEnemyAlive], a
+    ldh a, [hEnemyFlags]
+    set ENEMY_FLAG_ACTIVE_BIT, a
+    set ENEMY_FLAG_ALIVE_BIT, a
+    ldh [hEnemyFlags], a
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
 .variantVisual:
@@ -98,8 +91,9 @@ SpawnBird::
     cp a, SPAWN_ENEMY_LEFT_BUFFER
     jr nc, .isLeftside
 .isRightside:
-    ld a, 1
-    ldh [hEnemyDirectionLeft], a
+    ldh a, [hEnemyFlags]
+    set ENEMY_FLAG_DIRECTION_BIT, a
+    ldh [hEnemyFlags], a
     
 .birdLeft:
     ldh a, [hEnemyY]
@@ -209,8 +203,9 @@ BirdFall:
     cp a, b
     jr c, .endOffscreen
 .offscreen:
-    xor a ; ld a, 0
-    ldh [hEnemyDying], a
+    ldh a, [hEnemyFlags]
+    res ENEMY_FLAG_DYING_BIT, a
+    ldh [hEnemyFlags], a
     ld bc, BIRD_OAM_BYTES
     call ClearEnemy
 .endOffscreen:
@@ -225,20 +220,13 @@ BirdUpdate::
     ld a, [hli]
     ldh [hEnemyOAM], a
     ld a, [hli]
-    ldh [hEnemyAlive], a
-    ld a, [hli]
-    ldh [hEnemyDirectionLeft], a
-    ld a, [hli]
-    ldh [hEnemyDying], a
-    ld a, [hli]
-    ldh [hEnemyHitEnemy], a
-    ld a, [hli]
     ldh [hEnemyAnimationFrame], a
     ld a, [hl]
     ldh [hEnemyVariant], a
 
 .checkAlive:
-    ldh a, [hEnemyAlive]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_ALIVE_MASK
     cp a, 0
     jp z, .isDead
 .isAlive:
@@ -248,7 +236,8 @@ BirdUpdate::
     and	BIRD_MOVE_TIME
     jp nz, .endMove
 .canMove:
-    ldh a, [hEnemyDirectionLeft]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_DIRECTION_MASK
     cp a, 0
     jr z, .isLeftside
 .isRightside:
@@ -329,7 +318,8 @@ BirdUpdate::
     ldh a, [hGlobalTimer]
     and	BIRD_COLLISION_TIME
     jp nz, .endCollision
-    ldh a, [hEnemyHitEnemy]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_HIT_ENEMY_MASK
     cp a, 0
     jr nz, .deathOfBird
 .checkHitPlayer:
@@ -353,18 +343,21 @@ BirdUpdate::
     call CollisionWithPlayerCactus
     jr .endCollision
 .deathOfBird:
-    xor a ; ld a, 0
-    ldh [hEnemyAlive], a
+    ldh a, [hEnemyFlags]
+    res ENEMY_FLAG_ALIVE_BIT, a
+    ldh [hEnemyFlags], a
     ; Points
     ld d, BIRD_POINTS
     call AddPoints
     ; Animation trigger
-    ld a, 1
-    ldh [hEnemyDying], a
+    ldh a, [hEnemyFlags]
+    set ENEMY_FLAG_DYING_BIT, a
+    ldh [hEnemyFlags], a
     ; Sound
     call FireworkSound
     ; Screaming bird
-    ldh a, [hEnemyDirectionLeft]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_DIRECTION_MASK
     cp a, 0
     jr z, .facingRight
 .facingLeft:
@@ -401,7 +394,8 @@ BirdUpdate::
     jr .setStruct
 
 .isDead:
-    ldh a, [hEnemyDying]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_DYING_MASK
     cp a, 0
     jr z, .setStruct
     ldh a, [hGlobalTimer]

@@ -29,7 +29,7 @@ SECTION "balloon carrier", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyActive]
+    ldh a, [hEnemyFlags]
     ld [hli], a
     ldh a, [hEnemyNumber]
     ld [hli], a
@@ -39,15 +39,9 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyOAM]
     ld [hli], a
-    ldh a, [hEnemyAlive]
-    ld [hli], a
-    ldh a, [hEnemyDying]
-    ld [hli], a
     ldh a, [hEnemyAnimationFrame]
     ld [hli], a
     ldh a, [hEnemyAnimationTimer]
-    ld [hli], a
-    ldh a, [hEnemyDirectionLeft]
     ld [hli], a
     ldh a, [hEnemyParam1] ; Trigger Carry
     ld [hli], a
@@ -76,9 +70,10 @@ SpawnBalloonCarrier::
     ld a, b
     ldh [hEnemyOAM], a
     LD_BC_DE
-    ld a, 1
-    ldh [hEnemyActive], a
-    ldh [hEnemyAlive], a
+    ldh a, [hEnemyFlags]
+    set ENEMY_FLAG_ACTIVE_BIT, a
+    set ENEMY_FLAG_ALIVE_BIT, a
+    ldh [hEnemyFlags], a
 
 .updateDirection:
     ldh a, [hEnemyX]
@@ -86,8 +81,9 @@ SpawnBalloonCarrier::
     jr c, .endUpdateDirection
     cp a, SPAWN_ENEMY_LEFT_BUFFER
     jr nc, .endUpdateDirection
-    ld a, 1
-    ldh [hEnemyDirectionLeft], a
+    ldh a, [hEnemyFlags]
+    set ENEMY_FLAG_DIRECTION_BIT, a
+    ldh [hEnemyFlags], a
 .endUpdateDirection:
 
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
@@ -209,15 +205,9 @@ BalloonCarrierUpdate::
     ld a, [hli]
     ldh [hEnemyOAM], a
     ld a, [hli]
-    ldh [hEnemyAlive], a
-    ld a, [hli]
-    ldh [hEnemyDying], a
-    ld a, [hli]
     ldh [hEnemyAnimationFrame], a
     ld a, [hli]
     ldh [hEnemyAnimationTimer], a
-    ld a, [hli]
-    ldh [hEnemyDirectionLeft], a
     ld a, [hli]
     ldh [hEnemyParam1], a
     ld a, [hli]
@@ -226,13 +216,15 @@ BalloonCarrierUpdate::
     ldh [hEnemyVariant], a
 
 .checkAlive:
-    ldh a, [hEnemyAlive]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_ALIVE_MASK
     cp a, 0
     jr nz, .isAlive
 .isPopping:
     xor a ; ld a, 0
     ldh [hEnemyParam1], a
-    ldh a, [hEnemyDying]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_DYING_MASK
     cp a, 0
     jr z, .clearPopping
 .animatePopping:
@@ -256,7 +248,8 @@ BalloonCarrierUpdate::
     cp a, CARRIER_ANVIL_VARIANT
     jr z, .endMoveHorizontalVariant
 .moveHorizontal:
-    ldh a, [hEnemyDirectionLeft]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_DIRECTION_MASK
     cp a, 0
     ld hl, hEnemyX
     jr z, .isLeftside
@@ -433,8 +426,9 @@ BalloonCarrierUpdate::
 .endVariantPoints:
     call AddPoints
 
-    xor a ; ld a, 0
-    ld [hEnemyAlive], a
+    ldh a, [hEnemyFlags]
+    res ENEMY_FLAG_ALIVE_BIT, a
+    ld [hEnemyFlags], a
     ; Hide carry visual
     SET_HL_TO_ADDRESS wOAM+10, hEnemyOAM
     ld a, EMPTY_TILE
@@ -444,8 +438,10 @@ BalloonCarrierUpdate::
     inc hl
     ld [hl], a
     ; Animation trigger
+    ldh a, [hEnemyFlags]
+    set ENEMY_FLAG_DYING_BIT, a
+    ldh [hEnemyFlags], a
     ld a, 1
-    ldh [hEnemyDying], a
     ldh [hEnemyParam1], a
     ; Sound
     call PopSound

@@ -24,7 +24,7 @@ SECTION "point balloon", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyActive]
+    ldh a, [hEnemyFlags]
     ld [hli], a
     ldh a, [hEnemyNumber]
     ld [hli], a
@@ -33,12 +33,6 @@ SetStruct:
     ldh a, [hEnemyX]
     ld [hli], a
     ldh a, [hEnemyOAM]
-    ld [hli], a
-    ldh a, [hEnemyAlive]
-    ld [hli], a
-    ldh a, [hEnemyDying]
-    ld [hli], a
-    ldh a, [hEnemyHitEnemy]
     ld [hli], a
     ldh a, [hEnemyAnimationFrame]
     ld [hli], a
@@ -67,9 +61,10 @@ SpawnPointBalloon::
     ld a, b
     ld [hEnemyOAM], a
     LD_BC_DE
-    ld a, 1
-    ldh [hEnemyActive], a
-    ldh [hEnemyAlive], a
+    ldh a, [hEnemyFlags]
+    set ENEMY_FLAG_ACTIVE_BIT, a
+    set ENEMY_FLAG_ALIVE_BIT, a
+    ldh [hEnemyFlags], a
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
 .variantVisual:
@@ -137,12 +132,6 @@ PointBalloonUpdate::
     ld a, [hli]
     ldh [hEnemyOAM], a
     ld a, [hli]
-    ldh [hEnemyAlive], a
-    ld a, [hli]
-    ldh [hEnemyDying], a
-    ld a, [hli]
-    ldh [hEnemyHitEnemy], a
-    ld a, [hli]
     ldh [hEnemyAnimationFrame], a
     ld a, [hli]
     ldh [hEnemyAnimationTimer], a
@@ -150,7 +139,8 @@ PointBalloonUpdate::
     ldh [hEnemyVariant], a
 
 .checkAlive:
-    ldh a, [hEnemyAlive]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_ALIVE_MASK
     cp a, 0
     jp z, .popped
 .isAlive:
@@ -208,7 +198,8 @@ PointBalloonUpdate::
     ldh a, [hGlobalTimer]
     and	POINT_BALLOON_COLLISION_TIME
     jr nz, .endCollision
-    ldh a, [hEnemyHitEnemy]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_HIT_ENEMY_MASK
     cp a, 0
     jr nz, .deathOfPointBalloon
 .checkHit:
@@ -231,8 +222,9 @@ PointBalloonUpdate::
     jr z, .endCollision
     call ClearBullet
 .deathOfPointBalloon:
-    xor a ; ld a, 0
-    ldh [hEnemyAlive], a
+    ldh a, [hEnemyFlags]
+    res ENEMY_FLAG_ALIVE_BIT, a
+    ldh [hEnemyFlags], a
     ; Points
 .variantPoints:
     ldh a, [hEnemyVariant]
@@ -253,8 +245,9 @@ PointBalloonUpdate::
 .endVariantPoints:
     call AddPoints
     ; Animation trigger
-    ld a, 1 
-    ldh [hEnemyDying], a
+    ldh a, [hEnemyFlags]
+    set ENEMY_FLAG_DYING_BIT, a
+    ldh [hEnemyFlags], a
     ; Sound
     call PopSound
 .endCollision:
@@ -276,7 +269,8 @@ PointBalloonUpdate::
     jr .setStruct
 
 .popped:
-    ldh a, [hEnemyDying]
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_DYING_MASK
     cp a, 0
     jr z, .clear
 .animating:
