@@ -489,7 +489,7 @@ EndlessUpdate:
     RANDOM 137
     add 12
     ld [wEndlessEnemyPosition], a
-    jr .endPrepareEnemyToSpawn
+    jp .endPrepareEnemyToSpawn
     ; BIRDS =====
 .prepareBirdEasy:
     cp a, ENDLESS_DIFFICULTY_3
@@ -497,8 +497,8 @@ EndlessUpdate:
     ld b, BIRD_EASY_VARIANT
     jr .prepareBird
 .prepareBirdHard:
-    cp a, ENDLESS_DIFFICULTY_MAX
-    jr nz, .endPrepareEnemyToSpawn
+    cp a, ENDLESS_DIFFICULTY_7
+    jr nz, .prepareAnvil
     ld b, BIRD_HARD_VARIANT
 .prepareBird:
     ; Save enemy number
@@ -516,6 +516,23 @@ EndlessUpdate:
     ; Save enemy position
     RANDOM 89
     add 24
+    ld [wEndlessEnemyPosition], a
+    jr .endPrepareEnemyToSpawn
+.prepareAnvil:
+    cp a, ENDLESS_DIFFICULTY_MAX
+    jr nz, .endPrepareEnemyToSpawn
+    ; Save enemy number
+    ld a, ANVIL
+    ld [wEndlessEnemyNumber], a
+    ; Save enemy variant
+    ld a, ANVIL_NORMAL_VARIANT
+    ld [wEndlessEnemyVariant], a
+    ; Save enemy direction
+    ld a, OFFSCREEN_TOP
+    ld [wEndlessEnemyDirection], a
+    ; Save enemy position
+    RANDOM 137
+    add 12
     ld [wEndlessEnemyPosition], a
     ; jr .endPrepareEnemyToSpawn
 .checkEnemyToSpawn:
@@ -547,12 +564,22 @@ EndlessUpdate:
     jr .endCheckEnemyToSpawn
 .bird:
     cp a, BIRD
-    jr nz, .endCheckEnemyToSpawn
+    jr nz, .anvil
     ld a, [wEndlessEnemyPosition]
     ldh [hEnemyY], a
     ld a, [wEndlessEnemyDirection]
     ldh [hEnemyX], a
     call SpawnBird
+    jr .endCheckEnemyToSpawn
+.anvil:
+    cp a, ANVIL
+    jr nz, .endCheckEnemyToSpawn
+    ld a, [wEndlessEnemyDirection]
+    ldh [hEnemyY], a
+    ld a, [wEndlessEnemyPosition]
+    ldh [hEnemyX], a
+    call SpawnAnvil
+    ; jr .endCheckEnemyToSpawn
 .endCheckEnemyToSpawn:
 .endPrepareEnemyToSpawn:
 

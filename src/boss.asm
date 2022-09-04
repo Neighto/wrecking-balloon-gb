@@ -603,15 +603,15 @@ BossUpdate::
     and ENEMY_FLAG_HIT_ENEMY_MASK
     cp a, 0
     jr nz, .bossDamaged
-.checkHitBullet: ; FOR DEBUGGING *****
-    ld bc, wPlayerBulletOAM
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ld d, 32
-    ld e, 32
-    call CollisionCheck
-    cp a, 0
-    jr nz, .bossDamaged
-    ; ***********
+; .checkHitBullet: ; FOR DEBUGGING *****
+;     ld bc, wPlayerBulletOAM
+;     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+;     ld d, 32
+;     ld e, 32
+;     call CollisionCheck
+;     cp a, 0
+;     jr nz, .bossDamaged
+;     ; ***********
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
