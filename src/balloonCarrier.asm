@@ -25,11 +25,14 @@ BALLOON_CARRIER_FOLLOW_POINTS EQU 30
 BALLOON_CARRIER_BOMB_TILE EQU $22
 BALLOON_CARRIER_BOMB_POINTS EQU 50
 
+BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_MASK EQU ENEMY_FLAG_PARAM1_MASK
+BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_BIT EQU ENEMY_FLAG_PARAM1_BIT
+
 SECTION "balloon carrier", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyFlags]
+    ldh a, [hEnemyFlags] ; BIT #: [5=trigger carry]
     ld [hli], a
     ldh a, [hEnemyNumber]
     ld [hli], a
@@ -43,9 +46,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyAnimationTimer]
     ld [hli], a
-    ldh a, [hEnemyParam1] ; Trigger Carry
-    ld [hli], a
-    ldh a, [hEnemyParam2] ; Enemy Projectile Timer / Bobbing Index
+    ldh a, [hEnemyParam1] ; Enemy Projectile Timer / Bobbing Index
     ld [hli], a
     ldh a, [hEnemyVariant]
     ld [hl], a
@@ -210,22 +211,18 @@ BalloonCarrierUpdate::
     ldh [hEnemyAnimationTimer], a
     ld a, [hli]
     ldh [hEnemyParam1], a
-    ld a, [hli]
-    ldh [hEnemyParam2], a
     ld a, [hl]
     ldh [hEnemyVariant], a
 
 .checkAlive:
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_ALIVE_MASK
-    cp a, 0
     jr nz, .isAlive
 .isPopping:
-    xor a ; ld a, 0
-    ldh [hEnemyParam1], a
     ldh a, [hEnemyFlags]
+    res BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_BIT, a
+    ldh [hEnemyFlags], a
     and ENEMY_FLAG_DYING_MASK
-    cp a, 0
     jr z, .clearPopping
 .animatePopping:
     call PopBalloonAnimation
@@ -250,7 +247,6 @@ BalloonCarrierUpdate::
 .moveHorizontal:
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_DIRECTION_MASK
-    cp a, 0
     ld hl, hEnemyX
     jr z, .isLeftside
     dec [hl]
@@ -271,19 +267,19 @@ BalloonCarrierUpdate::
     ldh a, [hGlobalTimer]
     and %00111111
     jr nz, .endCheckBobbing
-    ldh a, [hEnemyParam2]
+    ldh a, [hEnemyParam1]
     cp a, 0
     jr nz, .bobUp
 .bobDown:
     ld a, 1
-    ldh [hEnemyParam2], a
+    ldh [hEnemyParam1], a
     ldh a, [hEnemyY]
     inc a
     ldh [hEnemyY], a
     jr .endCheckBobbing
 .bobUp:
     ld a, 0
-    ldh [hEnemyParam2], a
+    ldh [hEnemyParam1], a
     ldh a, [hEnemyY]
     dec a
     ldh [hEnemyY], a
@@ -351,16 +347,16 @@ BalloonCarrierUpdate::
 .projectileVariant:
     cp a, CARRIER_PROJECTILE_VARIANT 
     jr nz, .endProjectileVariant
-    ldh a, [hEnemyParam2]
+    ldh a, [hEnemyParam1]
     cp a, PROJECTILE_RESPAWN_TIME + 1
     jr c, .skipResetSpawn
 .resetSpawn:
     xor a ; ld a, 0
-    ldh [hEnemyParam2], a
+    ldh [hEnemyParam1], a
     jr .endProjectileVariant
 .skipResetSpawn:
     inc a
-    ldh [hEnemyParam2], a
+    ldh [hEnemyParam1], a
 .endProjectileVariant:
 
 .checkCollision:
@@ -440,9 +436,8 @@ BalloonCarrierUpdate::
     ; Animation trigger
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_DYING_BIT, a
+    set BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_BIT, a
     ldh [hEnemyFlags], a
-    ld a, 1
-    ldh [hEnemyParam1], a
     ; Sound
     call PopSound
 .endCollision:
@@ -466,8 +461,8 @@ BalloonCarrierUpdate::
     call SetStruct
 
 .checkSpawnCarry:
-    ldh a, [hEnemyParam1]
-    cp a, 0
+    ldh a, [hEnemyFlags]
+    and BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_MASK
     jr z, .variantEndSpawnCarry
 .variantSpawnExplosion:
     ldh a, [hEnemyVariant]
@@ -506,14 +501,14 @@ BalloonCarrierUpdate::
 .variantEndSpawnCarry:
 
 .checkSpawnProjectile:
-    ldh a, [hEnemyParam2]
+    ldh a, [hEnemyParam1]
     cp a, PROJECTILE_RESPAWN_FLICKER_TIME
     jr c, .endFlicker
     cp a, PROJECTILE_RESPAWN_TIME
     jr nc, .endFlicker
 .canFlicker:
     SET_HL_TO_ADDRESS wOAM+3, hEnemyOAM
-    ldh a, [hEnemyParam2]
+    ldh a, [hEnemyParam1]
     and	%00000011
     jr nz, .flickerOn
 .flickerOff:
@@ -529,7 +524,7 @@ BalloonCarrierUpdate::
     or a, OAMF_XFLIP
     ld [hli], a
 .endFlicker:
-    ldh a, [hEnemyParam2]
+    ldh a, [hEnemyParam1]
     cp a, PROJECTILE_RESPAWN_TIME
     jr nz, .endSpawnProjectile
 .spawnProjectile:

@@ -10,11 +10,10 @@ SECTION "enemy struct vars", HRAM
     ; These must be in this order in each enemy
     hEnemyFlags:: DB ; BIT #: [0=active] [1=alive] [2=dying] [3=direction] [4=hit enemy] [5-7=generic]
     hEnemyNumber:: DB
-
-    ; These can be in any order in an enemy
     hEnemyY:: DB
     hEnemyX:: DB
     hEnemyOAM:: DB
+    ; These can be in any order in an enemy
     hEnemyVariant:: DB
     hEnemyAnimationFrame:: DB
     hEnemyAnimationTimer:: DB

@@ -21,8 +21,10 @@ SUN_ADDRESS EQU $9848
 
 ENDLESS_DELAY_TIMER_RESET_TIME EQU 127
 ENDLESS_TIMER_RESET_TIME EQU %00000111
-ENDLESS_PREPARE_ENEMY_TIME EQU 60 ; Must be less than ENDLESS_DELAY_TIMER_RESET_TIME
-ENDLESS_SPAWN_ENEMY_TIME EQU ENDLESS_PREPARE_ENEMY_TIME + 4 ; Must be less than ENDLESS_DELAY_TIMER_RESET_TIME
+ENDLESS_PREPARE_ENEMY_SLOW_TIME EQU 60 ; Must be less than ENDLESS_DELAY_TIMER_RESET_TIME
+ENDLESS_PREPARE_ENEMY_MEDIUM_TIME EQU 40 ; Must be less than ENDLESS_DELAY_TIMER_RESET_TIME
+ENDLESS_PREPARE_ENEMY_FAST_TIME EQU 30 ; Must be less than ENDLESS_DELAY_TIMER_RESET_TIME
+ENDLESS_SPAWN_ENEMY_DELAY_AFTER_PREPARE EQU 4
 ENDLESS_SPAWN_POINT_BALLOON_TIME EQU 63 ; Must be less than ENDLESS_DELAY_TIMER_RESET_TIME
 
 SECTION "game vars", WRAM0
@@ -31,6 +33,7 @@ SECTION "game vars", WRAM0
     wEndlessTimer:: DB
     wEndlessDelayTimer:: DB
     wEndlessDifficulty:: DB
+    wEndlessSpawnTime:: DB
     wEndlessEnemyNumber:: DB
     wEndlessEnemyVariant:: DB
     wEndlessEnemyPosition:: DB
@@ -49,6 +52,7 @@ InitializeGame::
     ld [wEndlessEnemyPosition], a
     ld [wEndlessEnemyDirection], a
     ld [wEndlessDifficulty], a
+    ld [wEndlessSpawnTime], a
     ret
 
 LoadGameSpriteTiles::
@@ -416,11 +420,33 @@ EndlessUpdate:
     jr nc, .endCheckDifficultyRaise
     inc a
     ld [wEndlessDifficulty], a
+.setSpawnRate:
+.fastPrepareSpawnRate:
+    cp a, ENDLESS_DIFFICULTY_MAX + 1
+    jr nc, .mediumPrepareSpawnRate
+    ld a, ENDLESS_PREPARE_ENEMY_FAST_TIME
+    ld [wEndlessSpawnTime], a
+    jr .endSetSpawnRate
+.mediumPrepareSpawnRate:
+    cp a, ENDLESS_DIFFICULTY_2
+    jr nc, .slowPrepareSpawnRate
+    ld a, ENDLESS_PREPARE_ENEMY_MEDIUM_TIME
+    ld [wEndlessSpawnTime], a
+    jr .endSetSpawnRate
+.slowPrepareSpawnRate:
+    ; cp a, ENDLESS_DIFFICULTY_0
+    ; jr nc, .endSetSpawnRate
+    ld a, ENDLESS_PREPARE_ENEMY_SLOW_TIME
+    ld [wEndlessSpawnTime], a
+    ; jr .endSetSpawnRate
+.endSetSpawnRate:
 .endCheckDifficultyRaise:
 
 .prepareEnemyToSpawn:
+    ld a, [wEndlessSpawnTime]
+    ld b, a
     ld a, [wEndlessDelayTimer]
-    cp a, ENDLESS_PREPARE_ENEMY_TIME
+    cp a, b
     jp nz, .checkEnemyToSpawn
     ld a, [wEndlessDifficulty]
     cp a, 0
@@ -456,9 +482,14 @@ EndlessUpdate:
     ld [wEndlessEnemyVariant], a
     ; Save enemy direction
     RANDOM 2
-    ld b, a
-    ld c, 168
-    call MULTIPLY
+    cp a, 0
+    jr nz, .balloonCarrierRight
+.balloonCarrierLeft:
+    ld a, OFFSCREEN_LEFT
+    jr .balloonCarrierUpdateDirection
+.balloonCarrierRight:
+    ld a, OFFSCREEN_RIGHT
+.balloonCarrierUpdateDirection:
     ld [wEndlessEnemyDirection], a
     ; Save enemy position
     RANDOM 89
@@ -509,18 +540,23 @@ EndlessUpdate:
     ld [wEndlessEnemyVariant], a
     ; Save enemy direction
     RANDOM 2
-    ld b, a
-    ld c, 168
-    call MULTIPLY
+    cp a, 0
+    jr nz, .birdRight
+.birdLeft:
+    ld a, OFFSCREEN_LEFT
+    jr .birdUpdateDirection
+.birdRight:
+    ld a, OFFSCREEN_RIGHT
+.birdUpdateDirection:
     ld [wEndlessEnemyDirection], a
     ; Save enemy position
     RANDOM 89
     add 24
     ld [wEndlessEnemyPosition], a
-    jr .endPrepareEnemyToSpawn
+    jp .endPrepareEnemyToSpawn
 .prepareAnvil:
     cp a, ENDLESS_DIFFICULTY_MAX
-    jr nz, .endPrepareEnemyToSpawn
+    jp nz, .endPrepareEnemyToSpawn
     ; Save enemy number
     ld a, ANVIL
     ld [wEndlessEnemyNumber], a
@@ -536,8 +572,11 @@ EndlessUpdate:
     ld [wEndlessEnemyPosition], a
     ; jr .endPrepareEnemyToSpawn
 .checkEnemyToSpawn:
+    ld a, [wEndlessSpawnTime]
+    add ENDLESS_SPAWN_ENEMY_DELAY_AFTER_PREPARE
+    ld b, a
     ld a, [wEndlessDelayTimer]
-    cp a, ENDLESS_SPAWN_ENEMY_TIME
+    cp a, b
     jr nz, .endCheckEnemyToSpawn
 .spawnEnemy:
     ld a, [wEndlessEnemyVariant]

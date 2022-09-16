@@ -141,7 +141,6 @@ PointBalloonUpdate::
 .checkAlive:
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_ALIVE_MASK
-    cp a, 0
     jp z, .popped
 .isAlive:
 
@@ -200,7 +199,6 @@ PointBalloonUpdate::
     jr nz, .endCollision
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_HIT_ENEMY_MASK
-    cp a, 0
     jr nz, .deathOfPointBalloon
 .checkHit:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
@@ -271,7 +269,6 @@ PointBalloonUpdate::
 .popped:
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_DYING_MASK
-    cp a, 0
     jr z, .clear
 .animating:
     call PopBalloonAnimation

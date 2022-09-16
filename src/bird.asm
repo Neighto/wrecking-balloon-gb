@@ -227,7 +227,6 @@ BirdUpdate::
 .checkAlive:
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_ALIVE_MASK
-    cp a, 0
     jp z, .isDead
 .isAlive:
 
@@ -238,7 +237,6 @@ BirdUpdate::
 .canMove:
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_DIRECTION_MASK
-    cp a, 0
     jr z, .isLeftside
 .isRightside:
     ldh a, [hEnemyX]
@@ -320,7 +318,6 @@ BirdUpdate::
     jp nz, .endCollision
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_HIT_ENEMY_MASK
-    cp a, 0
     jr nz, .deathOfBird
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
@@ -358,7 +355,6 @@ BirdUpdate::
     ; Screaming bird
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_DIRECTION_MASK
-    cp a, 0
     jr z, .facingRight
 .facingLeft:
     SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM
@@ -396,7 +392,6 @@ BirdUpdate::
 .isDead:
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_DYING_MASK
-    cp a, 0
     jr z, .setStruct
     ldh a, [hGlobalTimer]
     and BIRD_FALLING_WAIT_TIME

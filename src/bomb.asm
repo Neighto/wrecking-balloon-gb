@@ -16,11 +16,14 @@ BOMB_DIRECT_POINTS EQU 10
 BOMB_FOLLOW_TILE EQU $4C
 BOMB_FOLLOW_POINTS EQU 20
 
+BOMB_FLAG_TRIGGER_SPAWN_MASK EQU ENEMY_FLAG_PARAM1_MASK
+BOMB_FLAG_TRIGGER_SPAWN_BIT EQU ENEMY_FLAG_PARAM1_BIT
+
 SECTION "bomb", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyFlags]
+    ldh a, [hEnemyFlags] ; BIT #: [5=trigger explosion]
     ld [hli], a
     ldh a, [hEnemyNumber]
     ld [hli], a
@@ -29,8 +32,6 @@ SetStruct:
     ldh a, [hEnemyX]
     ld [hli], a
     ldh a, [hEnemyOAM]
-    ld [hli], a
-    ldh a, [hEnemyParam1] ; Enemy Trigger Explosion
     ld [hli], a
     ldh a, [hEnemyVariant]
     ld [hl], a
@@ -118,27 +119,22 @@ BombUpdate::
     ldh [hEnemyX], a
     ld a, [hli]
     ldh [hEnemyOAM], a
-    ld a, [hli]
-    ldh [hEnemyParam1], a
     ld a, [hl]
     ldh [hEnemyVariant], a
 
 .checkAlive:
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_ALIVE_MASK
-    cp a, 0
     jr nz, .isAlive
 .isPopped:
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_DYING_MASK
-    cp a, 0
     jr z, .clear
 .triggerExplosion:
     ldh a, [hEnemyFlags]
     res ENEMY_FLAG_DYING_BIT, a
+    set BOMB_FLAG_TRIGGER_SPAWN_BIT, a
     ldh [hEnemyFlags], a
-    ld a, 1
-    ldh [hEnemyParam1], a
     jp .setStruct
 .clear:
     ld bc, BOMB_OAM_BYTES
@@ -197,7 +193,6 @@ BombUpdate::
     jr nz, .endCollision
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_HIT_ENEMY_MASK
-    cp a, 0
     jr nz, .deathOfBomb
 .checkHit:
     ld bc, wPlayerCactusOAM
@@ -261,10 +256,9 @@ BombUpdate::
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
 
-
 .checkSpawnExplosion:
-    ldh a, [hEnemyParam1]
-    cp a, 0
+    ldh a, [hEnemyFlags]
+    and BOMB_FLAG_TRIGGER_SPAWN_MASK
     jr z, .endCheckSpawnExplosion
 .spawnExplosion:
     ld a, EXPLOSION

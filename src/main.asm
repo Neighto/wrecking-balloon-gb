@@ -44,9 +44,9 @@ Start::
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	; call WaitVBlank
-	; call UpdateMenuOpening
-	; jp MenuLoopOpening
+	call WaitVBlank
+	call UpdateMenuOpening
+	jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
 	call TitleSplashSound
@@ -64,7 +64,11 @@ MenuLoop:
 	call UpdateMenu
 	jp MenuLoop
 
-StartClassic::
+StartGame::
+	ld a, [wSelectedMode]
+	cp a, 0
+	jr nz, SetupNextLevel
+OpeningCutscene:
 	call WaitVBlank
 	call LCD_OFF
 	call Common
@@ -92,10 +96,10 @@ StartClassic::
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateOpeningCutscene
-	jp OpeningCutsceneLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateOpeningCutscene
+	; jp OpeningCutsceneLoop
 
 SetupNextLevel::
 	call WaitVBlank
@@ -110,10 +114,12 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	ld a, 3
-	ld [wLevel], a
+	; ld a, 3
+	; ld [wLevel], a
 	; ; ^^^
-
+	ld a, [wSelectedMode]
+	cp a, 0
+	jp nz, .endless
 	ld a, [wLevel]
 .level1:
 	cp a, 1
@@ -191,6 +197,10 @@ SetupNextLevel::
 	call hUGE_init
 	call SpawnBossNotInLevelData
 	call SetPlayerPositionBoss
+	jr .endLevelSetup
+.endless:
+	call SetEndlessInterrupts
+	call LoadEndlessGraphics
 .endLevelSetup:
 	call InitializeGame
 	call InitializeScore
@@ -199,10 +209,10 @@ SetupNextLevel::
 	call LCD_ON
 	; Comment out GameCountdownLoop to skip countdown
 GameCountdownLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateGameCountdown
-	jp GameCountdownLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateGameCountdown
+	; jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA
@@ -266,33 +276,3 @@ GameWonLoop:
 	call OAMDMA
 	call UpdateEndingCutscene
 	jp GameWonLoop
-
-StartEndless::
-	; TODO maybe if endless just go down normal path but skip opening cutscene
-	call WaitVBlank
-	call LCD_OFF
-	call Common
-	call InitializeEnemies
-	call InitializePlayer
-	call InitializeBullet
-	call InitializePalettes
-	call SpawnPlayer
-	call SpawnCountdown
-	call SetEndlessInterrupts
-	call LoadEndlessGraphics
-	call InitializeGame
-	call InitializeScore
-	call RefreshWindow
-	call LCD_ON
-	; Comment out EndlessCountdownLoop to skip countdown
-EndlessCountdownLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateGameCountdown
-	; jp EndlessCountdownLoop
-EndlessGameLoop::
-	call WaitVBlank
-	call OAMDMA
-	call UpdateGame
-	jp EndlessGameLoop
-	ret
