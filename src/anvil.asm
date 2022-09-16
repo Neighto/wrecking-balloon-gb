@@ -137,7 +137,6 @@ AnvilUpdate::
 .checkDying:
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_DYING_MASK
-    cp a, 0
     jr z, .endCheckDying
     ldh a, [hEnemyAnimationTimer]
     inc a

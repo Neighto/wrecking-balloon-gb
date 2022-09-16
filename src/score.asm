@@ -114,15 +114,13 @@ AddTotal::
     inc l
     ld a, 1
     jr .carry
-
-AddScoreToTotal::
-.loop:
-    call IsScoreZero
-    ret z
-    ld d, 1
-    call DecrementPoints
-    ld d, 1
-    call AddTotal
-    jr .loop
-    ret
     
+SetScoreAsTotal::
+    ld hl, wScore
+    ld a, [hli]
+    ld [wTotal], a
+    ld a, [hli]
+    ld [wTotal+1], a
+    ld a, [hl]
+    ld [wTotal+2], a
+    ret

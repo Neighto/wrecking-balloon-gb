@@ -27,7 +27,7 @@ LoadGameOverGraphics::
     ret
 
 InitializeGameOver::
-    call AddScoreToTotal
+    call SetScoreAsTotal
     ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
 	call RefreshTotal
     ret

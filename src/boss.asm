@@ -334,7 +334,6 @@ BossUpdate::
 .knockedOutDone:
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_DYING_MASK
-    cp a, 0
     jr z, .knockedOutAndAlive
 .knockedOutAndDead:
     ldh a, [hEnemyFlags]
@@ -364,12 +363,10 @@ BossUpdate::
 .checkAlive:
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_ALIVE_MASK
-    cp a, 0
     jr nz, .isAlive
 .isAtZeroHealth:
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_DYING_MASK
-    cp a, 0
     jr nz, .dying
 .dyingDone:
     ld a, 1 
@@ -601,7 +598,6 @@ BossUpdate::
     jp nz, .endCollision
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_HIT_ENEMY_MASK
-    cp a, 0
     jr nz, .bossDamaged
 ; .checkHitBullet: ; FOR DEBUGGING *****
 ;     ld bc, wPlayerBulletOAM
@@ -647,7 +643,6 @@ BossUpdate::
     or c
     ldh [hEnemyFlags], a
     and PORCUPINE_FLAG_HEALTH_MASK
-    cp a, 0
     jr nz, .bossDamagedAndAlive
 .bossDamagedAndDead:
     ldh a, [hEnemyFlags]
@@ -670,13 +665,11 @@ BossUpdate::
 .checkBossSpawns:
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_ALIVE_MASK
-    cp a, 0
     jr z, .checkSpawnPointBalloon
 
 .checkSpawnBossNeedle:
     ldh a, [hEnemyFlags]
     and PORCUPINE_FLAG_TRIGGER_SPAWN_MASK
-    cp a, 0
     ret z
 .spawnBossNeedle:
     ld a, BOSS_NEEDLE
@@ -721,7 +714,6 @@ BossUpdate::
 .checkSpawnPointBalloon:
     ldh a, [hEnemyFlags]
     and PORCUPINE_FLAG_TRIGGER_SPAWN_MASK
-    cp a, 0
     ret z
 .spawnPointBalloon:
     ld a, POINT_BALLOON

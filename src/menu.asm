@@ -129,25 +129,15 @@ UpdateMenuOpening::
 	ld a, 5
 	ld [wMenuFrame], a
 .endSkip:
-
 	ld a, [wMenuFrame]
-	cp a, 0
-	jr z, .startSound
-	cp a, 1
-	jr z, .scrollUpTitle
-	cp a, 2
-	jr z, .endSound
-	cp a, 3
-	jr z, .scrollDownTitle
-	cp a, 4
-	jr z, .scrollUpTitle2
-	cp a, 5
-	jr z, .fadeOut
-	jp StartMenu
 .startSound:
+	cp a, 0
+	jr nz, .scrollUpTitle
 	call RisingSound
 	jr .endFrame
 .scrollUpTitle:
+	cp a, 1
+	jr nz, .endSound
 	ldh a, [rSCY]
 	cp a, 0
 	jr z, .endFrame
@@ -156,9 +146,13 @@ UpdateMenuOpening::
     ldh [rSCY], a
 	ret
 .endSound:
+	cp a, 2
+	jr nz, .scrollDownTitle
 	call StopSweepSound
 	jr .endFrame
 .scrollDownTitle:
+	cp a, 3
+	jr nz, .scrollUpTitle2
 	ldh a, [rSCY]
 	cp a, 252
 	jr z, .endFrame
@@ -167,6 +161,8 @@ UpdateMenuOpening::
     ldh [rSCY], a
 	ret
 .scrollUpTitle2:
+	cp a, 4
+	jr nz, .fadeOut
 	ld a, [rSCY]
 	cp a, 0
 	jr z, .endFrame
@@ -175,13 +171,17 @@ UpdateMenuOpening::
     ldh [rSCY], a
 	ret
 .fadeOut:
+	cp a, 5
+	jr nz, .startMenu
 	call FadeOutPalettes
 	ret z
+	jr .endFrame
+.startMenu:
+	jp StartMenu
 .endFrame:
 	ld a, [wMenuFrame]
 	inc a 
 	ld [wMenuFrame], a
-.end:
 	ret
 
 UpdateMenu::
@@ -263,12 +263,5 @@ UpdateMenu::
 	ret
 .fadeOut:
 	call FadeOutPalettes
-	ret z
-	ld a, [wSelectedMode]
-	cp a, 0
-	jr nz, .startEndless
-.startClassic:
-	jp StartClassic
-.startEndless:
-	jp StartEndless
+	jp nz, StartGame
 	ret
