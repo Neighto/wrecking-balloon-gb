@@ -75,7 +75,17 @@ EnemyUpdate::
     ; Get enemy number
     ld a, [hli]
     ldh [hEnemyNumber], a
+    ; Get enemy Y
+    ld a, [hli]
+    ldh [hEnemyY], a
+    ; Get enemy X
+    ld a, [hli]
+    ldh [hEnemyX], a
+    ; Get enemy OAM
+    ld a, [hli]
+    ldh [hEnemyOAM], a
     ; Check enemy number
+    ld a, [hEnemyNumber]
 .pointBalloon:
     cp a, POINT_BALLOON
     jr nz, .balloonCarrier
@@ -129,7 +139,7 @@ EnemyUpdate::
     dec [hl]
     ld a, [hl]
     cp a, 0
-    jr nz, .loop
+    jp nz, .loop
     ret
 
 EnemyInterCollision::

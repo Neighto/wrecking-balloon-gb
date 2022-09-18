@@ -7,7 +7,6 @@ Common::
 	call ClearMap
 	call ClearOAM
 	call ClearVRAM9000
-	call ClearSound
 	call ResetGlobalTimer
 	call ResetScroll
 	call ResetFading
@@ -44,9 +43,9 @@ Start::
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	call WaitVBlank
-	call UpdateMenuOpening
-	jp MenuLoopOpening
+	; call WaitVBlank
+	; call UpdateMenuOpening
+	; jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
 	call TitleSplashSound
@@ -114,8 +113,8 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	; ld a, 3
-	; ld [wLevel], a
+	ld a, 6
+	ld [wLevel], a
 	; ; ^^^
 	ld a, [wSelectedMode]
 	cp a, 0
@@ -140,59 +139,33 @@ SetupNextLevel::
 .level3:
 	cp a, 3
 	jr nz, .level4
-	call SetEndlessInterrupts
-	call LoadEndlessGraphics
-	ld hl, bossTheme
-	call hUGE_init
-	call SpawnBossNotInLevelData
-	call SetPlayerPositionBoss
-	jr .endLevelSetup
-.level4:
-	cp a, 4
-	jr nz, .level5
 	call SetLevelDesertInterrupts
 	call LoadLevelDesertGraphics
 	ld hl, angryTheme
 	call hUGE_init
 	jr .endLevelSetup
-.level5:
-	cp a, 5
-	jr nz, .level6
+.level4:
+	cp a, 4
+	jr nz, .level5
 	call SetLevelNightDesertInterrupts
 	call LoadLevelNightDesertGraphics
 	ld hl, angryTheme
 	call hUGE_init
 	call InitializeNightSpritePalettes
 	jr .endLevelSetup
+.level5:
+	cp a, 5
+	jr nz, .level6
+	call SetLevelShowdownInterrupts
+	call LoadLevelShowdownGraphics
+	ld hl, angryTheme
+	call hUGE_init
+	jr .endLevelSetup
 .level6:
-	cp a, 6
-	jr nz, .level7
-	call SetEndlessInterrupts
-	call LoadEndlessGraphics
-	ld hl, bossTheme
-	call hUGE_init
-	call SpawnBossNotInLevelData
-	call SetPlayerPositionBoss
-	jr .endLevelSetup
-.level7:
-	cp a, 7
-	jr nz, .level8
+	; cp a, 6
+	; jr nz, .level7
 	call SetLevelShowdownInterrupts
 	call LoadLevelShowdownGraphics
-	ld hl, angryTheme
-	call hUGE_init
-	jr .endLevelSetup
-.level8:
-	cp a, 8
-	jr nz, .level9
-	call SetLevelShowdownInterrupts
-	call LoadLevelShowdownGraphics
-	ld hl, angryTheme
-	call hUGE_init
-	jr .endLevelSetup
-.level9:
-	call SetEndlessInterrupts
-	call LoadEndlessGraphics
 	ld hl, bossTheme
 	call hUGE_init
 	call SpawnBossNotInLevelData
@@ -203,6 +176,7 @@ SetupNextLevel::
 	call LoadEndlessGraphics
 .endLevelSetup:
 	call InitializeGame
+	call InitializeEndless
 	call InitializeScore
 	call InitializeNewLevel
 	call RefreshWindow
@@ -227,7 +201,7 @@ StageClear::
 	call InitializeSound
 	call SetWaveRAMToSquareWave
 	call LoadStageClearGraphics
-	call InitializeFadedPalettes
+	call InitializeEmptyPalettes
 	call InitializeStageClear
 	call SpawnStageNumber
 	call LCD_ON_NO_WINDOW_8_SPR_MODE

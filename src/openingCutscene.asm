@@ -133,6 +133,7 @@ UpdateOpeningCutscene::
     jr z, .pause
     cp a, 9
     jr z, .fadeOut
+    call ClearSound
     jp SetupNextLevel
 .fadeIn:
     call FadeInPalettes
