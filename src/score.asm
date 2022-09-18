@@ -124,3 +124,14 @@ SetScoreAsTotal::
     ld a, [hl]
     ld [wTotal+2], a
     ret
+
+AddScoreToTotal::
+.loop:
+    call IsScoreZero
+    ret z
+    ld hl, wScore
+    dec [hl]
+    ld d, 1
+    call AddTotal
+    jr .loop
+    ret

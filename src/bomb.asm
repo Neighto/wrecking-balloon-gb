@@ -113,12 +113,6 @@ SpawnBomb::
 
 BombUpdate::
     ; Get rest of struct
-    ld a, [hli]
-    ldh [hEnemyY], a
-    ld a, [hli]
-    ldh [hEnemyX], a
-    ld a, [hli]
-    ldh [hEnemyOAM], a
     ld a, [hl]
     ldh [hEnemyVariant], a
 

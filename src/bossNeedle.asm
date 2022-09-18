@@ -92,12 +92,6 @@ SpawnBossNeedle::
 BossNeedleUpdate::
     ; Get rest of struct
     ld a, [hli]
-    ldh [hEnemyY], a
-    ld a, [hli]
-    ldh [hEnemyX], a
-    ld a, [hli]
-    ldh [hEnemyOAM], a
-    ld a, [hli]
     ldh [hEnemyParam1], a
     ld a, [hli]
     ldh [hEnemyVariant], a

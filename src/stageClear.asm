@@ -3,8 +3,7 @@ INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 INCLUDE "macro.inc"
 
-STAGE_CLEAR_UPDATE_TIME EQU %00000010
-STAGE_CLEAR_PAUSE_LENGTH EQU 40
+STAGE_CLEAR_UPDATE_REFRESH_TIME EQU %00000001
 
 PLUS_TILE EQU $FF
 SCORE_SC_INDEX_ONE_ADDRESS EQU $98CF
@@ -14,24 +13,42 @@ LIVES_TO_ADD_SC_ADDRESS EQU $994E
 STAGE_NUMBER_ADDRESS EQU $9889
 
 SECTION "stage clear vars", WRAM0
-    wStageClearTimer:: DB
-    wStageClearFrame:: DB
     wLivesToAdd:: DB
     wPointSound:: DB
     wStageNumberOAM:: DB
+    wSequenceWaitCounter:: DB
+    wSequenceDataAddress:: DS 2
 
 SECTION "stage clear", ROMX
 
 InitializeStageClear::
-    ld a, STAGE_CLEAR_PAUSE_LENGTH
-    ld [wStageClearTimer], a
     xor a ; ld a, 0
-    ld [wStageClearFrame], a
     ld [wLivesToAdd], a
     ld [wPointSound], a
     ld [wStageNumberOAM], a
+    ld [wSequenceWaitCounter], a
+
+    ld hl, wSequenceDataAddress
+    ld bc, StageClearSequenceData
+    ld a, LOW(bc)
+    ld [hli], a
+    ld a, HIGH(bc)
+    ld [hl], a
     call RefreshStageClear
     ret
+
+StageClearSequenceData:
+    SEQUENCE_WAIT 5
+    SEQUENCE_SHOW_PALETTE
+    SEQUENCE_WAIT 40
+    SEQUENCE_COPY_SCORE_TO_TOTAL_1
+    SEQUENCE_COPY_SCORE_TO_TOTAL_2
+    SEQUENCE_WAIT 40
+    SEQUENCE_ADD_SCORE_LIVES
+    SEQUENCE_WAIT 80
+    SEQUENCE_HIDE_PALETTE
+    SEQUENCE_WAIT 5
+    SEQUENCE_END
 
 LoadStageClearGraphics::
 	ld bc, StageEndTiles
@@ -93,11 +110,6 @@ RefreshStageClear::
 	add NUMBERS_TILE_OFFSET
 	ld [LIVES_SC_ADDRESS], a
 
-    ; ld a, [wLevel]
-    ; dec a
-    ; add NUMBERS_TILE_OFFSET
-	; ld [STAGE_NUMBER_ADDRESS], a
-
 	call RefreshAddLives
 	ret
 
@@ -120,44 +132,56 @@ PointSound::
 UpdateStageClear::
     UPDATE_GLOBAL_TIMER
     call RefreshStageClear
-.fadeIn:
-    call FadeInPalettes
-	ret z
-.hasFadedIn:
+
+    ; Frequency we read 
     ldh a, [hGlobalTimer]
-    and STAGE_CLEAR_UPDATE_TIME
+    and STAGE_CLEAR_UPDATE_REFRESH_TIME
     ret nz
-    ld a, [wStageClearFrame]
-    cp a, 0
-    jr z, .pause
-    cp a, 1
-    jr z, .copyFirstDigitToTotal
-    cp a, 2
-    jr z, .copyPointsToTotal
-    cp a, 3
-    jr z, .pause
-    cp a, 4
+
+    ; Read next sequence instruction
+    ld a, [wSequenceDataAddress]
+    ld l, a
+    ld a, [wSequenceDataAddress+1]
+    ld h, a
+    ld a, [hl]
+
+    ; Interpret
+    cp a, SEQUENCE_WAIT_KEY
+    jr z, .wait
+    cp a, SEQUENCE_HIDE_PALETTE_KEY
+    jr z, .hidePalette
+    cp a, SEQUENCE_SHOW_PALETTE_KEY
+    jr z, .showPalette
+    cp a, SEQUENCE_COPY_SCORE_TO_TOTAL_1_KEY
+    jr z, .copyFirstDigitScoreToTotal
+    cp a, SEQUENCE_COPY_SCORE_TO_TOTAL_2_KEY
+    jr z, .copyScoreToTotal
+    cp a, SEQUENCE_ADD_SCORE_LIVES_KEY
     jr z, .addGainedLives
-    cp a, 5
-    jr z, .pause
-    cp a, 6
-    jr z, .pause
-.fadeOut:
-    call FadeOutPalettes
-    ret z
-.hasFadedOut:
-    ; Jump to next level!
-    jp SetupNextLevel
-.pause:
-    ld a, [wStageClearTimer]
-    dec a 
-    ld [wStageClearTimer], a
-    cp a, 0
-    ret nz
-    ld a, STAGE_CLEAR_PAUSE_LENGTH
-    ld [wStageClearTimer], a
-    jr .endFrame
-.copyFirstDigitToTotal:
+    cp a, SEQUENCE_END_KEY
+    jr z, .end
+    ret
+.wait:
+    ; Next instruction: amount to wait
+    inc hl
+    ld a, [wSequenceWaitCounter]
+    cp a, [hl]
+    jr nc, .waitEnd
+    inc a
+    ld [wSequenceWaitCounter], a
+    ret
+.waitEnd:
+    xor a ; ld a, 0
+    ld [wSequenceWaitCounter], a
+    jr .updateSequenceDataCounter
+.hidePalette:
+    call InitializeEmptyPalettes
+    jr .updateSequenceDataCounter
+.showPalette:
+    call InitializePalettes
+    jr .updateSequenceDataCounter
+.copyFirstDigitScoreToTotal:
+    push hl
     ld a, [wScore]
     and HIGH_HALF_BYTE_MASK
     ld d, a
@@ -166,10 +190,13 @@ UpdateStageClear::
     and HIGH_HALF_BYTE_MASK
     ld d, a
     call DecrementPoints
-    jr .endFrame
-.copyPointsToTotal:
+    pop hl
+    jr .updateSequenceDataCounter
+.copyScoreToTotal:
+    push hl
     call IsScoreZero
-    jr z, .endFrame
+    pop hl
+    jr z, .updateSequenceDataCounter
     ld d, 10
     call AddTotal
     ld d, 10
@@ -179,7 +206,7 @@ UpdateStageClear::
 .addGainedLives:
     ld a, [wLivesToAdd]
     cp a, 0
-    jr z, .endFrame
+    jr z, .updateSequenceDataCounter
     dec a
     ld [wLivesToAdd], a
     ldh a, [hPlayerLives]
@@ -189,8 +216,12 @@ UpdateStageClear::
     ldh [hPlayerLives], a
     call CollectSound
     ret
-.endFrame:
-    ld a, [wStageClearFrame]
-    inc a
-    ld [wStageClearFrame], a
+.updateSequenceDataCounter:
+    inc hl
+    ld a, l
+    ld [wSequenceDataAddress], a
+    ld a, h
+    ld [wSequenceDataAddress+1], a
     ret
+.end:
+    jp SetupNextLevel
