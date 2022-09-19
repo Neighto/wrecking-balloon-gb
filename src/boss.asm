@@ -46,6 +46,7 @@ PORCUPINE_POINT_Y2 EQU 66
 PORCUPINE_POINT_Y3 EQU 86
 
 PORCUPINE_CHANGE_DIRECTION_X_TIME EQU %11111111
+PORCUPINE_CHANGE_DIRECTION_Y_TIME EQU %00011111
 PORCUPINE_ABOUT_TO_CHANGE_DIRECTION_X_TIME EQU %11110000
 
 PORCUPINE_FLAG_TRIGGER_SPAWN_MASK EQU ENEMY_FLAG_PARAM1_MASK
@@ -84,8 +85,6 @@ SetStruct:
     ldh a, [hEnemyParam3] ; Enemy Direction Change Timer
     ld [hli], a
     ldh a, [hEnemyParam4] ; Enemy Attack Cooldown Timer
-    ld [hli], a
-    ldh a, [hEnemyVariant]
     ld [hl], a
     ret
 
@@ -125,8 +124,8 @@ SpawnBoss::
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_ACTIVE_BIT, a
     set ENEMY_FLAG_ALIVE_BIT, a
-    set PORCUPINE_FLAG_HEALTH_BIT1, a ; Boss health + 2
-    set PORCUPINE_FLAG_HEALTH_BIT2, a ; Boss health + 1
+    set PORCUPINE_FLAG_HEALTH_BIT1, a ; Boss health + 1
+    set PORCUPINE_FLAG_HEALTH_BIT2, a ; Boss health + 2
     ldh [hEnemyFlags], a
     ld a, PORCUPINE_POINT_Y3
     ldh [hEnemyParam1], a
@@ -225,16 +224,77 @@ BossUpdate::
     ldh [hEnemyParam2], a
     ld a, [hli]
     ldh [hEnemyParam3], a
-    ld a, [hli]
-    ldh [hEnemyParam4], a
     ld a, [hl]
-    ldh [hEnemyVariant], a
+    ldh [hEnemyParam4], a
 
-.resetSpawn:
+.checkSpawn:
     ldh a, [hEnemyFlags]
+    ld b, a
+    and PORCUPINE_FLAG_TRIGGER_SPAWN_MASK
+    jr z, .endCheckSpawn
+.spawnTriggerActive:
+    ld a, b
     res PORCUPINE_FLAG_TRIGGER_SPAWN_BIT, a
     ldh [hEnemyFlags], a
-.endResetSpawn:
+    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
+    call SetStruct
+.chooseSpawnType:
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_ALIVE_MASK
+    jr z, .spawnPointBalloon
+.spawnBossNeedle:
+    ld a, BOSS_NEEDLE
+    ldh [hEnemyNumber], a
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_DIRECTION_MASK
+    jr nz, .upRightNeedle
+.upLeftNeedle:
+    ld a, NEEDLE_UP_MOVE_LEFT_VARIANT
+    ldh [hEnemyVariant], a
+    ldh a, [hEnemyX]
+    add a, 8
+    ldh [hEnemyX], a
+    call SpawnBossNeedle
+.downLeftNeedle:
+    ld a, NEEDLE_DOWN_MOVE_LEFT_VARIANT
+    ldh [hEnemyVariant], a
+    ldh a, [hEnemyY]
+    add a, 16
+    ldh [hEnemyY], a
+    call SpawnBossNeedle
+    jr .endSpawnBossNeedle
+.upRightNeedle:
+    ld a, NEEDLE_UP_MOVE_RIGHT_VARIANT
+    ldh [hEnemyVariant], a
+    ldh a, [hEnemyX]
+    add a, 24
+    ldh [hEnemyX], a
+    call SpawnBossNeedle
+.downRightNeedle:
+    ld a, NEEDLE_DOWN_MOVE_RIGHT_VARIANT
+    ldh [hEnemyVariant], a
+    ldh a, [hEnemyY]
+    add a, 16
+    ldh [hEnemyY], a
+    call SpawnBossNeedle
+.endSpawnBossNeedle:
+    call BossNeedleSound
+    ret
+.spawnPointBalloon:
+    ld a, POINT_BALLOON
+    ldh [hEnemyNumber], a
+    ld a, BALLOON_MEDIUM_VARIANT
+    ldh [hEnemyVariant], a
+    ldh a, [hEnemyY]
+    add a, 19
+    ldh [hEnemyY], a
+    ldh a, [hEnemyX]
+    add a, 8
+    ldh [hEnemyX], a
+    call SpawnPointBalloon
+.endSpawnPointBalloon:
+    ret
+.endCheckSpawn:
 
 .faceExpression:
     ldh a, [hEnemyAnimationTimer]
@@ -259,7 +319,7 @@ BossUpdate::
     ld [hli], a
     ld a, OAMF_PAL0
     ld [hli], a
-    ld a, 30
+    ld a, 255
     jr .setExpressionTimer
 .faceExpressionRight:
     cp a, PORCUPINE_EXPRESSION_RIGHT
@@ -274,7 +334,7 @@ BossUpdate::
     ld [hli], a
     ld a, OAMF_PAL0 | OAMF_XFLIP
     ld [hli], a
-    ld a, 30
+    ld a, 255
     jr .setExpressionTimer
 .faceExpressionConfident:
     cp a, PORCUPINE_EXPRESSION_CONFIDENT
@@ -289,7 +349,7 @@ BossUpdate::
     ld [hli], a
     ld a, OAMF_PAL0 | OAMF_XFLIP
     ld [hli], a
-    ld a, 40
+    ld a, 35
     jr .setExpressionTimer
 .faceExpressionScared:
     ld a, PORCUPINE_SCARED_FACE_TILE
@@ -369,9 +429,6 @@ BossUpdate::
     call ClearEnemy
     jp .setStruct 
 .dying:
-    ldh a, [hEnemyFlags]
-    res PORCUPINE_FLAG_TRIGGER_SPAWN_BIT, a
-    ldh [hEnemyFlags], a
 .dyingOffscreen:
     ld a, SCRN_Y + 16 ; buffer
     ld hl, hEnemyY
@@ -416,8 +473,9 @@ BossUpdate::
     ldh [hEnemyParam1], a
 .changeDirection:
     ldh a, [hEnemyFlags]
+    ld c, a
     and ENEMY_FLAG_DIRECTION_MASK
-    ldh a, [hEnemyFlags]
+    ld a, c
     jr nz, .moveToRight
 .moveToLeft:
     set ENEMY_FLAG_DIRECTION_BIT, a
@@ -431,7 +489,7 @@ BossUpdate::
 
 .checkDirectionY:
     ld a, b
-    and %00011111
+    and PORCUPINE_CHANGE_DIRECTION_Y_TIME
     jr nz, .endCheckDirectionY
     ldh a, [hEnemyParam1]
 .pointY1:
@@ -454,6 +512,14 @@ BossUpdate::
 .endCheckDirectionY:
 .endCheckDirection:
 
+.checkAttackCooldown:
+    ldh a, [hEnemyParam4]
+    cp a, 0
+    jr z, .endCheckAttackCooldown
+    dec a
+    ldh [hEnemyParam4], a
+.endCheckAttackCooldown:
+
 .checkMove:
     ldh a, [hGlobalTimer]
     and	PORCUPINE_MOVE_TIME
@@ -461,6 +527,7 @@ BossUpdate::
 .canMove: 
 
 .moveX:
+    ; TODO skip moveX if we can
     ld hl, hEnemySpeed
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_DIRECTION_MASK
@@ -578,14 +645,6 @@ BossUpdate::
     ld [hl], a
 .endString:
 
-.checkAttackCooldown:
-    ldh a, [hEnemyParam4]
-    cp a, 0
-    jr z, .endCheckAttackCooldown
-    dec a
-    ldh [hEnemyParam4], a
-.endCheckAttackCooldown:
-
 .checkCollision:
     ldh a, [hGlobalTimer]
     and	PORCUPINE_COLLISION_TIME
@@ -655,73 +714,6 @@ BossUpdate::
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
-
-.checkBossSpawns:
-    ldh a, [hEnemyFlags]
-    and ENEMY_FLAG_ALIVE_MASK
-    jr z, .checkSpawnPointBalloon
-
-.checkSpawnBossNeedle:
-    ldh a, [hEnemyFlags]
-    and PORCUPINE_FLAG_TRIGGER_SPAWN_MASK
-    ret z
-.spawnBossNeedle:
-    ld a, BOSS_NEEDLE
-    ldh [hEnemyNumber], a
-
-    ldh a, [hEnemyFlags]
-    and ENEMY_FLAG_DIRECTION_MASK
-    jr nz, .upRightNeedle
-.upLeftNeedle:
-    ld a, NEEDLE_UP_MOVE_LEFT_VARIANT
-    ldh [hEnemyVariant], a
-    ldh a, [hEnemyX]
-    add a, 8
-    ldh [hEnemyX], a
-    call SpawnBossNeedle
-.downLeftNeedle:
-    ld a, NEEDLE_DOWN_MOVE_LEFT_VARIANT
-    ldh [hEnemyVariant], a
-    ldh a, [hEnemyY]
-    add a, 16
-    ldh [hEnemyY], a
-    call SpawnBossNeedle
-    jr .endSpawnBossNeedle
-.upRightNeedle:
-    ld a, NEEDLE_UP_MOVE_RIGHT_VARIANT
-    ldh [hEnemyVariant], a
-    ldh a, [hEnemyX]
-    add a, 24
-    ldh [hEnemyX], a
-    call SpawnBossNeedle
-.downRightNeedle:
-    ld a, NEEDLE_DOWN_MOVE_RIGHT_VARIANT
-    ldh [hEnemyVariant], a
-    ldh a, [hEnemyY]
-    add a, 16
-    ldh [hEnemyY], a
-    call SpawnBossNeedle
-.endSpawnBossNeedle:
-    call BossNeedleSound
-    ret
-
-.checkSpawnPointBalloon:
-    ldh a, [hEnemyFlags]
-    and PORCUPINE_FLAG_TRIGGER_SPAWN_MASK
-    ret z
-.spawnPointBalloon:
-    ld a, POINT_BALLOON
-    ldh [hEnemyNumber], a
-    ld a, BALLOON_MEDIUM_VARIANT
-    ldh [hEnemyVariant], a
-    ldh a, [hEnemyY]
-    add a, 19
-    ldh [hEnemyY], a
-    ldh a, [hEnemyX]
-    add a, 8
-    ldh [hEnemyX], a
-    call SpawnPointBalloon
-.endSpawnPointBalloon:
     ret
 
 SECTION "boss miscellaneous vars", WRAM0

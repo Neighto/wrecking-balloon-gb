@@ -178,7 +178,7 @@ EndlessUpdate::
     jp .endPrepareEnemyToSpawn
 .canPrepareEnemy:
     ; Reset spawn timer
-    RANDOM 200
+    RANDOM 150
     ld b, a
     ld a, [wEndlessSpawnTime]
     add b
