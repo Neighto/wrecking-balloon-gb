@@ -20,8 +20,6 @@ SECTION "enemy struct vars", HRAM
     hEnemySpeed:: DB
     hEnemyParam1:: DB
     hEnemyParam2:: DB
-    hEnemyParam3:: DB
-    hEnemyParam4:: DB
 
 SECTION "enemy struct", ROM0
 
@@ -29,6 +27,8 @@ InitializeEnemyStructVars::
     xor a ; ld a, 0
     ldh [hEnemyFlags], a
     ; ldh [hEnemyNumber], a ; Do not clear
+    ; ldh [hEnemyY], a
+    ; ldh [hEnemyX], a
     ldh [hEnemyOAM], a
     ; ldh [hEnemyVariant], a ; Do not clear
     ldh [hEnemyAnimationFrame], a
@@ -36,8 +36,6 @@ InitializeEnemyStructVars::
     ldh [hEnemySpeed], a 
     ldh [hEnemyParam1], a 
     ldh [hEnemyParam2], a
-    ldh [hEnemyParam3], a
-    ldh [hEnemyParam4], a
     ret
 
 SECTION "enemy data vars", WRAM0
@@ -108,13 +106,8 @@ EnemyUpdate::
     jr .checkLoop
 .projectile:
     cp a, PROJECTILE
-    jr nz, .boss
-    call ProjectileUpdate
-    jr .checkLoop
-.boss:
-    cp a, BOSS
     jr nz, .bossNeedle
-    call BossUpdate
+    call ProjectileUpdate
     jr .checkLoop
 .bossNeedle:
     cp a, BOSS_NEEDLE
@@ -189,7 +182,7 @@ EnemyInterCollision::
     jp .hitEnemy
 .bomb:
     cp a, BOMB
-    jr nz, .boss
+    jr nz, .checkLoop
     inc hl
     inc hl
     LD_BC_HL ; hEnemyOAM stored in bc
@@ -197,20 +190,6 @@ EnemyInterCollision::
     SET_BC_TO_ADDRESS wOAM, hEnemyOAM ; OAM address stored in bc
     ld d, 16
     ld e, 16
-    call CollisionCheck
-    cp a, 0
-    jr z, .checkLoop
-    jp .hitEnemy
-.boss:
-    cp a, BOSS
-    jr nz, .checkLoop
-    inc hl
-    inc hl
-    LD_BC_HL ; hEnemyOAM stored in bc
-    SET_HL_TO_ADDRESS wOAM, bc ; OAM address stored in hl
-    SET_BC_TO_ADDRESS wOAM, hEnemyOAM ; OAM address stored in bc
-    ld d, 32
-    ld e, 24
     call CollisionCheck
     cp a, 0
     jr z, .checkLoop

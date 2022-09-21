@@ -330,6 +330,9 @@ UpdateGame::
     jr nz, .endlessMode
 .classicMode:
     call LevelDataHandler
+    ld a, [wLevel]
+    cp a, 6 ; TODO make boss level data not hardcoded
+    call z, BossUpdate
     jr .endModeSpecific
 .endlessMode:
     call EndlessUpdate
