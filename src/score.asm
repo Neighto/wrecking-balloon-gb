@@ -79,6 +79,19 @@ IsScoreZero::
     cp a, 0
     ret
 
+IsTotalZero:
+    ; z = zero
+    ld hl, wTotal
+    ld a, [hli]
+    cp a, 0
+    ret nz
+    ld a, [hli]
+    cp a, 0
+    ret nz
+    ld a, [hli]
+    cp a, 0
+    ret
+
 AddTotal::
     ; d = points to receive (must be 1 byte BCD [max 99])
 .saveFourthDigit:
@@ -114,8 +127,11 @@ AddTotal::
     inc l
     ld a, 1
     jr .carry
-    
-SetScoreAsTotal::
+
+AddScoreToTotal::
+    call IsTotalZero
+    jr nz, .isNotZeroTotal
+.setScoreAsTotal:
     ld hl, wScore
     ld a, [hli]
     ld [wTotal], a
@@ -124,14 +140,20 @@ SetScoreAsTotal::
     ld a, [hl]
     ld [wTotal+2], a
     ret
-
-AddScoreToTotal::
+.isNotZeroTotal:
+    ld a, [wScore]
+    and HIGH_HALF_BYTE_MASK
+    ld d, a
+    call AddTotal
+    ld a, [wScore]
+    and HIGH_HALF_BYTE_MASK
+    ld d, a
+    call DecrementPoints
 .loop:
     call IsScoreZero
     ret z
-    ld hl, wScore
-    dec [hl]
-    ld d, 1
+    ld d, 10
     call AddTotal
+    ld d, 10
+    call DecrementPoints
     jr .loop
-    ret

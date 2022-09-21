@@ -176,7 +176,7 @@ AnvilUpdate::
     inc hl
     ld a, e
     ld [hli], a
-    jr .setStruct
+    jp .setStruct
 .endCheckDying:
 
 .fallingSpeed:
@@ -218,7 +218,19 @@ AnvilUpdate::
     call nz, CollisionWithPlayer
 .checkHitAnotherEnemy:
     call EnemyInterCollision
+    jr nz, .hitEnemy
+.checkHitBoss:
+    ldh a, [hEnemyVariant]
+    cp a, ANVIL_NORMAL_VARIANT
+    jr nz, .endCollision
+    SET_HL_TO_ADDRESS wOAM, hBossOAM
+    SET_BC_TO_ADDRESS wOAM, hEnemyOAM
+    ld d, 32
+    ld e, 24
+    call CollisionCheck
+    cp a, 0
     jr z, .endCollision
+    call CollisionWithBoss
 .hitEnemy:
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_DYING_BIT, a

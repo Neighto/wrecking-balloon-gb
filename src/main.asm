@@ -168,7 +168,8 @@ SetupNextLevel::
 	call LoadLevelShowdownGraphics
 	ld hl, bossTheme
 	call hUGE_init
-	call SpawnBossNotInLevelData
+	call InitializeBoss
+	call SpawnBoss
 	call SetPlayerPositionBoss
 	jr .endLevelSetup
 .endless:

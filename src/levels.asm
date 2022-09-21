@@ -550,18 +550,14 @@ SpawnDataHandler:
     jr .end
 .projectile:
     cp a, PROJECTILE
-    jr nz, .boss
+    jr nz, .bossNeedle
     call SpawnProjectile
     jr .end
-.boss:
-    cp a, BOSS
-    jr nz, .bossNeedle
-    call SpawnBoss
-    jr .end
 .bossNeedle:
-    cp a, BOSS_NEEDLE
-    jr nz, .end
+    ; cp a, BOSS_NEEDLE
+    ; jr nz, .end
     call SpawnBossNeedle
+    ; jr .end
 .end:
     pop hl
     ret
