@@ -14,12 +14,11 @@ SECTION "enemy struct vars", HRAM
     hEnemyX:: DB
     hEnemyOAM:: DB
     ; These can be in any order in an enemy
-    hEnemyVariant:: DB
     hEnemyAnimationFrame:: DB
     hEnemyAnimationTimer:: DB
-    hEnemySpeed:: DB
     hEnemyParam1:: DB
     hEnemyParam2:: DB
+    hEnemyVariant:: DB
 
 SECTION "enemy struct", ROM0
 
@@ -30,12 +29,11 @@ InitializeEnemyStructVars::
     ; ldh [hEnemyY], a
     ; ldh [hEnemyX], a
     ldh [hEnemyOAM], a
-    ; ldh [hEnemyVariant], a ; Do not clear
     ldh [hEnemyAnimationFrame], a
     ldh [hEnemyAnimationTimer], a
-    ldh [hEnemySpeed], a 
     ldh [hEnemyParam1], a 
     ldh [hEnemyParam2], a
+    ; ldh [hEnemyVariant], a ; Do not clear
     ret
 
 SECTION "enemy data vars", WRAM0

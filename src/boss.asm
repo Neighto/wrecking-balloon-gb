@@ -702,7 +702,7 @@ WaitBossUpdate::
     ldh [hEnemyNumber], a
     ld a, CARRIER_ANVIL_VARIANT
     ldh [hEnemyVariant], a
-    xor a ; ld a, 0
+    ld a, -8
     ldh [hEnemyY], a
     ld a, 80
     ldh [hEnemyX], a
