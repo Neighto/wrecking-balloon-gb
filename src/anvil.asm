@@ -26,7 +26,7 @@ SetStruct:
     ld [hli], a
     ldh a, [hEnemyAnimationTimer]
     ld [hli], a
-    ldh a, [hEnemySpeed]
+    ldh a, [hEnemyParam1] ; Enemy Speed
     ld [hli], a
     ldh a, [hEnemyVariant]
     ld [hl], a
@@ -65,7 +65,7 @@ SpawnAnvil::
 .anvilSpeed:
     ld a, 4
 .endVariantSpeed:
-    ldh [hEnemySpeed], a
+    ldh [hEnemyParam1], a
 
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 .variantVisualLeft:
@@ -124,7 +124,7 @@ AnvilUpdate::
     ld a, [hli]
     ldh [hEnemyAnimationTimer], a
     ld a, [hli]
-    ldh [hEnemySpeed], a
+    ldh [hEnemyParam1], a
     ld a, [hl]
     ldh [hEnemyVariant], a
 
@@ -183,9 +183,9 @@ AnvilUpdate::
     ldh a, [hGlobalTimer]
     and ANVIL_MOVE_TIME
     jr nz, .endFallingSpeed
-    ldh a, [hEnemySpeed]
+    ldh a, [hEnemyParam1]
     inc a 
-    ldh [hEnemySpeed], a
+    ldh [hEnemyParam1], a
     ld b, 3
     call DIVISION
     ld b, a

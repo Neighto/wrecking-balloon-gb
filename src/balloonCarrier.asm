@@ -257,6 +257,8 @@ BalloonCarrierUpdate::
     ldh a, [hEnemyY]
     cp a, 28
     jr c, .moveDown
+    cp a, SCRN_VY - OFF_SCREEN_ENEMY_BUFFER
+    jr nc, .moveDown
 .checkBobbing:
     ldh a, [hGlobalTimer]
     and %00111111
@@ -277,7 +279,6 @@ BalloonCarrierUpdate::
     ldh a, [hEnemyY]
     dec a
     ldh [hEnemyY], a
-
 .endCheckBobbing:
     jr .endMoveVerticalVariant
 
