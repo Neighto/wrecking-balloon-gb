@@ -146,52 +146,54 @@ EnemyInterCollision::
     ld a, [hli]
     ; Check active
     cp a, 0
-    jp z, .checkLoop
+    jr z, .checkLoop
     ; Get enemy number
     ld a, [hli]
+    ld d, a
+    ; Get collision OAM addresses
+    inc hl
+    inc hl
+    SET_BC_TO_ADDRESS wOAM, hl
+    LD_HL_BC ; OAM address stored in hl
+    SET_BC_TO_ADDRESS wOAM, hEnemyOAM ; OAM address stored in bc
     ; Check enemy number
+    ld a, d
 .pointBalloon:
     cp a, POINT_BALLOON
     jr nz, .bird
-    inc hl
-    inc hl
-    LD_BC_HL ; hEnemyOAM stored in bc
-    SET_HL_TO_ADDRESS wOAM, bc ; OAM address stored in hl
-    SET_BC_TO_ADDRESS wOAM, hEnemyOAM ; OAM address stored in bc
-    ld d, 16
-    ld e, 16
-    call CollisionCheck
-    cp a, 0
-    jp z, .checkLoop
-    jp .hitEnemy
-.bird:
-    cp a, BIRD
-    jr nz, .bomb
-    inc hl
-    inc hl
-    LD_BC_HL ; hEnemyOAM stored in bc
-    SET_HL_TO_ADDRESS wOAM, bc ; OAM address stored in hl
-    SET_BC_TO_ADDRESS wOAM, hEnemyOAM ; OAM address stored in bc
-    ld d, 24
-    ld e, 8
-    call CollisionCheck
-    cp a, 0
-    jp z, .checkLoop
-    jp .hitEnemy
-.bomb:
-    cp a, BOMB
-    jr nz, .checkLoop
-    inc hl
-    inc hl
-    LD_BC_HL ; hEnemyOAM stored in bc
-    SET_HL_TO_ADDRESS wOAM, bc ; OAM address stored in hl
-    SET_BC_TO_ADDRESS wOAM, hEnemyOAM ; OAM address stored in bc
     ld d, 16
     ld e, 16
     call CollisionCheck
     cp a, 0
     jr z, .checkLoop
-    jp .hitEnemy
+    jr .hitEnemy
+.bird:
+    cp a, BIRD
+    jr nz, .bomb
+    ld d, 24
+    ld e, 8
+    call CollisionCheck
+    cp a, 0
+    jr z, .checkLoop
+    jr .hitEnemy
+.bomb:
+    cp a, BOMB
+    jr nz, .carrier
+    ld d, 16
+    ld e, 16
+    call CollisionCheck
+    cp a, 0
+    jr z, .checkLoop
+    jr .hitEnemy
+.carrier:
+    cp a, BALLOON_CARRIER
+    jr nz, .checkLoop
+    ld d, 16
+    ld e, 16
+    call CollisionCheck
+    cp a, 0
+    jr z, .checkLoop
+    jr .hitEnemy
 .checkLoop:
     ld a, [wEnemyOffset2]
     add a, ENEMY_STRUCT_SIZE

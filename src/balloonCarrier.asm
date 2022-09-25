@@ -358,6 +358,9 @@ BalloonCarrierUpdate::
     ldh a, [hGlobalTimer]
     and	BALLOON_CARRIER_COLLISION_TIME
     jp nz, .endCollision
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_HIT_ENEMY_MASK
+    jr nz, .deathOfBalloonCarrier
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM+8, hEnemyOAM
