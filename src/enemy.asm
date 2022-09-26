@@ -66,7 +66,6 @@ EnemyUpdate::
     ldh [hEnemyFlags], a
     ; Check active
     and ENEMY_FLAG_ACTIVE_MASK
-    cp a, 0
     jr z, .checkLoop
     ; Get enemy number
     ld a, [hli]
@@ -144,56 +143,46 @@ EnemyInterCollision::
     ; Get active state
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset2
     ld a, [hli]
+    and ENEMY_FLAG_ACTIVE_MASK
     ; Check active
-    cp a, 0
     jr z, .checkLoop
     ; Get enemy number
     ld a, [hli]
-    ld d, a
+    ; Check enemy number
+.pointBalloon:
+    cp a, POINT_BALLOON
+    jr nz, .bird
+    ld d, 16
+    ld e, 16
+    jr .checkCollision
+.bird:
+    cp a, BIRD
+    jr nz, .bomb
+    ld d, 24
+    ld e, 8
+    jr .checkCollision
+.bomb:
+    cp a, BOMB
+    jr nz, .carrier
+    ld d, 16
+    ld e, 16
+    jr .checkCollision
+.carrier:
+    cp a, BALLOON_CARRIER
+    jr nz, .checkLoop
+    ld d, 16
+    ld e, 16
+.checkCollision:
     ; Get collision OAM addresses
     inc hl
     inc hl
     SET_BC_TO_ADDRESS wOAM, hl
     LD_HL_BC ; OAM address stored in hl
     SET_BC_TO_ADDRESS wOAM, hEnemyOAM ; OAM address stored in bc
-    ; Check enemy number
-    ld a, d
-.pointBalloon:
-    cp a, POINT_BALLOON
-    jr nz, .bird
-    ld d, 16
-    ld e, 16
+    ; Check collision
     call CollisionCheck
     cp a, 0
-    jr z, .checkLoop
-    jr .hitEnemy
-.bird:
-    cp a, BIRD
-    jr nz, .bomb
-    ld d, 24
-    ld e, 8
-    call CollisionCheck
-    cp a, 0
-    jr z, .checkLoop
-    jr .hitEnemy
-.bomb:
-    cp a, BOMB
-    jr nz, .carrier
-    ld d, 16
-    ld e, 16
-    call CollisionCheck
-    cp a, 0
-    jr z, .checkLoop
-    jr .hitEnemy
-.carrier:
-    cp a, BALLOON_CARRIER
-    jr nz, .checkLoop
-    ld d, 16
-    ld e, 16
-    call CollisionCheck
-    cp a, 0
-    jr z, .checkLoop
-    jr .hitEnemy
+    jr nz, .hitEnemy
 .checkLoop:
     ld a, [wEnemyOffset2]
     add a, ENEMY_STRUCT_SIZE
@@ -208,7 +197,7 @@ EnemyInterCollision::
 .hitEnemy:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset2
     set ENEMY_FLAG_HIT_ENEMY_BIT, [hl]
-    ld a, [hl]
+    ld a, 1
     cp a, 0
     ; nz flag set
     ret

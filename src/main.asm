@@ -43,9 +43,9 @@ Start::
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	call WaitVBlank
-	call UpdateMenuOpening
-	jp MenuLoopOpening
+	; call WaitVBlank
+	; call UpdateMenuOpening
+	; jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
 	call TitleSplashSound
@@ -113,8 +113,8 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	; ld a, 6
-	; ld [wLevel], a
+	ld a, 5
+	ld [wLevel], a
 	; ; ^^^
 	ld a, [wSelectedMode]
 	cp a, 0
@@ -188,7 +188,9 @@ GameCountdownLoop:
 	; call OAMDMA
 	; call UpdateGameCountdown
 	; jp GameCountdownLoop
-GameLoop::
+PreGameLoop::
+	call ClearCountdown
+GameLoop:
 	call WaitVBlank
 	call OAMDMA
 	call UpdateGame

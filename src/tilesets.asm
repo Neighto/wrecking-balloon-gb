@@ -38,6 +38,7 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/EnemyCactus3.2bpp"
     INCBIN "incbin/sprite/Explosion.2bpp"
     INCBIN "incbin/sprite/MenuSprite.2bpp"
+    INCBIN "incbin/sprite/PlayerPower.2bpp"
 GameSpriteTilesEnd::
 
 MiscellaneousTiles::

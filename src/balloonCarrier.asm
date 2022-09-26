@@ -8,8 +8,9 @@ BALLOON_CARRIER_OAM_BYTES EQU BALLOON_CARRIER_OAM_SPRITES * OAM_ATTRIBUTES_COUNT
 BALLOON_CARRIER_MOVE_TIME EQU %00000011
 BALLOON_CARRIER_COLLISION_TIME EQU %00000111
 
-PROJECTILE_RESPAWN_TIME EQU %01111111
-PROJECTILE_RESPAWN_FLICKER_TIME EQU %01101111
+PROJECTILE_RESPAWN_TIME EQU 100
+PROJECTILE_RESPAWN_TIME_SPAWN EQU PROJECTILE_RESPAWN_TIME / 2
+PROJECTILE_RESPAWN_FLICKER_TIME EQU 80
 
 BALLOON_CACTUS_TILE EQU $14
 
@@ -75,6 +76,8 @@ SpawnBalloonCarrier::
     set ENEMY_FLAG_ACTIVE_BIT, a
     set ENEMY_FLAG_ALIVE_BIT, a
     ldh [hEnemyFlags], a
+    ld a, PROJECTILE_RESPAWN_TIME_SPAWN
+    ldh [hEnemyParam1], a
 
 .updateDirection:
     ldh a, [hEnemyX]
@@ -343,14 +346,14 @@ BalloonCarrierUpdate::
     cp a, CARRIER_PROJECTILE_VARIANT 
     jr nz, .endProjectileVariant
     ldh a, [hEnemyParam1]
-    cp a, PROJECTILE_RESPAWN_TIME + 1
+    cp a, PROJECTILE_RESPAWN_TIME
     jr c, .skipResetSpawn
 .resetSpawn:
     xor a ; ld a, 0
-    ldh [hEnemyParam1], a
-    jr .endProjectileVariant
+    jr .updateSpawn
 .skipResetSpawn:
     inc a
+.updateSpawn:
     ldh [hEnemyParam1], a
 .endProjectileVariant:
 
