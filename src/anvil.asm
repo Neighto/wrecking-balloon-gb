@@ -220,6 +220,9 @@ AnvilUpdate::
     call EnemyInterCollision
     jr nz, .hitEnemy
 .checkHitBoss:
+    ld a, [wLevel]
+    cp a, BOSS_LEVEL
+    jr nz, .endCollision
     ldh a, [hEnemyVariant]
     cp a, ANVIL_NORMAL_VARIANT
     jr nz, .endCollision

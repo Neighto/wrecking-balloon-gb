@@ -176,22 +176,35 @@ SpawnCountdown::
 	ld b, 2
 	call RequestOAMSpace
     ret z
+.availableSpace:
     ld a, b
 	ld [wCountdownOAM], a
-	SET_HL_TO_ADDRESS wOAM, wCountdownOAM
+    ld hl, wOAM
+    ; ld a, [wCountdownOAM]
+    call AddToHL
     ld a, COUNTDOWN_START_Y
     ld [hli], a
     ld a, COUNTDOWN_START_X
     ld [hli], a
-    ld [hl], EMPTY_TILE
+    ld a, EMPTY_TILE
+    ld [hl], a
     inc l
     inc l
     ld a, COUNTDOWN_START_Y
     ld [hli], a
     ld a, COUNTDOWN_START_X+8
     ld [hli], a
-    ld [hl], EMPTY_TILE
+    ld a, EMPTY_TILE
+    ld [hl], a
 	ret
+
+ClearCountdown::
+    ld hl, wOAM
+    ld a, [wCountdownOAM]
+    call AddToHL
+    ld bc, COUNTDOWN_OAM_BYTES
+    call ResetHLInRange
+    ret
 
 ; UPDATE GAME COUNTDOWN ======================================
 
@@ -289,11 +302,9 @@ UpdateGameCountdown::
 .clear:
     inc a 
     ld [wCountdownFrame], a
-    SET_HL_TO_ADDRESS wOAM, wCountdownOAM
-    ld bc, COUNTDOWN_OAM_BYTES
-    call ResetHLInRange
+    call ClearCountdown
 .gameLoop:
-    jp GameLoop
+    jp PreGameLoop
 
 ; UPDATE GAME ======================================
 
@@ -331,7 +342,7 @@ UpdateGame::
 .classicMode:
     call LevelDataHandler
     ld a, [wLevel]
-    cp a, 6 ; TODO make boss level data not hardcoded
+    cp a, BOSS_LEVEL
     call z, BossUpdate
     jr .endModeSpecific
 .endlessMode:

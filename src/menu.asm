@@ -20,6 +20,7 @@ SECTION "menu vars", WRAM0
 	wSelectedMode:: DB
 	wMenuCursorOAM:: DB
 	wMenuCursorTimer:: DB
+	wSecret:: DB
 
 SECTION "menu", ROMX
 
@@ -28,6 +29,7 @@ InitializeMenu::
 	ld [wMenuFrame], a
 	ld [wSelectedMode], a
 	ld [wMenuCursorTimer], a
+	ld [wSecret], a
 	ld a, 140
 	ld [rSCY], a
 	ret
@@ -104,19 +106,21 @@ LoadMenuGraphics::
 SpawnMenuCursor::
 	ld b, 1 ; need 1 sprite for cursor
 	call RequestOAMSpace
-	jr z, .end
+	ret z
 .availableSpace:
 	ld a, b
 	ld [wMenuCursorOAM], a
-	SET_HL_TO_ADDRESS wOAM, wMenuCursorOAM
+	ld hl, wOAM
+	; ld a, [wMenuCursorOAM]
+	call AddToHL
 	ld a, MENU_SPRITE_CLASSIC_Y
 	ld [hli], a
 	ld a, MENU_SPRITE_X
 	ld [hli], a
-	ld [hl], MENU_CURSOR_TILE
-	inc l
-	ld [hl], OAMF_PAL0
-.end:
+	ld a, MENU_CURSOR_TILE
+	ld [hli], a
+	ld a, OAMF_PAL0
+	ld [hl], a
 	ret
 
 UpdateMenuOpening::
@@ -226,8 +230,13 @@ UpdateMenu::
 	and PADF_SELECT | PADF_UP | PADF_DOWN
 	jr z, .checkStart
 .select:
+	; Reset cursor blink
 	xor a ; ld a, 0
 	ld [wMenuCursorTimer], a
+	; Increase secret count
+	ld hl, wSecret
+	inc [hl]
+	; Move cursor and select mode
 	ld hl, wOAM+2
 	ld a, [wMenuCursorOAM]
 	call AddToHL

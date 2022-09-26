@@ -175,45 +175,63 @@ MovePlayerUp::
   call UpdateCactusPosition
   ret
 
+GetPlayerTiles::
+  ; Returns b = balloon tile
+  ; Returns c = cactus tile
+  ld a, [wSecret]
+  cp a, SECRET_AMOUNT
+  jr c, .normalLook
+.secretLook:
+  ld b, PLAYER_SECRET_BALLOON_TILE
+  ld c, PLAYER_SECRET_CACTUS_TILE
+  ret
+.normalLook:
+  ld b, PLAYER_BALLOON_TILE
+  ld c, PLAYER_CACTUS_TILE
+  ret
+
 SpawnPlayer::
+  call GetPlayerTiles ; b = balloon tile, c = cactus tile
 .cactusLeftOAM:
   ld hl, wPlayerCactusOAM
   ldh a, [hPlayerY2]
   ld [hli], a
   ldh a, [hPlayerX2]
   ld [hli], a
-  ld [hl], PLAYER_CACTUS_TILE
-  inc l
-  ld [hl], OAMF_PAL0
+  ld a, c
+  ld [hli], a
+  ld a, OAMF_PAL0
+  ld [hli], a
 .cactusRightOAM:
-  inc l
   ldh a, [hPlayerY2]
   ld [hli], a
   ldh a, [hPlayerX2]
   add 8
   ld [hli], a
-  ld [hl], PLAYER_CACTUS_TILE
-  inc l
-  ld [hl], OAMF_PAL0 | OAMF_XFLIP
+  ld a, c
+  ld [hli], a
+  ld a, OAMF_PAL0 | OAMF_XFLIP
+  ld [hl], a
 .balloonLeftOAM:
   ld hl, wPlayerBalloonOAM
   ldh a, [hPlayerY]
   ld [hli], a
   ldh a, [hPlayerX]
   ld [hli], a
-  ld [hl], PLAYER_BALLOON_TILE
-  inc l
-  ld [hl], OAMF_PAL1
+  ld a, b
+  ld [hli], a
+  ld a, OAMF_PAL1
+  ld [hli], a
 .balloonRightOAM:
-  inc l
   ldh a, [hPlayerY]
   ld [hli], a
   ldh a, [hPlayerX]
   add 8
   ld [hli], a
-  ld [hl], PLAYER_BALLOON_TILE
-  inc l
-  ld [hl], OAMF_PAL1 | OAMF_XFLIP
+  ld a, b
+  ld [hli], a
+  ld a, OAMF_PAL1 | OAMF_XFLIP
+  ld [hl], a
   ret
 
 PlayerControls:
@@ -629,7 +647,8 @@ PlayerUpdate::
   ld [hli], a
   jr .endCheckStunned
 .blinkOn:
-  ld a, PLAYER_CACTUS_TILE
+  call GetPlayerTiles ; b = balloon tile, c = cactus tile
+  ld a, c
   ld [hli], a
   inc l
   inc l
@@ -668,14 +687,18 @@ PlayerUpdate::
   ld [hl], PLAYER_CACTUS_INVINCIBLE_TILE
   jr .endInvincible
 .noBlink:
+
+  call GetPlayerTiles ; b = balloon tile, c = cactus tile
   ld hl, wPlayerBalloonOAM+2
-  ld [hl], PLAYER_BALLOON_TILE
+  ld a, b
+  ld [hl], a
   ld hl, wPlayerBalloonOAM+6
-  ld [hl], PLAYER_BALLOON_TILE
+  ld [hl], a
   ld hl, wPlayerCactusOAM+2
-  ld [hl], PLAYER_CACTUS_TILE
+  ld a, c
+  ld [hl], a
   ld hl, wPlayerCactusOAM+6
-  ld [hl], PLAYER_CACTUS_TILE
+  ld [hl], a
 .endInvincible:
 
 .checkMove:
@@ -698,9 +721,6 @@ PlayerUpdate::
 .endMove:
 
 .checkBoost:
-  ldh a, [hGlobalTimer]
-	and	PLAYER_BOOST_TIME
-  jr nz, .endBoost
   ldh a, [hPlayerBoost]
   cp a, PLAYER_BOOST_FULL
   jr z, .endBoost
@@ -708,16 +728,13 @@ PlayerUpdate::
   dec a
   ldh [hPlayerBoost], a
   cp a, PLAYER_BOOST_EFFECT_ENDS
-  jr nc, .endBoost
+  jr nz, .endBoost
 .resetBoost:
   ld a, PLAYER_DEFAULT_SPEED
   ldh [hPlayerSpeed], a
 .endBoost:
 
 .checkAttack:
-  ldh a, [hGlobalTimer]
-	and	PLAYER_ATTACK_TIME
-  jr nz, .endAttack
   ldh a, [hPlayerAttack]
   cp a, PLAYER_ATTACK_FULL
   jr z, .endAttack
