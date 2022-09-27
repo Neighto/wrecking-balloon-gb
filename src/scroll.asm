@@ -7,10 +7,10 @@ PARALLAX_FAR_WAIT_TIME EQU %0011111
 RAIN_SCROLL_SPEED EQU 2
 
 SECTION "scroll vars", HRAM
-hParallaxClose:: DB
-hParallaxMiddle:: DB
-hParallaxFar:: DB
-hRain:: DB
+    hParallaxClose:: DB
+    hParallaxMiddle:: DB
+    hParallaxFar:: DB
+    hRain:: DB
 
 SECTION "scroll", ROM0
 
@@ -29,31 +29,35 @@ IncrementScrollOffset::
 .close:
     and PARALLAX_CLOSE_WAIT_TIME
     jr nz, .endParallax
-    ld hl, hParallaxClose
-    inc [hl]
+    ldh a, [hParallaxClose]
+    inc a
+    ldh [hParallaxClose], a
 .middle:
     ld a, b
     and PARALLAX_MIDDLE_WAIT_TIME
     jr nz, .endParallax
-    ld hl, hParallaxMiddle
-    inc [hl]
+    ldh a, [hParallaxMiddle]
+    inc a
+    ldh [hParallaxMiddle], a
 .far:
     ld a, b
     and PARALLAX_FAR_WAIT_TIME
     jr nz, .endParallax
-    ld hl, hParallaxFar
-    inc [hl]
+    ldh a, [hParallaxFar]
+    inc a
+    ldh [hParallaxFar], a
 .endParallax:
     ; Rain
 .rain:
     ldh a, [hRain]
     sub a, RAIN_SCROLL_SPEED
-    cp a, SCRN_VY - SCRN_Y
+    ld c, SCRN_VY - SCRN_Y
+    cp a, c
     jr nc, .resetRain
     ldh [hRain], a
     ret
 .resetRain:
-    ld a, SCRN_VY - SCRN_Y
+    ld a, c
     ldh [hRain], a
     ret
 

@@ -56,6 +56,10 @@ SunMap::
     INCBIN "incbin/background/Sun.tilemap"
 SunMapEnd::
 
+CityPlaneMap:: 
+    INCBIN "incbin/background/CityPlane.tilemap"
+CityPlaneMapEnd::
+
 ShowdownWaterMap::
     INCBIN "incbin/background/ShowdownWater.tilemap"
 ShowdownWaterMapEnd::

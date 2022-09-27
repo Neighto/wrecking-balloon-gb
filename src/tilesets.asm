@@ -49,6 +49,7 @@ MiscellaneousTiles::
     INCBIN "incbin/background/DesertStar.2bpp"
     INCBIN "incbin/background/RainClouds.2bpp"
     INCBIN "incbin/background/ShowdownWater.2bpp"
+    INCBIN "incbin/background/CityPlane.2bpp"
 MiscellaneousTilesEnd::
 
 LevelCityTiles::
