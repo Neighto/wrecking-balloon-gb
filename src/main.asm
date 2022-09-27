@@ -95,10 +95,10 @@ OpeningCutscene:
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateOpeningCutscene
-	jp OpeningCutsceneLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateOpeningCutscene
+	; jp OpeningCutsceneLoop
 
 SetupNextLevel::
 	call WaitVBlank
@@ -175,6 +175,9 @@ SetupNextLevel::
 .endless:
 	call SetEndlessInterrupts
 	call LoadEndlessGraphics
+	call ClearSound
+	ld hl, angryTheme
+	call hUGE_init
 .endLevelSetup:
 	call InitializeGame
 	call InitializeEndless
