@@ -201,7 +201,6 @@ PointBalloonUpdate::
     ld d, 16
     ld e, 13
     call CollisionCheck
-    cp a, 0
     jr nz, .deathOfPointBalloon
 .checkHitByBullet:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
@@ -210,7 +209,6 @@ PointBalloonUpdate::
     ld d, 8
     ld e, 4
     call CollisionCheck
-    cp a, 0
     jr z, .endCollision
     call ClearBullet
 .deathOfPointBalloon:
@@ -223,19 +221,20 @@ PointBalloonUpdate::
 .easyPoints:
     cp a, BALLOON_EASY_VARIANT
     jr nz, .mediumPoints
-    ld d, POINT_BALLOON_EASY_POINTS
-    jr .endVariantPoints
+    ld a, POINT_BALLOON_EASY_POINTS
+    jr .updatePoints
 .mediumPoints:
     cp a, BALLOON_MEDIUM_VARIANT
     jr nz, .hardPoints
-    ld d, POINT_BALLOON_MEDIUM_POINTS
-    jr .endVariantPoints
+    ld a, POINT_BALLOON_MEDIUM_POINTS
+    jr .updatePoints
 .hardPoints:
     cp a, BALLOON_HARD_VARIANT
     jr nz, .endVariantPoints
-    ld d, POINT_BALLOON_HARD_POINTS
-.endVariantPoints:
+    ld a, POINT_BALLOON_HARD_POINTS
+.updatePoints:
     call AddPoints
+.endVariantPoints:
     ; Animation trigger
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_DYING_BIT, a

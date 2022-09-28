@@ -213,12 +213,71 @@ BalloonCarrierUpdate::
 
 .checkAlive:
     ldh a, [hEnemyFlags]
+    ld b, a
     and ENEMY_FLAG_ALIVE_MASK
     jr nz, .isAlive
 .isPopping:
-    ldh a, [hEnemyFlags]
+
+.checkSpawnCarry:
+    ld a, b
+    and BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_MASK
+    jr z, .endCheckSpawnCarry
+    ld a, b
+    ; Reset carry spawn trigger
     res BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_BIT, a
     ldh [hEnemyFlags], a
+    ; Hide carry visual
+    SET_HL_TO_ADDRESS wOAM+10, hEnemyOAM
+    ld a, EMPTY_TILE
+    ld [hli], a
+    inc l
+    inc l
+    inc l
+    ld [hl], a
+.setStructSpawn:
+    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
+    call SetStruct
+.variantSpawnExplosion:
+    ldh a, [hEnemyVariant]
+    cp a, CARRIER_BOMB_VARIANT
+    jr nz, .endVariantSpawnExplosion
+    ld a, EXPLOSION
+    ldh [hEnemyNumber], a
+    ld a, EXPLOSION_BOMB_VARIANT
+    ldh [hEnemyVariant], a
+    ldh a, [hEnemyX]
+    sub 4
+    ldh [hEnemyX], a
+    call SpawnExplosion
+    ldh a, [hEnemyX]
+    add 4
+    ldh [hEnemyX], a
+.endVariantSpawnExplosion:
+.variantSpawnCarry:
+    ldh a, [hEnemyVariant]
+.anvilSpawnCarry:
+    cp a, CARRIER_ANVIL_VARIANT
+    jr nz, .cactusSpawnCarry
+    ld a, ANVIL_NORMAL_VARIANT
+    ldh [hEnemyVariant], a
+    jr .spawnCarryEnd
+.cactusSpawnCarry:
+    ld a, ANVIL_CACTUS_VARIANT
+    ldh [hEnemyVariant], a
+.spawnCarryEnd:
+    ld a, ANVIL
+    ldh [hEnemyNumber], a
+    ldh a, [hEnemyY]
+    add 16
+    ldh [hEnemyY], a
+    call SpawnAnvil
+.variantEndSpawnCarry:
+    ; Since we messed with shared enemy struct vars we end here
+    ; Plus we do this to mitigate a peak in cycles
+    ret
+.endCheckSpawnCarry:
+    
+    ld a, b
     and ENEMY_FLAG_DYING_MASK
     jr z, .clearPopping
 .animatePopping:
@@ -370,7 +429,6 @@ BalloonCarrierUpdate::
     ld d, 16
     ld e, 16
     call CollisionCheck
-    cp a, 0
     call nz, CollisionWithPlayer
 .checkHit:
     ld bc, wPlayerCactusOAM
@@ -378,7 +436,6 @@ BalloonCarrierUpdate::
     ld d, 16
     ld e, 12
     call CollisionCheck
-    cp a, 0
     jr z, .checkHitByBullet
 .checkHitVariant:
     ldh a, [hEnemyVariant]
@@ -393,47 +450,38 @@ BalloonCarrierUpdate::
     ld d, 8
     ld e, 4
     call CollisionCheck
-    cp a, 0
     jr z, .endCollision
     call ClearBullet
 
 .deathOfBalloonCarrier:
-    ld d, 0
 .variantPoints:
     ldh a, [hEnemyVariant]
 .normalPoints:
     cp a, CARRIER_NORMAL_VARIANT
     jr nz, .followPoints
-    ld d, BALLOON_CARRIER_NORMAL_POINTS
-    jr .endVariantPoints
+    ld a, BALLOON_CARRIER_NORMAL_POINTS
+    jr .updatePoints
 .followPoints:
     cp a, CARRIER_FOLLOW_VARIANT
     jr nz, .projectilePoints
-    ld d, BALLOON_CARRIER_PROJECTILE_POINTS
-    jr .endVariantPoints
+    ld a, BALLOON_CARRIER_PROJECTILE_POINTS
+    jr .updatePoints
 .projectilePoints:
     cp a, CARRIER_PROJECTILE_VARIANT
     jr nz, .bombPoints
-    ld d, BALLOON_CARRIER_FOLLOW_POINTS
-    jr .endVariantPoints
+    ld a, BALLOON_CARRIER_FOLLOW_POINTS
+    jr .updatePoints
 .bombPoints:
     cp a, CARRIER_BOMB_VARIANT
     jr nz, .endVariantPoints
-    ld d, BALLOON_CARRIER_BOMB_POINTS
-.endVariantPoints:
+    ld a, BALLOON_CARRIER_BOMB_POINTS
+.updatePoints:
     call AddPoints
+.endVariantPoints:
 
     ldh a, [hEnemyFlags]
     res ENEMY_FLAG_ALIVE_BIT, a
     ld [hEnemyFlags], a
-    ; Hide carry visual
-    SET_HL_TO_ADDRESS wOAM+10, hEnemyOAM
-    ld a, EMPTY_TILE
-    ld [hli], a
-    inc hl
-    inc hl
-    inc hl
-    ld [hl], a
     ; Animation trigger
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_DYING_BIT, a
@@ -460,46 +508,6 @@ BalloonCarrierUpdate::
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
-
-.checkSpawnCarry:
-    ldh a, [hEnemyFlags]
-    and BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_MASK
-    jr z, .variantEndSpawnCarry
-.variantSpawnExplosion:
-    ldh a, [hEnemyVariant]
-    cp a, CARRIER_BOMB_VARIANT
-    jr nz, .endVariantSpawnExplosion
-    ld a, EXPLOSION
-    ldh [hEnemyNumber], a
-    ld a, EXPLOSION_BOMB_VARIANT
-    ldh [hEnemyVariant], a
-    ldh a, [hEnemyX]
-    sub 4
-    ldh [hEnemyX], a
-    call SpawnExplosion
-    ldh a, [hEnemyX]
-    add 4
-    ldh [hEnemyX], a
-.endVariantSpawnExplosion:
-.variantSpawnCarry:
-    ldh a, [hEnemyVariant]
-.anvilSpawnCarry:
-    cp a, CARRIER_ANVIL_VARIANT
-    jr nz, .cactusSpawnCarry
-    ld a, ANVIL_NORMAL_VARIANT
-    ldh [hEnemyVariant], a
-    jr .spawnCarryEnd
-.cactusSpawnCarry:
-    ld a, ANVIL_CACTUS_VARIANT
-    ldh [hEnemyVariant], a
-.spawnCarryEnd:
-    ld a, ANVIL
-    ldh [hEnemyNumber], a
-    ldh a, [hEnemyY]
-    add 16
-    ldh [hEnemyY], a
-    call SpawnAnvil
-.variantEndSpawnCarry:
 
 .checkSpawnProjectile:
     ldh a, [hEnemyParam1]

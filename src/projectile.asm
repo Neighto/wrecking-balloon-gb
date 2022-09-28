@@ -160,7 +160,6 @@ ProjectileUpdate::
     ld d, 8
     ld e, 8
     call CollisionCheck
-    cp a, 0
     jr z, .checkHitCactus
     call CollisionWithPlayer
     jr .deathOfProjectile
@@ -170,7 +169,6 @@ ProjectileUpdate::
     ld d, 8
     ld e, 8
     call CollisionCheck
-    cp a, 0
     jr z, .endCollision
     call CollisionWithPlayerCactus
 .deathOfProjectile:

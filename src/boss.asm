@@ -39,7 +39,7 @@ PORCUPINE_EXPRESSION_SCARED EQU 3
 
 PORCUPINE_KNOCKED_OUT_TIME EQU 40
 
-PORCUPINE_POINTS EQU 50
+PORCUPINE_POINTS EQU 95
 
 PORCUPINE_POINT_Y1 EQU 46
 PORCUPINE_POINT_Y2 EQU 66
@@ -624,7 +624,6 @@ BossUpdate::
 ;     ld d, 32
 ;     ld e, 32
 ;     call CollisionCheck
-;     cp a, 0
 ;     jr nz, .bossDamaged
 ;     ; ***********
 .checkHitPlayer:
@@ -633,12 +632,15 @@ BossUpdate::
     ld d, 32
     ld e, 32
     call CollisionCheck
-    cp a, 0
     call nz, CollisionWithPlayer
     jr .endCollision
 .bossDamaged:
     ; Points
-    ld d, PORCUPINE_POINTS
+    ld a, PORCUPINE_POINTS
+    call AddPoints
+    ld a, PORCUPINE_POINTS
+    call AddPoints
+    ld a, PORCUPINE_POINTS
     call AddPoints
     ; Sound
     call HitSound
