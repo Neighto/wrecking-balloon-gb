@@ -319,7 +319,6 @@ BirdUpdate::
     ld d, 24
     ld e, 8
     call CollisionCheck
-    cp a, 0
     jr z, .checkHitCactus
     call CollisionWithPlayer
     jp .endCollision
@@ -329,7 +328,6 @@ BirdUpdate::
     ld d, 24
     ld e, 8
     call CollisionCheck
-    cp a, 0
     jr z, .endCollision
     call CollisionWithPlayerCactus
     jr .endCollision
@@ -338,7 +336,7 @@ BirdUpdate::
     res ENEMY_FLAG_ALIVE_BIT, a
     ldh [hEnemyFlags], a
     ; Points
-    ld d, BIRD_POINTS
+    ld a, BIRD_POINTS
     call AddPoints
     ; Animation trigger
     ldh a, [hEnemyFlags]

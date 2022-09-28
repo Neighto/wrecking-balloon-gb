@@ -194,7 +194,6 @@ BombUpdate::
     ld d, 16
     ld e, 16
     call CollisionCheck
-    cp a, 0
     jr z, .checkHitByBullet
     call CollisionWithPlayer
     jr .deathOfBomb
@@ -205,7 +204,6 @@ BombUpdate::
     ld d, 8
     ld e, 4
     call CollisionCheck
-    cp a, 0
     jr z, .endCollision
     call ClearBullet
 .deathOfBomb:
@@ -218,14 +216,15 @@ BombUpdate::
 .directPoints:
     cp a, BOMB_DIRECT_VARIANT
     jr nz, .followPoints
-    ld d, BOMB_DIRECT_POINTS
-    jr .endVariantPoints
+    ld a, BOMB_DIRECT_POINTS
+    jr .updatePoints
 .followPoints:
     cp a, BOMB_FOLLOW_VARIANT
     jr nz, .endVariantPoints
-    ld d, BOMB_FOLLOW_POINTS
-.endVariantPoints:
+    ld a, BOMB_FOLLOW_POINTS
+.updatePoints:
     call AddPoints
+.endVariantPoints:
     ; Animation trigger
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_DYING_BIT, a

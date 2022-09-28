@@ -181,7 +181,6 @@ EnemyInterCollision::
     SET_BC_TO_ADDRESS wOAM, hEnemyOAM ; OAM address stored in bc
     ; Check collision
     call CollisionCheck
-    cp a, 0
     jr nz, .hitEnemy
 .checkLoop:
     ld a, [wEnemyOffset2]

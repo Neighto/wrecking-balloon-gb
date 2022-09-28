@@ -214,7 +214,6 @@ AnvilUpdate::
     ld d, 16
     ld e, 16
     call CollisionCheck
-    cp a, 0
     call nz, CollisionWithPlayer
 .checkHitAnotherEnemy:
     call EnemyInterCollision
@@ -231,7 +230,6 @@ AnvilUpdate::
     ld d, 32
     ld e, 24
     call CollisionCheck
-    cp a, 0
     jr z, .endCollision
     call CollisionWithBoss
 .hitEnemy:

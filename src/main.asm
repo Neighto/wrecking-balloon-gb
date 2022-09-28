@@ -223,6 +223,7 @@ GameOver::
 	call ResetGlobalTimer
 	call ClearOAM
 	call ClearSound
+	call ResetScroll
 	call InitializeInterrupts
 	call LoadGameOverGraphics
 	call InitializePalettes

@@ -11,7 +11,7 @@ CollisionCheck::
     ; hl = argument for collider
     ; d = argument for X size check (ex: 8 for 8 pixels long collider)
     ; e = argument for Y size check (ex: 16 for 16 pixels high collider)
-    ; a = return result (0 = no collision)
+    ; returns z flag as no collision / nz flag as collision
 
 .checkY:
     ld a, [bc]
@@ -58,7 +58,8 @@ CollisionCheck::
     ; Target x < collider x'
 
 .collision:
-    ld a, 1 ; Success
+    xor a ; ld a, 0 
+    inc a ; Success
     ret
 .noCollision:
     xor a ; ld a, 0 ; Fail

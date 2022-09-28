@@ -26,9 +26,8 @@ InitializeTotal::
     ret
 
 AddPoints::
-    ; d = points to receive (must be 1 byte BCD [max 99])
+    ; a = points to receive (must be 1 byte BCD [max 99])
     ; Warning no CAP at max points
-    ld a, d
     call ToBCD ; a is now BCD
     ld hl, wScore ; 1st byte of score
     ; Now update hl and if there's a carry add to hl+1

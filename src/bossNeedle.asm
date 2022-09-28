@@ -164,7 +164,6 @@ BossNeedleUpdate::
     ld d, 8
     ld e, 16
     call CollisionCheck
-    cp a, 0
     jr z, .checkHitCactus
     call CollisionWithPlayer
     jr .deathOfBossNeedle
@@ -174,7 +173,6 @@ BossNeedleUpdate::
     ld d, 8
     ld e, 16
     call CollisionCheck
-    cp a, 0
     jr z, .checkHitBullet
     call CollisionWithPlayerCactus
     jr .deathOfBossNeedle
@@ -184,7 +182,6 @@ BossNeedleUpdate::
     ld d, 8
     ld e, 16
     call CollisionCheck
-    cp a, 0
     jr z, .endCollision
     call ClearBullet
 .deathOfBossNeedle:
