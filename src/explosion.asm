@@ -13,7 +13,7 @@ EXPLOSION_CONGRATULATIONS_TILE_1 EQU $66
 EXPLOSION_CONGRATULATIONS_TILE_2 EQU $68
 
 EXPLOSION_TIME EQU 10
-EXPLOSION_WAIT_TIME EQU %00000011
+EXPLOSION_WAIT_TIME EQU %00000001
 
 SECTION "explosion", ROM0
 
@@ -128,6 +128,7 @@ ExplosionUpdate::
 
 .animateExplosion:
     ldh a, [hGlobalTimer]
+    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and EXPLOSION_WAIT_TIME
     jr nz, .endAnimateExplosion
     ldh a, [hEnemyAnimationFrame]

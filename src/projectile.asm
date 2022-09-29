@@ -5,9 +5,8 @@ INCLUDE "enemyConstants.inc"
 
 PROJECTILE_OAM_SPRITES EQU 1
 PROJECTILE_OAM_BYTES EQU PROJECTILE_OAM_SPRITES * 4
-PROJECTILE_MOVE_TIME EQU %00000001
-PROJECTILE_COLLISION_TIME EQU %00000111
-PROJECTILE_FLICKER_TIME EQU %00000111
+PROJECTILE_COLLISION_TIME EQU %00000011
+PROJECTILE_FLICKER_TIME EQU %00000011
 PROJECTILE_VERTICAL_SPEED EQU 1
 PROJECTILE_HORIZONTAL_SPEED EQU 2
 PROJECTILE_TILE EQU $46
@@ -115,6 +114,7 @@ ProjectileUpdate::
 
 .checkFlicker:
     ldh a, [hGlobalTimer]
+    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and	PROJECTILE_FLICKER_TIME
     jr nz, .endFlicker
 .canFlicker:
@@ -130,10 +130,6 @@ ProjectileUpdate::
 .endFlicker:
 
 .checkMove:
-    ldh a, [hGlobalTimer]
-    and	PROJECTILE_MOVE_TIME
-    jr nz, .endMove
-.canMove:
 .projectileOAM:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     ldh a, [hEnemyY]
@@ -152,6 +148,7 @@ ProjectileUpdate::
 
 .checkCollision:
     ldh a, [hGlobalTimer]
+    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and	PROJECTILE_COLLISION_TIME
     jr nz, .endCollision
 .checkHitPlayer:
@@ -190,6 +187,7 @@ ProjectileUpdate::
     ld bc, PROJECTILE_OAM_BYTES
     call ClearEnemy
 .endOffscreenY:
+    
 .checkOffscreenX:
     ldh a, [hEnemyX]
     ld b, a

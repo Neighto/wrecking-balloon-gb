@@ -5,11 +5,10 @@ INCLUDE "constants.inc"
 
 BIRD_OAM_SPRITES EQU 3
 BIRD_OAM_BYTES EQU BIRD_OAM_SPRITES * OAM_ATTRIBUTES_COUNT
-BIRD_MOVE_TIME EQU %00000011
-BIRD_COLLISION_TIME EQU %00000111
+BIRD_MOVE_TIME EQU %00000001
+BIRD_COLLISION_TIME EQU %00000011
 
-BIRD_VERTICAL_MOVE_TIME EQU %00000011
-BIRD_FALLING_WAIT_TIME EQU %00000001
+BIRD_VERTICAL_MOVE_TIME EQU %00000001
 BIRD_HORIZONTAL_SPEED EQU 2
 BIRD_VERTICAL_SPEED EQU 1
 BIRD_FLAP_UP_SPEED EQU 3
@@ -226,6 +225,7 @@ BirdUpdate::
 
 .checkMove:
     ldh a, [hGlobalTimer]
+    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and	BIRD_MOVE_TIME
     jp nz, .endMove
 .canMove:
@@ -245,6 +245,7 @@ BirdUpdate::
     SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM
 .verticalMovement:
     ldh a, [hGlobalTimer]
+    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and BIRD_VERTICAL_MOVE_TIME
     jp nz, .endVerticalMovement
 .variantMove:
@@ -308,6 +309,7 @@ BirdUpdate::
 
 .checkCollision:
     ldh a, [hGlobalTimer]
+    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and	BIRD_COLLISION_TIME
     jp nz, .endCollision
     ldh a, [hEnemyFlags]
@@ -385,9 +387,6 @@ BirdUpdate::
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_DYING_MASK
     jr z, .setStruct
-    ldh a, [hGlobalTimer]
-    and BIRD_FALLING_WAIT_TIME
-    jr nz, .setStruct
 .animating:
     ldh a, [hEnemyY]
     add a, 2

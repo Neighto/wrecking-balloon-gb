@@ -5,8 +5,7 @@ INCLUDE "constants.inc"
 
 POINT_BALLOON_OAM_SPRITES EQU 3
 POINT_BALLOON_OAM_BYTES EQU POINT_BALLOON_OAM_SPRITES * OAM_ATTRIBUTES_COUNT
-POINT_BALLOON_MOVE_TIME EQU %00000001
-POINT_BALLOON_COLLISION_TIME EQU %00000111
+POINT_BALLOON_COLLISION_TIME EQU %00000011
 POINT_BALLOON_STRING_X_OFFSET EQU 4
 POINT_BALLOON_STRING_Y_OFFSET EQU 14
 
@@ -135,14 +134,21 @@ PointBalloonUpdate::
 .checkAlive:
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_ALIVE_MASK
-    jp z, .popped
+    jr nz, .isAlive
+.isPopped:
+    ldh a, [hEnemyFlags]
+    and ENEMY_FLAG_DYING_MASK
+    jr z, .clear
+.animating:
+    call PopBalloonAnimation
+    jp .setStruct
+.clear:
+    ld bc, POINT_BALLOON_OAM_BYTES
+    call ClearEnemy
+    jp .setStruct
 .isAlive:
 
 .checkMove:
-    ldh a, [hGlobalTimer]
-    and	POINT_BALLOON_MOVE_TIME
-    jr nz, .endMove
-.canMove:
     ld hl, hEnemyY
     ldh a, [hEnemyVariant]
 .moveEasy:
@@ -173,6 +179,7 @@ PointBalloonUpdate::
 
 .checkString:
     ldh a, [hGlobalTimer]
+    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and STRING_MOVE_TIME
     jr nz, .endString
     SET_HL_TO_ADDRESS wOAM+11, hEnemyOAM
@@ -189,6 +196,7 @@ PointBalloonUpdate::
 
 .checkCollision:
     ldh a, [hGlobalTimer]
+    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and	POINT_BALLOON_COLLISION_TIME
     jr nz, .endCollision
     ldh a, [hEnemyFlags]
@@ -255,20 +263,9 @@ PointBalloonUpdate::
 .offscreen:
     ld bc, POINT_BALLOON_OAM_BYTES
     call ClearEnemy
-    jr .setStruct
+    ; jr .setStruct
 .endOffscreen:
-    jr .setStruct
 
-.popped:
-    ldh a, [hEnemyFlags]
-    and ENEMY_FLAG_DYING_MASK
-    jr z, .clear
-.animating:
-    call PopBalloonAnimation
-    jr .setStruct
-.clear:
-    ld bc, POINT_BALLOON_OAM_BYTES
-    call ClearEnemy
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct

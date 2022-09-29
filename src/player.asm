@@ -465,7 +465,7 @@ PopPlayerBalloonAnimation:
   ldh a, [hPlayerPoppingTimer]
   inc	a
   ldh [hPlayerPoppingTimer], a
-  and POPPING_BALLOON_ANIMATION_TIME
+  and PLAYER_POPPING_BALLOON_ANIMATION_TIME
   ret nz
 .canSwitchFrames:
   ldh a, [hPlayerPoppingFrame]

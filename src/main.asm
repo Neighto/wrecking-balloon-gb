@@ -58,10 +58,10 @@ StartMenu::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateMenu
-	jp MenuLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateMenu
+	; jp MenuLoop
 
 StartGame::
 	ld a, [wSelectedMode]
@@ -113,8 +113,8 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	ld a, 3
-	ld [wLevel], a
+	; ld a, 3
+	; ld [wLevel], a
 	; ; ^^^
 	ld a, [wSelectedMode]
 	cp a, 0

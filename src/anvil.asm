@@ -5,8 +5,8 @@ INCLUDE "constants.inc"
 
 ANVIL_OAM_SPRITES EQU 2
 ANVIL_OAM_BYTES EQU ANVIL_OAM_SPRITES * OAM_ATTRIBUTES_COUNT
-ANVIL_MOVE_TIME EQU %00000001
-ANVIL_COLLISION_TIME EQU %00000001
+ANVIL_DEAD_BLINKING_TIME EQU %00000011
+ANVIL_DEAD_BLINKING_DURATION EQU 20
 
 CACTUS_SCREAMING_TILE EQU $16
 
@@ -135,14 +135,14 @@ AnvilUpdate::
     ldh a, [hEnemyAnimationTimer]
     inc a
     ldh [hEnemyAnimationTimer], a
-    cp a, 40
+    cp a, ANVIL_DEAD_BLINKING_DURATION
     jr c, .animateDying
 .clear:
     ld bc, ANVIL_OAM_BYTES
     call ClearEnemy
     jp .setStruct
 .animateDying:
-    and %00000111
+    and ANVIL_DEAD_BLINKING_TIME
     jp nz, .setStruct
     SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM ; Tile
     ld a, [hl]
@@ -180,9 +180,6 @@ AnvilUpdate::
 .endCheckDying:
 
 .fallingSpeed:
-    ldh a, [hGlobalTimer]
-    and ANVIL_MOVE_TIME
-    jr nz, .endFallingSpeed
     ldh a, [hEnemyParam1]
     inc a 
     ldh [hEnemyParam1], a
@@ -205,9 +202,6 @@ AnvilUpdate::
 .endFallingSpeed:
 
 .checkCollision:
-    ldh a, [hGlobalTimer]
-    and	ANVIL_COLLISION_TIME
-    jr nz, .endCollision
 .checkHit:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM

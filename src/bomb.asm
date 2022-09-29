@@ -6,9 +6,8 @@ INCLUDE "enemyConstants.inc"
 BOMB_DEFAULT_SPEED EQU 2
 BOMB_OAM_SPRITES EQU 2
 BOMB_OAM_BYTES EQU BOMB_OAM_SPRITES * 4
-BOMB_MOVE_TIME EQU %00000001
-BOMB_FOLLOW_TIME EQU %00000111
-BOMB_COLLISION_TIME EQU %00000111
+BOMB_FOLLOW_TIME EQU %00000011
+BOMB_COLLISION_TIME EQU %00000011
 
 BOMB_DIRECT_TILE EQU $22
 BOMB_DIRECT_POINTS EQU 10
@@ -16,14 +15,11 @@ BOMB_DIRECT_POINTS EQU 10
 BOMB_FOLLOW_TILE EQU $4C
 BOMB_FOLLOW_POINTS EQU 20
 
-BOMB_FLAG_TRIGGER_SPAWN_MASK EQU ENEMY_FLAG_PARAM1_MASK
-BOMB_FLAG_TRIGGER_SPAWN_BIT EQU ENEMY_FLAG_PARAM1_BIT
-
 SECTION "bomb", ROMX
 
 SetStruct:
     ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyFlags] ; BIT #: [5=trigger explosion]
+    ldh a, [hEnemyFlags]
     ld [hli], a
     ldh a, [hEnemyNumber]
     ld [hli], a
@@ -127,9 +123,20 @@ BombUpdate::
 .triggerExplosion:
     ldh a, [hEnemyFlags]
     res ENEMY_FLAG_DYING_BIT, a
-    set BOMB_FLAG_TRIGGER_SPAWN_BIT, a
     ldh [hEnemyFlags], a
-    jp .setStruct
+.setStructSpawn:
+    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
+    call SetStruct
+.spawnExplosion:
+    ld a, EXPLOSION
+    ldh [hEnemyNumber], a
+    ld a, EXPLOSION_BOMB_VARIANT
+    ldh [hEnemyVariant], a
+    ldh a, [hEnemyX]
+    sub 4
+    ldh [hEnemyX], a
+    call SpawnExplosion
+    ret
 .clear:
     ld bc, BOMB_OAM_BYTES
     call ClearEnemy
@@ -137,10 +144,6 @@ BombUpdate::
 .isAlive:
 
 .checkMove:
-    ldh a, [hGlobalTimer]
-    and	BOMB_MOVE_TIME
-    jr nz, .endMove
-.canMove:
     ldh a, [hEnemyY]
     sub a, BOMB_DEFAULT_SPEED
     ldh [hEnemyY], a    
@@ -150,6 +153,7 @@ BombUpdate::
     jr nz, .endVariantMove
 .horizontalFollow:
     ldh a, [hGlobalTimer]
+    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and BOMB_FOLLOW_TIME
     jr nz, .endVariantMove
     ldh a, [hEnemyX]
@@ -209,6 +213,7 @@ BombUpdate::
 .deathOfBomb:
     ldh a, [hEnemyFlags]
     res ENEMY_FLAG_ALIVE_BIT, a
+    set ENEMY_FLAG_DYING_BIT, a
     ldh [hEnemyFlags], a
     ; Points
 .variantPoints:
@@ -225,10 +230,6 @@ BombUpdate::
 .updatePoints:
     call AddPoints
 .endVariantPoints:
-    ; Animation trigger
-    ldh a, [hEnemyFlags]
-    set ENEMY_FLAG_DYING_BIT, a
-    ldh [hEnemyFlags], a
 .endCollision:
 
 .checkOffscreen:
@@ -248,19 +249,4 @@ BombUpdate::
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
-
-.checkSpawnExplosion:
-    ldh a, [hEnemyFlags]
-    and BOMB_FLAG_TRIGGER_SPAWN_MASK
-    jr z, .endCheckSpawnExplosion
-.spawnExplosion:
-    ld a, EXPLOSION
-    ldh [hEnemyNumber], a
-    ld a, EXPLOSION_BOMB_VARIANT
-    ldh [hEnemyVariant], a
-    ldh a, [hEnemyX]
-    sub 4
-    ldh [hEnemyX], a
-    call SpawnExplosion
-.endCheckSpawnExplosion:
     ret

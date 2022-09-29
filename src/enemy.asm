@@ -55,10 +55,24 @@ InitializeEnemies::
     ret
 
 EnemyUpdate::
-    ld a, NUMBER_OF_ENEMIES
-    ld [wEnemyLoopIndex], a
+
+    ; Only handle half the enemies per call
+.handleEnemiesHalf:
+    ldh a, [hGlobalTimer]
+    and %00000001
+    jr nz, .secondHalf
+.firstHalf:
     xor a ; ld a, 0
+    jr .setOffsetAndLoopIndex
+.secondHalf:
+    ld a, ENEMY_STRUCT_SIZE * NUMBER_OF_ENEMIES_HALF
+    ; jr .setOffsetAndLoopIndex
+.setOffsetAndLoopIndex:
     ld [wEnemyOffset], a
+    ld a, NUMBER_OF_ENEMIES_HALF
+    ld [wEnemyLoopIndex], a
+.endHandleEnemiesHalf:
+
 .loop:
     ; Get flags
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
