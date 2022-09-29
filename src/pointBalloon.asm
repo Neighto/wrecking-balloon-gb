@@ -21,26 +21,6 @@ POINT_BALLOON_HARD_POINTS EQU 80
 
 SECTION "point balloon", ROMX
 
-SetStruct:
-    ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyFlags]
-    ld [hli], a
-    ldh a, [hEnemyNumber]
-    ld [hli], a
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    ld [hli], a
-    ldh a, [hEnemyOAM]
-    ld [hli], a
-    ldh a, [hEnemyAnimationFrame]
-    ld [hli], a
-    ldh a, [hEnemyAnimationTimer]
-    ld [hli], a
-    ldh a, [hEnemyVariant]
-    ld [hl], a
-    ret
-
 SpawnPointBalloon::
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
@@ -54,16 +34,14 @@ SpawnPointBalloon::
     pop hl
     ret z
 .availableOAMSpace:
-    LD_DE_HL
     call InitializeEnemyStructVars
-    call SetStruct
     ld a, b
     ld [hEnemyOAM], a
-    LD_BC_DE
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_ACTIVE_BIT, a
     set ENEMY_FLAG_ALIVE_BIT, a
     ldh [hEnemyFlags], a
+    LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
 .variantVisual:
@@ -119,17 +97,9 @@ SpawnPointBalloon::
     ld [hl], OAMF_PAL0
 .setStruct:
     LD_HL_BC
-    call SetStruct
-    ret
+    jp SetEnemyStruct
 
 PointBalloonUpdate::
-    ; Get rest of struct
-    ld a, [hli]
-    ldh [hEnemyAnimationFrame], a
-    ld a, [hli]
-    ldh [hEnemyAnimationTimer], a
-    ld a, [hl]
-    ldh [hEnemyVariant], a
 
 .checkAlive:
     ldh a, [hEnemyFlags]
@@ -268,5 +238,4 @@ PointBalloonUpdate::
 
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
-    call SetStruct
-    ret
+    jp SetEnemyStruct

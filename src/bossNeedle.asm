@@ -12,25 +12,9 @@ BOSS_NEEDLE_SPEED EQU 4
 
 BOSS_NEEDLE_VERTICAL_MOVEMENT_TIME EQU 6
 
-SECTION "boss needle", ROM0
+; hEnemyParam1 = Vertical Movement Counter
 
-SetStruct:
-    ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyFlags]
-    ld [hli], a
-    ldh a, [hEnemyNumber]
-    ld [hli], a
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    ld [hli], a
-    ldh a, [hEnemyOAM]
-    ld [hli], a
-    ldh a, [hEnemyParam1] ; Vertical Movement Counter
-    ld [hli], a
-    ldh a, [hEnemyVariant]
-    ld [hl], a
-    ret
+SECTION "boss needle", ROM0
 
 SpawnBossNeedle::
     ld hl, wEnemies
@@ -45,15 +29,13 @@ SpawnBossNeedle::
     pop hl
     ret z
 .availableOAMSpace:
-    LD_DE_HL
     call InitializeEnemyStructVars
-    call SetStruct
     ld a, b
     ldh [hEnemyOAM], a
-    LD_BC_DE
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_ACTIVE_BIT, a
     ldh [hEnemyFlags], a
+    LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
 .variantDirection:
@@ -85,16 +67,9 @@ SpawnBossNeedle::
     ld [hl], e
 .setStruct:
     LD_HL_BC
-    call SetStruct
-    ret
+    jp SetEnemyStruct
 
 BossNeedleUpdate::
-    ; Get rest of struct
-    ld a, [hli]
-    ldh [hEnemyParam1], a
-    ld a, [hli]
-    ldh [hEnemyVariant], a
-    ld a, [hl]
 
 .checkMove:
 .bossNeedleOAM:
@@ -201,5 +176,4 @@ BossNeedleUpdate::
 
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
-    call SetStruct
-    ret
+    jp SetEnemyStruct

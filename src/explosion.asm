@@ -17,24 +17,6 @@ EXPLOSION_WAIT_TIME EQU %00000001
 
 SECTION "explosion", ROM0
 
-SetStruct:
-    ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyFlags]
-    ld [hli], a
-    ldh a, [hEnemyNumber]
-    ld [hli], a
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    ld [hli], a
-    ldh a, [hEnemyOAM]
-    ld [hli], a
-    ldh a, [hEnemyAnimationFrame]
-    ld [hli], a
-    ldh a, [hEnemyVariant]
-    ld [hl], a
-    ret
-
 SpawnExplosion::
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
@@ -48,15 +30,13 @@ SpawnExplosion::
     pop hl
     ret z
 .availableOAMSpace:
-    LD_DE_HL
     call InitializeEnemyStructVars
-    call SetStruct
     ld a, b
     ldh [hEnemyOAM], a
-    LD_BC_DE
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_ACTIVE_BIT, a
     ldh [hEnemyFlags], a
+    LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
 .variantVisual:
@@ -105,7 +85,7 @@ SpawnExplosion::
     ld [hl], a
 .setStruct:
     LD_HL_BC
-    call SetStruct
+    call SetEnemyStruct
 .variantSound:
     ldh a, [hEnemyVariant]
 .bombSound:
@@ -119,12 +99,6 @@ SpawnExplosion::
     ret
 
 ExplosionUpdate::
-    ; Get rest of struct
-    ld a, [hli]
-    ldh [hEnemyAnimationFrame], a
-    ld a, [hli]
-    ldh [hEnemyVariant], a
-    ld a, [hl]
 
 .animateExplosion:
     ldh a, [hGlobalTimer]
@@ -164,5 +138,4 @@ ExplosionUpdate::
 
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
-    call SetStruct
-    ret
+    jp SetEnemyStruct

@@ -29,29 +29,9 @@ BALLOON_CARRIER_BOMB_POINTS EQU 50
 BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_MASK EQU ENEMY_FLAG_PARAM1_MASK
 BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_BIT EQU ENEMY_FLAG_PARAM1_BIT
 
-SECTION "balloon carrier", ROMX
+; hEnemyParam1 = Enemy Projectile Timer / Bobbing Index
 
-SetStruct:
-    ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyFlags] ; BIT #: [5=trigger carry]
-    ld [hli], a
-    ldh a, [hEnemyNumber]
-    ld [hli], a
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    ld [hli], a
-    ldh a, [hEnemyOAM]
-    ld [hli], a
-    ldh a, [hEnemyAnimationFrame]
-    ld [hli], a
-    ldh a, [hEnemyAnimationTimer]
-    ld [hli], a
-    ldh a, [hEnemyParam1] ; Enemy Projectile Timer / Bobbing Index
-    ld [hli], a
-    ldh a, [hEnemyVariant]
-    ld [hl], a
-    ret
+SECTION "balloon carrier", ROMX
 
 SpawnBalloonCarrier::
     ld hl, wEnemies
@@ -66,12 +46,9 @@ SpawnBalloonCarrier::
     pop hl
     ret z
 .availableOAMSpace:
-    LD_DE_HL
     call InitializeEnemyStructVars
-    call SetStruct
     ld a, b
     ldh [hEnemyOAM], a
-    LD_BC_DE
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_ACTIVE_BIT, a
     set ENEMY_FLAG_ALIVE_BIT, a
@@ -89,7 +66,7 @@ SpawnBalloonCarrier::
     set ENEMY_FLAG_DIRECTION_BIT, a
     ldh [hEnemyFlags], a
 .endUpdateDirection:
-
+    LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
 .variantVisualBalloon:
@@ -197,19 +174,9 @@ SpawnBalloonCarrier::
     ld [hl], a
 .setStruct:
     LD_HL_BC
-    call SetStruct
-    ret
+    jp SetEnemyStruct
 
 BalloonCarrierUpdate::
-    ; Get rest of struct
-    ld a, [hli]
-    ldh [hEnemyAnimationFrame], a
-    ld a, [hli]
-    ldh [hEnemyAnimationTimer], a
-    ld a, [hli]
-    ldh [hEnemyParam1], a
-    ld a, [hl]
-    ldh [hEnemyVariant], a
 
 .checkAlive:
     ldh a, [hEnemyFlags]
@@ -236,7 +203,7 @@ BalloonCarrierUpdate::
     ld [hl], a
 .setStructSpawnCarry:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
-    call SetStruct
+    call SetEnemyStruct
 .variantSpawnExplosion:
     ldh a, [hEnemyVariant]
     cp a, CARRIER_BOMB_VARIANT
@@ -332,7 +299,7 @@ BalloonCarrierUpdate::
     jr nz, .endSpawnProjectile
 .setStructSpawnProjectile:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
-    call SetStruct
+    call SetEnemyStruct
 .spawnProjectile:
     ld a, PROJECTILE
     ldh [hEnemyNumber], a
@@ -342,8 +309,7 @@ BalloonCarrierUpdate::
     ldh a, [hEnemyX]
     add a, 4
     ldh [hEnemyX], a
-    call SpawnProjectile
-    ret
+    jp SpawnProjectile
 .endSpawnProjectile:
 .endProjectileVariant:
 
@@ -551,5 +517,4 @@ BalloonCarrierUpdate::
 
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
-    call SetStruct
-    ret
+    jp SetEnemyStruct

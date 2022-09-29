@@ -10,27 +10,9 @@ ANVIL_DEAD_BLINKING_DURATION EQU 20
 
 CACTUS_SCREAMING_TILE EQU $16
 
-SECTION "anvil", ROMX
+; hEnemyParam1 = Enemy Speed
 
-SetStruct:
-    ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyFlags]
-    ld [hli], a
-    ldh a, [hEnemyNumber]
-    ld [hli], a
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    ld [hli], a
-    ldh a, [hEnemyOAM]
-    ld [hli], a
-    ldh a, [hEnemyAnimationTimer]
-    ld [hli], a
-    ldh a, [hEnemyParam1] ; Enemy Speed
-    ld [hli], a
-    ldh a, [hEnemyVariant]
-    ld [hl], a
-    ret
+SECTION "anvil", ROMX
 
 SpawnAnvil::
     ld hl, wEnemies
@@ -45,12 +27,9 @@ SpawnAnvil::
     pop hl
     ret z
 .availableOAMSpace:
-    LD_DE_HL
     call InitializeEnemyStructVars
-    call SetStruct
     ld a, b
     ldh [hEnemyOAM], a
-    LD_BC_DE
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_ACTIVE_BIT, a
     ldh [hEnemyFlags], a
@@ -67,6 +46,7 @@ SpawnAnvil::
 .endVariantSpeed:
     ldh [hEnemyParam1], a
 
+    LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 .variantVisualLeft:
     ldh a, [hEnemyVariant]
@@ -116,17 +96,9 @@ SpawnAnvil::
     ld [hl], a
 .setStruct:
     LD_HL_BC
-    call SetStruct
-    ret
+    jp SetEnemyStruct
 
 AnvilUpdate::
-    ; Get rest of struct
-    ld a, [hli]
-    ldh [hEnemyAnimationTimer], a
-    ld a, [hli]
-    ldh [hEnemyParam1], a
-    ld a, [hl]
-    ldh [hEnemyVariant], a
 
 .checkDying:
     ldh a, [hEnemyFlags]
@@ -248,5 +220,4 @@ AnvilUpdate::
 
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
-    call SetStruct
-    ret
+    jp SetEnemyStruct

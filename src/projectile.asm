@@ -11,25 +11,10 @@ PROJECTILE_VERTICAL_SPEED EQU 1
 PROJECTILE_HORIZONTAL_SPEED EQU 2
 PROJECTILE_TILE EQU $46
 
-SECTION "enemy projectile", ROM0
+; hEnemyParam1 = Add to Y
+; hEnemyParam2 = Add to X
 
-SetStruct:
-    ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyFlags]
-    ld [hli], a
-    ldh a, [hEnemyNumber]
-    ld [hli], a
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    ld [hli], a
-    ldh a, [hEnemyOAM]
-    ld [hli], a
-    ldh a, [hEnemyParam1] ; Add to Y
-    ld [hli], a
-    ldh a, [hEnemyParam2] ; Add to X
-    ld [hl], a
-    ret
+SECTION "enemy projectile", ROM0
 
 SpawnProjectile::
     ld hl, wEnemies
@@ -44,12 +29,9 @@ SpawnProjectile::
     pop hl
     ret z
 .availableOAMSpace:
-    LD_DE_HL
     call InitializeEnemyStructVars
-    call SetStruct
     ld a, b
     ldh [hEnemyOAM], a
-    LD_BC_DE
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_ACTIVE_BIT, a
     ldh [hEnemyFlags], a
@@ -88,6 +70,7 @@ SpawnProjectile::
 .endX:
     ldh [hEnemyParam2], a
 .endSetupX2:
+    LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 .projectileOAM:
     ldh a, [hEnemyY]
@@ -99,18 +82,12 @@ SpawnProjectile::
     ld [hl], OAMF_PAL0
 .setStruct:
     LD_HL_BC
-    call SetStruct
+    call SetEnemyStruct
 .end:
     call ProjectileSound
     ret
 
 ProjectileUpdate::
-    ; Get rest of struct
-    ld a, [hli]
-    ldh [hEnemyParam1], a
-    ld a, [hli]
-    ldh [hEnemyParam2], a
-    ld a, [hl]
 
 .checkFlicker:
     ldh a, [hGlobalTimer]
@@ -204,5 +181,4 @@ ProjectileUpdate::
 
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
-    call SetStruct
-    ret
+    jp SetEnemyStruct
