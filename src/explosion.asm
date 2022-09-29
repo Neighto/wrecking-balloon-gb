@@ -12,7 +12,7 @@ EXPLOSION_BOMB_TILE_2 EQU $26
 EXPLOSION_CONGRATULATIONS_TILE_1 EQU $66
 EXPLOSION_CONGRATULATIONS_TILE_2 EQU $68
 
-EXPLOSION_TIME EQU 10
+EXPLOSION_TIME EQU 15
 EXPLOSION_WAIT_TIME EQU %00000001
 
 ; hEnemyParam1 = Animation Frame
@@ -123,13 +123,13 @@ ExplosionUpdate::
     ld a, OAMF_PAL1
 .paletteEnd:
     ld [hli], a
-    inc hl
-    inc hl
-    inc hl
+    inc l
+    inc l
+    inc l
     ld [hli], a
-    inc hl
-    inc hl
-    inc hl
+    inc l
+    inc l
+    inc l
     or OAMF_XFLIP
     ld [hl], a
     jr .endAnimateExplosion
