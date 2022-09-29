@@ -18,6 +18,8 @@ POINT_BALLOON_MEDIUM_POINTS EQU 50
 POINT_BALLOON_HARD_TILE EQU $3A
 POINT_BALLOON_HARD_POINTS EQU 80
 
+; hEnemyParam1 = Animation Frame
+; hEnemyParam2 = Animation Timer
 
 SECTION "point balloon", ROMX
 

@@ -25,6 +25,8 @@ BIRD_DEAD_TILE_3 EQU $2C
 
 BIRD_POINTS EQU 100
 
+; hEnemyParam1 = Animation Frame
+
 SECTION "bird", ROMX
 
 SpawnBird::
@@ -229,7 +231,7 @@ BirdUpdate::
     jr nz, .moveHard
     ld b, BIRD_VERTICAL_SPEED
     ld c, BIRD_FLAP_UP_SPEED
-    ldh a, [hEnemyAnimationFrame]
+    ldh a, [hEnemyParam1]
     cp a, 0
     jr z, .soar
     cp a, 6
@@ -238,14 +240,14 @@ BirdUpdate::
     cp a, 7
     jr z, .moveUp
     xor a
-    ldh [hEnemyAnimationFrame], a
+    ldh [hEnemyParam1], a
     jr .endVerticalMovement
 .moveHard:
     cp a, BIRD_HARD_VARIANT 
     jr nz, .endVerticalMovement
     ld b, BIRD_VERTICAL_SPEED * 2
     ld c, BIRD_FLAP_UP_SPEED * 2
-    ldh a, [hEnemyAnimationFrame]
+    ldh a, [hEnemyParam1]
     cp a, 0
     jr z, .soar
     cp a, 12
@@ -254,7 +256,7 @@ BirdUpdate::
     cp a, 16
     jr c, .moveUp
     xor a
-    ldh [hEnemyAnimationFrame], a
+    ldh [hEnemyParam1], a
     jr .endVerticalMovement
 .soar:
     ld [hl], BIRD_TILE_3_ALT
@@ -274,9 +276,9 @@ BirdUpdate::
     sub a, c
     ldh [hEnemyY], a
 .endFrame:
-    ldh a, [hEnemyAnimationFrame]
+    ldh a, [hEnemyParam1]
     inc a
-    ldh [hEnemyAnimationFrame], a
+    ldh [hEnemyParam1], a
 .endVerticalMovement:
     call UpdateBirdPosition
 .endMove:
