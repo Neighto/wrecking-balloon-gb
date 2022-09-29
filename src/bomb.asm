@@ -164,13 +164,19 @@ BombUpdate::
 .endMove:
 
 .checkCollision:
+    ; Is time to check collision
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and	BOMB_COLLISION_TIME
     jr nz, .endCollision
+    ; Hit by enemy
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_HIT_ENEMY_MASK
     jr nz, .deathOfBomb
+    ; Is player alive
+    ldh a, [hPlayerAlive]
+    cp a, 0
+    jr z, .endCollision
 .checkHit:
     ld bc, wPlayerCactusOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
