@@ -124,10 +124,15 @@ ProjectileUpdate::
 .endMove:
 
 .checkCollision:
+    ; Is time to check collision
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and	PROJECTILE_COLLISION_TIME
     jr nz, .endCollision
+    ; Is player alive
+    ldh a, [hPlayerAlive]
+    cp a, 0
+    jr z, .endCollision
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM

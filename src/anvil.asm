@@ -175,6 +175,10 @@ AnvilUpdate::
 .endFallingSpeed:
 
 .checkCollision:
+    ; Is player alive
+    ldh a, [hPlayerAlive]
+    cp a, 0
+    jr z, .checkHitAnotherEnemy
 .checkHit:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM

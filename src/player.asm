@@ -519,6 +519,7 @@ CollisionWithPlayer::
   ldh a, [hPlayerInvincible]
   cp a, 0
   ret nz
+  ; Check if player is alive
   ldh a, [hPlayerAlive]
   cp a, 0
   ret z

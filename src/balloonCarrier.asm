@@ -429,13 +429,19 @@ BalloonCarrierUpdate::
 .endMove:
 
 .checkCollision:
+    ; Is time to check collision
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and	BALLOON_CARRIER_COLLISION_TIME
     jp nz, .endCollision
+    ; Hit by enemy
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_HIT_ENEMY_MASK
     jr nz, .deathOfBalloonCarrier
+    ; Is player alive
+    ldh a, [hPlayerAlive]
+    cp a, 0
+    jp z, .endCollision
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM+8, hEnemyOAM
@@ -450,11 +456,11 @@ BalloonCarrierUpdate::
     ld e, 12
     call CollisionCheck
     jr z, .checkHitByBullet
-.checkHitVariant:
+.checkHitBombVariant:
     ldh a, [hEnemyVariant]
     cp a, CARRIER_BOMB_VARIANT 
     call z, CollisionWithPlayer
-.endHitVariant:
+.endCheckHitBombVariant:
     jr .deathOfBalloonCarrier
 .checkHitByBullet:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
