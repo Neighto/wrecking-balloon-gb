@@ -13,7 +13,6 @@ SECTION "enemy struct vars", HRAM
     hEnemyY:: DB
     hEnemyX:: DB
     hEnemyOAM:: DB
-    ; These can be in any order in an enemy
     hEnemyAnimationFrame:: DB
     hEnemyAnimationTimer:: DB
     hEnemyParam1:: DB
@@ -34,6 +33,30 @@ InitializeEnemyStructVars::
     ldh [hEnemyParam1], a 
     ldh [hEnemyParam2], a
     ; ldh [hEnemyVariant], a ; Do not clear
+    ret
+
+SetEnemyStruct::
+    ; Argument hl = start of free enemy struct
+    ldh a, [hEnemyFlags] ; BIT #: [5=trigger carry]
+    ld [hli], a
+    ldh a, [hEnemyNumber]
+    ld [hli], a
+    ldh a, [hEnemyY]
+    ld [hli], a
+    ldh a, [hEnemyX]
+    ld [hli], a
+    ldh a, [hEnemyOAM]
+    ld [hli], a
+    ldh a, [hEnemyAnimationFrame]
+    ld [hli], a
+    ldh a, [hEnemyAnimationTimer]
+    ld [hli], a
+    ldh a, [hEnemyParam1] ; Enemy Projectile Timer / Bobbing Index
+    ld [hli], a
+    ldh a, [hEnemyParam2]
+    ld [hli], a
+    ldh a, [hEnemyVariant]
+    ld [hl], a
     ret
 
 SECTION "enemy data vars", WRAM0
@@ -93,6 +116,21 @@ EnemyUpdate::
     ; Get enemy OAM
     ld a, [hli]
     ldh [hEnemyOAM], a
+    ; Get enemy animation frame
+    ld a, [hli]
+    ldh [hEnemyAnimationFrame], a
+    ; Get enemy animation timer
+    ld a, [hli]
+    ldh [hEnemyAnimationTimer], a
+    ; Get enemy param 1
+    ld a, [hli]
+    ldh [hEnemyParam1], a
+    ; Get enemy param 2
+    ld a, [hli]
+    ldh [hEnemyParam2], a
+    ; Get enemy variant
+    ld a, [hl]
+    ldh [hEnemyVariant], a
     ; Check enemy number
     ld a, [hEnemyNumber]
 .pointBalloon:

@@ -17,22 +17,6 @@ BOMB_FOLLOW_POINTS EQU 20
 
 SECTION "bomb", ROMX
 
-SetStruct:
-    ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyFlags]
-    ld [hli], a
-    ldh a, [hEnemyNumber]
-    ld [hli], a
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    ld [hli], a
-    ldh a, [hEnemyOAM]
-    ld [hli], a
-    ldh a, [hEnemyVariant]
-    ld [hl], a
-    ret
-
 SpawnBomb::
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
@@ -46,16 +30,14 @@ SpawnBomb::
     pop hl
     ret z
 .availableOAMSpace:
-    LD_DE_HL
     call InitializeEnemyStructVars
-    call SetStruct
     ld a, b
     ldh [hEnemyOAM], a
-    LD_BC_DE
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_ACTIVE_BIT, a
     set ENEMY_FLAG_ALIVE_BIT, a
     ldh [hEnemyFlags], a
+    LD_BC_HL
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
 .variantVisual:
@@ -104,13 +86,9 @@ SpawnBomb::
     ld [hl], a
 .setStruct:
     LD_HL_BC
-    call SetStruct
-    ret
+    jp SetEnemyStruct
 
 BombUpdate::
-    ; Get rest of struct
-    ld a, [hl]
-    ldh [hEnemyVariant], a
 
 .checkAlive:
     ldh a, [hEnemyFlags]
@@ -126,7 +104,7 @@ BombUpdate::
     ldh [hEnemyFlags], a
 .setStructSpawn:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
-    call SetStruct
+    call SetEnemyStruct
 .spawnExplosion:
     ld a, EXPLOSION
     ldh [hEnemyNumber], a
@@ -187,6 +165,7 @@ BombUpdate::
 
 .checkCollision:
     ldh a, [hGlobalTimer]
+    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and	BOMB_COLLISION_TIME
     jr nz, .endCollision
     ldh a, [hEnemyFlags]
@@ -248,5 +227,4 @@ BombUpdate::
     
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
-    call SetStruct
-    ret
+    jp SetEnemyStruct
