@@ -29,7 +29,10 @@ BALLOON_CARRIER_BOMB_POINTS EQU 50
 BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_MASK EQU ENEMY_FLAG_PARAM1_MASK
 BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_BIT EQU ENEMY_FLAG_PARAM1_BIT
 
-; hEnemyParam1 = Enemy Projectile Timer / Bobbing Index
+; hEnemyFlags = BIT #: [5=trigger carry]
+; hEnemyParam1 = Animation Frame
+; hEnemyParam2 = Animation Timer
+; hEnemyParam3 = Enemy Projectile Timer / Bobbing Index
 
 SECTION "balloon carrier", ROMX
 
@@ -54,7 +57,7 @@ SpawnBalloonCarrier::
     set ENEMY_FLAG_ALIVE_BIT, a
     ldh [hEnemyFlags], a
     ld a, PROJECTILE_RESPAWN_TIME_SPAWN
-    ldh [hEnemyParam1], a
+    ldh [hEnemyParam3], a
 
 .updateDirection:
     ldh a, [hEnemyX]
@@ -261,7 +264,7 @@ BalloonCarrierUpdate::
 .projectileVariant:
     cp a, CARRIER_PROJECTILE_VARIANT 
     jr nz, .endProjectileVariant
-    ldh a, [hEnemyParam1]
+    ldh a, [hEnemyParam3]
     cp a, PROJECTILE_RESPAWN_TIME
     jr c, .skipResetSpawn
 .resetSpawn:
@@ -270,7 +273,7 @@ BalloonCarrierUpdate::
 .skipResetSpawn:
     inc a
 .updateSpawn:
-    ldh [hEnemyParam1], a
+    ldh [hEnemyParam3], a
 .checkSpawnProjectile:
     cp a, PROJECTILE_RESPAWN_FLICKER_TIME
     jr c, .endFlicker
@@ -278,7 +281,7 @@ BalloonCarrierUpdate::
     jr nc, .endFlicker
 .canFlicker:
     SET_HL_TO_ADDRESS wOAM+3, hEnemyOAM
-    ldh a, [hEnemyParam1]
+    ldh a, [hEnemyParam3]
     and	%00000011
     jr nz, .flickerOn
 .flickerOff:
@@ -294,7 +297,7 @@ BalloonCarrierUpdate::
     or a, OAMF_XFLIP
     ld [hli], a
 .endFlicker:
-    ldh a, [hEnemyParam1]
+    ldh a, [hEnemyParam3]
     cp a, PROJECTILE_RESPAWN_TIME
     jr nz, .endSpawnProjectile
 .setStructSpawnProjectile:
@@ -351,19 +354,19 @@ BalloonCarrierUpdate::
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and %00011111
     jr nz, .endCheckBobbing
-    ldh a, [hEnemyParam1]
+    ldh a, [hEnemyParam3]
     cp a, 0
     jr nz, .bobUp
 .bobDown:
     ld a, 1
-    ldh [hEnemyParam1], a
+    ldh [hEnemyParam3], a
     ldh a, [hEnemyY]
     inc a
     ldh [hEnemyY], a
     jr .endCheckBobbing
 .bobUp:
     ld a, 0
-    ldh [hEnemyParam1], a
+    ldh [hEnemyParam3], a
     ldh a, [hEnemyY]
     dec a
     ldh [hEnemyY], a

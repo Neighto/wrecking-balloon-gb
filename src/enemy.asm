@@ -13,11 +13,10 @@ SECTION "enemy struct vars", HRAM
     hEnemyY:: DB
     hEnemyX:: DB
     hEnemyOAM:: DB
-    hEnemyAnimationFrame:: DB
-    hEnemyAnimationTimer:: DB
+    hEnemyVariant:: DB
     hEnemyParam1:: DB
     hEnemyParam2:: DB
-    hEnemyVariant:: DB
+    hEnemyParam3:: DB
 
 SECTION "enemy struct", ROM0
 
@@ -28,16 +27,15 @@ InitializeEnemyStructVars::
     ; ldh [hEnemyY], a
     ; ldh [hEnemyX], a
     ldh [hEnemyOAM], a
-    ldh [hEnemyAnimationFrame], a
-    ldh [hEnemyAnimationTimer], a
+    ; ldh [hEnemyVariant], a ; Do not clear
     ldh [hEnemyParam1], a 
     ldh [hEnemyParam2], a
-    ; ldh [hEnemyVariant], a ; Do not clear
+    ldh [hEnemyParam3], a
     ret
 
 SetEnemyStruct::
     ; Argument hl = start of free enemy struct
-    ldh a, [hEnemyFlags] ; BIT #: [5=trigger carry]
+    ldh a, [hEnemyFlags]
     ld [hli], a
     ldh a, [hEnemyNumber]
     ld [hli], a
@@ -47,15 +45,13 @@ SetEnemyStruct::
     ld [hli], a
     ldh a, [hEnemyOAM]
     ld [hli], a
-    ldh a, [hEnemyAnimationFrame]
+    ldh a, [hEnemyVariant]
     ld [hli], a
-    ldh a, [hEnemyAnimationTimer]
-    ld [hli], a
-    ldh a, [hEnemyParam1] ; Enemy Projectile Timer / Bobbing Index
+    ldh a, [hEnemyParam1]
     ld [hli], a
     ldh a, [hEnemyParam2]
     ld [hli], a
-    ldh a, [hEnemyVariant]
+    ldh a, [hEnemyParam3]
     ld [hl], a
     ret
 
@@ -116,21 +112,18 @@ EnemyUpdate::
     ; Get enemy OAM
     ld a, [hli]
     ldh [hEnemyOAM], a
-    ; Get enemy animation frame
+    ; Get enemy variant
     ld a, [hli]
-    ldh [hEnemyAnimationFrame], a
-    ; Get enemy animation timer
-    ld a, [hli]
-    ldh [hEnemyAnimationTimer], a
+    ldh [hEnemyVariant], a
     ; Get enemy param 1
     ld a, [hli]
     ldh [hEnemyParam1], a
     ; Get enemy param 2
     ld a, [hli]
     ldh [hEnemyParam2], a
-    ; Get enemy variant
+    ; Get enemy param 3
     ld a, [hl]
-    ldh [hEnemyVariant], a
+    ldh [hEnemyParam3], a
     ; Check enemy number
     ld a, [hEnemyNumber]
 .pointBalloon:
@@ -291,16 +284,16 @@ ClearEnemy::
 SECTION "enemy animations", ROM0
 
 PopBalloonAnimation::
-    ldh a, [hEnemyAnimationFrame]
+    ldh a, [hEnemyParam1]
     cp a, 0
     jr z, .frame0
-    ldh a, [hEnemyAnimationTimer]
+    ldh a, [hEnemyParam2]
 	inc	a
-	ldh [hEnemyAnimationTimer], a
+	ldh [hEnemyParam2], a
     and POPPING_BALLOON_ANIMATION_TIME
     ret nz
 .canSwitchFrames:
-    ldh a, [hEnemyAnimationFrame]
+    ldh a, [hEnemyParam1]
     cp a, 1
     jr z, .frame1
     cp a, 2
@@ -336,7 +329,7 @@ PopBalloonAnimation::
     ldh [hEnemyFlags], a
     ret
 .endFrame:
-    ldh a, [hEnemyAnimationFrame]
+    ldh a, [hEnemyParam1]
     inc a 
-    ldh [hEnemyAnimationFrame], a
+    ldh [hEnemyParam1], a
     ret

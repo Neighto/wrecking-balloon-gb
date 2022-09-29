@@ -10,7 +10,8 @@ ANVIL_DEAD_BLINKING_DURATION EQU 20
 
 CACTUS_SCREAMING_TILE EQU $16
 
-; hEnemyParam1 = Enemy Speed
+; hEnemyParam1 = Speed
+; hEnemyParam2 = Animation Timer
 
 SECTION "anvil", ROMX
 
@@ -104,9 +105,9 @@ AnvilUpdate::
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_DYING_MASK
     jr z, .endCheckDying
-    ldh a, [hEnemyAnimationTimer]
+    ldh a, [hEnemyParam2]
     inc a
-    ldh [hEnemyAnimationTimer], a
+    ldh [hEnemyParam2], a
     cp a, ANVIL_DEAD_BLINKING_DURATION
     jr c, .animateDying
 .clear:

@@ -15,6 +15,8 @@ EXPLOSION_CONGRATULATIONS_TILE_2 EQU $68
 EXPLOSION_TIME EQU 10
 EXPLOSION_WAIT_TIME EQU %00000001
 
+; hEnemyParam1 = Animation Frame
+
 SECTION "explosion", ROM0
 
 SpawnExplosion::
@@ -105,9 +107,9 @@ ExplosionUpdate::
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and EXPLOSION_WAIT_TIME
     jr nz, .endAnimateExplosion
-    ldh a, [hEnemyAnimationFrame]
+    ldh a, [hEnemyParam1]
     inc a
-    ldh [hEnemyAnimationFrame], a
+    ldh [hEnemyParam1], a
     cp a, EXPLOSION_TIME
     jr nc, .clear
     and %00000001
