@@ -678,27 +678,35 @@ PlayerUpdate::
 	and INVINCIBLE_BLINK_FAST_SPEED
   jr z, .noBlink
 .blinkEnd:
+  ld a, EMPTY_TILE
   ld hl, wPlayerBalloonOAM+2
-  ld [hl], PLAYER_BALLOON_INVINCIBLE_TILE
-  ld hl, wPlayerBalloonOAM+6
-  ld [hl], PLAYER_BALLOON_INVINCIBLE_TILE
+  ld [hli], a
+  inc l
+  inc l
+  inc l
+  ld [hl], a
   ld hl, wPlayerCactusOAM+2
-  ld [hl], PLAYER_CACTUS_INVINCIBLE_TILE
-  ld hl, wPlayerCactusOAM+6
-  ld [hl], PLAYER_CACTUS_INVINCIBLE_TILE
+  ld [hli], a
+  inc l
+  inc l
+  inc l
+  ld [hl], a
   jr .endInvincible
 .noBlink:
-
   call GetPlayerTiles ; b = balloon tile, c = cactus tile
-  ld hl, wPlayerBalloonOAM+2
   ld a, b
+  ld hl, wPlayerBalloonOAM+2
+  ld [hli], a
+  inc l
+  inc l
+  inc l
   ld [hl], a
-  ld hl, wPlayerBalloonOAM+6
-  ld [hl], a
-  ld hl, wPlayerCactusOAM+2
   ld a, c
-  ld [hl], a
-  ld hl, wPlayerCactusOAM+6
+  ld hl, wPlayerCactusOAM+2
+  ld [hli], a
+  inc l
+  inc l
+  inc l
   ld [hl], a
 .endInvincible:
 

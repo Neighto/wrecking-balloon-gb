@@ -7,12 +7,14 @@ BALLOON_CARRIER_OAM_SPRITES EQU 4
 BALLOON_CARRIER_OAM_BYTES EQU BALLOON_CARRIER_OAM_SPRITES * OAM_ATTRIBUTES_COUNT
 BALLOON_CARRIER_MOVE_TIME EQU %00000001
 BALLOON_CARRIER_COLLISION_TIME EQU %00000011
+BALLOON_CARRIER_CACTUS_BOB_TIME EQU %00111111
 
 PROJECTILE_RESPAWN_TIME EQU 50
 PROJECTILE_RESPAWN_TIME_SPAWN EQU PROJECTILE_RESPAWN_TIME / 2
 PROJECTILE_RESPAWN_FLICKER_TIME EQU 40
 
 BALLOON_CACTUS_TILE EQU $14
+BALLOON_CACTUS_TILE_2 EQU $6C
 
 BALLOON_CARRIER_NORMAL_TILE EQU $64
 BALLOON_CARRIER_NORMAL_POINTS EQU 10
@@ -160,7 +162,7 @@ SpawnBalloonCarrier::
     ld e, OAMF_PAL0
     jr .endVariantVisualCarryRight
 .cactusVisualCarryRight:
-    ld d, BALLOON_CACTUS_TILE
+    ld d, BALLOON_CACTUS_TILE_2
     ld e, OAMF_PAL0 | OAMF_XFLIP
 .endVariantVisualCarryRight:
 
@@ -427,6 +429,39 @@ BalloonCarrierUpdate::
     inc l
     inc l
 .endMove:
+
+.checkCactusBob:
+    ; Is time to check cactus bob
+    ldh a, [hGlobalTimer]
+    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
+    and BALLOON_CARRIER_CACTUS_BOB_TIME
+    jr nz, .endCheckCactusBob
+    ; Is cactus variant
+    ldh a, [hEnemyVariant]
+    cp a, CARRIER_ANVIL_VARIANT
+    jr z, .endCheckCactusBob
+.changeHandPositions:
+    SET_HL_TO_ADDRESS wOAM+10, hEnemyOAM
+    ld a, [hl]
+    cp a, BALLOON_CACTUS_TILE
+    jr z, .leftHandUp
+.rightHandUp:
+    ld b, BALLOON_CACTUS_TILE
+    ld c, BALLOON_CACTUS_TILE_2
+    jr .updateCactusTile
+.leftHandUp:
+    ld b, BALLOON_CACTUS_TILE_2
+    ld c, BALLOON_CACTUS_TILE
+    ; jr .updateCactusTile
+.updateCactusTile:
+    ld a, b
+    ld [hli], a
+    inc l
+    inc l
+    inc l
+    ld a, c
+    ld [hl], a
+.endCheckCactusBob:
 
 .checkCollision:
     ; Is time to check collision
