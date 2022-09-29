@@ -5,8 +5,7 @@ INCLUDE "enemyConstants.inc"
 
 BOSS_NEEDLE_OAM_SPRITES EQU 1
 BOSS_NEEDLE_OAM_BYTES EQU BOSS_NEEDLE_OAM_SPRITES * 4
-BOSS_NEEDLE_MOVE_TIME EQU %00000001
-BOSS_NEEDLE_COLLISION_TIME EQU %00000111
+BOSS_NEEDLE_COLLISION_TIME EQU %00000011
 BOSS_NEEDLE_TILE EQU $62
 
 BOSS_NEEDLE_SPEED EQU 4
@@ -98,13 +97,8 @@ BossNeedleUpdate::
     ld a, [hl]
 
 .checkMove:
-    ldh a, [hGlobalTimer]
-    and	BOSS_NEEDLE_MOVE_TIME
-    jr nz, .endMove
-.canMove:
 .bossNeedleOAM:
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-
 .variantDirection:
     ldh a, [hEnemyVariant]
 .upLeftDirection:
@@ -156,6 +150,7 @@ BossNeedleUpdate::
 
 .checkCollision:
     ldh a, [hGlobalTimer]
+    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and	BOSS_NEEDLE_COLLISION_TIME
     jr nz, .endCollision
 .checkHitPlayer:

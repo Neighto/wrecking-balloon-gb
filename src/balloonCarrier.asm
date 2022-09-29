@@ -5,12 +5,12 @@ INCLUDE "enemyConstants.inc"
 
 BALLOON_CARRIER_OAM_SPRITES EQU 4
 BALLOON_CARRIER_OAM_BYTES EQU BALLOON_CARRIER_OAM_SPRITES * OAM_ATTRIBUTES_COUNT
-BALLOON_CARRIER_MOVE_TIME EQU %00000011
-BALLOON_CARRIER_COLLISION_TIME EQU %00000111
+BALLOON_CARRIER_MOVE_TIME EQU %00000001
+BALLOON_CARRIER_COLLISION_TIME EQU %00000011
 
-PROJECTILE_RESPAWN_TIME EQU 100
+PROJECTILE_RESPAWN_TIME EQU 50
 PROJECTILE_RESPAWN_TIME_SPAWN EQU PROJECTILE_RESPAWN_TIME / 2
-PROJECTILE_RESPAWN_FLICKER_TIME EQU 80
+PROJECTILE_RESPAWN_FLICKER_TIME EQU 40
 
 BALLOON_CACTUS_TILE EQU $14
 
@@ -349,6 +349,7 @@ BalloonCarrierUpdate::
 
 .checkMove:
     ldh a, [hGlobalTimer]
+    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and	BALLOON_CARRIER_MOVE_TIME
     jp nz, .endMove
 .canMove:
@@ -381,7 +382,8 @@ BalloonCarrierUpdate::
     jr nc, .moveDown
 .checkBobbing:
     ldh a, [hGlobalTimer]
-    and %00111111
+    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
+    and %00011111
     jr nz, .endCheckBobbing
     ldh a, [hEnemyParam1]
     cp a, 0
@@ -459,6 +461,7 @@ BalloonCarrierUpdate::
 
 .checkCollision:
     ldh a, [hGlobalTimer]
+    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and	BALLOON_CARRIER_COLLISION_TIME
     jp nz, .endCollision
     ldh a, [hEnemyFlags]
