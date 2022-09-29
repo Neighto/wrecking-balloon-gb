@@ -234,7 +234,7 @@ BalloonCarrierUpdate::
     inc l
     inc l
     ld [hl], a
-.setStructSpawn:
+.setStructSpawnCarry:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
 .variantSpawnExplosion:
@@ -288,6 +288,64 @@ BalloonCarrierUpdate::
     call ClearEnemy
     jp .setStruct
 .isAlive:
+
+.checkProjectileVariant:
+    ldh a, [hEnemyVariant]
+.projectileVariant:
+    cp a, CARRIER_PROJECTILE_VARIANT 
+    jr nz, .endProjectileVariant
+    ldh a, [hEnemyParam1]
+    cp a, PROJECTILE_RESPAWN_TIME
+    jr c, .skipResetSpawn
+.resetSpawn:
+    xor a ; ld a, 0
+    jr .updateSpawn
+.skipResetSpawn:
+    inc a
+.updateSpawn:
+    ldh [hEnemyParam1], a
+.checkSpawnProjectile:
+    cp a, PROJECTILE_RESPAWN_FLICKER_TIME
+    jr c, .endFlicker
+    cp a, PROJECTILE_RESPAWN_TIME
+    jr nc, .endFlicker
+.canFlicker:
+    SET_HL_TO_ADDRESS wOAM+3, hEnemyOAM
+    ldh a, [hEnemyParam1]
+    and	%00000011
+    jr nz, .flickerOn
+.flickerOff:
+    ld a, OAMF_PAL1
+    jr .flickerCommon
+.flickerOn:
+    ld a, OAMF_PAL0
+.flickerCommon:
+    ld [hli], a
+    inc l
+    inc l
+    inc l
+    or a, OAMF_XFLIP
+    ld [hli], a
+.endFlicker:
+    ldh a, [hEnemyParam1]
+    cp a, PROJECTILE_RESPAWN_TIME
+    jr nz, .endSpawnProjectile
+.setStructSpawnProjectile:
+    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
+    call SetStruct
+.spawnProjectile:
+    ld a, PROJECTILE
+    ldh [hEnemyNumber], a
+    ldh a, [hEnemyY]
+    add a, 4
+    ldh [hEnemyY], a
+    ldh a, [hEnemyX]
+    add a, 4
+    ldh [hEnemyX], a
+    call SpawnProjectile
+    ret
+.endSpawnProjectile:
+.endProjectileVariant:
 
 .checkMove:
     ldh a, [hGlobalTimer]
@@ -399,23 +457,6 @@ BalloonCarrierUpdate::
     inc l
 .endMove:
 
-.checkProjectileVariant:
-    ldh a, [hEnemyVariant]
-.projectileVariant:
-    cp a, CARRIER_PROJECTILE_VARIANT 
-    jr nz, .endProjectileVariant
-    ldh a, [hEnemyParam1]
-    cp a, PROJECTILE_RESPAWN_TIME
-    jr c, .skipResetSpawn
-.resetSpawn:
-    xor a ; ld a, 0
-    jr .updateSpawn
-.skipResetSpawn:
-    inc a
-.updateSpawn:
-    ldh [hEnemyParam1], a
-.endProjectileVariant:
-
 .checkCollision:
     ldh a, [hGlobalTimer]
     and	BALLOON_CARRIER_COLLISION_TIME
@@ -508,43 +549,4 @@ BalloonCarrierUpdate::
 .setStruct:
     SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
     call SetStruct
-
-.checkSpawnProjectile:
-    ldh a, [hEnemyParam1]
-    cp a, PROJECTILE_RESPAWN_FLICKER_TIME
-    jr c, .endFlicker
-    cp a, PROJECTILE_RESPAWN_TIME
-    jr nc, .endFlicker
-.canFlicker:
-    SET_HL_TO_ADDRESS wOAM+3, hEnemyOAM
-    ldh a, [hEnemyParam1]
-    and	%00000011
-    jr nz, .flickerOn
-.flickerOff:
-    ld a, OAMF_PAL1
-    jr .flickerCommon
-.flickerOn:
-    ld a, OAMF_PAL0
-.flickerCommon:
-    ld [hli], a
-    inc l
-    inc l
-    inc l
-    or a, OAMF_XFLIP
-    ld [hli], a
-.endFlicker:
-    ldh a, [hEnemyParam1]
-    cp a, PROJECTILE_RESPAWN_TIME
-    jr nz, .endSpawnProjectile
-.spawnProjectile:
-    ld a, PROJECTILE
-    ldh [hEnemyNumber], a
-    ldh a, [hEnemyY]
-    add a, 4
-    ldh [hEnemyY], a
-    ldh a, [hEnemyX]
-    add a, 4
-    ldh [hEnemyX], a
-    call SpawnProjectile
-.endSpawnProjectile:
     ret
