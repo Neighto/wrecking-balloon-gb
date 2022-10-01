@@ -1,9 +1,11 @@
 SECTION "tilesets", ROM0
 
 GameSpriteTiles::
-    INCBIN "incbin/sprite/Player.2bpp"
-    INCBIN "incbin/sprite/PlayerFalling.2bpp"
-    INCBIN "incbin/sprite/PlayerPower.2bpp"
+    INCBIN "incbin/sprite/PlayerBalloon.2bpp"
+    INCBIN "incbin/sprite/PlayerCactus.2bpp"
+    INCBIN "incbin/sprite/PlayerCactusFalling.2bpp"
+    INCBIN "incbin/sprite/PlayerBalloonSecret.2bpp"
+    INCBIN "incbin/sprite/PlayerCactusSecret.2bpp"
     INCBIN "incbin/sprite/Pop1.2bpp"
     INCBIN "incbin/sprite/Pop2.2bpp"
     INCBIN "incbin/sprite/Bullet.2bpp"
@@ -40,6 +42,7 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/Explosion.2bpp"
     INCBIN "incbin/sprite/MenuSprite.2bpp"
     INCBIN "incbin/sprite/EnemyCactus2.2bpp"
+    INCBIN "incbin/sprite/PlayerBalloonTurning.2bpp"
 GameSpriteTilesEnd::
 
 MiscellaneousTiles::
