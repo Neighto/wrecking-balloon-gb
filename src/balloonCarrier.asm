@@ -31,10 +31,13 @@ BALLOON_CARRIER_BOMB_POINTS EQU 50
 BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_MASK EQU ENEMY_FLAG_PARAM1_MASK
 BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_BIT EQU ENEMY_FLAG_PARAM1_BIT
 
-; hEnemyFlags = BIT #: [5=trigger carry]
+BALLOON_CARRIER_FLAG_BOBBING_INDEX_MASK EQU ENEMY_FLAG_PARAM2_MASK
+BALLOON_CARRIER_FLAG_BOBBING_INDEX_BIT EQU ENEMY_FLAG_PARAM2_BIT
+
+; hEnemyFlags = BIT #: [5=trigger carry] [6=bobbing index]
 ; hEnemyParam1 = Animation Frame
 ; hEnemyParam2 = Animation Timer
-; hEnemyParam3 = Enemy Projectile Timer / Bobbing Index
+; hEnemyParam3 = Enemy Projectile Timer
 
 SECTION "balloon carrier", ROMX
 
@@ -356,19 +359,21 @@ BalloonCarrierUpdate::
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and %00011111
     jr nz, .endCheckBobbing
-    ldh a, [hEnemyParam3]
-    cp a, 0
+    ldh a, [hEnemyFlags]
+    and BALLOON_CARRIER_FLAG_BOBBING_INDEX_MASK
     jr nz, .bobUp
 .bobDown:
-    ld a, 1
-    ldh [hEnemyParam3], a
+    ldh a, [hEnemyFlags]
+    set BALLOON_CARRIER_FLAG_BOBBING_INDEX_BIT, a
+    ldh [hEnemyFlags], a
     ldh a, [hEnemyY]
     inc a
     ldh [hEnemyY], a
     jr .endCheckBobbing
 .bobUp:
-    ld a, 0
-    ldh [hEnemyParam3], a
+    ldh a, [hEnemyFlags]
+    res BALLOON_CARRIER_FLAG_BOBBING_INDEX_BIT, a
+    ldh [hEnemyFlags], a
     ldh a, [hEnemyY]
     dec a
     ldh [hEnemyY], a
