@@ -385,6 +385,15 @@ PlayerControls:
   ldh a, [hPlayerY2]
   sub a, b
   ldh [hPlayerY2], a
+.canCactusDriftDown:
+  ld hl, hPlayerY
+  ld a, 15 ; player balloon height - 1
+  add [hl]
+  ld hl, hPlayerY2
+  cp a, [hl]
+  jr c, .endCheckVertical
+.cactusDriftDown:
+  inc [hl]
   jr .endCheckVertical
 .endUp:
 
