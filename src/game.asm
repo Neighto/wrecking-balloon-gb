@@ -175,7 +175,12 @@ SpawnSun::
 
 SpawnCityPlanes:
     ld bc, CityPlaneMap
-	ld hl, $982C ; City Plane address
+	ld hl, $9831 ; City Plane address
+    ld de, 3
+    ld a, $AF
+	call MEMCPY_WITH_OFFSET
+    ld bc, CityPlaneMap
+	ld hl, $9886 ; City Plane address
     ld de, 3
     ld a, $AF
 	call MEMCPY_WITH_OFFSET
