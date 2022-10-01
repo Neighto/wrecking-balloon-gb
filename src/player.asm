@@ -238,6 +238,9 @@ PlayerControls:
   ; argument d = input directions down
   ; argument e = input directions pressed
   ; argument c = check boundaries (0 = no)
+
+.checkHorizontal:
+
 .right:
 	ld a, d
   and PADF_RIGHT
@@ -249,12 +252,12 @@ PlayerControls:
   ld a, c
   cp a, 0
   jr z, .moveRight
-.offscreenRight:
+.canCheckOffscreenRight:
   ldh a, [hPlayerX]
   ld b, a
   ld a, SCRN_X - 10
   cp a, b
-  jr c, .endRight
+  jr c, .canCactusDriftCenterX
 .moveRight:
   ldh a, [hPlayerSpeed]
   ld b, a
@@ -271,9 +274,17 @@ PlayerControls:
   add [hl]
   ld hl, hPlayerX2
   cp a, [hl]
-  jr nc, .endRight
+  jr c, .cactusDriftLeft
+.cactusMaxDriftLeft:
+  ; Update balloon turning tiles right
+  ld hl, wPlayerBalloonOAM+2
+  ld [hl], PLAYER_BALLOON_TURNING_TILE_1
+  ld hl, wPlayerBalloonOAM+6
+  ld [hl], PLAYER_BALLOON_TURNING_TILE_2
+  jr .endCheckHorizontal
 .cactusDriftLeft:
   dec [hl]
+  jr .checkBalloonString
 .endRight:
 
 .left:
@@ -287,13 +298,13 @@ PlayerControls:
   ld a, c
   cp a, 0
   jr z, .moveLeft
-.offscreenLeft:
+.canCheckOffscreenLeft:
   ldh a, [hPlayerX]
   sub 10
   ld b, a
   ld a, SCRN_X
   cp a, b
-  jr c, .endLeft
+  jr c, .canCactusDriftCenterX
 .moveLeft:
   ldh a, [hPlayerSpeed]
   ld b, a
@@ -309,79 +320,20 @@ PlayerControls:
   add [hl]
   ld hl, hPlayerX2
   cp a, [hl]
-  jr c, .endLeft
+  jr nc, .cactusDriftRight
+.cactusMaxDriftRight:
+  ; Update balloon turning tiles left
+  ld hl, wPlayerBalloonOAM+2
+  ld [hl], PLAYER_BALLOON_TURNING_TILE_2
+  ld hl, wPlayerBalloonOAM+6
+  ld [hl], PLAYER_BALLOON_TURNING_TILE_1
+  jr .endCheckHorizontal
 .cactusDriftRight:
   inc [hl]
+  jr .checkBalloonString
 .endLeft:
 
-.up:
-  ld a, d
-  and PADF_UP
-	jr z, .endUp
-.checkOffscreenUp:
-  ld a, c
-  cp a, 0
-  jr z, .moveUp
-.offscreenUp:
-  ldh a, [hPlayerY]
-  sub 18
-  ld b, a
-  ld a, SCRN_Y - WINDOW_LAYER_HEIGHT
-  cp a, b
-  jr c, .endUp
-.moveUp:
-  ldh a, [hPlayerSpeed]
-  ld b, a
-  ldh a, [hPlayerY]
-  sub a, b
-  ldh [hPlayerY], a
-  ldh a, [hPlayerY2]
-  sub a, b
-  ldh [hPlayerY2], a
-.endUp:
-
-.down:
-  ld a, d
-  and PADF_DOWN
-	jr z, .endDown
-.checkOffscreenDown:
-  ld a, c
-  cp a, 0
-  jr z, .moveDown
-.offscreenDown:
-  ldh a, [hPlayerY]
-  ld b, a
-  ld a, SCRN_Y - 16 - WINDOW_LAYER_HEIGHT
-  cp a, b
-  jr c, .endDown
-.moveDown:
-  ldh a, [hPlayerSpeed]
-  ld b, a
-  ldh a, [hPlayerY]
-  add a, b
-  ldh [hPlayerY], a
-  ldh a, [hPlayerY2]
-  add a, b
-  ldh [hPlayerY2], a
-.canCactusDriftUp:
-  ld hl, hPlayerY  
-  ld a, PLAYER_MAX_DRIFT_Y-16
-  cpl
-  add [hl]
-  ld hl, hPlayerY2
-  cp a, [hl]
-  jr nc, .endDown
-.cactusDriftUp:
-  dec [hl]
-.endDown:
-
 .canCactusDriftCenterX:
-  ld a, d
-  and PADF_RIGHT
-	jr nz, .endDriftToCenterX
-  ld a, d
-  and PADF_LEFT
-  jr nz, .endDriftToCenterX
   ldh a, [hGlobalTimer]
   and	%00000001
   jr nz, .endDriftToCenterX
@@ -397,13 +349,82 @@ PlayerControls:
   dec [hl]
 .endDriftToCenterX:
 
-.canCactusDriftCenterY:
+.checkBalloonString:
+  ; TODO maybe check balloon state to prevent updating these tiles every time we check playercontrols
+  ld hl, wPlayerBalloonOAM+2
+  ld [hl], PLAYER_BALLOON_TILE
+  ld hl, wPlayerBalloonOAM+6
+  ld [hl], PLAYER_BALLOON_TILE
+.endCheckBalloonString:
+
+.endCheckHorizontal:
+
+.checkVertical:
+
+.up:
   ld a, d
   and PADF_UP
-	jr nz, .endDriftToCenterY
+	jr z, .endUp
+.checkOffscreenUp:
+  ld a, c
+  cp a, 0
+  jr z, .moveUp
+.canCheckOffscreenUp:
+  ldh a, [hPlayerY]
+  sub 18
+  ld b, a
+  ld a, SCRN_Y - WINDOW_LAYER_HEIGHT
+  cp a, b
+  jr c, .canCactusDriftCenterY
+.moveUp:
+  ldh a, [hPlayerSpeed]
+  ld b, a
+  ldh a, [hPlayerY]
+  sub a, b
+  ldh [hPlayerY], a
+  ldh a, [hPlayerY2]
+  sub a, b
+  ldh [hPlayerY2], a
+  jr .endCheckVertical
+.endUp:
+
+.down:
   ld a, d
   and PADF_DOWN
-  jr nz, .endDriftToCenterY
+	jr z, .endDown
+.checkOffscreenDown:
+  ld a, c
+  cp a, 0
+  jr z, .moveDown
+.canCheckOffscreenDown:
+  ldh a, [hPlayerY]
+  ld b, a
+  ld a, SCRN_Y - 16 - WINDOW_LAYER_HEIGHT
+  cp a, b
+  jr c, .canCactusDriftCenterY
+.moveDown:
+  ldh a, [hPlayerSpeed]
+  ld b, a
+  ldh a, [hPlayerY]
+  add a, b
+  ldh [hPlayerY], a
+  ldh a, [hPlayerY2]
+  add a, b
+  ldh [hPlayerY2], a
+.canCactusDriftUp:
+  ld hl, hPlayerY  
+  ld a, PLAYER_MAX_DRIFT_Y - 16
+  cpl
+  add [hl]
+  ld hl, hPlayerY2
+  cp a, [hl]
+  jr nc, .endCheckVertical
+.cactusDriftUp:
+  dec [hl]
+  jr .endCheckVertical
+.endDown:
+
+.canCactusDriftCenterY:
   ldh a, [hGlobalTimer]
   and	%00000001
   jr nz, .endDriftToCenterY
@@ -420,6 +441,8 @@ PlayerControls:
 .driftCenterYDown:
   inc [hl]
 .endDriftToCenterY:
+
+.endCheckVertical:
 
 .start:
   ld a, e
