@@ -43,6 +43,7 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/MenuSprite.2bpp"
     INCBIN "incbin/sprite/EnemyCactus2.2bpp"
     INCBIN "incbin/sprite/PlayerBalloonTurning.2bpp"
+    INCBIN "incbin/sprite/PlayerBalloonSecretTurning.2bpp"
 GameSpriteTilesEnd::
 
 MiscellaneousTiles::
