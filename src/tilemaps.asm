@@ -59,11 +59,3 @@ CityPlaneMapEnd::
 ShowdownWaterMap::
     INCBIN "incbin/background/ShowdownWater.tilemap"
 ShowdownWaterMapEnd::
-
-GameOverMap::
-    INCBIN "incbin/window/GameOver.tilemap"
-GameOverMapEnd::
-
-GameOverTotalMap::
-    INCBIN "incbin/window/GameOverTotal.tilemap"
-GameOverTotalMapEnd::

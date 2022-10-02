@@ -3,26 +3,21 @@ INCLUDE "macro.inc"
 
 SECTION "game over", ROMX
 
-GAME_OVER_DISTANCE_FROM_TOP_IN_TILES EQU 18
+GAME_OVER_DISTANCE_FROM_TOP_IN_TILES EQU 2
 TOTAL_SC_INDEX_ONE_ADDRESS EQU $98EF
 
-LoadGameOverTiles::
-    ld bc, GameOverTiles
-	ld hl, _VRAM8000 + $D00
-	ld de, GameOverTilesEnd - GameOverTiles
-	call MEMCPY
-    ret
-
 LoadGameOverGraphics::
-    ld bc, GameOverMap
+.loadTiles:
+    ; Tiles should be loaded from window
+.drawMap:
+    ld bc, WindowMap + SCRN_X_B * GAME_OVER_DISTANCE_FROM_TOP_IN_TILES
 	ld hl, _SCRN0 + $A0
-	ld de, GameOverMapEnd - GameOverMap
+	ld de, SCRN_X_B
     ld a, $D0
     call MEMCPY_WITH_OFFSET
-    ld bc, GameOverTotalMap
 	ld hl, _SCRN0 + $E0
-	ld de, GameOverTotalMapEnd - GameOverTotalMap
-    ld a, $D9
+	ld de, SCRN_X_B
+    ld a, $D0
     call MEMCPY_WITH_OFFSET
     ret
 

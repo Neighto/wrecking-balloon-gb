@@ -85,8 +85,3 @@ MenuTiles::
     INCBIN "incbin/background/Name.2bpp"
     INCBIN "incbin/background/Modes.2bpp"
 MenuTilesEnd::
-
-GameOverTiles::
-    INCBIN "incbin/window/GameOver.2bpp"
-    INCBIN "incbin/window/GameOverTotal.2bpp"
-GameOverTilesEnd::

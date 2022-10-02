@@ -4,9 +4,9 @@ INCLUDE "constants.inc"
 
 SCORE_INDEX_ONE_ADDRESS EQU $9C32
 LIVES_ADDRESS EQU $9C0B
-BAR_LEFT_EMPTY EQU $EF
-BAR_LEFT_FULL EQU $F1
-BAR_LEFT_HALF EQU $F3
+BAR_LEFT_EMPTY EQU $DF
+BAR_LEFT_FULL EQU $E1
+BAR_LEFT_HALF EQU $E3
 BOOST_BAR_ADDRESS EQU $9C22
 ATTACK_BAR_ADDRESS EQU $9C26
 REFRESH_WINDOW_WAIT_TIME EQU %00000011
@@ -96,18 +96,18 @@ RefreshTotal::
 LoadWindow::
 .loadTiles:
     ld bc, WindowTiles
-    ld hl, _VRAM8800+$600
+    ld hl, _VRAM8800+$500
     ld de, WindowTilesEnd - WindowTiles
     call MEMCPY
 .drawMap:
     ld bc, WindowMap
     ld hl, _SCRN1
     ld de, SCRN_X_B
-    ld a, $E0
+    ld a, $D0
     call MEMCPY_WITH_OFFSET
     ld hl, _SCRN1 + SCRN_VX_B
     ld de, SCRN_X_B
-    ld a, $E0
+    ld a, $D0
     call MEMCPY_WITH_OFFSET
     ret
 
