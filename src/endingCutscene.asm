@@ -8,7 +8,7 @@ LEFT_HAND_CLAP_START_Y EQU 114
 RIGHT_HAND_CLAP_START_X EQU LEFT_HAND_CLAP_START_X
 RIGHT_HAND_CLAP_START_Y EQU LEFT_HAND_CLAP_START_Y - 13
 HAND_CLAP_TILE EQU $5C
-TOTAL_SC_INDEX_ONE_ADDRESS EQU $98EF
+TOTAL_SC_INDEX_ONE_ADDRESS EQU $98CE
 
 SECTION "ending cutscene vars", WRAM0
     wHandClappingFrame:: DB
@@ -29,11 +29,6 @@ LoadEndingCutsceneGraphics::
 	ld hl, _VRAM9000
 	ld de, CutsceneTilesEnd - CutsceneTiles
 	call MEMCPY
-
-    ld hl, _SCRN0
-    ld bc, _SCRN1 - _SCRN0
-    ld d, $01
-    call SetInRange
 
 	ld bc, CutsceneMap + SCRN_X_B * CUTSCENE_DISTANCE_FROM_TOP_IN_TILES
 	ld hl, _SCRN0

@@ -201,7 +201,7 @@ SpawnCountdown::
 	ld [wCountdownOAM], a
     ld hl, wOAM
     ; ld a, [wCountdownOAM]
-    call AddToHL
+    ADD_A_TO_HL
     ld a, COUNTDOWN_START_Y
     ld [hli], a
     ld a, COUNTDOWN_START_X
@@ -221,7 +221,7 @@ SpawnCountdown::
 ClearCountdown::
     ld hl, wOAM
     ld a, [wCountdownOAM]
-    call AddToHL
+    ADD_TO_HL [wCountdownOAM]
     ld bc, COUNTDOWN_OAM_BYTES
     call ResetHLInRange
     ret

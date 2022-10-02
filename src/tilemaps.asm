@@ -3,10 +3,6 @@ SECTION "tilemaps", ROM0
 CutsceneMap::
     INCBIN "incbin/background/Cutscenes.tilemap"
 CutsceneMapEnd::
-    
-StageEndMap::
-    INCBIN "incbin/background/StageEnd.tilemap"
-StageEndMapEnd::
 
 LevelCityMap:: 
     INCBIN "incbin/background/City.tilemap"

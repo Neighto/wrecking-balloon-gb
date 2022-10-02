@@ -89,7 +89,9 @@ InitializeBoss::
     ret
 
 UpdateBossPosition:
-    SET_HL_TO_ADDRESS wOAM, hBossOAM
+    ld hl, wOAM
+    ldh a, [hBossOAM]
+    ADD_A_TO_HL
     UPDATE_OAM_POSITION_HRAM 4, 2, [hBossX], [hBossY], 0
     ldh a, [hBossY]
     add PORCUPINE_STRING_Y_OFFSET
@@ -122,7 +124,9 @@ SpawnBoss::
     ld a, PORCUPINE_POINT_Y3
     ldh [hBossToY], a
     call UpdateBossPosition
-    SET_HL_TO_ADDRESS wOAM, hBossOAM
+    ld hl, wOAM
+    ldh a, [hBossOAM]
+    ADD_A_TO_HL
 .bossTopLeftOAM:
     inc l
     inc l
@@ -270,7 +274,9 @@ BossUpdate::
     ldh [hBossAnimationTimer], a
     jr .endFaceExpression
 .canUpdateFaceExpression:
-    SET_HL_TO_ADDRESS wOAM+6, hBossOAM
+    ld hl, wOAM+6
+    ldh a, [hBossOAM]
+    ADD_A_TO_HL
     ldh a, [hBossAnimationFrame]
 .faceExpressionLeft:
     cp a, PORCUPINE_EXPRESSION_LEFT
@@ -360,7 +366,10 @@ BossUpdate::
     set PORCUPINE_FLAG_TRIGGER_SPAWN_BIT, a
     ldh [hBossFlags], a
 .knockedOutAndDeadShowBossFeetAndRemoveBalloon:
-    SET_HL_TO_ADDRESS wOAM+22, hBossOAM
+    ld hl, wOAM+22
+    ldh a, [hBossOAM]
+    ld b, a
+    ADD_A_TO_HL
     ld a, PORCUPINE_TILE_3_FEET_ALT
     ld [hli], a
     ld a, OAMF_PAL0
@@ -371,7 +380,9 @@ BossUpdate::
     ld [hli], a
     ld a, OAMF_PAL0 | OAMF_XFLIP
     ld [hli], a
-    SET_HL_TO_ADDRESS wOAM+34, hBossOAM
+    ld hl, wOAM+34
+    ld a, b
+    ADD_A_TO_HL
     ld a, EMPTY_TILE
     ld [hl], a
     ret
@@ -599,7 +610,9 @@ BossUpdate::
     ldh a, [hGlobalTimer]
     and STRING_MOVE_TIME
     jr nz, .endString
-    SET_HL_TO_ADDRESS wOAM+35, hBossOAM
+    ld hl, wOAM+35
+    ldh a, [hBossOAM]
+    ADD_A_TO_HL
     ld a, [hl]
     cp a, OAMF_PAL0
     jr z, .flipX
@@ -620,7 +633,9 @@ BossUpdate::
     jr nz, .bossDamaged
 ; .checkHitBullet: ; FOR DEBUGGING *****
 ;     ld bc, wPlayerBulletOAM
-;     SET_HL_TO_ADDRESS wOAM, hBossOAM
+    ; ld hl, wOAM
+    ; ldh a, [hBossOAM]
+    ; ADD_A_TO_HL
 ;     ld d, 32
 ;     ld e, 32
 ;     call CollisionCheck
@@ -628,7 +643,9 @@ BossUpdate::
 ;     ; ***********
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
-    SET_HL_TO_ADDRESS wOAM, hBossOAM
+    ld hl, wOAM
+    ldh a, [hBossOAM]
+    ADD_A_TO_HL
     ld d, 32
     ld e, 32
     call CollisionCheck

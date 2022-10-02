@@ -67,10 +67,6 @@ CutsceneTiles::
     INCBIN "incbin/background/Cutscenes.2bpp"
 CutsceneTilesEnd::
 
-StageEndTiles::
-    INCBIN "incbin/background/StageEnd.2bpp"
-StageEndTilesEnd::
-
 LevelDesertTiles::
     INCBIN "incbin/background/Desert.2bpp"
 LevelDesertTilesEnd::

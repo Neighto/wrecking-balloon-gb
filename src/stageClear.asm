@@ -5,6 +5,8 @@ INCLUDE "macro.inc"
 
 STAGE_CLEAR_UPDATE_REFRESH_TIME EQU %00000001
 
+STAGE_CLEAR_DISTANCE_FROM_TOP_IN_TILES EQU 33
+
 PLUS_TILE EQU $FF
 SCORE_SC_INDEX_ONE_ADDRESS EQU $98CF
 TOTAL_SC_INDEX_ONE_ADDRESS EQU $990F
@@ -51,12 +53,13 @@ StageClearSequenceData:
     SEQUENCE_END
 
 LoadStageClearGraphics::
-	ld bc, StageEndTiles
+	ld bc, CutsceneTiles
 	ld hl, _VRAM9000
-	ld de, StageEndTilesEnd - StageEndTiles
+	ld de, CutsceneTilesEnd - CutsceneTiles
 	call MEMCPY
-	ld bc, StageEndMap
-	ld hl, _SCRN0
+
+	ld bc, CutsceneMap + SCRN_X_B * STAGE_CLEAR_DISTANCE_FROM_TOP_IN_TILES
+    ld hl, _SCRN0
     ld d, SCRN_Y_B
     ld e, SCRN_X_B
 	call MEMCPY_SINGLE_SCREEN
