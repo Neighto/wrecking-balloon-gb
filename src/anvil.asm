@@ -196,8 +196,12 @@ AnvilUpdate::
     ldh a, [hEnemyVariant]
     cp a, ANVIL_NORMAL_VARIANT
     jr nz, .endCollision
-    SET_HL_TO_ADDRESS wOAM, hBossOAM
-    SET_BC_TO_ADDRESS wOAM, hEnemyOAM
+    ld hl, wOAM
+    LD_BC_HL ; ld bc, wOAM
+    ldh a, [hBossOAM]
+    ADD_A_TO_HL
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_BC
     ld d, 32
     ld e, 24
     call CollisionCheck
