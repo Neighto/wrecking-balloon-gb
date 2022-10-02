@@ -69,12 +69,3 @@ MULTIPLY::
 .end:
     ld a, d
     ret
-
-AddToHL::
-    ; argument 'a' is value to add to HL (8 bit)
-    add a, l
-    ld l, a
-    ld a, h
-    adc a, 0
-    ld h, a
-    ret

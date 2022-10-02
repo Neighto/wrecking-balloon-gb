@@ -71,16 +71,19 @@ OpeningCutscene:
 	call WaitVBlank
 	call LCD_OFF
 	call Common
+	call InitializeEnemies
 	call SetOpeningCutsceneInterrupts
 	call LoadOpeningCutsceneGraphics
 	call InitializeOpeningCutscene
 	call InitializeLevelVars
 	call InitializeEnemyStructVars
 	call InitializePlayer
+
 	call InitializeBullet
 	call SpawnPlayer
 	call SetPlayerPositionOpeningCutscene
 	call SpawnHandWave
+	call SpawnCartBalloons
 	ld hl, menuTheme
 	call hUGE_init
 	ld b, 0 ; Channel 1
@@ -113,8 +116,8 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	ld a, 6
-	ld [wLevel], a
+	; ld a, 6
+	; ld [wLevel], a
 	; ; ^^^
 	ld a, [wSelectedMode]
 	cp a, 0
@@ -240,6 +243,7 @@ GameWon::
 	call WaitVBlank
 	call LCD_OFF
 	call Common
+	call InitializeEnemies
 	call SetEndingCutsceneInterrupts
 	call LoadEndingCutsceneGraphics
 	call InitializePalettes
@@ -249,6 +253,7 @@ GameWon::
 	call SetPlayerCactusHappy
 	call SetPlayerPositionEndingCutscene
 	call SpawnHandClap
+	call SpawnCartBalloons
 	ld hl, menuTheme
 	call hUGE_init
 	call LCD_ON_NO_WINDOW

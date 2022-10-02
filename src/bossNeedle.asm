@@ -36,8 +36,9 @@ SpawnBossNeedle::
     set ENEMY_FLAG_ACTIVE_BIT, a
     ldh [hEnemyFlags], a
     LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
 .variantDirection:
     ldh a, [hEnemyVariant]
 .leftDirection:
@@ -73,7 +74,9 @@ BossNeedleUpdate::
 
 .checkMove:
 .bossNeedleOAM:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
 .variantDirection:
     ldh a, [hEnemyVariant]
 .upLeftDirection:

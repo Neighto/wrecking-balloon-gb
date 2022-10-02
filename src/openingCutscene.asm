@@ -1,6 +1,7 @@
 INCLUDE "macro.inc"
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
+INCLUDE "enemyConstants.inc"
 
 OPENING_CUTSCENE_UPDATE_TIME EQU %00000011
 OPENING_CUTSCENE_PAUSE_LENGTH EQU 15
@@ -55,6 +56,39 @@ SpawnHandWave::
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP | OAMF_YFLIP
 	ret
+
+SpawnCartBalloons::
+    ; MEDIUM
+    ld a, POINT_BALLOON
+    ldh [hEnemyNumber], a
+    ld a, BALLOON_MEDIUM_VARIANT
+    ldh [hEnemyVariant], a
+    ld a, 85
+    ldh [hEnemyY], a
+    ld a, 24
+    ldh [hEnemyX], a
+    call SpawnPointBalloon
+    ; EASY
+    ld a, POINT_BALLOON
+    ldh [hEnemyNumber], a
+    ld a, BALLOON_EASY_VARIANT
+    ldh [hEnemyVariant], a
+    ld a, 84
+    ldh [hEnemyY], a
+    ld a, 8
+    ldh [hEnemyX], a
+    call SpawnPointBalloon
+    ; HARD
+    ld a, POINT_BALLOON
+    ldh [hEnemyNumber], a
+    ld a, BALLOON_HARD_VARIANT
+    ldh [hEnemyVariant], a
+    ld a, 84
+    ldh [hEnemyY], a
+    ld a, 32
+    ldh [hEnemyX], a
+    call SpawnPointBalloon
+    ret
 
 HandWaveAnimation::
     ld a, [wHandWavingFrame]

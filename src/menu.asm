@@ -112,7 +112,7 @@ SpawnMenuCursor::
 	ld [wMenuCursorOAM], a
 	ld hl, wOAM
 	; ld a, [wMenuCursorOAM]
-	call AddToHL
+	ADD_A_TO_HL
 	ld a, MENU_SPRITE_CLASSIC_Y
 	ld [hli], a
 	ld a, MENU_SPRITE_X
@@ -209,8 +209,7 @@ UpdateMenu::
 	jr nz, .blinkMenuCursorEnd
 .blink:
 	ld hl, wOAM+2
-	ld a, [wMenuCursorOAM]
-	call AddToHL
+	ADD_A_TO_HL [wMenuCursorOAM]
 	ld a, [hl]
 	cp a, EMPTY_TILE
 	jr nz, .empty
@@ -238,8 +237,7 @@ UpdateMenu::
 	inc [hl]
 	; Move cursor and select mode
 	ld hl, wOAM+2
-	ld a, [wMenuCursorOAM]
-	call AddToHL
+	ADD_TO_HL [wMenuCursorOAM]
 	ld a, MENU_CURSOR_TILE
 	ld [hld], a
 	dec hl ; Now pointing to Y
