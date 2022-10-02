@@ -221,9 +221,12 @@ EnemyInterCollision::
     ; Get collision OAM addresses
     inc hl
     inc hl
-    SET_BC_TO_ADDRESS wOAM, hl
-    LD_HL_BC ; OAM address stored in hl
-    SET_BC_TO_ADDRESS wOAM, hEnemyOAM ; OAM address stored in bc
+    ld a, [hl]
+    ld hl, wOAM
+    LD_BC_HL ; ld bc, wOAM
+    ADD_A_TO_HL ; OAM address stored in hl
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_BC ; OAM address stored in bc
     ; Check collision
     call CollisionCheck
     jr nz, .hitEnemy
