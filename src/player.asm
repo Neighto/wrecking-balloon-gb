@@ -190,6 +190,21 @@ GetPlayerTiles::
   ld c, PLAYER_CACTUS_TILE
   ret
 
+GetPlayerTurningTiles::
+  ; Returns b = left balloon tile
+  ; Returns c = right balloon tile
+  ld a, [wSecret]
+  cp a, SECRET_AMOUNT
+  jr c, .normalLook
+.secretLook:
+  ld b, PLAYER_SECRET_BALLOON_TURNING_TILE_1
+  ld c, PLAYER_SECRET_BALLOON_TURNING_TILE_2
+  ret
+.normalLook:
+  ld b, PLAYER_BALLOON_TURNING_TILE_1
+  ld c, PLAYER_BALLOON_TURNING_TILE_2
+  ret
+
 SpawnPlayer::
   call GetPlayerTiles ; b = balloon tile, c = cactus tile
 .cactusLeftOAM:
@@ -277,10 +292,11 @@ PlayerControls:
   jr c, .cactusDriftLeft
 .cactusMaxDriftLeft:
   ; Update balloon turning tiles right
+  call GetPlayerTurningTiles
   ld hl, wPlayerBalloonOAM+2
-  ld [hl], PLAYER_BALLOON_TURNING_TILE_1
+  ld [hl], b
   ld hl, wPlayerBalloonOAM+6
-  ld [hl], PLAYER_BALLOON_TURNING_TILE_2
+  ld [hl], c
   jr .endCheckHorizontal
 .cactusDriftLeft:
   dec [hl]
@@ -323,10 +339,11 @@ PlayerControls:
   jr nc, .cactusDriftRight
 .cactusMaxDriftRight:
   ; Update balloon turning tiles left
+  call GetPlayerTurningTiles
   ld hl, wPlayerBalloonOAM+2
-  ld [hl], PLAYER_BALLOON_TURNING_TILE_2
+  ld [hl], c
   ld hl, wPlayerBalloonOAM+6
-  ld [hl], PLAYER_BALLOON_TURNING_TILE_1
+  ld [hl], b
   jr .endCheckHorizontal
 .cactusDriftRight:
   inc [hl]
@@ -351,10 +368,11 @@ PlayerControls:
 
 .checkBalloonString:
   ; TODO maybe check balloon state to prevent updating these tiles every time we check playercontrols
+  call GetPlayerTiles
   ld hl, wPlayerBalloonOAM+2
-  ld [hl], PLAYER_BALLOON_TILE
+  ld [hl], b
   ld hl, wPlayerBalloonOAM+6
-  ld [hl], PLAYER_BALLOON_TILE
+  ld [hl], b
 .endCheckBalloonString:
 
 .endCheckHorizontal:
