@@ -11,7 +11,7 @@ BOOST_BAR_ADDRESS EQU $9C22
 ATTACK_BAR_ADDRESS EQU $9C26
 REFRESH_WINDOW_WAIT_TIME EQU %00000011
 
-SECTION "window", ROM0
+SECTION "window", ROMX
 
 RefreshScore::
 	; Argument hl is index one address to update
