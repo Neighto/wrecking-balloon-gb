@@ -191,18 +191,18 @@ GetPlayerTiles::
   ret
 
 GetPlayerTurningTiles::
-  ; Returns b = left balloon tile
-  ; Returns c = right balloon tile
+  ; Returns h = left balloon tile
+  ; Returns l = right balloon tile
   ld a, [wSecret]
   cp a, SECRET_AMOUNT
   jr c, .normalLook
 .secretLook:
-  ld b, PLAYER_SECRET_BALLOON_TURNING_TILE_1
-  ld c, PLAYER_SECRET_BALLOON_TURNING_TILE_2
+  ld h, PLAYER_SECRET_BALLOON_TURNING_TILE_1
+  ld l, PLAYER_SECRET_BALLOON_TURNING_TILE_2
   ret
 .normalLook:
-  ld b, PLAYER_BALLOON_TURNING_TILE_1
-  ld c, PLAYER_BALLOON_TURNING_TILE_2
+  ld h, PLAYER_BALLOON_TURNING_TILE_1
+  ld l, PLAYER_BALLOON_TURNING_TILE_2
   ret
 
 SpawnPlayer::
@@ -252,7 +252,7 @@ SpawnPlayer::
 PlayerControls:
   ; argument d = input directions down
   ; argument e = input directions pressed
-  ; argument c = check boundaries (0 = no)
+  ; argument c = check vertical boundaries (0 = no)
 
 .checkHorizontal:
 
@@ -264,10 +264,6 @@ PlayerControls:
   ld a, 1
   ldh [hPlayerLookRight], a
 .checkOffscreenRight:
-  ld a, c
-  cp a, 0
-  jr z, .moveRight
-.canCheckOffscreenRight:
   ldh a, [hPlayerX]
   ld b, a
   ld a, SCRN_X - 10
@@ -293,10 +289,10 @@ PlayerControls:
 .cactusMaxDriftLeft:
   ; Update balloon turning tiles right
   call GetPlayerTurningTiles
-  ld hl, wPlayerBalloonOAM+2
-  ld [hl], b
-  ld hl, wPlayerBalloonOAM+6
-  ld [hl], c
+  ld a, h
+  ld [wPlayerBalloonOAM+2], a
+  ld a, l
+  ld [wPlayerBalloonOAM+6], a
   jr .endCheckHorizontal
 .cactusDriftLeft:
   dec [hl]
@@ -311,10 +307,6 @@ PlayerControls:
   xor a ; ld a, 0
   ldh [hPlayerLookRight], a
 .checkOffscreenLeft:
-  ld a, c
-  cp a, 0
-  jr z, .moveLeft
-.canCheckOffscreenLeft:
   ldh a, [hPlayerX]
   sub 10
   ld b, a
@@ -340,10 +332,10 @@ PlayerControls:
 .cactusMaxDriftRight:
   ; Update balloon turning tiles left
   call GetPlayerTurningTiles
-  ld hl, wPlayerBalloonOAM+2
-  ld [hl], c
-  ld hl, wPlayerBalloonOAM+6
-  ld [hl], b
+  ld a, l
+  ld [wPlayerBalloonOAM+2], a
+  ld a, h
+  ld [wPlayerBalloonOAM+6], a
   jr .endCheckHorizontal
 .cactusDriftRight:
   inc [hl]
@@ -368,11 +360,13 @@ PlayerControls:
 
 .checkBalloonString:
   ; TODO maybe check balloon state to prevent updating these tiles every time we check playercontrols
+  push bc
   call GetPlayerTiles
   ld hl, wPlayerBalloonOAM+2
   ld [hl], b
   ld hl, wPlayerBalloonOAM+6
   ld [hl], b
+  pop bc
 .endCheckBalloonString:
 
 .endCheckHorizontal:

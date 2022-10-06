@@ -3,9 +3,6 @@ INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 INCLUDE "enemyConstants.inc"
 
-OPENING_CUTSCENE_UPDATE_TIME EQU %00000011
-OPENING_CUTSCENE_PAUSE_LENGTH EQU 15
-
 HAND_DOWN_START_X EQU 51
 HAND_DOWN_START_Y EQU 106
 HAND_WAVE_START_X EQU HAND_DOWN_START_X - 2
@@ -16,18 +13,31 @@ HAND_WAVE_TILE_2 EQU $5A
 SECTION "opening cutscene vars", WRAM0
     wHandWavingFrame:: DB
     wHandWaveOAM:: DB
-    wOpeningCutsceneFrame:: DB
-    wOpeningCutsceneTimer:: DB
 
 SECTION "opening cutscene", ROMX
 
 InitializeOpeningCutscene::
 	xor a ; ld a, 0
 	ld [wHandWavingFrame], a
-    ld [wOpeningCutsceneFrame], a
-    ld a, OPENING_CUTSCENE_PAUSE_LENGTH
-    ld [wOpeningCutsceneTimer], a
+
+    ld hl, wSequenceDataAddress
+    ld bc, OpeningCutsceneSequenceData
+    ld a, LOW(bc)
+    ld [hli], a
+    ld a, HIGH(bc)
+    ld [hl], a
     ret
+
+OpeningCutsceneSequenceData:
+    SEQUENCE_FADE_IN_PALETTE
+    SEQUENCE_WAIT 90
+    SEQUENCE_INCREASE_PHASE ; Hand up
+    SEQUENCE_INCREASE_PHASE ; Wave and fly away
+    SEQUENCE_WAIT 120
+SkipOpeningSequence:
+    SEQUENCE_HIDE_PALETTE
+    SEQUENCE_WAIT 5
+    SEQUENCE_END
 
 LoadOpeningCutsceneGraphics::
 	ld bc, CutsceneTiles
@@ -122,67 +132,30 @@ UpdateOpeningCutscene::
 	call ReadController
 	ldh a, [hControllerDown]
     and PADF_START | PADF_A
-	jr z, .endSkip
-	ld a, 9
-	ld [wOpeningCutsceneFrame], a
+    jr z, .endSkip
+.skip:
+    call ClearSound
+    ld hl, wSequenceDataAddress
+    ld bc, SkipOpeningSequence
+    ld a, LOW(bc)
+    ld [hli], a
+    ld a, HIGH(bc)
+    ld [hl], a
 .endSkip:
 
-.checkWreckingBalloon:
-    ld a, [wOpeningCutsceneFrame]
-    cp a, 4
-    jr nc, .up
-.bob:
+.checkPhase:
+    ld a, [wPhase]
+
+.phase0:
+    cp a, 0
+    jr nz, .phase1
+    ; bob
     call BobPlayer
-    jr .endCheckWreckingBalloon
-.up:
-    call MovePlayerUp
-.endCheckWreckingBalloon:
-    
-.updates:
-    ldh a, [hGlobalTimer]
-    and OPENING_CUTSCENE_UPDATE_TIME
-    cp a, 0
-    ret nz
-    ld a, [wOpeningCutsceneFrame]
-    cp a, 0
-    jr z, .fadeIn
+    jr .endCheckPhase
+.phase1:
     cp a, 1
-    jr z, .pause
-    cp a, 2
-    jr z, .pause
-    cp a, 3
-    jr z, .pause
-    cp a, 4
-    jr z, .pause
-    cp a, 5
-    jr z, .triggerHandWave
-    push af
-    call HandWaveAnimation
-    pop af
-    cp a, 6
-    jr z, .pause
-    cp a, 7
-    jr z, .pause
-    cp a, 8
-    jr z, .pause
-    cp a, 9
-    jr z, .fadeOut
-    call ClearSound
-    jp SetupNextLevel
-.fadeIn:
-    call FadeInPalettes
-    ret z
-    jr .endFrame
-.pause:
-    ld a, [wOpeningCutsceneTimer]
-    dec a 
-    ld [wOpeningCutsceneTimer], a
-    cp a, 0
-    ret nz
-    ld a, OPENING_CUTSCENE_PAUSE_LENGTH
-    ld [wOpeningCutsceneTimer], a
-    jr .endFrame
-.triggerHandWave:
+    jr nz, .phase2
+    ; move hand up
     SET_HL_TO_ADDRESS wOAM, wHandWaveOAM
     ld a, HAND_WAVE_START_Y
     ld [hli], a
@@ -190,11 +163,12 @@ UpdateOpeningCutscene::
     ld [hli], a
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
-    jr .endFrame
-.fadeOut:
-    call InitializeEmptyPalettes
-.endFrame:
-    ld a, [wOpeningCutsceneFrame]
-    inc a
-    ld [wOpeningCutsceneFrame], a
-    ret
+.phase2:
+    ; cp a, 2
+    ; jr nz, .endCheckPhase
+    ; wave and fly away
+    call MovePlayerUp
+    call HandWaveAnimation
+.endCheckPhase:
+
+    jp SequenceDataUpdate

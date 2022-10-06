@@ -73,6 +73,7 @@ OpeningCutscene:
 	call InitializeEnemies
 	call SetOpeningCutsceneInterrupts
 	call LoadOpeningCutsceneGraphics
+	call InitializeSequence
 	call InitializeOpeningCutscene
 	call InitializeLevelVars
 	call InitializeEnemyStructVars
@@ -115,7 +116,7 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	; ld a, 6
+	; ld a, 4
 	; ld [wLevel], a
 	; ; ^^^
 	ld a, [wSelectedMode]
@@ -189,10 +190,10 @@ SetupNextLevel::
 	call LCD_ON
 	; Comment out GameCountdownLoop to skip countdown
 GameCountdownLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateGameCountdown
-	jp GameCountdownLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateGameCountdown
+	; jp GameCountdownLoop
 PreGameLoop::
 	call ClearCountdown
 GameLoop:
@@ -210,6 +211,7 @@ StageClear::
 	call SetWaveRAMToSquareWave
 	call LoadStageClearGraphics
 	call InitializeEmptyPalettes
+	call InitializeSequence
 	call InitializeStageClear
 	call SpawnStageNumber
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
