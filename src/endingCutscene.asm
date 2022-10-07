@@ -1,7 +1,8 @@
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
+INCLUDE "constants.inc"
 
-CUTSCENE_DISTANCE_FROM_TOP_IN_TILES EQU 15
+CUTSCENE_DISTANCE_FROM_TOP_IN_TILES EQU 10
 HAND_CLAP_SPEED EQU %00000111
 LEFT_HAND_CLAP_START_X EQU 61
 LEFT_HAND_CLAP_START_Y EQU 114
@@ -25,16 +26,28 @@ InitializeEndingCutscene::
     ret
 
 LoadEndingCutsceneGraphics::
+.loadTiles:
 	ld bc, CutsceneTiles
 	ld hl, _VRAM9000
 	ld de, CutsceneTilesEnd - CutsceneTiles
 	call MEMCPY
-
+.drawMap:
 	ld bc, CutsceneMap + SCRN_X_B * CUTSCENE_DISTANCE_FROM_TOP_IN_TILES
-	ld hl, _SCRN0
-    ld d, SCRN_Y_B
+	ld hl, $9860
+    ld d, 12
     ld e, SCRN_X_B
 	call MEMCPY_SINGLE_SCREEN
+.addBorders:
+    ; Top
+    ld hl, _SCRN0
+    ld bc, $60
+    ld d, BLACK_BKG_TILE
+    call SetInRange
+    ; Bottom
+    ld hl, $99E0
+    ld bc, $60
+    ld d, BLACK_BKG_TILE
+    call SetInRange
 	ret
 
 SpawnHandClap::
