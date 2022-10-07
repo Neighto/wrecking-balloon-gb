@@ -3,7 +3,7 @@ INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 INCLUDE "macro.inc"
 
-STAGE_CLEAR_DISTANCE_FROM_TOP_IN_TILES EQU 33
+STAGE_CLEAR_DISTANCE_FROM_TOP_IN_TILES EQU 22
 
 PLUS_TILE EQU $FA
 SCORE_SC_INDEX_ONE_ADDRESS EQU $98CF
@@ -48,11 +48,12 @@ StageClearSequenceData:
     SEQUENCE_END
 
 LoadStageClearGraphics::
+.loadTiles:
 	ld bc, CutsceneTiles
 	ld hl, _VRAM9000
 	ld de, CutsceneTilesEnd - CutsceneTiles
 	call MEMCPY
-
+.drawMap:
 	ld bc, CutsceneMap + SCRN_X_B * STAGE_CLEAR_DISTANCE_FROM_TOP_IN_TILES
     ld hl, _SCRN0
     ld d, SCRN_Y_B

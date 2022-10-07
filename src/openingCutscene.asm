@@ -40,15 +40,34 @@ SkipOpeningSequence:
     SEQUENCE_END
 
 LoadOpeningCutsceneGraphics::
+.loadTiles:
 	ld bc, CutsceneTiles
 	ld hl, _VRAM9000
 	ld de, CutsceneTilesEnd - CutsceneTiles
 	call MEMCPY
+.drawMap:
 	ld bc, CutsceneMap
-	ld hl, _SCRN0
-    ld d, SCRN_Y_B
+	ld hl, $98A0
+    ld d, 13
     ld e, SCRN_X_B
 	call MEMCPY_SINGLE_SCREEN
+    ; Add thin clouds
+	ld bc, ThinCloudsMap
+	ld hl, $9880
+	ld de, ThinCloudsMapEnd - ThinCloudsMap
+	ld a, $88
+	call MEMCPY_WITH_OFFSET
+.addBorders:
+    ; Top
+    ld hl, _SCRN0
+    ld bc, $60
+    ld d, BLACK_BKG_TILE
+    call SetInRange
+    ; Bottom
+    ld hl, $99E0
+    ld bc, $60
+    ld d, BLACK_BKG_TILE
+    call SetInRange
 	ret
 
 SpawnHandWave::
