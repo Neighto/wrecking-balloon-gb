@@ -6,11 +6,14 @@ INCLUDE "enemyConstants.inc"
 BOSS_NEEDLE_OAM_SPRITES EQU 1
 BOSS_NEEDLE_OAM_BYTES EQU BOSS_NEEDLE_OAM_SPRITES * 4
 BOSS_NEEDLE_COLLISION_TIME EQU %00000011
+BOSS_NEEDLE_VERTICAL_MOVEMENT_TIME EQU 6
+
+BOSS_NEEDLE_WIDTH EQU 8
+BOSS_NEEDLE_HEIGHT EQU 16
+
 BOSS_NEEDLE_TILE EQU $72
 
 BOSS_NEEDLE_SPEED EQU 4
-
-BOSS_NEEDLE_VERTICAL_MOVEMENT_TIME EQU 6
 
 ; hEnemyParam1 = Vertical Movement Counter
 
@@ -30,13 +33,15 @@ SpawnBossNeedle::
     pop hl
     ret z
 .availableOAMSpace:
+    ; Initialize
     call InitializeEnemyStructVars
     ld a, b
     ldh [hEnemyOAM], a
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_ACTIVE_BIT, a
     ldh [hEnemyFlags], a
-    LD_BC_HL
+    ; Get hl pointing to OAM address
+    LD_BC_HL ; bc now contains RAM address
     ld hl, wOAM
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
@@ -140,30 +145,26 @@ BossNeedleUpdate::
     jr z, .endCollision
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ld d, 8
-    ld e, 16
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
+    ld d, BOSS_NEEDLE_WIDTH
+    ld e, BOSS_NEEDLE_HEIGHT
     call CollisionCheck
     jr z, .checkHitCactus
     call CollisionWithPlayer
     jr .deathOfBossNeedle
 .checkHitCactus:
     ld bc, wPlayerCactusOAM
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ld d, 8
-    ld e, 16
-    call CollisionCheck
-    jr z, .checkHitBullet
-    call CollisionWithPlayerCactus
-    jr .deathOfBossNeedle
-.checkHitBullet:
-    ld bc, wPlayerBulletOAM
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ld d, 8
-    ld e, 16
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
+    ld d, BOSS_NEEDLE_WIDTH
+    ld e, BOSS_NEEDLE_HEIGHT
     call CollisionCheck
     jr z, .endCollision
-    call ClearBullet
+    call CollisionWithPlayerCactus
+    ; jr .deathOfBossNeedle
 .deathOfBossNeedle:
     ld bc, BOSS_NEEDLE_OAM_BYTES
     call ClearEnemy
@@ -171,19 +172,12 @@ BossNeedleUpdate::
 .endCollision:
 
 .checkOffscreenX:
-    ldh a, [hEnemyX]
-    ld b, a
-    ld a, SCRN_X + OFF_SCREEN_ENEMY_BUFFER
-    cp a, b
-    jr nc, .endOffscreenX
-    ld a, SCRN_VX - OFF_SCREEN_ENEMY_BUFFER
-    cp a, b
-    jr c, .endOffscreenX
-.offscreenX:
     ld bc, BOSS_NEEDLE_OAM_BYTES
-    call ClearEnemy
+    call HandleEnemyOffscreenHorizontal
+    ; Enemy may be cleared, must do setStruct next
 .endOffscreenX:
 
 .setStruct:
-    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
+    ld hl, wEnemies
+    ADD_TO_HL [wEnemyOffset]
     jp SetEnemyStruct

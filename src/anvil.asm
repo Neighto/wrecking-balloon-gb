@@ -2,11 +2,17 @@ INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 INCLUDE "constants.inc"
+INCLUDE "playerConstants.inc"
 
 ANVIL_OAM_SPRITES EQU 2
 ANVIL_OAM_BYTES EQU ANVIL_OAM_SPRITES * OAM_ATTRIBUTES_COUNT
 ANVIL_DEAD_BLINKING_TIME EQU %00000011
 ANVIL_DEAD_BLINKING_DURATION EQU 20
+
+ANVIL_FALLING_SPEED_DELAY EQU 3
+
+ANVIL_INITIAL_SPEED EQU 4
+CACTUS_INITIAL_SPEED EQU 1
 
 CACTUS_SCREAMING_TILE EQU $2E
 
@@ -29,27 +35,29 @@ SpawnAnvil::
     pop hl
     ret z
 .availableOAMSpace:
+    ; Initialize
     call InitializeEnemyStructVars
     ld a, b
     ldh [hEnemyOAM], a
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_ACTIVE_BIT, a
     ldh [hEnemyFlags], a
-
 .variantSpeed:
     ldh a, [hEnemyVariant]
 .cactusSpeed:
     cp a, ANVIL_CACTUS_VARIANT
     jr nz, .anvilSpeed
-    ld a, 1
+    ld a, CACTUS_INITIAL_SPEED
     jr .endVariantSpeed
 .anvilSpeed:
-    ld a, 4
+    ld a, ANVIL_INITIAL_SPEED
 .endVariantSpeed:
     ldh [hEnemyParam1], a
-
-    LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ; Get hl pointing to OAM address
+    LD_BC_HL ; bc now contains RAM address
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
 .variantVisualLeft:
     ldh a, [hEnemyVariant]
 .cactusVisual:
@@ -119,16 +127,18 @@ AnvilUpdate::
 .animateDying:
     and ANVIL_DEAD_BLINKING_TIME
     jp nz, .setStruct
-    SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM ; Tile
+    ld hl, wOAM+2
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
     ld a, [hl]
     cp a, EMPTY_TILE
     jr z, .blinkOn
 .blinkOff:
     ld a, EMPTY_TILE
     ld [hli], a
-    inc hl
-    inc hl
-    inc hl
+    inc l
+    inc l
+    inc l
     ld [hli], a
     jp .setStruct
 .blinkOn:
@@ -146,35 +156,31 @@ AnvilUpdate::
 .endVariantBlinkOn:
     ld a, d
     ld [hli], a
-    inc hl
-    inc hl
-    inc hl
+    inc l
+    inc l
+    inc l
     ld a, e
     ld [hli], a
     jp .setStruct
 .endCheckDying:
 
-.fallingSpeed:
+.checkMove:
+    ; Fall faster
     ldh a, [hEnemyParam1]
     inc a 
     ldh [hEnemyParam1], a
-    ld b, 3
+    ld b, ANVIL_FALLING_SPEED_DELAY
     call DIVISION
     ld b, a
     ldh a, [hEnemyY]
     add a, b
     ldh [hEnemyY], a
-.anvilLeftOAM:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ldh a, [hEnemyY]
-    ld [hli], a
-    inc l
-    inc l
-    inc l
-.anvilRightOAM:
-    ldh a, [hEnemyY]
-    ld [hl], a
-.endFallingSpeed:
+.setOAM:
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
+    UPDATE_OAM_POSITION_ENEMY 2, 1
+.endMove:
 
 .checkCollision:
     ; Is player alive
@@ -182,15 +188,19 @@ AnvilUpdate::
     cp a, 0
     jr z, .checkHitAnotherEnemy
 .checkHit:
-    ld bc, wPlayerBalloonOAM
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ld d, 16
-    ld e, 16
+    ld bc, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_BC
+    ld hl, wPlayerBalloonOAM
+    ld d, PLAYER_BALLOON_WIDTH
+    ld e, PLAYER_BALLOON_HEIGHT
     call CollisionCheck
-    call nz, CollisionWithPlayer
+    jr z, .checkHitAnotherEnemy
+    call CollisionWithPlayer
+    jr .hitSomething
 .checkHitAnotherEnemy:
     call EnemyInterCollision
-    jr nz, .hitEnemy
+    jr nz, .hitSomething
 .checkHitBoss:
     ld a, [wLevel]
     cp a, BOSS_LEVEL
@@ -209,26 +219,19 @@ AnvilUpdate::
     call CollisionCheck
     jr z, .endCollision
     call CollisionWithBoss
-.hitEnemy:
+.hitSomething:
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_DYING_BIT, a
     ldh [hEnemyFlags], a
 .endCollision:
 
 .checkOffscreen:
-    ldh a, [hEnemyY]
-    ld b, a
-    ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
-    cp a, b
-    jr nc, .endOffscreen
-    ld a, SCRN_VY - OFF_SCREEN_ENEMY_BUFFER
-    cp a, b
-    jr c, .endOffscreen
-.offscreen:
     ld bc, ANVIL_OAM_BYTES
-    call ClearEnemy
+    call HandleEnemyOffscreenVertical
+    ; Enemy may be cleared, must do setStruct next
 .endOffscreen:
 
 .setStruct:
-    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
+    ld hl, wEnemies
+    ADD_TO_HL [wEnemyOffset]
     jp SetEnemyStruct

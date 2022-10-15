@@ -56,6 +56,7 @@ SpawnBalloonCarrier::
     pop hl
     ret z
 .availableOAMSpace:
+    ; Initialize
     call InitializeEnemyStructVars
     ld a, b
     ldh [hEnemyOAM], a
@@ -76,9 +77,10 @@ SpawnBalloonCarrier::
     set ENEMY_FLAG_DIRECTION_BIT, a
     ldh [hEnemyFlags], a
 .endUpdateDirection:
-    LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 
+    ; Get hl pointing to OAM address
+    LD_BC_HL ; bc now contains RAM address
+    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
 .variantVisualBalloon:
     ldh a, [hEnemyVariant]
 .followVisualBalloon:
@@ -555,19 +557,12 @@ BalloonCarrierUpdate::
 .endCollision:
 
 .checkOffscreen:
-    ldh a, [hEnemyX]
-    ld b, a
-    ld a, SCRN_X + OFF_SCREEN_ENEMY_BUFFER
-    cp a, b
-    jr nc, .endOffscreen
-    ld a, SCRN_VX - OFF_SCREEN_ENEMY_BUFFER
-    cp a, b
-    jr c, .endOffscreen
-.offscreen:
     ld bc, BALLOON_CARRIER_OAM_BYTES
-    call ClearEnemy
+    call HandleEnemyOffscreenHorizontal
+    ; Enemy may be cleared, must do setStruct next
 .endOffscreen:
 
 .setStruct:
-    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
+    ld hl, wEnemies
+    ADD_TO_HL [wEnemyOffset]
     jp SetEnemyStruct

@@ -10,7 +10,6 @@ BOMB_FOLLOW_TIME EQU %00000011
 BOMB_COLLISION_TIME EQU %00000011
 BOMB_EXPLOSION_X_OFFSET EQU -4
 
-
 BOMB_DEFAULT_SPEED EQU 2
 
 BOMB_DIRECT_TILE EQU $40
@@ -223,18 +222,9 @@ BombUpdate::
 .endCollision:
 
 .checkOffscreen:
-    ldh a, [hEnemyY]
-    ld b, a
-    ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
-    cp a, b
-    jr nc, .endOffscreen
-    ld a, SCRN_VY - OFF_SCREEN_ENEMY_BUFFER
-    cp a, b
-    jr c, .endOffscreen
-.offscreen:
     ld bc, BOMB_OAM_BYTES
-    call ClearEnemy
-    ; jr .setStruct
+    call HandleEnemyOffscreenVertical
+    ; Enemy may be cleared, must do setStruct next
 .endOffscreen:
     
 .setStruct:

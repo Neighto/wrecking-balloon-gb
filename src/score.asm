@@ -7,7 +7,7 @@ SECTION "score vars", WRAM0
 wScore:: DS SCORE_SIZE
 wTotal:: DS SCORE_SIZE
 
-SECTION "score", ROMX
+SECTION "score", ROM0
 
 InitializeScore::
     xor a ; ld a, 0

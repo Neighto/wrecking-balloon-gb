@@ -1,7 +1,7 @@
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
-SECTION "math", ROMX
+SECTION "math", ROM0
 
 MODULO::
     ; simple modulo formula
