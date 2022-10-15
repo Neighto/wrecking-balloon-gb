@@ -2,6 +2,7 @@ INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 INCLUDE "constants.inc"
+INCLUDE "playerConstants.inc"
 
 POINT_BALLOON_OAM_SPRITES EQU 3
 POINT_BALLOON_OAM_BYTES EQU POINT_BALLOON_OAM_SPRITES * OAM_ATTRIBUTES_COUNT
@@ -23,6 +24,7 @@ POINT_BALLOON_HARD_POINTS EQU 80
 
 SECTION "point balloon", ROMX
 
+; SPAWN
 SpawnPointBalloon::
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
@@ -36,16 +38,19 @@ SpawnPointBalloon::
     pop hl
     ret z
 .availableOAMSpace:
+    ; Initialize
     call InitializeEnemyStructVars
     ld a, b
-    ld [hEnemyOAM], a
+    ldh [hEnemyOAM], a
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_ACTIVE_BIT, a
     set ENEMY_FLAG_ALIVE_BIT, a
     ldh [hEnemyFlags], a
-    LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-
+    ; Get hl pointing to OAM address
+    LD_BC_HL ; bc now contains RAM address
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
 .variantVisual:
     ldh a, [hEnemyVariant]
 .easyVisual:
@@ -101,6 +106,7 @@ SpawnPointBalloon::
     LD_HL_BC
     jp SetEnemyStruct
 
+; UPDATE
 PointBalloonUpdate::
 
 .checkAlive:
@@ -141,7 +147,9 @@ PointBalloonUpdate::
     dec [hl]
     dec [hl]
 .setOAM:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
     UPDATE_OAM_POSITION_ENEMY 2, 1
 .stringOAM:
     ldh a, [hEnemyY]
@@ -154,7 +162,9 @@ PointBalloonUpdate::
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and STRING_MOVE_TIME
     jr nz, .endString
-    SET_HL_TO_ADDRESS wOAM+11, hEnemyOAM
+    ld hl, wOAM+11
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
     ld a, [hl]
     cp a, OAMF_PAL0
     jr z, .flipX
@@ -181,19 +191,21 @@ PointBalloonUpdate::
     cp a, 0
     jr z, .endCollision
 .checkHit:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    LD_BC_HL
+    ld bc, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_BC
     ld hl, wPlayerCactusOAM
-    ld d, 16
-    ld e, 13
+    ld d, PLAYER_CACTUS_WIDTH
+    ld e, PLAYER_CACTUS_HEIGHT
     call CollisionCheck
     jr nz, .deathOfPointBalloon
 .checkHitByBullet:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    LD_BC_HL
+    ld bc, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_BC
     ld hl, wPlayerBulletOAM
-    ld d, 8
-    ld e, 4
+    ld d, PLAYER_BULLET_WIDTH
+    ld e, PLAYER_BULLET_HEIGHT
     call CollisionCheck
     jr z, .endCollision
     call ClearBullet
@@ -245,5 +257,6 @@ PointBalloonUpdate::
 .endOffscreen:
 
 .setStruct:
-    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
+    ld hl, wEnemies
+    ADD_TO_HL [wEnemyOffset]
     jp SetEnemyStruct

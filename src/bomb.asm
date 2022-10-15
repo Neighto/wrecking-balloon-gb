@@ -2,12 +2,16 @@ INCLUDE "constants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
+INCLUDE "playerConstants.inc"
 
-BOMB_DEFAULT_SPEED EQU 2
 BOMB_OAM_SPRITES EQU 2
 BOMB_OAM_BYTES EQU BOMB_OAM_SPRITES * 4
 BOMB_FOLLOW_TIME EQU %00000011
 BOMB_COLLISION_TIME EQU %00000011
+BOMB_EXPLOSION_X_OFFSET EQU -4
+
+
+BOMB_DEFAULT_SPEED EQU 2
 
 BOMB_DIRECT_TILE EQU $40
 BOMB_DIRECT_POINTS EQU 10
@@ -17,6 +21,7 @@ BOMB_FOLLOW_POINTS EQU 20
 
 SECTION "bomb", ROMX
 
+; SPAWN
 SpawnBomb::
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
@@ -30,6 +35,7 @@ SpawnBomb::
     pop hl
     ret z
 .availableOAMSpace:
+    ; Initialize
     call InitializeEnemyStructVars
     ld a, b
     ldh [hEnemyOAM], a
@@ -37,9 +43,11 @@ SpawnBomb::
     set ENEMY_FLAG_ACTIVE_BIT, a
     set ENEMY_FLAG_ALIVE_BIT, a
     ldh [hEnemyFlags], a
-    LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-
+    ; Get hl pointing to OAM address
+    LD_BC_HL ; bc now contains RAM address
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
 .variantVisual:
     ldh a, [hEnemyVariant]
 .directVisual:
@@ -88,6 +96,7 @@ SpawnBomb::
     LD_HL_BC
     jp SetEnemyStruct
 
+; UPDATE
 BombUpdate::
 
 .checkAlive:
@@ -103,7 +112,8 @@ BombUpdate::
     res ENEMY_FLAG_DYING_BIT, a
     ldh [hEnemyFlags], a
 .setStructSpawn:
-    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
+    ld hl, wEnemies
+    ADD_TO_HL [wEnemyOffset]
     call SetEnemyStruct
 .spawnExplosion:
     ld a, EXPLOSION
@@ -111,10 +121,9 @@ BombUpdate::
     ld a, EXPLOSION_BOMB_VARIANT
     ldh [hEnemyVariant], a
     ldh a, [hEnemyX]
-    sub 4
+    add BOMB_EXPLOSION_X_OFFSET
     ldh [hEnemyX], a
-    call SpawnExplosion
-    ret
+    jp SpawnExplosion
 .clear:
     ld bc, BOMB_OAM_BYTES
     call ClearEnemy
@@ -122,45 +131,38 @@ BombUpdate::
 .isAlive:
 
 .checkMove:
+    ; Vertical movement
     ldh a, [hEnemyY]
     sub a, BOMB_DEFAULT_SPEED
     ldh [hEnemyY], a    
-.variantMove:
+    ; Check special variant
     ldh a, [hEnemyVariant]
     cp a, BOMB_FOLLOW_VARIANT
-    jr nz, .endVariantMove
-.horizontalFollow:
+    jr nz, .moveOtherVariant
+.moveFollowVariant:
+    ; Horizontal movement
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and BOMB_FOLLOW_TIME
-    jr nz, .endVariantMove
+    jr nz, .setOAM
+    ldh a, [hPlayerX]
+    ld b, a
     ldh a, [hEnemyX]
-    ld hl, hPlayerX
-    cp a, [hl]
-    jr z, .endVariantMove
+    cp a, b
+    jr z, .setOAM
     ld hl, hEnemyX
     jr c, .moveRight
 .moveLeft:
     dec [hl]
-    jr .endVariantMove
+    jr .setOAM
 .moveRight:
     inc [hl]
-.endVariantMove:
-
-.balloonLeftOAM:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    ld [hli], a
-    inc l
-    inc l
-.balloonRightOAM:
-    ldh a, [hEnemyY]
-    ld [hli], a
-    ldh a, [hEnemyX]
-    add 8
-    ld [hl], a
+.moveOtherVariant:
+.setOAM:
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
+    UPDATE_OAM_POSITION_ENEMY 2, 1
 .endMove:
 
 .checkCollision:
@@ -178,20 +180,23 @@ BombUpdate::
     cp a, 0
     jr z, .endCollision
 .checkHit:
-    ld bc, wPlayerCactusOAM
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ld d, 16
-    ld e, 16
+    ld bc, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_BC
+    ld hl, wPlayerCactusOAM
+    ld d, PLAYER_CACTUS_WIDTH
+    ld e, PLAYER_CACTUS_HEIGHT
     call CollisionCheck
     jr z, .checkHitByBullet
     call CollisionWithPlayer
     jr .deathOfBomb
 .checkHitByBullet:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    LD_BC_HL
+    ld bc, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_BC
     ld hl, wPlayerBulletOAM
-    ld d, 8
-    ld e, 4
+    ld d, PLAYER_BULLET_WIDTH
+    ld e, PLAYER_BULLET_HEIGHT
     call CollisionCheck
     jr z, .endCollision
     call ClearBullet
@@ -229,8 +234,10 @@ BombUpdate::
 .offscreen:
     ld bc, BOMB_OAM_BYTES
     call ClearEnemy
+    ; jr .setStruct
 .endOffscreen:
     
 .setStruct:
-    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
+    ld hl, wEnemies
+    ADD_TO_HL [wEnemyOffset]
     jp SetEnemyStruct

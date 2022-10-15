@@ -16,6 +16,7 @@ PROJECTILE_TILE EQU $26
 
 SECTION "enemy projectile", ROM0
 
+; SPAWN
 SpawnProjectile::
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
@@ -87,6 +88,7 @@ SpawnProjectile::
     call ProjectileSound
     ret
 
+; UPDATE
 ProjectileUpdate::
 
 .checkFlicker:

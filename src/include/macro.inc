@@ -1,4 +1,4 @@
-; General Macros
+; GENERAL MACROS ****
 
 MACRO RANDOM
     ; argument 1 is range
@@ -93,6 +93,8 @@ MACRO ADD_TO_BC
     ADD_A_TO_BC
 ENDM
 
+; ENEMY MACROS ****
+
 MACRO UPDATE_OAM_POSITION_HRAM
     ; argument 1 is # sprites horizontal
     ; argument 2 is # sprites vertical
@@ -135,7 +137,7 @@ MACRO UPDATE_OAM_POSITION_ENEMY_WITH_OFFSET
     UPDATE_OAM_POSITION_HRAM \1, \2, [hEnemyX], [hEnemyY], \3
 ENDM
 
-; Level Macros
+; LEVEL MACROS ****
 
 ; Level Instructions
 LEVEL_SPAWN_KEY EQU 0 
@@ -176,7 +178,7 @@ MACRO GAME_WON
     DB GAME_WON_KEY
 ENDM
 
-; Stage Clear Macros
+; CUTSCENE MACROS ****
 
 ; Sequence Instructions
 SEQUENCE_WAIT_KEY EQU 0 
@@ -226,7 +228,7 @@ MACRO SEQUENCE_INCREASE_PHASE
     DB SEQUENCE_INCREASE_PHASE_KEY
 ENDM
 
-; Timer
+; TIMER MACROS ****
 
 MACRO UPDATE_GLOBAL_TIMER
     ldh a, [hGlobalTimer]
