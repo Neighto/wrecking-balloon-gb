@@ -15,6 +15,7 @@ CACTUS_SCREAMING_TILE EQU $2E
 
 SECTION "anvil", ROMX
 
+; SPAWN
 SpawnAnvil::
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
@@ -99,6 +100,7 @@ SpawnAnvil::
     LD_HL_BC
     jp SetEnemyStruct
 
+; UPDATE
 AnvilUpdate::
 
 .checkDying:

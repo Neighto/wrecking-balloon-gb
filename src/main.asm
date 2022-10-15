@@ -98,10 +98,10 @@ OpeningCutscene:
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateOpeningCutscene
-	jp OpeningCutsceneLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateOpeningCutscene
+	; jp OpeningCutsceneLoop
 
 SetupNextLevel::
 	call WaitVBlank
@@ -116,8 +116,8 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	; ld a, 4
-	; ld [wLevel], a
+	ld a, 3
+	ld [wLevel], a
 	; ; ^^^
 	ld a, [wSelectedMode]
 	cp a, 0

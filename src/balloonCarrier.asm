@@ -2,6 +2,7 @@ INCLUDE "constants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
+INCLUDE "playerConstants.inc"
 
 BALLOON_CARRIER_OAM_SPRITES EQU 4
 BALLOON_CARRIER_OAM_BYTES EQU BALLOON_CARRIER_OAM_SPRITES * OAM_ATTRIBUTES_COUNT
@@ -41,6 +42,7 @@ BALLOON_CARRIER_FLAG_BOBBING_INDEX_BIT EQU ENEMY_FLAG_PARAM2_BIT
 
 SECTION "balloon carrier", ROMX
 
+; SPAWN
 SpawnBalloonCarrier::
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
@@ -184,6 +186,7 @@ SpawnBalloonCarrier::
     LD_HL_BC
     jp SetEnemyStruct
 
+; UPDATE
 BalloonCarrierUpdate::
 
 .checkAlive:
@@ -486,12 +489,13 @@ BalloonCarrierUpdate::
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM+8, hEnemyOAM
     ld d, 16
-    ld e, 16
+    ld e, 12
     call CollisionCheck
     call nz, CollisionWithPlayer
 .checkHit:
-    ld bc, wPlayerCactusOAM
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    LD_BC_HL
+    ld hl, wPlayerCactusOAM
     ld d, 16
     ld e, 12
     call CollisionCheck
@@ -506,8 +510,8 @@ BalloonCarrierUpdate::
     SET_HL_TO_ADDRESS wOAM, hEnemyOAM
     LD_BC_HL
     ld hl, wPlayerBulletOAM
-    ld d, 8
-    ld e, 4
+    ld d, PLAYER_BULLET_WIDTH
+    ld e, PLAYER_BULLET_HEIGHT
     call CollisionCheck
     jr z, .endCollision
     call ClearBullet

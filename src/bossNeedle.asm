@@ -16,6 +16,7 @@ BOSS_NEEDLE_VERTICAL_MOVEMENT_TIME EQU 6
 
 SECTION "boss needle", ROM0
 
+; SPAWN
 SpawnBossNeedle::
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
@@ -70,6 +71,7 @@ SpawnBossNeedle::
     LD_HL_BC
     jp SetEnemyStruct
 
+; UPDATE
 BossNeedleUpdate::
 
 .checkMove:
