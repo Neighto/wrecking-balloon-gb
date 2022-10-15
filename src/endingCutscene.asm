@@ -98,6 +98,7 @@ MoveHands:
 
 UpdateEndingCutscene::
     UPDATE_GLOBAL_TIMER
+    call _hUGE_dosound
     call IncrementScrollOffset
     call BobPlayer
 

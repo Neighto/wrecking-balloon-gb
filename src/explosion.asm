@@ -142,8 +142,20 @@ ExplosionUpdate::
     or OAMF_XFLIP
     ld [hl], a
     LD_HL_DE
+.variantVisual:
+    ldh a, [hEnemyVariant]
+.bombVisual:
+    cp a, EXPLOSION_BOMB_VARIANT
+    jr nz, .congratulationsVisual
     ld b, EXPLOSION_BOMB_TILE_1
     ld c, EXPLOSION_BOMB_TILE_2
+    jr .endVariantVisual
+.congratulationsVisual:
+    ; cp a, EXPLOSION_CONGRATULATIONS_VARIANT
+    ; jr nz, .endVariantVisual
+    ld b, EXPLOSION_CONGRATULATIONS_TILE_1
+    ld c, EXPLOSION_CONGRATULATIONS_TILE_2
+.endVariantVisual:
     jr .explosionCommon
 .hideExplosion:
     ld b, EMPTY_TILE

@@ -19,6 +19,7 @@ Start::
 	call WaitVBlank
 	call LCD_OFF
 	call Common
+	call ClearSound
 	call ClearWindow
 	call ClearHRAM
 	call ClearVRAM8000
@@ -144,7 +145,7 @@ SetupNextLevel::
 	jr nz, .level4
 	call SetLevelDesertInterrupts
 	call LoadLevelDesertGraphics
-	ld hl, angryTheme
+	ld hl, funkMachineTheme
 	call hUGE_init
 	jr .endLevelSetup
 .level4:
@@ -152,7 +153,7 @@ SetupNextLevel::
 	jr nz, .level5
 	call SetLevelNightDesertInterrupts
 	call LoadLevelNightDesertGraphics
-	ld hl, angryTheme
+	ld hl, funkMachineTheme
 	call hUGE_init
 	call InitializeNightSpritePalettes
 	jr .endLevelSetup
@@ -161,7 +162,7 @@ SetupNextLevel::
 	jr nz, .level6
 	call SetLevelShowdownInterrupts
 	call LoadLevelShowdownGraphics
-	ld hl, angryTheme
+	ld hl, bossTheme
 	call hUGE_init
 	jr .endLevelSetup
 .level6:
@@ -257,6 +258,12 @@ GameWon::
 	call SpawnCartBalloons
 	ld hl, menuTheme
 	call hUGE_init
+	ld b, 2 ; Channel 3
+	ld c, 1 ; Mute
+	call hUGE_mute_channel
+	ld b, 3 ; Channel 4
+	ld c, 1 ; Mute
+	call hUGE_mute_channel
 	call LCD_ON_NO_WINDOW
 GameWonLoop:
 	call WaitVBlank

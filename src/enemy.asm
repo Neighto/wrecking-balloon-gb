@@ -279,10 +279,38 @@ FindBalloonCarrier::
 
 ClearEnemy::
     ; bc = Enemy OAM Bytes
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
     call ResetHLInRange
     call InitializeEnemyStructVars
     ret
+
+HandleEnemyOffscreenVertical::
+    ; bc = Enemy OAM Bytes
+    ldh a, [hEnemyY]
+    ld h, a
+    ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
+    cp a, h
+    ret nc
+    ld a, SCRN_VY - OFF_SCREEN_ENEMY_BUFFER
+    cp a, h
+    ret c
+.offscreen:
+    jp ClearEnemy
+
+HandleEnemyOffscreenHorizontal::
+    ; bc = Enemy OAM Bytes
+    ldh a, [hEnemyX]
+    ld h, a
+    ld a, SCRN_X + OFF_SCREEN_ENEMY_BUFFER
+    cp a, h
+    ret nc
+    ld a, SCRN_VX - OFF_SCREEN_ENEMY_BUFFER
+    cp a, h
+    ret c
+.offscreen:
+    jp ClearEnemy
 
 SECTION "enemy animations", ROM0
 

@@ -242,18 +242,9 @@ PointBalloonUpdate::
 .endCollision:
 
 .checkOffscreen:
-    ldh a, [hEnemyY]
-    ld b, a
-    ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
-    cp a, b
-    jr nc, .endOffscreen
-    ld a, SCRN_VY - OFF_SCREEN_ENEMY_BUFFER
-    cp a, b
-    jr c, .endOffscreen
-.offscreen:
     ld bc, POINT_BALLOON_OAM_BYTES
-    call ClearEnemy
-    ; jr .setStruct
+    call HandleEnemyOffscreenVertical
+    ; Enemy may be cleared, must do setStruct next
 .endOffscreen:
 
 .setStruct:

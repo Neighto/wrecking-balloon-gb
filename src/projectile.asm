@@ -7,8 +7,13 @@ PROJECTILE_OAM_SPRITES EQU 1
 PROJECTILE_OAM_BYTES EQU PROJECTILE_OAM_SPRITES * 4
 PROJECTILE_COLLISION_TIME EQU %00000011
 PROJECTILE_FLICKER_TIME EQU %00000011
+
+PROJECTILE_WIDTH EQU 8
+PROJECTILE_HEIGHT EQU 8
+
 PROJECTILE_VERTICAL_SPEED EQU 1
 PROJECTILE_HORIZONTAL_SPEED EQU 2
+
 PROJECTILE_TILE EQU $26
 
 ; hEnemyParam1 = Add to Y
@@ -30,6 +35,7 @@ SpawnProjectile::
     pop hl
     ret z
 .availableOAMSpace:
+    ; Initialize
     call InitializeEnemyStructVars
     ld a, b
     ldh [hEnemyOAM], a
@@ -71,8 +77,11 @@ SpawnProjectile::
 .endX:
     ldh [hEnemyParam2], a
 .endSetupX2:
-    LD_BC_HL
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ; Get hl pointing to OAM address
+    LD_BC_HL ; bc now contains RAM address
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
 .projectileOAM:
     ldh a, [hEnemyY]
     ld [hli], a
@@ -81,12 +90,11 @@ SpawnProjectile::
     ld a, PROJECTILE_TILE
     ld [hli], a
     ld [hl], OAMF_PAL0
+.projectileSound:
+    call ProjectileSound
 .setStruct:
     LD_HL_BC
-    call SetEnemyStruct
-.end:
-    call ProjectileSound
-    ret
+    jp SetEnemyStruct
 
 ; UPDATE
 ProjectileUpdate::
@@ -97,7 +105,9 @@ ProjectileUpdate::
     and	PROJECTILE_FLICKER_TIME
     jr nz, .endFlicker
 .canFlicker:
-    SET_HL_TO_ADDRESS wOAM+3, hEnemyOAM
+    ld hl, wOAM+3
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
     ld a, [hl]
     cp a, OAMF_PAL0
     jr z, .palette1
@@ -110,7 +120,9 @@ ProjectileUpdate::
 
 .checkMove:
 .projectileOAM:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
     ldh a, [hEnemyY]
     ld b, a
     ldh a, [hEnemyParam1]
@@ -137,18 +149,22 @@ ProjectileUpdate::
     jr z, .endCollision
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ld d, 8
-    ld e, 8
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
+    ld d, PROJECTILE_WIDTH
+    ld e, PROJECTILE_HEIGHT
     call CollisionCheck
     jr z, .checkHitCactus
     call CollisionWithPlayer
     jr .deathOfProjectile
 .checkHitCactus:
     ld bc, wPlayerCactusOAM
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    ld d, 8
-    ld e, 8
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
+    ld d, PROJECTILE_WIDTH
+    ld e, PROJECTILE_HEIGHT
     call CollisionCheck
     jr z, .endCollision
     call CollisionWithPlayerCactus
@@ -158,34 +174,13 @@ ProjectileUpdate::
     jr .setStruct
 .endCollision:
 
-.checkOffscreenY:
-    ldh a, [hEnemyY]
-    ld b, a
-    ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
-    cp a, b
-    jr nc, .endOffscreenY
-    ld a, SCRN_VY - OFF_SCREEN_ENEMY_BUFFER
-    cp a, b
-    jr c, .endOffscreenY
-.offscreenY:
-    ld bc, PROJECTILE_OAM_BYTES
-    call ClearEnemy
-.endOffscreenY:
-    
 .checkOffscreenX:
-    ldh a, [hEnemyX]
-    ld b, a
-    ld a, SCRN_X + OFF_SCREEN_ENEMY_BUFFER
-    cp a, b
-    jr nc, .endOffscreenX
-    ld a, SCRN_VX - OFF_SCREEN_ENEMY_BUFFER
-    cp a, b
-    jr c, .endOffscreenX
-.offscreenX:
     ld bc, PROJECTILE_OAM_BYTES
-    call ClearEnemy
+    call HandleEnemyOffscreenHorizontal
+    ; Enemy may be cleared, must do setStruct next
 .endOffscreenX:
 
 .setStruct:
-    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
+    ld hl, wEnemies
+    ADD_TO_HL [wEnemyOffset]
     jp SetEnemyStruct
