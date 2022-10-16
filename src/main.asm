@@ -117,8 +117,10 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	ld a, 3
-	ld [wLevel], a
+	; ld a, 3
+	; ld [wLevel], a
+	ld a, 1
+	ld [wSelectedMode], a
 	; ; ^^^
 	ld a, [wSelectedMode]
 	cp a, 0

@@ -476,278 +476,308 @@ ROM0 bank #0:
            $33cd = UpdateGame.classicMode
            $33da = UpdateGame.endlessMode
            $33dd = UpdateGame.endModeSpecific
-  SECTION: $33e7-$363c ($0256 bytes) ["rom"]
-           $33e7 = Common
-           $33fa = Start
-           $344c = MenuLoopOpening
-           $344c = StartMenu
-           $3467 = MenuLoop
-           $3467 = StartGame
-           $346e = OpeningCutscene
-           $34bc = SetupNextLevel
-           $34bc = OpeningCutsceneLoop
-           $34ea = SetupNextLevel.level1
-           $34fd = SetupNextLevel.level2
-           $3510 = SetupNextLevel.level3
-           $3522 = SetupNextLevel.level4
-           $3537 = SetupNextLevel.level5
-           $3549 = SetupNextLevel.level6
-           $3560 = SetupNextLevel.endless
-           $356f = SetupNextLevel.endLevelSetup
-           $3581 = GameCountdownLoop
-           $3581 = PreGameLoop
-           $3584 = GameLoop
-           $3590 = StageClear
-           $35b4 = StageClearLoop
-           $35c0 = GameOver
-           $35e7 = GameOverLoop
-           $35f0 = GameWon
-           $3631 = GameWonLoop
-  SECTION: $363d-$388e ($0252 bytes) ["endless"]
-           $363d = InitializeEndless
-           $3666 = LoadEndlessGraphics
-           $36aa = EndlessUpdate
-           $36aa = EndlessUpdate.checkDifficultyRaise
-           $36c0 = EndlessUpdate.difficultyRaise
-           $36cb = EndlessUpdate.fastPrepareSpawnRate
-           $36cb = EndlessUpdate.setSpawnRate
-           $36d6 = EndlessUpdate.mediumPrepareSpawnRate
-           $36e1 = EndlessUpdate.slowPrepareSpawnRate
-           $36e6 = EndlessUpdate.endCheckDifficultyRaise
-           $36e6 = EndlessUpdate.endSetSpawnRate
-           $36e6 = EndlessUpdate.checkEnemyToSpawn
-           $36f1 = EndlessUpdate.spawnEnemy
-           $36fb = EndlessUpdate.balloonCarrier
-           $370e = EndlessUpdate.bomb
-           $3721 = EndlessUpdate.bird
-           $3734 = EndlessUpdate.anvil
-           $3745 = EndlessUpdate.endCheckEnemyToSpawn
-           $3745 = EndlessUpdate.prepareEnemyToSpawn
-           $3753 = EndlessUpdate.canPrepareEnemy
-           $3775 = EndlessUpdate.prepareBalloonCarrierNormal
-           $377d = EndlessUpdate.prepareBalloonCarrierFollow
-           $3785 = EndlessUpdate.prepareBalloonCarrierProjectile
-           $378d = EndlessUpdate.prepareBalloonCarrierBomb
-           $3793 = EndlessUpdate.prepareBalloonCarrier
-           $37a7 = EndlessUpdate.balloonCarrierLeft
-           $37ab = EndlessUpdate.balloonCarrierRight
-           $37ad = EndlessUpdate.balloonCarrierUpdateDirection
-           $37bf = EndlessUpdate.prepareBombDirect
-           $37c7 = EndlessUpdate.prepareBombFollow
-           $37cd = EndlessUpdate.prepareBomb
-           $37ea = EndlessUpdate.prepareBirdEasy
-           $37f2 = EndlessUpdate.prepareBirdHard
-           $37f8 = EndlessUpdate.prepareBird
-           $380c = EndlessUpdate.birdLeft
-           $3810 = EndlessUpdate.birdRight
-           $3812 = EndlessUpdate.birdUpdateDirection
-           $3824 = EndlessUpdate.prepareAnvil
-           $3844 = EndlessUpdate.endPrepareEnemyToSpawn
-           $3844 = EndlessUpdate.checkPointBalloonToSpawn
-           $3851 = EndlessUpdate.canSpawnPointBalloon
-           $3861 = EndlessUpdate.checkPointBalloonVariant
-           $3868 = EndlessUpdate.pointBalloonEasy
-           $3870 = EndlessUpdate.pointBalloonMedium
-           $3878 = EndlessUpdate.pointBalloonHard
-           $387a = EndlessUpdate.endCheckPointBalloonVariant
-           $388e = EndlessUpdate.endCheckPointBalloonToSpawn
-  SECTION: $388f-$3a17 ($0189 bytes) ["enemy"]
-           $388f = InitializeEnemies
-           $3899 = EnemyUpdate.handleEnemiesHalf
-           $3899 = EnemyUpdate
-           $389f = EnemyUpdate.firstHalf
-           $38a2 = EnemyUpdate.secondHalf
-           $38a4 = EnemyUpdate.setOffsetAndLoopIndex
-           $38ac = EnemyUpdate.loop
-           $38ac = EnemyUpdate.endHandleEnemiesHalf
-           $38da = EnemyUpdate.pointBalloon
-           $38e3 = EnemyUpdate.balloonCarrier
-           $38ec = EnemyUpdate.bird
-           $38f5 = EnemyUpdate.bomb
-           $38fe = EnemyUpdate.projectile
-           $3907 = EnemyUpdate.bossNeedle
-           $3910 = EnemyUpdate.anvil
-           $3919 = EnemyUpdate.explosion
-           $3922 = EnemyUpdate.checkLoop
-           $3935 = EnemyInterCollision
-           $393e = EnemyInterCollision.loop
-           $3950 = EnemyInterCollision.pointBalloon
-           $395a = EnemyInterCollision.bird
-           $3964 = EnemyInterCollision.bomb
-           $396e = EnemyInterCollision.carrier
-           $3976 = EnemyInterCollision.checkCollision
-           $3991 = EnemyInterCollision.checkLoop
-           $39a6 = EnemyInterCollision.hitEnemy
-           $39b9 = FindBalloonCarrier
-           $39c2 = FindBalloonCarrier.loop
-           $39d6 = FindBalloonCarrier.checkLoop
-           $39e9 = FindBalloonCarrier.end
-           $39ea = ClearEnemy
-           $39fc = HandleEnemyOffscreenVertical
-           $3a07 = HandleEnemyOffscreenVertical.offscreen
-           $3a0a = HandleEnemyOffscreenHorizontal
-           $3a15 = HandleEnemyOffscreenHorizontal.offscreen
-  SECTION: $3a18-$3b48 ($0131 bytes) ["sound"]
-           $3a18 = AUDIO_OFF
-           $3a1c = AUDIO_ON
-           $3a21 = InitializeSound
-           $3a28 = StopSweepSound
-           $3a2c = ClearSound
-           $3a36 = SetWaveRAMToSquareWave
-           $3a52 = FallingSound
-           $3a67 = PopSound
-           $3a74 = HitSound
-           $3a81 = ExplosionSound
-           $3a8e = FireworkSound
-           $3a9b = ProjectileSound
-           $3aac = BulletSound
-           $3abd = BossNeedleSound
-           $3ace = BoostSound
-           $3adb = CountdownSound
-           $3ae8 = TitleSplashSound
-           $3af5 = RisingSound
-           $3b0a = CollectSound
-           $3b1f = BassSoundA
-           $3b34 = BassSoundB
-  SECTION: $3b49-$3c4b ($0103 bytes) ["enemy projectile"]
-           $3b49 = SpawnProjectile
-           $3b54 = SpawnProjectile.availableSpace
-           $3b5c = SpawnProjectile.availableOAMSpace
-           $3b68 = SpawnProjectile.setupY2
-           $3b77 = SpawnProjectile.middleY
-           $3b7a = SpawnProjectile.up
-           $3b7e = SpawnProjectile.down
-           $3b80 = SpawnProjectile.endY
-           $3b82 = SpawnProjectile.setupX2
-           $3b82 = SpawnProjectile.endSetupY2
-           $3b8a = SpawnProjectile.left
-           $3b8e = SpawnProjectile.right
-           $3b90 = SpawnProjectile.endX
-           $3b92 = SpawnProjectile.endSetupX2
-           $3b9f = SpawnProjectile.projectileOAM
-           $3baa = SpawnProjectile.projectileSound
-           $3bad = SpawnProjectile.setStruct
-           $3bb2 = ProjectileUpdate
-           $3bb2 = ProjectileUpdate.checkFlicker
-           $3bb9 = ProjectileUpdate.canFlicker
-           $3bc9 = ProjectileUpdate.palette0
-           $3bcd = ProjectileUpdate.palette1
-           $3bcf = ProjectileUpdate.endFlicker
-           $3bcf = ProjectileUpdate.checkMove
-           $3bcf = ProjectileUpdate.projectileOAM
-           $3bec = ProjectileUpdate.endMove
-           $3bec = ProjectileUpdate.checkCollision
-           $3bf9 = ProjectileUpdate.checkHitPlayer
-           $3c15 = ProjectileUpdate.checkHitCactus
-           $3c2f = ProjectileUpdate.deathOfProjectile
-           $3c37 = ProjectileUpdate.endCollision
-           $3c37 = ProjectileUpdate.checkOffscreenX
-           $3c3d = ProjectileUpdate.setStruct
-           $3c3d = ProjectileUpdate.endOffscreenX
-  SECTION: $3c4c-$3d4a ($00ff bytes) ["boss needle"]
-           $3c4c = SpawnBossNeedle
-           $3c57 = SpawnBossNeedle.availableSpace
-           $3c5f = SpawnBossNeedle.availableOAMSpace
-           $3c78 = SpawnBossNeedle.variantDirection
-           $3c7a = SpawnBossNeedle.leftDirection
-           $3c82 = SpawnBossNeedle.isLeftDirection
-           $3c86 = SpawnBossNeedle.rightDirection
-           $3c8e = SpawnBossNeedle.isRightDirection
-           $3c90 = SpawnBossNeedle.endVariantDirection
-           $3c90 = SpawnBossNeedle.bossNeedleOAM
-           $3c9a = SpawnBossNeedle.setStruct
-           $3c9f = BossNeedleUpdate
-           $3c9f = BossNeedleUpdate.bossNeedleOAM
-           $3c9f = BossNeedleUpdate.checkMove
-           $3caa = BossNeedleUpdate.variantDirection
-           $3cac = BossNeedleUpdate.upLeftDirection
-           $3cb6 = BossNeedleUpdate.upRightDirection
-           $3cc0 = BossNeedleUpdate.downLeftDirection
-           $3cca = BossNeedleUpdate.downRightDirection
-           $3cd2 = BossNeedleUpdate.endVariantDirection
-           $3cd2 = BossNeedleUpdate.checkVerticalMovement
-           $3cd8 = BossNeedleUpdate.noMoreVerticalMovement
-           $3cdc = BossNeedleUpdate.strayingVerticalMovement
-           $3cdf = BossNeedleUpdate.endCheckVerticalMovement
-           $3ceb = BossNeedleUpdate.checkCollision
-           $3ceb = BossNeedleUpdate.endMove
-           $3cf8 = BossNeedleUpdate.checkHitPlayer
-           $3d14 = BossNeedleUpdate.checkHitCactus
-           $3d2e = BossNeedleUpdate.deathOfBossNeedle
-           $3d36 = BossNeedleUpdate.endCollision
-           $3d36 = BossNeedleUpdate.checkOffscreenX
-           $3d3c = BossNeedleUpdate.setStruct
-           $3d3c = BossNeedleUpdate.endOffscreenX
-  SECTION: $3d4b-$3e0e ($00c4 bytes) ["score"]
-           $3d4b = InitializeScore
-           $3d53 = InitializeTotal
-           $3d5b = AddPoints
-           $3d61 = AddPoints.carry
-           $3d6a = DecrementPoints
-           $3d73 = DecrementPoints.carry
-           $3d7a = DecrementPoints.checkCapAtZero
-           $3d83 = DecrementPoints.noCap
-           $3d88 = IsScoreZero
-           $3d97 = IsTotalZero
-           $3da6 = AddTotal
-           $3da6 = AddTotal.saveFourthDigit
-           $3dae = AddTotal.toBCD
-           $3db5 = AddTotal.carry
-           $3db9 = AddTotal.checkAddLife
-           $3dc3 = AddTotal.addLife
-           $3dd1 = AddTotal.checkLoop
-           $3dd8 = AddScoreToTotal
-           $3ddd = AddScoreToTotal.setScoreAsTotal
-           $3ded = AddScoreToTotal.isNotZeroTotal
-           $3dff = AddScoreToTotal.loop
-  SECTION: $3e0f-$3e7c ($006e bytes) ["enemy animations"]
-           $3e0f = PopBalloonAnimation
-           $3e1d = PopBalloonAnimation.canSwitchFrames
-           $3e28 = PopBalloonAnimation.frame0
-           $3e4c = PopBalloonAnimation.frame1
-           $3e70 = PopBalloonAnimation.clear
-           $3e77 = PopBalloonAnimation.endFrame
-  SECTION: $3e7d-$3eb4 ($0038 bytes) ["math"]
-           $3e7d = MODULO
-           $3e7f = MODULO.loop
-           $3e84 = DIVISION
-           $3e89 = DIVISION.loop
-           $3e8e = DIVISION.end
-           $3e90 = ToBCD
-           $3ea6 = MULTIPLY
-           $3ea8 = MULTIPLY.loop
-           $3eb3 = MULTIPLY.end
-  SECTION: $3eb5-$3ee6 ($0032 bytes) ["graphics"]
-           $3eb5 = ClearVRAM8000
-           $3ebf = ClearVRAM8800
-           $3ec9 = ClearVRAM9000
-           $3ed3 = ClearMap
-           $3edd = ClearWindow
-  SECTION: $3ee7-$3f13 ($002d bytes) ["controller"]
-           $3ee7 = InitializeController
-           $3eef = ReadController
-           $3eef = ReadController.dPad
-           $3efd = ReadController.buttons
-           $3f0a = ReadController.setControllerVars
-  SECTION: $3f14-$3f3e ($002b bytes) ["collision"]
-           $3f14 = CollisionCheck
-           $3f14 = CollisionCheck.checkY
-           $3f1f = CollisionCheck.tryColliderY
-           $3f26 = CollisionCheck.checkX
-           $3f33 = CollisionCheck.tryColliderX
-           $3f3a = CollisionCheck.collision
-           $3f3d = CollisionCheck.noCollision
-  SECTION: $3f3f-$3f66 ($0028 bytes) ["enemy struct"]
-           $3f3f = InitializeEnemyStructVars
-           $3f4b = SetEnemyStruct
-  SECTION: $3f67-$3f84 ($001e bytes) ["OAM DMA routine"]
-           $3f67 = CopyDMARoutine
-           $3f6e = CopyDMARoutine.copy
-           $3f75 = DMARoutine
-           $3f79 = DMARoutine.wait
-           $3f7d = DMARoutineEnd
-           $3f7d = OAMDMA
-    SLACK: $0098 bytes
+  SECTION: $33e7-$36ad ($02c7 bytes) ["endless"]
+           $33e7 = InitializeEndless
+           $3419 = LoadEndlessGraphics
+           $345d = EndlessUpdate.checkEndlessTimer
+           $345d = EndlessUpdate
+           $346c = EndlessUpdate.endCheckEndlessTimer
+           $346c = EndlessUpdate.prepareVerticalSpawn
+           $346c = EndlessUpdate.handleVertical
+           $347d = EndlessUpdate.verticalLaneLoop
+           $348b = EndlessUpdate.verticalA
+           $349d = EndlessUpdate.verticalB
+           $34af = EndlessUpdate.verticalC
+           $34c1 = EndlessUpdate.verticalD
+           $34cf = EndlessUpdate.cannotPrepareVerticalSpawn
+           $34d6 = EndlessUpdate.canPrepareVerticalSpawn
+           $34da = EndlessUpdate.chooseVerticalEnemy
+           $34e1 = EndlessUpdate.pointBalloon
+           $34ea = EndlessUpdate.pointBalloonVariant
+           $34f1 = EndlessUpdate.pointBalloonEasyVariant
+           $34f9 = EndlessUpdate.pointBalloonMediumVariant
+           $3501 = EndlessUpdate.pointBalloonHardVariant
+           $3503 = EndlessUpdate.pointBalloonVariantSet
+           $3506 = EndlessUpdate.endPointBalloonVariant
+           $3508 = EndlessUpdate.bomb
+           $3511 = EndlessUpdate.bombVariant
+           $3518 = EndlessUpdate.bombDirectVariant
+           $3520 = EndlessUpdate.bombFollowVariant
+           $3522 = EndlessUpdate.bombVariantSet
+           $3525 = EndlessUpdate.endBombVariant
+           $3527 = EndlessUpdate.anvil
+           $3531 = EndlessUpdate.endPrepareVerticalSpawn
+           $3531 = EndlessUpdate.endChooseVerticalEnemy
+           $3531 = EndlessUpdate.cooldownVerticalLanes
+           $3537 = EndlessUpdate.verticalACooldown
+           $3542 = EndlessUpdate.verticalBCooldown
+           $354d = EndlessUpdate.verticalCCooldown
+           $3558 = EndlessUpdate.verticalDCooldown
+           $3563 = EndlessUpdate.endCooldownVerticalLanes
+           $3563 = EndlessUpdate.tryToVerticalSpawn
+           $3571 = EndlessUpdate.canVerticalSpawn
+           $3592 = EndlessUpdate.spawnPointBalloon
+           $359b = EndlessUpdate.spawnBomb
+           $35a4 = EndlessUpdate.spawnAnvil
+           $35ab = EndlessUpdate.endTryToVerticalSpawn
+           $35ab = EndlessUpdate.endHandleVertical
+           $35ab = EndlessUpdate.prepareHorizontalSpawn
+           $35ab = EndlessUpdate.handleHorizontal
+           $35bc = EndlessUpdate.horizontalLaneLoop
+           $35ca = EndlessUpdate.horizontalA
+           $35dc = EndlessUpdate.horizontalB
+           $35ee = EndlessUpdate.horizontalC
+           $3600 = EndlessUpdate.horizontalD
+           $360e = EndlessUpdate.cannotPrepareHorizontalSpawn
+           $3615 = EndlessUpdate.canPrepareHorizontalSpawn
+           $3619 = EndlessUpdate.chooseDirection
+           $3620 = EndlessUpdate.left
+           $3628 = EndlessUpdate.right
+           $362a = EndlessUpdate.directionSet
+           $362d = EndlessUpdate.endChooseDirection
+           $362d = EndlessUpdate.bird
+           $362d = EndlessUpdate.chooseHorizontalEnemy
+           $3632 = EndlessUpdate.birdVariant
+           $3639 = EndlessUpdate.birdEasyVariant
+           $3641 = EndlessUpdate.birdHardVariant
+           $3643 = EndlessUpdate.birdVariantSet
+           $3646 = EndlessUpdate.endBirdVariant
+           $3648 = EndlessUpdate.endPrepareHorizontalSpawn
+           $3648 = EndlessUpdate.endChooseHorizontalEnemy
+           $3648 = EndlessUpdate.cooldownHorizontalLanes
+           $364e = EndlessUpdate.horizontalACooldown
+           $3659 = EndlessUpdate.horizontalBCooldown
+           $3664 = EndlessUpdate.horizontalCCooldown
+           $366f = EndlessUpdate.horizontalDCooldown
+           $367a = EndlessUpdate.endCooldownHorizontalLanes
+           $367a = EndlessUpdate.tryToHorizontalSpawn
+           $3688 = EndlessUpdate.canHorizontalSpawn
+           $36ad = EndlessUpdate.endTryToHorizontalSpawn
+           $36ad = EndlessUpdate.endHandleHorizontal
+  SECTION: $36ae-$3903 ($0256 bytes) ["rom"]
+           $36ae = Common
+           $36c1 = Start
+           $3713 = MenuLoopOpening
+           $3713 = StartMenu
+           $372e = MenuLoop
+           $372e = StartGame
+           $3735 = OpeningCutscene
+           $3783 = SetupNextLevel
+           $3783 = OpeningCutsceneLoop
+           $37b1 = SetupNextLevel.level1
+           $37c4 = SetupNextLevel.level2
+           $37d7 = SetupNextLevel.level3
+           $37e9 = SetupNextLevel.level4
+           $37fe = SetupNextLevel.level5
+           $3810 = SetupNextLevel.level6
+           $3827 = SetupNextLevel.endless
+           $3836 = SetupNextLevel.endLevelSetup
+           $3848 = GameCountdownLoop
+           $3848 = PreGameLoop
+           $384b = GameLoop
+           $3857 = StageClear
+           $387b = StageClearLoop
+           $3887 = GameOver
+           $38ae = GameOverLoop
+           $38b7 = GameWon
+           $38f8 = GameWonLoop
+  SECTION: $3904-$3a8c ($0189 bytes) ["enemy"]
+           $3904 = InitializeEnemies
+           $390e = EnemyUpdate.handleEnemiesHalf
+           $390e = EnemyUpdate
+           $3914 = EnemyUpdate.firstHalf
+           $3917 = EnemyUpdate.secondHalf
+           $3919 = EnemyUpdate.setOffsetAndLoopIndex
+           $3921 = EnemyUpdate.loop
+           $3921 = EnemyUpdate.endHandleEnemiesHalf
+           $394f = EnemyUpdate.pointBalloon
+           $3958 = EnemyUpdate.balloonCarrier
+           $3961 = EnemyUpdate.bird
+           $396a = EnemyUpdate.bomb
+           $3973 = EnemyUpdate.projectile
+           $397c = EnemyUpdate.bossNeedle
+           $3985 = EnemyUpdate.anvil
+           $398e = EnemyUpdate.explosion
+           $3997 = EnemyUpdate.checkLoop
+           $39aa = EnemyInterCollision
+           $39b3 = EnemyInterCollision.loop
+           $39c5 = EnemyInterCollision.pointBalloon
+           $39cf = EnemyInterCollision.bird
+           $39d9 = EnemyInterCollision.bomb
+           $39e3 = EnemyInterCollision.carrier
+           $39eb = EnemyInterCollision.checkCollision
+           $3a06 = EnemyInterCollision.checkLoop
+           $3a1b = EnemyInterCollision.hitEnemy
+           $3a2e = FindBalloonCarrier
+           $3a37 = FindBalloonCarrier.loop
+           $3a4b = FindBalloonCarrier.checkLoop
+           $3a5e = FindBalloonCarrier.end
+           $3a5f = ClearEnemy
+           $3a71 = HandleEnemyOffscreenVertical
+           $3a7c = HandleEnemyOffscreenVertical.offscreen
+           $3a7f = HandleEnemyOffscreenHorizontal
+           $3a8a = HandleEnemyOffscreenHorizontal.offscreen
+  SECTION: $3a8d-$3bbd ($0131 bytes) ["sound"]
+           $3a8d = AUDIO_OFF
+           $3a91 = AUDIO_ON
+           $3a96 = InitializeSound
+           $3a9d = StopSweepSound
+           $3aa1 = ClearSound
+           $3aab = SetWaveRAMToSquareWave
+           $3ac7 = FallingSound
+           $3adc = PopSound
+           $3ae9 = HitSound
+           $3af6 = ExplosionSound
+           $3b03 = FireworkSound
+           $3b10 = ProjectileSound
+           $3b21 = BulletSound
+           $3b32 = BossNeedleSound
+           $3b43 = BoostSound
+           $3b50 = CountdownSound
+           $3b5d = TitleSplashSound
+           $3b6a = RisingSound
+           $3b7f = CollectSound
+           $3b94 = BassSoundA
+           $3ba9 = BassSoundB
+  SECTION: $3bbe-$3cc0 ($0103 bytes) ["enemy projectile"]
+           $3bbe = SpawnProjectile
+           $3bc9 = SpawnProjectile.availableSpace
+           $3bd1 = SpawnProjectile.availableOAMSpace
+           $3bdd = SpawnProjectile.setupY2
+           $3bec = SpawnProjectile.middleY
+           $3bef = SpawnProjectile.up
+           $3bf3 = SpawnProjectile.down
+           $3bf5 = SpawnProjectile.endY
+           $3bf7 = SpawnProjectile.setupX2
+           $3bf7 = SpawnProjectile.endSetupY2
+           $3bff = SpawnProjectile.left
+           $3c03 = SpawnProjectile.right
+           $3c05 = SpawnProjectile.endX
+           $3c07 = SpawnProjectile.endSetupX2
+           $3c14 = SpawnProjectile.projectileOAM
+           $3c1f = SpawnProjectile.projectileSound
+           $3c22 = SpawnProjectile.setStruct
+           $3c27 = ProjectileUpdate
+           $3c27 = ProjectileUpdate.checkFlicker
+           $3c2e = ProjectileUpdate.canFlicker
+           $3c3e = ProjectileUpdate.palette0
+           $3c42 = ProjectileUpdate.palette1
+           $3c44 = ProjectileUpdate.endFlicker
+           $3c44 = ProjectileUpdate.checkMove
+           $3c44 = ProjectileUpdate.projectileOAM
+           $3c61 = ProjectileUpdate.endMove
+           $3c61 = ProjectileUpdate.checkCollision
+           $3c6e = ProjectileUpdate.checkHitPlayer
+           $3c8a = ProjectileUpdate.checkHitCactus
+           $3ca4 = ProjectileUpdate.deathOfProjectile
+           $3cac = ProjectileUpdate.endCollision
+           $3cac = ProjectileUpdate.checkOffscreenX
+           $3cb2 = ProjectileUpdate.setStruct
+           $3cb2 = ProjectileUpdate.endOffscreenX
+  SECTION: $3cc1-$3dbf ($00ff bytes) ["boss needle"]
+           $3cc1 = SpawnBossNeedle
+           $3ccc = SpawnBossNeedle.availableSpace
+           $3cd4 = SpawnBossNeedle.availableOAMSpace
+           $3ced = SpawnBossNeedle.variantDirection
+           $3cef = SpawnBossNeedle.leftDirection
+           $3cf7 = SpawnBossNeedle.isLeftDirection
+           $3cfb = SpawnBossNeedle.rightDirection
+           $3d03 = SpawnBossNeedle.isRightDirection
+           $3d05 = SpawnBossNeedle.endVariantDirection
+           $3d05 = SpawnBossNeedle.bossNeedleOAM
+           $3d0f = SpawnBossNeedle.setStruct
+           $3d14 = BossNeedleUpdate
+           $3d14 = BossNeedleUpdate.bossNeedleOAM
+           $3d14 = BossNeedleUpdate.checkMove
+           $3d1f = BossNeedleUpdate.variantDirection
+           $3d21 = BossNeedleUpdate.upLeftDirection
+           $3d2b = BossNeedleUpdate.upRightDirection
+           $3d35 = BossNeedleUpdate.downLeftDirection
+           $3d3f = BossNeedleUpdate.downRightDirection
+           $3d47 = BossNeedleUpdate.endVariantDirection
+           $3d47 = BossNeedleUpdate.checkVerticalMovement
+           $3d4d = BossNeedleUpdate.noMoreVerticalMovement
+           $3d51 = BossNeedleUpdate.strayingVerticalMovement
+           $3d54 = BossNeedleUpdate.endCheckVerticalMovement
+           $3d60 = BossNeedleUpdate.checkCollision
+           $3d60 = BossNeedleUpdate.endMove
+           $3d6d = BossNeedleUpdate.checkHitPlayer
+           $3d89 = BossNeedleUpdate.checkHitCactus
+           $3da3 = BossNeedleUpdate.deathOfBossNeedle
+           $3dab = BossNeedleUpdate.endCollision
+           $3dab = BossNeedleUpdate.checkOffscreenX
+           $3db1 = BossNeedleUpdate.setStruct
+           $3db1 = BossNeedleUpdate.endOffscreenX
+  SECTION: $3dc0-$3e83 ($00c4 bytes) ["score"]
+           $3dc0 = InitializeScore
+           $3dc8 = InitializeTotal
+           $3dd0 = AddPoints
+           $3dd6 = AddPoints.carry
+           $3ddf = DecrementPoints
+           $3de8 = DecrementPoints.carry
+           $3def = DecrementPoints.checkCapAtZero
+           $3df8 = DecrementPoints.noCap
+           $3dfd = IsScoreZero
+           $3e0c = IsTotalZero
+           $3e1b = AddTotal
+           $3e1b = AddTotal.saveFourthDigit
+           $3e23 = AddTotal.toBCD
+           $3e2a = AddTotal.carry
+           $3e2e = AddTotal.checkAddLife
+           $3e38 = AddTotal.addLife
+           $3e46 = AddTotal.checkLoop
+           $3e4d = AddScoreToTotal
+           $3e52 = AddScoreToTotal.setScoreAsTotal
+           $3e62 = AddScoreToTotal.isNotZeroTotal
+           $3e74 = AddScoreToTotal.loop
+  SECTION: $3e84-$3ef1 ($006e bytes) ["enemy animations"]
+           $3e84 = PopBalloonAnimation
+           $3e92 = PopBalloonAnimation.canSwitchFrames
+           $3e9d = PopBalloonAnimation.frame0
+           $3ec1 = PopBalloonAnimation.frame1
+           $3ee5 = PopBalloonAnimation.clear
+           $3eec = PopBalloonAnimation.endFrame
+  SECTION: $3ef2-$3f29 ($0038 bytes) ["math"]
+           $3ef2 = MODULO
+           $3ef4 = MODULO.loop
+           $3ef9 = DIVISION
+           $3efe = DIVISION.loop
+           $3f03 = DIVISION.end
+           $3f05 = ToBCD
+           $3f1b = MULTIPLY
+           $3f1d = MULTIPLY.loop
+           $3f28 = MULTIPLY.end
+  SECTION: $3f2a-$3f5b ($0032 bytes) ["graphics"]
+           $3f2a = ClearVRAM8000
+           $3f34 = ClearVRAM8800
+           $3f3e = ClearVRAM9000
+           $3f48 = ClearMap
+           $3f52 = ClearWindow
+  SECTION: $3f5c-$3f88 ($002d bytes) ["controller"]
+           $3f5c = InitializeController
+           $3f64 = ReadController
+           $3f64 = ReadController.dPad
+           $3f72 = ReadController.buttons
+           $3f7f = ReadController.setControllerVars
+  SECTION: $3f89-$3fb3 ($002b bytes) ["collision"]
+           $3f89 = CollisionCheck
+           $3f89 = CollisionCheck.checkY
+           $3f94 = CollisionCheck.tryColliderY
+           $3f9b = CollisionCheck.checkX
+           $3fa8 = CollisionCheck.tryColliderX
+           $3faf = CollisionCheck.collision
+           $3fb2 = CollisionCheck.noCollision
+  SECTION: $3fb4-$3fdb ($0028 bytes) ["enemy struct"]
+           $3fb4 = InitializeEnemyStructVars
+           $3fc0 = SetEnemyStruct
+  SECTION: $3fdc-$3ff9 ($001e bytes) ["OAM DMA routine"]
+           $3fdc = CopyDMARoutine
+           $3fe3 = CopyDMARoutine.copy
+           $3fea = DMARoutine
+           $3fee = DMARoutine.wait
+           $3ff2 = DMARoutineEnd
+           $3ff2 = OAMDMA
+    SLACK: $0023 bytes
 
 ROMX bank #1:
   SECTION: $4000-$538f ($1390 bytes) ["tilesets 2"]
@@ -1676,65 +1706,71 @@ WRAM0 bank #0:
            $c0a4 = envelope4
            $c0a5 = highmask4
            $c0a6 = _end_vars
-  SECTION: $c0a6-$c0b0 ($000b bytes) ["endless vars"]
+  SECTION: $c0a6-$c0b6 ($0011 bytes) ["endless vars"]
            $c0a6 = wEndlessTimer
            $c0a7 = wEndlessDelayTimer
-           $c0a8 = wEndlessDifficulty
-           $c0a9 = wEndlessSpawnTime
-           $c0aa = wEndlessEnemyNumber
-           $c0ab = wEndlessEnemyVariant
-           $c0ac = wEndlessEnemyPosition
-           $c0ad = wEndlessEnemyDirection
-           $c0ae = wEndlessEnemySpawnTimer
-           $c0af = wEndlessEnemySpawnTrigger
-           $c0b0 = wEndlessPointBalloonSpawnTimer
-  SECTION: $c0b1-$c0b6 ($0006 bytes) ["score vars"]
-           $c0b1 = wScore
-           $c0b4 = wTotal
-  SECTION: $c0b7-$c0bb ($0005 bytes) ["palettes vars"]
-           $c0b7 = wFadeInFrame
-           $c0b8 = wFadeOutFrame
-           $c0b9 = wTriggerFadeIn
-           $c0ba = wTriggerFadeOut
-           $c0bb = wFlickerTimer
-  SECTION: $c0bc-$c0c0 ($0005 bytes) ["menu vars"]
-           $c0bc = wMenuFrame
-           $c0bd = wSelectedMode
-           $c0be = wMenuCursorOAM
-           $c0bf = wMenuCursorTimer
-           $c0c0 = wSecret
-  SECTION: $c0c1-$c0c5 ($0005 bytes) ["level vars"]
-           $c0c1 = wLevel
-           $c0c2 = wLevelWaitCounter
-           $c0c3 = wLevelWaitBoss
-           $c0c4 = wLevelDataAddress
-  SECTION: $c0c6-$c0c9 ($0004 bytes) ["sequence vars"]
-           $c0c6 = wSequenceWaitCounter
-           $c0c7 = wSequenceDataAddress
-           $c0c9 = wPhase
-  SECTION: $c0ca-$c0cd ($0004 bytes) ["bullet vars"]
-           $c0ca = wPlayerBulletY
-           $c0cb = wPlayerBulletX
-           $c0cc = wPlayerBulletAlive
-           $c0cd = wPlayerBulletRight
-  SECTION: $c0ce-$c0d0 ($0003 bytes) ["stage clear vars"]
-           $c0ce = wLivesToAdd
-           $c0cf = wPointSound
-           $c0d0 = wStageNumberOAM
-  SECTION: $c0d1-$c0d3 ($0003 bytes) ["interrupts vars"]
-           $c0d1 = wVBlankFlag
-           $c0d2 = wLCDInterrupt
-  SECTION: $c0d4-$c0d5 ($0002 bytes) ["game vars"]
-           $c0d4 = wCountdownFrame
-           $c0d5 = wCountdownOAM
-  SECTION: $c0d6-$c0d7 ($0002 bytes) ["ending cutscene vars"]
-           $c0d6 = wHandClappingFrame
-           $c0d7 = wHandClapOAM
-  SECTION: $c0d8-$c0d9 ($0002 bytes) ["opening cutscene vars"]
-           $c0d8 = wHandWavingFrame
-           $c0d9 = wHandWaveOAM
-  SECTION: $c0da-$c0da ($0001 byte) ["boss miscellaneous vars"]
-           $c0da = wWaitBossTimer
+           $c0a8 = wEndlessVerticalLane
+           $c0a9 = wEndlessVerticalACooldown
+           $c0aa = wEndlessVerticalBCooldown
+           $c0ab = wEndlessVerticalCCooldown
+           $c0ac = wEndlessVerticalDCooldown
+           $c0ad = wEndlessVerticalEnemyNumber
+           $c0ae = wEndlessVerticalEnemyVariant
+           $c0af = wEndlessHorizontalLane
+           $c0b0 = wEndlessHorizontal_A_Cooldown
+           $c0b1 = wEndlessHorizontal_B_Cooldown
+           $c0b2 = wEndlessHorizontal_C_Cooldown
+           $c0b3 = wEndlessHorizontal_D_Cooldown
+           $c0b4 = wEndlessHorizontalEnemyNumber
+           $c0b5 = wEndlessHorizontalEnemyVariant
+           $c0b6 = wEndlessHorizontalEnemyDirection
+  SECTION: $c0b7-$c0bc ($0006 bytes) ["score vars"]
+           $c0b7 = wScore
+           $c0ba = wTotal
+  SECTION: $c0bd-$c0c1 ($0005 bytes) ["palettes vars"]
+           $c0bd = wFadeInFrame
+           $c0be = wFadeOutFrame
+           $c0bf = wTriggerFadeIn
+           $c0c0 = wTriggerFadeOut
+           $c0c1 = wFlickerTimer
+  SECTION: $c0c2-$c0c6 ($0005 bytes) ["menu vars"]
+           $c0c2 = wMenuFrame
+           $c0c3 = wSelectedMode
+           $c0c4 = wMenuCursorOAM
+           $c0c5 = wMenuCursorTimer
+           $c0c6 = wSecret
+  SECTION: $c0c7-$c0cb ($0005 bytes) ["level vars"]
+           $c0c7 = wLevel
+           $c0c8 = wLevelWaitCounter
+           $c0c9 = wLevelWaitBoss
+           $c0ca = wLevelDataAddress
+  SECTION: $c0cc-$c0cf ($0004 bytes) ["sequence vars"]
+           $c0cc = wSequenceWaitCounter
+           $c0cd = wSequenceDataAddress
+           $c0cf = wPhase
+  SECTION: $c0d0-$c0d3 ($0004 bytes) ["bullet vars"]
+           $c0d0 = wPlayerBulletY
+           $c0d1 = wPlayerBulletX
+           $c0d2 = wPlayerBulletAlive
+           $c0d3 = wPlayerBulletRight
+  SECTION: $c0d4-$c0d6 ($0003 bytes) ["stage clear vars"]
+           $c0d4 = wLivesToAdd
+           $c0d5 = wPointSound
+           $c0d6 = wStageNumberOAM
+  SECTION: $c0d7-$c0d9 ($0003 bytes) ["interrupts vars"]
+           $c0d7 = wVBlankFlag
+           $c0d8 = wLCDInterrupt
+  SECTION: $c0da-$c0db ($0002 bytes) ["game vars"]
+           $c0da = wCountdownFrame
+           $c0db = wCountdownOAM
+  SECTION: $c0dc-$c0dd ($0002 bytes) ["ending cutscene vars"]
+           $c0dc = wHandClappingFrame
+           $c0dd = wHandClapOAM
+  SECTION: $c0de-$c0df ($0002 bytes) ["opening cutscene vars"]
+           $c0de = wHandWavingFrame
+           $c0df = wHandWaveOAM
+  SECTION: $c0e0-$c0e0 ($0001 byte) ["boss miscellaneous vars"]
+           $c0e0 = wWaitBossTimer
   SECTION: $c100-$c19f ($00a0 bytes) ["OAM vars"]
            $c100 = wPlayerCactusOAM
            $c108 = wPlayerBalloonOAM
@@ -1742,7 +1778,7 @@ WRAM0 bank #0:
            $c114 = OAMVars
            $c114 = wOAM
            $c1a0 = OAMVarsEnd
-    SLACK: $0e85 bytes
+    SLACK: $0e7f bytes
 
 HRAM bank #0:
   SECTION: $ff80-$ff92 ($0013 bytes) ["player vars"]
@@ -1803,7 +1839,7 @@ HRAM bank #0:
     SLACK: $0048 bytes
 
 USED:
-    ROM0: $3f68 bytes in 1 bank
+    ROM0: $3fdd bytes in 1 bank
     ROMX: $3f04 bytes in 1 bank
-    WRAM0: $017b bytes in 1 bank
+    WRAM0: $0181 bytes in 1 bank
     HRAM: $0037 bytes in 1 bank
