@@ -3,12 +3,13 @@ INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 
-; ENDLESS_DELAY_TIMER_RESET_TIME EQU %01111111
-; ENDLESS_TIMER_RESET_TIME EQU %00000111
-; ENDLESS_PREPARE_ENEMY_SLOW_TIME EQU 100
-; ENDLESS_PREPARE_ENEMY_MEDIUM_TIME EQU 40
-; ENDLESS_PREPARE_ENEMY_FAST_TIME EQU 20
-; ENDLESS_SPAWN_ENEMY_DELAY_AFTER_PREPARE EQU 4
+ENDLESS_DELAY_TIMER_RESET_TIME EQU 100
+
+ENDLESS_PREPARE_VERTICAL_SPAWN_TIME EQU 50
+ENDLESS_PREPARE_HORIZONTAL_SPAWN_TIME EQU 55
+
+ENDLESS_VERTICAL_SPAWN_TIME EQU 90
+ENDLESS_HORIZONTAL_SPAWN_TIME EQU 95
 
 ENDLESS_VERTICAL_LANES EQU 4
 ENDLESS_HORIZONTAL_LANES EQU 4
@@ -16,18 +17,53 @@ ENDLESS_HORIZONTAL_LANES EQU 4
 ENDLESS_VERTICAL_COOLDOWN EQU 20
 ENDLESS_HORIZONTAL_COOLDOWN EQU 40
 
+ENDLESS_VERTICAL_COOLDOWN_TIMER EQU %00000011
+ENDLESS_HORIZONTAL_COOLDOWN_TIMER EQU %00000011
+
+; VERTICAL ENEMY SPAWN RATES
+
+ENDLESS_VERTICAL_SPAWN_DENOMINATOR EQU 10
+ENDLESS_VERTICAL_SPAWN_POINT_BALLOON_RATE EQU 5
+ENDLESS_VERTICAL_SPAWN_BOMB_RATE EQU 4
+ENDLESS_VERTICAL_SPAWN_ANVIL_RATE EQU 1
+
+; VERTICAL ENEMY VARIANT SPAWN RATES
+
+ENDLESS_SPAWN_POINT_BALLOON_VARIANT_DENOMINATOR EQU 3
+ENDLESS_SPAWN_POINT_BALLOON_VARIANT_EASY_RATE EQU 1
+ENDLESS_SPAWN_POINT_BALLOON_VARIANT_MEDIUM_RATE EQU 1
+ENDLESS_SPAWN_POINT_BALLOON_VARIANT_HARD_RATE EQU 1
+
+ENDLESS_SPAWN_BOMB_VARIANT_DENOMINATOR EQU 2
+ENDLESS_SPAWN_BOMB_VARIANT_DIRECT_RATE EQU 1
+ENDLESS_SPAWN_BOMB_VARIANT_FOLLOW_RATE EQU 1
+
+; Only using anvil variant
+; ENDLESS_SPAWN_ANVIL_VARIANT_DENOMINATOR EQU 2
+; ENDLESS_SPAWN_ANVIL_VARIANT_NORMAL_RATE EQU 1
+; ENDLESS_SPAWN_ANVIL_VARIANT_CACTUS_RATE EQU 1
+
+; HORIZONTAL ENEMY SPAWN RATES
+
+ENDLESS_HORIZONTAL_SPAWN_DENOMINATOR EQU 2
+ENDLESS_HORIZONTAL_SPAWN_BALLOON_CARRIER_RATE EQU 1
+ENDLESS_HORIZONTAL_SPAWN_BIRD_RATE EQU 1
+
+; HORIZONTAL ENEMY VARIANT SPAWN RATES
+
+ENDLESS_SPAWN_BALLOON_CARRIER_VARIANT_DENOMINATOR EQU 4
+ENDLESS_SPAWN_BALLOON_CARRIER_VARIANT_NORMAL_RATE EQU 1
+ENDLESS_SPAWN_BALLOON_CARRIER_VARIANT_FOLLOW_RATE EQU 1
+ENDLESS_SPAWN_BALLOON_CARRIER_VARIANT_PROJECTILE_RATE EQU 1
+ENDLESS_SPAWN_BALLOON_CARRIER_VARIANT_BOMB_RATE EQU 1
+
+ENDLESS_SPAWN_BIRD_VARIANT_DENOMINATOR EQU 2
+ENDLESS_SPAWN_BIRD_VARIANT_EASY_RATE EQU 1
+ENDLESS_SPAWN_BIRD_VARIANT_HARD_RATE EQU 1
+
 SECTION "endless vars", WRAM0
     wEndlessTimer:: DB
     wEndlessDelayTimer:: DB
-    ; wEndlessDifficulty:: DB
-    ; wEndlessSpawnTime:: DB
-    ; wEndlessEnemyNumber:: DB
-    ; wEndlessEnemyVariant:: DB
-    ; wEndlessEnemyPosition:: DB
-    ; wEndlessEnemyDirection:: DB
-    ; wEndlessEnemySpawnTimer:: DB
-    ; wEndlessEnemySpawnTrigger:: DB
-    ; wEndlessPointBalloonSpawnTimer:: DB
 
     ; Vertical Lanes
     wEndlessVerticalLane:: DB
@@ -58,29 +94,25 @@ InitializeEndless::
 	xor a ; ld a, 0
     ld [wEndlessTimer], a
     ld [wEndlessDelayTimer], a
-    ; ld [wEndlessEnemyNumber], a
-    ; ld [wEndlessEnemyVariant], a
-    ; ld [wEndlessEnemyPosition], a
-    ; ld [wEndlessEnemyDirection], a
-    ; ld [wEndlessDifficulty], a
-    ; ld [wEndlessSpawnTime], a
-    ; ld [wEndlessEnemySpawnTimer], a
-    ; ld [wEndlessEnemySpawnTrigger], a
-    ; ld [wEndlessPointBalloonSpawnTimer], a
+
     ld [wEndlessVerticalLane], a
     ld [wEndlessVerticalACooldown], a
     ld [wEndlessVerticalBCooldown], a
     ld [wEndlessVerticalCCooldown], a
     ld [wEndlessVerticalDCooldown], a
+
     ld [wEndlessVerticalEnemyNumber], a
     ld [wEndlessVerticalEnemyVariant], a
+
     ld [wEndlessHorizontalLane], a
     ld [wEndlessHorizontal_A_Cooldown], a
     ld [wEndlessHorizontal_B_Cooldown], a
     ld [wEndlessHorizontal_C_Cooldown], a
     ld [wEndlessHorizontal_D_Cooldown], a
+
     ld [wEndlessHorizontalEnemyNumber], a
     ld [wEndlessHorizontalEnemyVariant], a
+    ld [wEndlessHorizontalEnemyDirection], a
     ret
 
 LoadEndlessGraphics::
@@ -123,7 +155,7 @@ EndlessUpdate::
     ld a, [wEndlessDelayTimer]
     inc a
     ld [wEndlessDelayTimer], a
-    cp a, 100
+    cp a, ENDLESS_DELAY_TIMER_RESET_TIME
     jr nz, .endCheckEndlessTimer
     xor a ; ld a, 0
     ld [wEndlessDelayTimer], a
@@ -135,7 +167,7 @@ EndlessUpdate::
 ; PREPARE TO SPAWN
 .prepareVerticalSpawn:
     ld a, [wEndlessDelayTimer]
-    cp a, 50
+    cp a, ENDLESS_PREPARE_VERTICAL_SPAWN_TIME
     jp nz, .endPrepareVerticalSpawn
 
     ld b, ENDLESS_VERTICAL_LANES + 1 ; for looping
@@ -198,28 +230,28 @@ EndlessUpdate::
     ld a, c
     ld [wEndlessVerticalLane], a
 .chooseVerticalEnemy:
-    RANDOM 3
+    RANDOM ENDLESS_VERTICAL_SPAWN_DENOMINATOR
 ; POINT BALLOON
 .pointBalloon:
-    cp a, 0
-    jr nz, .bomb
+    cp a, ENDLESS_VERTICAL_SPAWN_POINT_BALLOON_RATE
+    jr nc, .bomb
     ld a, POINT_BALLOON
     ld [wEndlessVerticalEnemyNumber], a
 .pointBalloonVariant:
-    RANDOM 3
+    RANDOM ENDLESS_SPAWN_POINT_BALLOON_VARIANT_DENOMINATOR
 .pointBalloonEasyVariant:
-    cp a, 0
-    jr nz, .pointBalloonMediumVariant
+    cp a, ENDLESS_SPAWN_POINT_BALLOON_VARIANT_EASY_RATE
+    jr nc, .pointBalloonMediumVariant
     ld a, BALLOON_EASY_VARIANT
     jr .pointBalloonVariantSet
 .pointBalloonMediumVariant:
-    cp a, 1
-    jr nz, .pointBalloonHardVariant
+    cp a, ENDLESS_SPAWN_POINT_BALLOON_VARIANT_EASY_RATE + ENDLESS_SPAWN_POINT_BALLOON_VARIANT_MEDIUM_RATE
+    jr nc, .pointBalloonHardVariant
     ld a, BALLOON_MEDIUM_VARIANT
     jr .pointBalloonVariantSet
 .pointBalloonHardVariant:
-    ; cp a, 2
-    ; jr nz, .endPointBalloonVariant
+    ; cp a, ENDLESS_SPAWN_POINT_BALLOON_VARIANT_EASY_RATE + ENDLESS_SPAWN_POINT_BALLOON_VARIANT_MEDIUM_RATE + ENDLESS_SPAWN_POINT_BALLOON_VARIANT_HARD_RATE
+    ; jr nc, .endPointBalloonVariant
     ld a, BALLOON_HARD_VARIANT
     ; jr .pointBalloonVariantSet
 .pointBalloonVariantSet:
@@ -228,20 +260,20 @@ EndlessUpdate::
     jr .endChooseVerticalEnemy
 ; BOMB
 .bomb:
-    cp a, 1
-    jr nz, .anvil
+    cp a, ENDLESS_VERTICAL_SPAWN_POINT_BALLOON_RATE + ENDLESS_VERTICAL_SPAWN_BOMB_RATE
+    jr nc, .anvil
     ld a, BOMB
     ld [wEndlessVerticalEnemyNumber], a
 .bombVariant:
-    RANDOM 2
+    RANDOM ENDLESS_SPAWN_BOMB_VARIANT_DENOMINATOR
 .bombDirectVariant:
-    cp a, 0
-    jr nz, .bombFollowVariant
+    cp a, ENDLESS_SPAWN_BOMB_VARIANT_DIRECT_RATE
+    jr nc, .bombFollowVariant
     ld a, BOMB_DIRECT_VARIANT
     jr .bombVariantSet
 .bombFollowVariant:
-    ; cp a, 0
-    ; jr nz, .endBombVariant
+    ; cp a, ENDLESS_SPAWN_BOMB_VARIANT_DIRECT_RATE + ENDLESS_SPAWN_BOMB_VARIANT_FOLLOW_RATE
+    ; jr nc, .endBombVariant
     ld a, BOMB_FOLLOW_VARIANT
     ; jr .bombVariantSet
 .bombVariantSet:
@@ -250,8 +282,8 @@ EndlessUpdate::
     jr .endChooseVerticalEnemy
 ; ANVIL
 .anvil:
-    ; cp a, 2
-    ; jr nz, .endChooseVerticalEnemy
+    ; cp a, ENDLESS_VERTICAL_SPAWN_POINT_BALLOON_RATE + ENDLESS_VERTICAL_SPAWN_BOMB_RATE + ENDLESS_VERTICAL_SPAWN_ANVIL_RATE
+    ; jr nc, .endChooseVerticalEnemy
     ld a, ANVIL
     ld [wEndlessVerticalEnemyNumber], a
     ld a, ANVIL_NORMAL_VARIANT
@@ -263,7 +295,7 @@ EndlessUpdate::
 ; COOLDOWN LANES
 .cooldownVerticalLanes:
     ldh a, [hGlobalTimer]
-    and %00000011
+    and ENDLESS_VERTICAL_COOLDOWN_TIMER
     jr nz, .endCooldownVerticalLanes
 .verticalACooldown:
     ld a, [wEndlessVerticalACooldown]
@@ -294,7 +326,7 @@ EndlessUpdate::
 ; TRY TO SPAWN
 .tryToVerticalSpawn:
     ld a, [wEndlessDelayTimer]
-    cp a, 90
+    cp a, ENDLESS_VERTICAL_SPAWN_TIME
     jr nz, .endTryToVerticalSpawn
 
     ld a, [wEndlessVerticalLane]
@@ -323,12 +355,12 @@ EndlessUpdate::
     cp a, POINT_BALLOON
     jr nz, .spawnBomb
     call SpawnPointBalloon
-    jr .endHandleVertical
+    jr .endTryToVerticalSpawn
 .spawnBomb:
     cp a, BOMB
     jr nz, .spawnAnvil
     call SpawnBomb
-    jr .endHandleVertical
+    jr .endTryToVerticalSpawn
 .spawnAnvil:
     ; cp a, ANVIL
     ; jr nz, .endTryToVerticalSpawn
@@ -336,7 +368,7 @@ EndlessUpdate::
     ld a, OFFSCREEN_TOP
     ldh [hEnemyY], a
     call SpawnAnvil
-    ; jr .endHandleVertical
+    ; jr .endTryToVerticalSpawn
 .endTryToVerticalSpawn:
 
 .endHandleVertical:
@@ -425,37 +457,68 @@ EndlessUpdate::
     ld [wEndlessHorizontalEnemyDirection], a
 .endChooseDirection:
 .chooseHorizontalEnemy:
-    ; RANDOM 3
+    RANDOM ENDLESS_HORIZONTAL_SPAWN_DENOMINATOR
+; BALLOON CARRIER
+.balloonCarrier:
+    cp a, ENDLESS_HORIZONTAL_SPAWN_BALLOON_CARRIER_RATE
+    jr nc, .bird
+    ld a, BALLOON_CARRIER
+    ld [wEndlessHorizontalEnemyNumber], a
+.balloonCarrierVariant:
+    RANDOM ENDLESS_SPAWN_BALLOON_CARRIER_VARIANT_DENOMINATOR
+.balloonCarrierNormalVariant:
+    cp a, ENDLESS_SPAWN_BALLOON_CARRIER_VARIANT_NORMAL_RATE
+    jr nc, .balloonCarrierProjectileVariant
+    ld a, CARRIER_NORMAL_VARIANT
+    jr .balloonCarrierVariantSet
+.balloonCarrierProjectileVariant:
+    cp a, ENDLESS_SPAWN_BALLOON_CARRIER_VARIANT_NORMAL_RATE + ENDLESS_SPAWN_BALLOON_CARRIER_VARIANT_PROJECTILE_RATE
+    jr nc, .balloonCarrierFollowVariant
+    ld a, CARRIER_PROJECTILE_VARIANT
+    jr .balloonCarrierVariantSet
+.balloonCarrierFollowVariant:
+    cp a, ENDLESS_SPAWN_BALLOON_CARRIER_VARIANT_NORMAL_RATE + ENDLESS_SPAWN_BALLOON_CARRIER_VARIANT_PROJECTILE_RATE + ENDLESS_SPAWN_BALLOON_CARRIER_VARIANT_FOLLOW_RATE
+    jr nc, .balloonCarrierBombVariant
+    ld a, CARRIER_FOLLOW_VARIANT
+    jr .balloonCarrierVariantSet
+.balloonCarrierBombVariant:
+    ; cp a, ENDLESS_SPAWN_BALLOON_CARRIER_VARIANT_NORMAL_RATE + ENDLESS_SPAWN_BALLOON_CARRIER_VARIANT_PROJECTILE_RATE + ENDLESS_SPAWN_BALLOON_CARRIER_VARIANT_FOLLOW_RATE + ENDLESS_SPAWN_BALLOON_CARRIER_VARIANT_BOMB_RATE
+    ; jr nc, .endBalloonCarrierVariant
+    ld a, CARRIER_BOMB_VARIANT
+    ; jr .balloonCarrierVariantSet
+.balloonCarrierVariantSet:
+    ld [wEndlessHorizontalEnemyVariant], a
+.endBalloonCarrierVariant:
+    jr .endChooseHorizontalEnemy
 ; BIRD
 .bird:
-    ; cp a, 0
-    ; jr nz, .endChooseHorizontalEnemy ; change
+    ; cp a, ENDLESS_HORIZONTAL_SPAWN_BALLOON_CARRIER_RATE + ENDLESS_HORIZONTAL_SPAWN_BIRD_RATE
+    ; jr nc, .endChooseHorizontalEnemy
     ld a, BIRD
     ld [wEndlessHorizontalEnemyNumber], a
 .birdVariant:
-    RANDOM 2
+    RANDOM ENDLESS_SPAWN_BIRD_VARIANT_DENOMINATOR
 .birdEasyVariant:
-    cp a, 0
-    jr nz, .birdHardVariant
+    cp a, ENDLESS_SPAWN_BIRD_VARIANT_EASY_RATE
+    jr nc, .birdHardVariant
     ld a, BIRD_EASY_VARIANT
     jr .birdVariantSet
 .birdHardVariant:
-    ; cp a, 1
-    ; jr nz, .endBirdVariant
+    ; cp a, ENDLESS_SPAWN_BIRD_VARIANT_EASY_RATE + ENDLESS_SPAWN_BIRD_VARIANT_HARD_RATE
+    ; jr nc, .endBirdVariant
     ld a, BIRD_HARD_VARIANT
     ; jr .birdVariantSet
 .birdVariantSet:
     ld [wEndlessHorizontalEnemyVariant], a
 .endBirdVariant:
-    jr .endChooseHorizontalEnemy
-    ; ****************************
+    ; jr .endChooseHorizontalEnemy
 .endChooseHorizontalEnemy:
 .endPrepareHorizontalSpawn:
 
 ; COOLDOWN LANES
 .cooldownHorizontalLanes:
     ldh a, [hGlobalTimer]
-    and %00000011
+    and ENDLESS_HORIZONTAL_COOLDOWN_TIMER
     jr nz, .endCooldownHorizontalLanes
 .horizontalACooldown:
     ld a, [wEndlessHorizontal_A_Cooldown]
@@ -486,7 +549,7 @@ EndlessUpdate::
 ; TRY TO SPAWN
 .tryToHorizontalSpawn:
     ld a, [wEndlessDelayTimer]
-    cp a, 93
+    cp a, ENDLESS_HORIZONTAL_SPAWN_TIME
     jr nz, .endTryToHorizontalSpawn
 
     ld a, [wEndlessHorizontalLane]
@@ -511,282 +574,17 @@ EndlessUpdate::
     ; hEnemyNumber
     ld a, [wEndlessHorizontalEnemyNumber]
     ldh [hEnemyNumber], a
+.spawnBalloonCarrier:
+    cp a, BALLOON_CARRIER
+    jr nz, .spawnBird
+    call SpawnBalloonCarrier
+    jr .endTryToHorizontalSpawn
+.spawnBird:
+    ; cp a, BIRD
+    ; jr nz, .endTryToHorizontalSpawn
     call SpawnBird
-
+    ; jr .endTryToHorizontalSpawn
 .endTryToHorizontalSpawn:
 
 .endHandleHorizontal:
-
-; .checkDifficultyRaise:
-;     ld a, [wEndlessDelayTimer]
-;     inc a
-;     ld [wEndlessDelayTimer], a
-;     and ENDLESS_DELAY_TIMER_RESET_TIME
-;     jr nz, .endCheckDifficultyRaise
-;     ld a, [wEndlessTimer]
-;     inc a
-;     ld [wEndlessTimer], a
-;     and ENDLESS_TIMER_RESET_TIME
-;     jr nz, .endCheckDifficultyRaise
-; .difficultyRaise:
-;     ld a, [wEndlessDifficulty]
-;     cp a, ENDLESS_DIFFICULTY_MAX + 1
-;     jr nc, .endCheckDifficultyRaise
-;     inc a
-;     ld [wEndlessDifficulty], a
-; .setSpawnRate:
-;     ; ld a, [wEndlessDifficulty]
-; .fastPrepareSpawnRate:
-;     cp a, ENDLESS_DIFFICULTY_MAX + 1
-;     jr nc, .mediumPrepareSpawnRate
-;     ld a, ENDLESS_PREPARE_ENEMY_FAST_TIME
-;     ld [wEndlessSpawnTime], a
-;     jr .endSetSpawnRate
-; .mediumPrepareSpawnRate:
-;     cp a, ENDLESS_DIFFICULTY_2
-;     jr nc, .slowPrepareSpawnRate
-;     ld a, ENDLESS_PREPARE_ENEMY_MEDIUM_TIME
-;     ld [wEndlessSpawnTime], a
-;     jr .endSetSpawnRate
-; .slowPrepareSpawnRate:
-;     ; cp a, ENDLESS_DIFFICULTY_0
-;     ; jr nc, .endSetSpawnRate
-;     ld a, ENDLESS_PREPARE_ENEMY_SLOW_TIME
-;     ld [wEndlessSpawnTime], a
-;     ; jr .endSetSpawnRate
-; .endSetSpawnRate:
-; .endCheckDifficultyRaise:
-
-; .checkEnemyToSpawn:
-;     ld a, [wEndlessEnemySpawnTrigger]
-;     cp a, 0
-;     jr z, .endCheckEnemyToSpawn
-;     xor a ; ld a, 0
-;     ld [wEndlessEnemySpawnTrigger], a
-; .spawnEnemy:
-;     ld a, [wEndlessEnemyVariant]
-;     ldh [hEnemyVariant], a
-;     ld a, [wEndlessEnemyNumber]
-;     ldh [hEnemyNumber], a
-; .balloonCarrier:
-;     cp a, BALLOON_CARRIER
-;     jr nz, .bomb
-;     ld a, [wEndlessEnemyPosition]
-;     ldh [hEnemyY], a
-;     ld a, [wEndlessEnemyDirection]
-;     ldh [hEnemyX], a
-;     call SpawnBalloonCarrier
-;     jr .endCheckEnemyToSpawn
-; .bomb:
-;     cp a, BOMB
-;     jr nz, .bird
-;     ld a, [wEndlessEnemyDirection]
-;     ldh [hEnemyY], a
-;     ld a, [wEndlessEnemyPosition]
-;     ldh [hEnemyX], a
-;     call SpawnBomb
-;     jr .endCheckEnemyToSpawn
-; .bird:
-;     cp a, BIRD
-;     jr nz, .anvil
-;     ld a, [wEndlessEnemyPosition]
-;     ldh [hEnemyY], a
-;     ld a, [wEndlessEnemyDirection]
-;     ldh [hEnemyX], a
-;     call SpawnBird
-;     jr .endCheckEnemyToSpawn
-; .anvil:
-;     cp a, ANVIL
-;     jr nz, .endCheckEnemyToSpawn
-;     ld a, [wEndlessEnemyDirection]
-;     ldh [hEnemyY], a
-;     ld a, [wEndlessEnemyPosition]
-;     ldh [hEnemyX], a
-;     call SpawnAnvil
-;     ; jr .endCheckEnemyToSpawn
-; .endCheckEnemyToSpawn:
-
-; .prepareEnemyToSpawn:
-;     ; Check the countdown timer
-;     ld a, [wEndlessEnemySpawnTimer]
-;     cp a, 0
-;     jr z, .canPrepareEnemy
-;     dec a
-;     ld [wEndlessEnemySpawnTimer], a
-;     jp .endPrepareEnemyToSpawn
-; .canPrepareEnemy:
-;     ; Reset spawn timer
-;     RANDOM 150
-;     ld b, a
-;     ld a, [wEndlessSpawnTime]
-;     add b
-;     ld [wEndlessEnemySpawnTimer], a
-;     ; Set spawn enemy trigger
-;     ld a, 1 
-;     ld [wEndlessEnemySpawnTrigger], a
-;     ; Prepare
-;     ld a, [wEndlessDifficulty]
-;     cp a, 0
-;     jp z, .endPrepareEnemyToSpawn
-;     ; Randomly choose an enemy to prepare to spawn if the difficulty allows
-;     RANDOM a
-;     ; BALLOON CARRIERS =====
-; .prepareBalloonCarrierNormal:
-;     cp a, ENDLESS_DIFFICULTY_0
-;     jr nz, .prepareBalloonCarrierFollow
-;     ld b, CARRIER_NORMAL_VARIANT
-;     jr .prepareBalloonCarrier
-; .prepareBalloonCarrierFollow:
-;     cp a, ENDLESS_DIFFICULTY_1
-;     jr nz, .prepareBalloonCarrierProjectile
-;     ld b, CARRIER_FOLLOW_VARIANT
-;     jr .prepareBalloonCarrier
-; .prepareBalloonCarrierProjectile:
-;     cp a, ENDLESS_DIFFICULTY_4
-;     jr nz, .prepareBalloonCarrierBomb
-;     ld b, CARRIER_PROJECTILE_VARIANT
-;     jr .prepareBalloonCarrier
-; .prepareBalloonCarrierBomb:
-;     cp a, ENDLESS_DIFFICULTY_6
-;     jr nz, .prepareBombDirect
-;     ld b, CARRIER_BOMB_VARIANT
-; .prepareBalloonCarrier:
-;     ; Save enemy number
-;     ld a, BALLOON_CARRIER
-;     ld [wEndlessEnemyNumber], a
-;     ; Save enemy variant
-;     ld a, b
-;     ld [wEndlessEnemyVariant], a
-;     ; Save enemy direction
-;     RANDOM 2
-;     cp a, 0
-;     jr nz, .balloonCarrierRight
-; .balloonCarrierLeft:
-;     ld a, OFFSCREEN_LEFT
-;     jr .balloonCarrierUpdateDirection
-; .balloonCarrierRight:
-;     ld a, OFFSCREEN_RIGHT
-; .balloonCarrierUpdateDirection:
-;     ld [wEndlessEnemyDirection], a
-;     ; Save enemy position
-;     RANDOM 89
-;     add 24
-;     ld [wEndlessEnemyPosition], a
-;     jp .endPrepareEnemyToSpawn
-;     ; BOMBS =====
-; .prepareBombDirect:
-;     cp a, ENDLESS_DIFFICULTY_2
-;     jr nz, .prepareBombFollow
-;     ld b, BOMB_DIRECT_VARIANT
-;     jr .prepareBomb
-; .prepareBombFollow:
-;     cp a, ENDLESS_DIFFICULTY_5
-;     jr nz, .prepareBirdEasy
-;     ld b, BOMB_FOLLOW_VARIANT
-; .prepareBomb:
-;     ; Save enemy number
-;     ld a, BOMB
-;     ld [wEndlessEnemyNumber], a
-;     ; Save enemy variant
-;     ld a, b
-;     ld [wEndlessEnemyVariant], a
-;     ; Save enemy direction
-;     ld a, OFFSCREEN_BOTTOM
-;     ld [wEndlessEnemyDirection], a
-;     ; Save enemy position
-;     RANDOM 137
-;     add 12
-;     ld [wEndlessEnemyPosition], a
-;     jp .endPrepareEnemyToSpawn
-;     ; BIRDS =====
-; .prepareBirdEasy:
-;     cp a, ENDLESS_DIFFICULTY_3
-;     jr nz, .prepareBirdHard
-;     ld b, BIRD_EASY_VARIANT
-;     jr .prepareBird
-; .prepareBirdHard:
-;     cp a, ENDLESS_DIFFICULTY_7
-;     jr nz, .prepareAnvil
-;     ld b, BIRD_HARD_VARIANT
-; .prepareBird:
-;     ; Save enemy number
-;     ld a, BIRD
-;     ld [wEndlessEnemyNumber], a
-;     ; Save enemy variant
-;     ld a, b
-;     ld [wEndlessEnemyVariant], a
-;     ; Save enemy direction
-;     RANDOM 2
-;     cp a, 0
-;     jr nz, .birdRight
-; .birdLeft:
-;     ld a, OFFSCREEN_LEFT
-;     jr .birdUpdateDirection
-; .birdRight:
-;     ld a, OFFSCREEN_RIGHT
-; .birdUpdateDirection:
-;     ld [wEndlessEnemyDirection], a
-;     ; Save enemy position
-;     RANDOM 89
-;     add 24
-;     ld [wEndlessEnemyPosition], a
-;     jp .endPrepareEnemyToSpawn
-; .prepareAnvil:
-;     cp a, ENDLESS_DIFFICULTY_MAX
-;     jp nz, .endPrepareEnemyToSpawn
-;     ; Save enemy number
-;     ld a, ANVIL
-;     ld [wEndlessEnemyNumber], a
-;     ; Save enemy variant
-;     ld a, ANVIL_NORMAL_VARIANT
-;     ld [wEndlessEnemyVariant], a
-;     ; Save enemy direction
-;     ld a, OFFSCREEN_TOP
-;     ld [wEndlessEnemyDirection], a
-;     ; Save enemy position
-;     RANDOM 137
-;     add 12
-;     ld [wEndlessEnemyPosition], a
-;     ; jr .endPrepareEnemyToSpawn
-; .endPrepareEnemyToSpawn:
-
-; .checkPointBalloonToSpawn:
-;     ; Check the countdown timer
-;     ld a, [wEndlessPointBalloonSpawnTimer]
-;     cp a, 0
-;     jr z, .canSpawnPointBalloon
-;     dec a
-;     ld [wEndlessPointBalloonSpawnTimer], a
-;     jr .endCheckPointBalloonToSpawn
-; .canSpawnPointBalloon:
-;     ; Reset spawn timer
-;     RANDOM 200
-;     add 50
-;     ld [wEndlessPointBalloonSpawnTimer], a
-;     ; Spawn
-;     ld a, POINT_BALLOON
-;     ldh [hEnemyNumber], a
-; .checkPointBalloonVariant:
-;     RANDOM 3
-; .pointBalloonEasy:
-;     cp a, 0
-;     jr nz, .pointBalloonMedium
-;     ld a, BALLOON_EASY_VARIANT
-;     jr .endCheckPointBalloonVariant
-; .pointBalloonMedium:
-;     cp a, 1
-;     jr nz, .pointBalloonHard
-;     ld a, BALLOON_MEDIUM_VARIANT
-;     jr .endCheckPointBalloonVariant
-; .pointBalloonHard:
-;     ld a, BALLOON_HARD_VARIANT
-; .endCheckPointBalloonVariant:
-;     ldh [hEnemyVariant], a
-;     ld a, OFFSCREEN_BOTTOM
-;     ldh [hEnemyY], a
-;     RANDOM 137
-;     add 12
-;     ldh [hEnemyX], a
-;     call SpawnPointBalloon
-; .endCheckPointBalloonToSpawn:
     ret

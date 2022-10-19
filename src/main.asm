@@ -193,10 +193,10 @@ SetupNextLevel::
 	call LCD_ON
 	; Comment out GameCountdownLoop to skip countdown
 GameCountdownLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateGameCountdown
-	; jp GameCountdownLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateGameCountdown
+	jp GameCountdownLoop
 PreGameLoop::
 	call ClearCountdown
 GameLoop:
