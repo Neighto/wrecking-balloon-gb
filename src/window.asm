@@ -11,6 +11,8 @@ BOOST_BAR_ADDRESS EQU $9C22
 ATTACK_BAR_ADDRESS EQU $9C26
 REFRESH_WINDOW_WAIT_TIME EQU %00000011
 
+GAME_OVER_DISTANCE_FROM_TOP_IN_TILES EQU 2
+
 SECTION "window", ROMX
 
 RefreshScore::
@@ -208,3 +210,19 @@ RefreshWindow::
 	inc a
 	ld [hl], a
 	ret
+
+RefreshGameOverWindow::
+	; Game over row
+	ld bc, WindowMap + SCRN_X_B * GAME_OVER_DISTANCE_FROM_TOP_IN_TILES
+    ld hl, _SCRN1
+	ld de, SCRN_X_B
+    ld a, $D0
+    call MEMCPY_WITH_OFFSET
+	; Total row
+    ld hl, _SCRN1 + $20
+	ld de, SCRN_X_B
+    ld a, $D0
+    call MEMCPY_WITH_OFFSET
+	; Score
+	ld hl, $9C2F
+	jp RefreshTotal
