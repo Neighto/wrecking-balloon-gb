@@ -2,64 +2,67 @@ INCLUDE "playerConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 
-SECTION "bullet vars", WRAM0
-    wPlayerBulletY:: DB
-    wPlayerBulletX:: DB
-    wPlayerBulletAlive:: DB
-    wPlayerBulletDirection:: DB ; right=0 left=1
+SECTION "bullet vars", HRAM
+    hPlayerBulletY:: DB
+    hPlayerBulletX:: DB
+    hPlayerBulletAlive:: DB
+    hPlayerBulletDirection:: DB ; right=0 left=1
 
 SECTION "bullet", ROM0
 
 InitializeBullet::
     xor a ; ld a, 0
-    ld [wPlayerBulletY], a
-    ld [wPlayerBulletX], a
-    ld [wPlayerBulletAlive], a
-    ld [wPlayerBulletDirection], a
+    ldh [hPlayerBulletY], a
+    ldh [hPlayerBulletX], a
+    ldh [hPlayerBulletAlive], a
+    ldh [hPlayerBulletDirection], a
     ret
 
+; SPAWN
 SpawnBullet::
     call BulletSound
     ld a, 1 
-    ld [wPlayerBulletAlive], a
+    ldh [hPlayerBulletAlive], a
     ldh a, [hPlayerY2]
     add 5
-    ld [wPlayerBulletY], a
+    ldh [hPlayerBulletY], a
     ld hl, wPlayerBulletOAM
     ldh a, [hPlayerFlags]
     and PLAYER_FLAG_DIRECTION_MASK
-    ld [wPlayerBulletDirection], a
+    ldh [hPlayerBulletDirection], a
     jr z, .spawnFromRight
 .spawnFromLeft:
     ldh a, [hPlayerX2]
     sub 3
-    ld [wPlayerBulletX], a
+    ldh [hPlayerBulletX], a
 .leftOAM:
-    ld a, [wPlayerBulletY]
+    ldh a, [hPlayerBulletY]
     ld [hli], a
-    ld a, [wPlayerBulletX]
+    ldh a, [hPlayerBulletX]
     ld [hli], a
-    ld [hl], PLAYER_BULLET_TILE
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+    ld a, PLAYER_BULLET_TILE
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hl], a
     ret
 .spawnFromRight:
     ldh a, [hPlayerX2]
     add 12
-    ld [wPlayerBulletX], a
+    ldh [hPlayerBulletX], a
 .rightOAM:
-    ld a, [wPlayerBulletY]
+    ldh a, [hPlayerBulletY]
     ld [hli], a
-    ld a, [wPlayerBulletX]
+    ldh a, [hPlayerBulletX]
     ld [hli], a
-    ld [hl], PLAYER_BULLET_TILE
-    inc l
-    ld [hl], OAMF_PAL0
+    ld a, PLAYER_BULLET_TILE
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hl], a
     ret
   
 ClearBullet::
     xor a ; ld a, 0
-    ld [wPlayerBulletAlive], a
+    ldh [hPlayerBulletAlive], a
     ld hl, wPlayerBulletOAM
     ld [hli], a
     ld [hli], a
@@ -67,15 +70,17 @@ ClearBullet::
     ld [hl], a
     ret
   
+; UPDATE
 BulletUpdate::
+
 .checkAlive:
-    ld a, [wPlayerBulletAlive]
+    ldh a, [hPlayerBulletAlive]
     cp a, 0
     ret z
 .isAlive:
 
 .checkOffscreen:
-    ld a, [wPlayerBulletX]
+    ldh a, [hPlayerBulletX]
     ld b, a 
     ld a, SCRN_X + OFF_SCREEN_ENEMY_BUFFER
     cp a, b
@@ -92,18 +97,18 @@ BulletUpdate::
     and PLAYER_BULLET_TIME
     ret nz
 .move:
-    ld a, [wPlayerBulletDirection]
+    ldh a, [hPlayerBulletDirection]
     cp a, 0
-    ld a, [wPlayerBulletX]
+    ldh a, [hPlayerBulletX]
     jr z, .moveRight
 .moveLeft:
     sub PLAYER_BULLET_SPEED
-    ld [wPlayerBulletX], a
+    ldh [hPlayerBulletX], a
     ld [wPlayerBulletOAM+1], a
     ret
 .moveRight:
     add PLAYER_BULLET_SPEED
-    ld [wPlayerBulletX], a
+    ldh [hPlayerBulletX], a
     ld [wPlayerBulletOAM+1], a
 .endMove:
     ret

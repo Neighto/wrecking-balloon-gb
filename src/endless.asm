@@ -3,7 +3,7 @@ INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 
-ENDLESS_DELAY_TIMER_RESET_TIME EQU 100
+ENDLESS_TIMER_RESET_TIME EQU 100
 
 ENDLESS_PREPARE_VERTICAL_SPAWN_TIME EQU 50
 ENDLESS_PREPARE_HORIZONTAL_SPAWN_TIME EQU 55
@@ -61,58 +61,56 @@ ENDLESS_SPAWN_BIRD_VARIANT_DENOMINATOR EQU 2
 ENDLESS_SPAWN_BIRD_VARIANT_EASY_RATE EQU 1
 ENDLESS_SPAWN_BIRD_VARIANT_HARD_RATE EQU 1
 
-SECTION "endless vars", WRAM0
-    wEndlessTimer:: DB
-    wEndlessDelayTimer:: DB
+SECTION "endless vars", HRAM
+    hEndlessTimer:: DB
 
     ; Vertical Lanes
-    wEndlessVerticalLane:: DB
-    wEndlessVerticalACooldown:: DB
-    wEndlessVerticalBCooldown:: DB
-    wEndlessVerticalCCooldown:: DB
-    wEndlessVerticalDCooldown:: DB
+    hEndlessVerticalLane:: DB
+    hEndlessVertical_A_Cooldown:: DB
+    hEndlessVertical_B_Cooldown:: DB
+    hEndlessVertical_C_Cooldown:: DB
+    hEndlessVertical_D_Cooldown:: DB
 
     ; Vertical Enemy Info
-    wEndlessVerticalEnemyNumber:: DB
-    wEndlessVerticalEnemyVariant:: DB
+    hEndlessVerticalEnemyNumber:: DB
+    hEndlessVerticalEnemyVariant:: DB
 
     ; Horizontal Lanes
-    wEndlessHorizontalLane:: DB
-    wEndlessHorizontal_A_Cooldown:: DB
-    wEndlessHorizontal_B_Cooldown:: DB
-    wEndlessHorizontal_C_Cooldown:: DB
-    wEndlessHorizontal_D_Cooldown:: DB
+    hEndlessHorizontalLane:: DB
+    hEndlessHorizontal_A_Cooldown:: DB
+    hEndlessHorizontal_B_Cooldown:: DB
+    hEndlessHorizontal_C_Cooldown:: DB
+    hEndlessHorizontal_D_Cooldown:: DB
 
     ; Horizontal Enemy Info
-    wEndlessHorizontalEnemyNumber:: DB
-    wEndlessHorizontalEnemyVariant:: DB
-    wEndlessHorizontalEnemyDirection:: DB
+    hEndlessHorizontalEnemyNumber:: DB
+    hEndlessHorizontalEnemyVariant:: DB
+    hEndlessHorizontalEnemyDirection:: DB
 
 SECTION "endless", ROM0
 
 InitializeEndless::
 	xor a ; ld a, 0
-    ld [wEndlessTimer], a
-    ld [wEndlessDelayTimer], a
+    ldh [hEndlessTimer], a
 
-    ld [wEndlessVerticalLane], a
-    ld [wEndlessVerticalACooldown], a
-    ld [wEndlessVerticalBCooldown], a
-    ld [wEndlessVerticalCCooldown], a
-    ld [wEndlessVerticalDCooldown], a
+    ldh [hEndlessVerticalLane], a
+    ldh [hEndlessVertical_A_Cooldown], a
+    ldh [hEndlessVertical_B_Cooldown], a
+    ldh [hEndlessVertical_C_Cooldown], a
+    ldh [hEndlessVertical_D_Cooldown], a
 
-    ld [wEndlessVerticalEnemyNumber], a
-    ld [wEndlessVerticalEnemyVariant], a
+    ldh [hEndlessVerticalEnemyNumber], a
+    ldh [hEndlessVerticalEnemyVariant], a
 
-    ld [wEndlessHorizontalLane], a
-    ld [wEndlessHorizontal_A_Cooldown], a
-    ld [wEndlessHorizontal_B_Cooldown], a
-    ld [wEndlessHorizontal_C_Cooldown], a
-    ld [wEndlessHorizontal_D_Cooldown], a
+    ldh [hEndlessHorizontalLane], a
+    ldh [hEndlessHorizontal_A_Cooldown], a
+    ldh [hEndlessHorizontal_B_Cooldown], a
+    ldh [hEndlessHorizontal_C_Cooldown], a
+    ldh [hEndlessHorizontal_D_Cooldown], a
 
-    ld [wEndlessHorizontalEnemyNumber], a
-    ld [wEndlessHorizontalEnemyVariant], a
-    ld [wEndlessHorizontalEnemyDirection], a
+    ldh [hEndlessHorizontalEnemyNumber], a
+    ldh [hEndlessHorizontalEnemyVariant], a
+    ldh [hEndlessHorizontalEnemyDirection], a
     ret
 
 LoadEndlessGraphics::
@@ -152,13 +150,13 @@ LoadEndlessGraphics::
 EndlessUpdate::
 
 .checkEndlessTimer:
-    ld a, [wEndlessDelayTimer]
+    ldh a, [hEndlessTimer]
     inc a
-    ld [wEndlessDelayTimer], a
-    cp a, ENDLESS_DELAY_TIMER_RESET_TIME
+    ldh [hEndlessTimer], a
+    cp a, ENDLESS_TIMER_RESET_TIME
     jr nz, .endCheckEndlessTimer
     xor a ; ld a, 0
-    ld [wEndlessDelayTimer], a
+    ldh [hEndlessTimer], a
 .endCheckEndlessTimer:
 
 ; VERTICAL ****
@@ -166,7 +164,7 @@ EndlessUpdate::
 
 ; PREPARE TO SPAWN
 .prepareVerticalSpawn:
-    ld a, [wEndlessDelayTimer]
+    ldh a, [hEndlessTimer]
     cp a, ENDLESS_PREPARE_VERTICAL_SPAWN_TIME
     jp nz, .endPrepareVerticalSpawn
 
@@ -185,50 +183,50 @@ EndlessUpdate::
 .verticalA:
     cp a, 0
     jr nz, .verticalB
-    ld a, [wEndlessVerticalACooldown]
+    ldh a, [hEndlessVertical_A_Cooldown]
     cp a, 0
     jr nz, .verticalLaneLoop
     ; Lane free
     ld a, ENDLESS_VERTICAL_COOLDOWN
-    ld [wEndlessVerticalACooldown], a
+    ldh [hEndlessVertical_A_Cooldown], a
     jr .canPrepareVerticalSpawn
 .verticalB:
     cp a, 1
     jr nz, .verticalC
-    ld a, [wEndlessVerticalBCooldown]
+    ldh a, [hEndlessVertical_B_Cooldown]
     cp a, 0
     jr nz, .verticalLaneLoop
     ; Lane free
     ld a, ENDLESS_VERTICAL_COOLDOWN
-    ld [wEndlessVerticalBCooldown], a
+    ldh [hEndlessVertical_B_Cooldown], a
     jr .canPrepareVerticalSpawn
 .verticalC:
     cp a, 2
     jr nz, .verticalD
-    ld a, [wEndlessVerticalCCooldown]
+    ldh a, [hEndlessVertical_C_Cooldown]
     cp a, 0
     jr nz, .verticalLaneLoop
     ; Lane free
     ld a, ENDLESS_VERTICAL_COOLDOWN
-    ld [wEndlessVerticalCCooldown], a
+    ldh [hEndlessVertical_C_Cooldown], a
     jr .canPrepareVerticalSpawn
 .verticalD:
     ; cp a, 3
     ; jr nz, .canPrepareVerticalSpawn
-    ld a, [wEndlessVerticalDCooldown]
+    ldh a, [hEndlessVertical_D_Cooldown]
     cp a, 0
     jr nz, .verticalLaneLoop
     ; Lane free
     ld a, ENDLESS_VERTICAL_COOLDOWN
-    ld [wEndlessVerticalDCooldown], a
+    ldh [hEndlessVertical_D_Cooldown], a
     jr .canPrepareVerticalSpawn
 .cannotPrepareVerticalSpawn:
     ld a, -1
-    ld [wEndlessVerticalLane], a
+    ldh [hEndlessVerticalLane], a
     jr .endPrepareVerticalSpawn
 .canPrepareVerticalSpawn:
     ld a, c
-    ld [wEndlessVerticalLane], a
+    ldh [hEndlessVerticalLane], a
 .chooseVerticalEnemy:
     RANDOM ENDLESS_VERTICAL_SPAWN_DENOMINATOR
 ; POINT BALLOON
@@ -236,7 +234,7 @@ EndlessUpdate::
     cp a, ENDLESS_VERTICAL_SPAWN_POINT_BALLOON_RATE
     jr nc, .bomb
     ld a, POINT_BALLOON
-    ld [wEndlessVerticalEnemyNumber], a
+    ldh [hEndlessVerticalEnemyNumber], a
 .pointBalloonVariant:
     RANDOM ENDLESS_SPAWN_POINT_BALLOON_VARIANT_DENOMINATOR
 .pointBalloonEasyVariant:
@@ -255,7 +253,7 @@ EndlessUpdate::
     ld a, BALLOON_HARD_VARIANT
     ; jr .pointBalloonVariantSet
 .pointBalloonVariantSet:
-    ld [wEndlessVerticalEnemyVariant], a
+    ldh [hEndlessVerticalEnemyVariant], a
 .endPointBalloonVariant:
     jr .endChooseVerticalEnemy
 ; BOMB
@@ -263,7 +261,7 @@ EndlessUpdate::
     cp a, ENDLESS_VERTICAL_SPAWN_POINT_BALLOON_RATE + ENDLESS_VERTICAL_SPAWN_BOMB_RATE
     jr nc, .anvil
     ld a, BOMB
-    ld [wEndlessVerticalEnemyNumber], a
+    ldh [hEndlessVerticalEnemyNumber], a
 .bombVariant:
     RANDOM ENDLESS_SPAWN_BOMB_VARIANT_DENOMINATOR
 .bombDirectVariant:
@@ -277,7 +275,7 @@ EndlessUpdate::
     ld a, BOMB_FOLLOW_VARIANT
     ; jr .bombVariantSet
 .bombVariantSet:
-    ld [wEndlessVerticalEnemyVariant], a
+    ldh [hEndlessVerticalEnemyVariant], a
 .endBombVariant:
     jr .endChooseVerticalEnemy
 ; ANVIL
@@ -285,9 +283,9 @@ EndlessUpdate::
     ; cp a, ENDLESS_VERTICAL_SPAWN_POINT_BALLOON_RATE + ENDLESS_VERTICAL_SPAWN_BOMB_RATE + ENDLESS_VERTICAL_SPAWN_ANVIL_RATE
     ; jr nc, .endChooseVerticalEnemy
     ld a, ANVIL
-    ld [wEndlessVerticalEnemyNumber], a
+    ldh [hEndlessVerticalEnemyNumber], a
     ld a, ANVIL_NORMAL_VARIANT
-    ld [wEndlessVerticalEnemyVariant], a
+    ldh [hEndlessVerticalEnemyVariant], a
     ; jr .endChooseVerticalEnemy
 .endChooseVerticalEnemy:
 .endPrepareVerticalSpawn:
@@ -298,38 +296,38 @@ EndlessUpdate::
     and ENDLESS_VERTICAL_COOLDOWN_TIMER
     jr nz, .endCooldownVerticalLanes
 .verticalACooldown:
-    ld a, [wEndlessVerticalACooldown]
+    ldh a, [hEndlessVertical_A_Cooldown]
     cp a, 0
     jr z, .verticalBCooldown
     dec a
-    ld [wEndlessVerticalACooldown], a
+    ldh [hEndlessVertical_A_Cooldown], a
 .verticalBCooldown:
-    ld a, [wEndlessVerticalBCooldown]
+    ldh a, [hEndlessVertical_B_Cooldown]
     cp a, 0
     jr z, .verticalCCooldown
     dec a
-    ld [wEndlessVerticalBCooldown], a
+    ldh [hEndlessVertical_B_Cooldown], a
 .verticalCCooldown:
-    ld a, [wEndlessVerticalCCooldown]
+    ldh a, [hEndlessVertical_C_Cooldown]
     cp a, 0
     jr z, .verticalDCooldown
     dec a
-    ld [wEndlessVerticalCCooldown], a
+    ldh [hEndlessVertical_C_Cooldown], a
 .verticalDCooldown:
-    ld a, [wEndlessVerticalDCooldown]
+    ldh a, [hEndlessVertical_D_Cooldown]
     cp a, 0
     jr z, .endCooldownVerticalLanes
     dec a
-    ld [wEndlessVerticalDCooldown], a
+    ldh [hEndlessVertical_D_Cooldown], a
 .endCooldownVerticalLanes: 
 
 ; TRY TO SPAWN
 .tryToVerticalSpawn:
-    ld a, [wEndlessDelayTimer]
+    ldh a, [hEndlessTimer]
     cp a, ENDLESS_VERTICAL_SPAWN_TIME
     jr nz, .endTryToVerticalSpawn
 
-    ld a, [wEndlessVerticalLane]
+    ldh a, [hEndlessVerticalLane]
     cp a, -1
     jr z, .endTryToVerticalSpawn
 .canVerticalSpawn:
@@ -346,10 +344,10 @@ EndlessUpdate::
     ld a, OFFSCREEN_BOTTOM
     ldh [hEnemyY], a
     ; hEnemyVariant
-    ld a, [wEndlessVerticalEnemyVariant]
+    ldh a, [hEndlessVerticalEnemyVariant]
     ldh [hEnemyVariant], a
     ; hEnemyNumber
-    ld a, [wEndlessVerticalEnemyNumber]
+    ldh a, [hEndlessVerticalEnemyNumber]
     ldh [hEnemyNumber], a
 .spawnPointBalloon:
     cp a, POINT_BALLOON
@@ -378,7 +376,7 @@ EndlessUpdate::
 
 ; PREPARE TO SPAWN
 .prepareHorizontalSpawn:
-    ld a, [wEndlessDelayTimer]
+    ldh a, [hEndlessTimer]
     cp a, 60
     jp nz, .endPrepareHorizontalSpawn
 
@@ -397,50 +395,50 @@ EndlessUpdate::
 .horizontalA:
     cp a, 0
     jr nz, .horizontalB
-    ld a, [wEndlessHorizontal_A_Cooldown]
+    ldh a, [hEndlessHorizontal_A_Cooldown]
     cp a, 0
     jr nz, .horizontalLaneLoop
     ; Lane free
     ld a, ENDLESS_HORIZONTAL_COOLDOWN
-    ld [wEndlessHorizontal_A_Cooldown], a
+    ldh [hEndlessHorizontal_A_Cooldown], a
     jr .canPrepareHorizontalSpawn
 .horizontalB:
     cp a, 1
     jr nz, .horizontalC
-    ld a, [wEndlessHorizontal_B_Cooldown]
+    ldh a, [hEndlessHorizontal_B_Cooldown]
     cp a, 0
     jr nz, .horizontalLaneLoop
     ; Lane free
     ld a, ENDLESS_HORIZONTAL_COOLDOWN
-    ld [wEndlessHorizontal_B_Cooldown], a
+    ldh [hEndlessHorizontal_B_Cooldown], a
     jr .canPrepareHorizontalSpawn
 .horizontalC:
     cp a, 2
     jr nz, .horizontalD
-    ld a, [wEndlessHorizontal_C_Cooldown]
+    ldh a, [hEndlessHorizontal_C_Cooldown]
     cp a, 0
     jr nz, .horizontalLaneLoop
     ; Lane free
     ld a, ENDLESS_HORIZONTAL_COOLDOWN
-    ld [wEndlessHorizontal_C_Cooldown], a
+    ldh [hEndlessHorizontal_C_Cooldown], a
     jr .canPrepareHorizontalSpawn
 .horizontalD:
     ; cp a, 3
     ; jr nz, .canPrepareHorizontalSpawn
-    ld a, [wEndlessHorizontal_D_Cooldown]
+    ldh a, [hEndlessHorizontal_D_Cooldown]
     cp a, 0
     jr nz, .horizontalLaneLoop
     ; Lane free
     ld a, ENDLESS_HORIZONTAL_COOLDOWN
-    ld [wEndlessHorizontal_D_Cooldown], a
+    ldh [hEndlessHorizontal_D_Cooldown], a
     jr .canPrepareHorizontalSpawn
 .cannotPrepareHorizontalSpawn:
     ld a, -1
-    ld [wEndlessHorizontalLane], a
+    ldh [hEndlessHorizontalLane], a
     jr .endPrepareHorizontalSpawn
 .canPrepareHorizontalSpawn:
     ld a, c
-    ld [wEndlessHorizontalLane], a
+    ldh [hEndlessHorizontalLane], a
 .chooseDirection:
     RANDOM 2
 .left:
@@ -454,7 +452,7 @@ EndlessUpdate::
     ld a, OFFSCREEN_RIGHT
     ; jr .directionSet
 .directionSet:
-    ld [wEndlessHorizontalEnemyDirection], a
+    ldh [hEndlessHorizontalEnemyDirection], a
 .endChooseDirection:
 .chooseHorizontalEnemy:
     RANDOM ENDLESS_HORIZONTAL_SPAWN_DENOMINATOR
@@ -463,7 +461,7 @@ EndlessUpdate::
     cp a, ENDLESS_HORIZONTAL_SPAWN_BALLOON_CARRIER_RATE
     jr nc, .bird
     ld a, BALLOON_CARRIER
-    ld [wEndlessHorizontalEnemyNumber], a
+    ldh [hEndlessHorizontalEnemyNumber], a
 .balloonCarrierVariant:
     RANDOM ENDLESS_SPAWN_BALLOON_CARRIER_VARIANT_DENOMINATOR
 .balloonCarrierNormalVariant:
@@ -487,7 +485,7 @@ EndlessUpdate::
     ld a, CARRIER_BOMB_VARIANT
     ; jr .balloonCarrierVariantSet
 .balloonCarrierVariantSet:
-    ld [wEndlessHorizontalEnemyVariant], a
+    ldh [hEndlessHorizontalEnemyVariant], a
 .endBalloonCarrierVariant:
     jr .endChooseHorizontalEnemy
 ; BIRD
@@ -495,7 +493,7 @@ EndlessUpdate::
     ; cp a, ENDLESS_HORIZONTAL_SPAWN_BALLOON_CARRIER_RATE + ENDLESS_HORIZONTAL_SPAWN_BIRD_RATE
     ; jr nc, .endChooseHorizontalEnemy
     ld a, BIRD
-    ld [wEndlessHorizontalEnemyNumber], a
+    ldh [hEndlessHorizontalEnemyNumber], a
 .birdVariant:
     RANDOM ENDLESS_SPAWN_BIRD_VARIANT_DENOMINATOR
 .birdEasyVariant:
@@ -509,7 +507,7 @@ EndlessUpdate::
     ld a, BIRD_HARD_VARIANT
     ; jr .birdVariantSet
 .birdVariantSet:
-    ld [wEndlessHorizontalEnemyVariant], a
+    ldh [hEndlessHorizontalEnemyVariant], a
 .endBirdVariant:
     ; jr .endChooseHorizontalEnemy
 .endChooseHorizontalEnemy:
@@ -521,38 +519,38 @@ EndlessUpdate::
     and ENDLESS_HORIZONTAL_COOLDOWN_TIMER
     jr nz, .endCooldownHorizontalLanes
 .horizontalACooldown:
-    ld a, [wEndlessHorizontal_A_Cooldown]
+    ldh a, [hEndlessHorizontal_A_Cooldown]
     cp a, 0
     jr z, .horizontalBCooldown
     dec a
-    ld [wEndlessHorizontal_A_Cooldown], a
+    ldh [hEndlessHorizontal_A_Cooldown], a
 .horizontalBCooldown:
-    ld a, [wEndlessHorizontal_B_Cooldown]
+    ldh a, [hEndlessHorizontal_B_Cooldown]
     cp a, 0
     jr z, .horizontalCCooldown
     dec a
-    ld [wEndlessHorizontal_B_Cooldown], a
+    ldh [hEndlessHorizontal_B_Cooldown], a
 .horizontalCCooldown:
-    ld a, [wEndlessHorizontal_C_Cooldown]
+    ldh a, [hEndlessHorizontal_C_Cooldown]
     cp a, 0
     jr z, .horizontalDCooldown
     dec a
-    ld [wEndlessHorizontal_C_Cooldown], a
+    ldh [hEndlessHorizontal_C_Cooldown], a
 .horizontalDCooldown:
-    ld a, [wEndlessHorizontal_D_Cooldown]
+    ldh a, [hEndlessHorizontal_D_Cooldown]
     cp a, 0
     jr z, .endCooldownHorizontalLanes
     dec a
-    ld [wEndlessHorizontal_D_Cooldown], a
+    ldh [hEndlessHorizontal_D_Cooldown], a
 .endCooldownHorizontalLanes: 
 
 ; TRY TO SPAWN
 .tryToHorizontalSpawn:
-    ld a, [wEndlessDelayTimer]
+    ldh a, [hEndlessTimer]
     cp a, ENDLESS_HORIZONTAL_SPAWN_TIME
     jr nz, .endTryToHorizontalSpawn
 
-    ld a, [wEndlessHorizontalLane]
+    ldh a, [hEndlessHorizontalLane]
     cp a, -1
     jr z, .endTryToHorizontalSpawn
 .canHorizontalSpawn:
@@ -566,13 +564,13 @@ EndlessUpdate::
     add 24
     ldh [hEnemyY], a
     ; hEnemyX
-    ld a, [wEndlessHorizontalEnemyDirection]
+    ldh a, [hEndlessHorizontalEnemyDirection]
     ldh [hEnemyX], a
     ; hEnemyVariant
-    ld a, [wEndlessHorizontalEnemyVariant]
+    ldh a, [hEndlessHorizontalEnemyVariant]
     ldh [hEnemyVariant], a
     ; hEnemyNumber
-    ld a, [wEndlessHorizontalEnemyNumber]
+    ldh a, [hEndlessHorizontalEnemyNumber]
     ldh [hEnemyNumber], a
 .spawnBalloonCarrier:
     cp a, BALLOON_CARRIER

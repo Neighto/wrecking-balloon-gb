@@ -36,11 +36,8 @@ DMARoutineEnd:
 
 OAMDMA::
   	; Call DMA subroutine to copy the bytes to OAM for sprites begin to draw
-	push af
 	ld a, HIGH($C100)
-	call hOAMDMA
-	pop af
-	ret
+	jp hOAMDMA
 
 SECTION "OAM DMA", HRAM
 hOAMDMA:: DS DMARoutineEnd - DMARoutine ; Reserve space to copy the routine to

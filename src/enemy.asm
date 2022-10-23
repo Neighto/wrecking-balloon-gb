@@ -55,15 +55,18 @@ SetEnemyStruct::
     ld [hl], a
     ret
 
-SECTION "enemy data vars", WRAM0
+SECTION "enemy data vars (wram)", WRAM0
 
     wEnemies:: DS ENEMY_DATA_SIZE
-    wEnemyOffset:: DB ; Offset for looping through enemy data
-    wEnemyOffset2:: DB ; Offset for looping through enemy data within enemy
-    wEnemyOffset3:: DB ; Offset for looping through enemy data for balloon carrier
-    wEnemyLoopIndex:: DB
-    wEnemyLoopIndex2:: DB
-    wEnemyLoopIndex3:: DB
+
+SECTION "enemy data vars (hram)", HRAM
+
+    hEnemyOffset:: DB ; Offset for looping through enemy data
+    hEnemyOffset2:: DB ; Offset for looping through enemy data within enemy
+    hEnemyOffset3:: DB ; Offset for looping through enemy data for balloon carrier
+    hEnemyLoopIndex:: DB
+    hEnemyLoopIndex2:: DB
+    hEnemyLoopIndex3:: DB
 
 SECTION "enemy", ROM0
 
@@ -87,14 +90,16 @@ EnemyUpdate::
     ld a, ENEMY_STRUCT_SIZE * NUMBER_OF_ENEMIES_HALF
     ; jr .setOffsetAndLoopIndex
 .setOffsetAndLoopIndex:
-    ld [wEnemyOffset], a
+    ldh [hEnemyOffset], a
     ld a, NUMBER_OF_ENEMIES_HALF
-    ld [wEnemyLoopIndex], a
+    ldh [hEnemyLoopIndex], a
 .endHandleEnemiesHalf:
 
 .loop:
     ; Get flags
-    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
+    ld hl, wEnemies
+    ldh a, [hEnemyOffset]
+    ADD_A_TO_HL
     ld a, [hli]
     ldh [hEnemyFlags], a
     ; Check active
@@ -167,12 +172,12 @@ EnemyUpdate::
     call ExplosionUpdate
     jr .checkLoop
 .checkLoop:
-    ld a, [wEnemyOffset]
+    ldh a, [hEnemyOffset]
     add a, ENEMY_STRUCT_SIZE
-    ld [wEnemyOffset], a    
-    ld hl, wEnemyLoopIndex
-    dec [hl]
-    ld a, [hl]
+    ldh [hEnemyOffset], a 
+    ldh a, [hEnemyLoopIndex]
+    dec a
+    ldh [hEnemyLoopIndex], a
     cp a, 0
     jp nz, .loop
     ret
@@ -181,12 +186,14 @@ EnemyInterCollision::
     ; Call from enemy script
     ; Returns z flag as failed / nz flag as succeeded
     ld a, NUMBER_OF_ENEMIES
-    ld [wEnemyLoopIndex2], a
+    ldh [hEnemyLoopIndex2], a
     xor a ; ld a, 0
-    ld [wEnemyOffset2], a
+    ldh [hEnemyOffset2], a
 .loop:
     ; Get active state
-    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset2
+    ld hl, wEnemies
+    ldh a, [hEnemyOffset2]
+    ADD_A_TO_HL
     ld a, [hli]
     and ENEMY_FLAG_ACTIVE_MASK
     ; Check active
@@ -231,18 +238,20 @@ EnemyInterCollision::
     call CollisionCheck
     jr nz, .hitEnemy
 .checkLoop:
-    ld a, [wEnemyOffset2]
+    ldh a, [hEnemyOffset2]
     add a, ENEMY_STRUCT_SIZE
-    ld [wEnemyOffset2], a    
-    ld a, [wEnemyLoopIndex2]
+    ldh [hEnemyOffset2], a    
+    ldh a, [hEnemyLoopIndex2]
     dec a
-    ld [wEnemyLoopIndex2], a
+    ldh [hEnemyLoopIndex2], a
     cp a, 0
     jp nz, .loop
     ; z flag set
     ret
 .hitEnemy:
-    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset2
+    ld hl, wEnemies
+    ldh a, [hEnemyOffset2]
+    ADD_A_TO_HL
     set ENEMY_FLAG_HIT_ENEMY_BIT, [hl]
     ld a, 1
     cp a, 0
@@ -252,12 +261,14 @@ EnemyInterCollision::
 FindBalloonCarrier::
     ; Returns z flag as failed / nz flag as succeeded
     ld a, NUMBER_OF_ENEMIES
-    ld [wEnemyLoopIndex3], a
+    ldh [hEnemyLoopIndex3], a
     xor a ; ld a, 0
-    ld [wEnemyOffset3], a
+    ldh [hEnemyOffset3], a
 .loop:
     ; Get enemy number
-    SET_HL_TO_ADDRESS wEnemies+1, wEnemyOffset3
+    ld hl, wEnemies+1
+    ldh a, [hEnemyOffset3]
+    ADD_A_TO_HL
     ld a, [hl]
     cp a, BALLOON_CARRIER
     jr nz, .checkLoop
@@ -265,12 +276,12 @@ FindBalloonCarrier::
     ; nz flag set
     ret
 .checkLoop:
-    ld a, [wEnemyOffset3]
+    ldh a, [hEnemyOffset3]
     add a, ENEMY_STRUCT_SIZE
-    ld [wEnemyOffset3], a
-    ld a, [wEnemyLoopIndex3]
+    ldh [hEnemyOffset3], a
+    ldh a, [hEnemyLoopIndex3]
     dec a
-    ld [wEnemyLoopIndex3], a
+    ldh [hEnemyLoopIndex3], a
     cp a, 0
     jr nz, .loop
 .end:
@@ -283,8 +294,7 @@ ClearEnemy::
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
     call ResetHLInRange
-    call InitializeEnemyStructVars
-    ret
+    jp InitializeEnemyStructVars
 
 HandleEnemyOffscreenVertical::
     ; bc = Enemy OAM Bytes

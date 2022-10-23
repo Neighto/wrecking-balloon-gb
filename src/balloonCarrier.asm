@@ -215,7 +215,9 @@ BalloonCarrierUpdate::
     inc l
     ld [hl], a
 .setStructSpawnCarry:
-    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
+    ld hl, wEnemies
+    ldh a, [hEnemyOffset]
+    ADD_A_TO_HL
     call SetEnemyStruct
 .variantSpawnExplosion:
     ldh a, [hEnemyVariant]
@@ -311,7 +313,9 @@ BalloonCarrierUpdate::
     cp a, PROJECTILE_RESPAWN_TIME
     jr nz, .endSpawnProjectile
 .setStructSpawnProjectile:
-    SET_HL_TO_ADDRESS wEnemies, wEnemyOffset
+    ld hl, wEnemies
+    ldh a, [hEnemyOffset]
+    ADD_A_TO_HL
     call SetEnemyStruct
 .spawnProjectile:
     ld a, PROJECTILE
@@ -564,5 +568,6 @@ BalloonCarrierUpdate::
 
 .setStruct:
     ld hl, wEnemies
-    ADD_TO_HL [wEnemyOffset]
+    ldh a, [hEnemyOffset]
+    ADD_A_TO_HL
     jp SetEnemyStruct

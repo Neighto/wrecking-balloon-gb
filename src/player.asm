@@ -200,6 +200,7 @@ MovePlayerUp::
   call UpdateCactusPosition
   ret
 
+; SPAWN
 SpawnPlayer::
   ldh a, [hPlayerBalloonTile]
   ld b, a
@@ -602,6 +603,7 @@ CollisionWithPlayerCactus::
   call HitSound
   ret
 
+; UPDATE
 PlayerUpdate::
 
 .checkAlive:

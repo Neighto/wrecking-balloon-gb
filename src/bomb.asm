@@ -112,7 +112,8 @@ BombUpdate::
     ldh [hEnemyFlags], a
 .setStructSpawn:
     ld hl, wEnemies
-    ADD_TO_HL [wEnemyOffset]
+    ldh a, [hEnemyOffset]
+    ADD_A_TO_HL
     call SetEnemyStruct
 .spawnExplosion:
     ld a, EXPLOSION
@@ -229,5 +230,6 @@ BombUpdate::
     
 .setStruct:
     ld hl, wEnemies
-    ADD_TO_HL [wEnemyOffset]
+    ldh a, [hEnemyOffset]
+    ADD_A_TO_HL
     jp SetEnemyStruct
