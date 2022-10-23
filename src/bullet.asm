@@ -6,7 +6,7 @@ SECTION "bullet vars", WRAM0
     wPlayerBulletY:: DB
     wPlayerBulletX:: DB
     wPlayerBulletAlive:: DB
-    wPlayerBulletRight:: DB
+    wPlayerBulletDirection:: DB ; right=0 left=1
 
 SECTION "bullet", ROM0
 
@@ -15,8 +15,7 @@ InitializeBullet::
     ld [wPlayerBulletY], a
     ld [wPlayerBulletX], a
     ld [wPlayerBulletAlive], a
-    ld a, 1
-    ld [wPlayerBulletRight], a
+    ld [wPlayerBulletDirection], a
     ret
 
 SpawnBullet::
@@ -27,10 +26,10 @@ SpawnBullet::
     add 5
     ld [wPlayerBulletY], a
     ld hl, wPlayerBulletOAM
-    ldh a, [hPlayerLookRight]
-    ld [wPlayerBulletRight], a
-    cp a, 0
-    jr nz, .spawnFromRight
+    ldh a, [hPlayerFlags]
+    and PLAYER_FLAG_DIRECTION_MASK
+    ld [wPlayerBulletDirection], a
+    jr z, .spawnFromRight
 .spawnFromLeft:
     ldh a, [hPlayerX2]
     sub 3
@@ -93,10 +92,10 @@ BulletUpdate::
     and PLAYER_BULLET_TIME
     ret nz
 .move:
-    ld a, [wPlayerBulletRight]
+    ld a, [wPlayerBulletDirection]
     cp a, 0
     ld a, [wPlayerBulletX]
-    jr nz, .moveRight
+    jr z, .moveRight
 .moveLeft:
     sub PLAYER_BULLET_SPEED
     ld [wPlayerBulletX], a

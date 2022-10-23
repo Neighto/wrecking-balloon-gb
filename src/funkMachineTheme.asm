@@ -11,8 +11,8 @@ dw routines
 dw waves
 
 order_cnt: db 16
-order1: dw P0,P8,P9,P8,P0,P8,P9,P8
-order2: dw P3,P3,P3,P3,P3,P3,P3,P3
+order1: dw P3,P3,P3,P3,P3,P3,P3,P3
+order2: dw P0,P8,P9,P8,P0,P8,P9,P8
 order3: dw P1,P1,P1,P1,P1,P1,P1,P1
 order4: dw P3,P3,P3,P3,P3,P3,P3,P3
 

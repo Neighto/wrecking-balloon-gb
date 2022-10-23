@@ -187,8 +187,8 @@ PointBalloonUpdate::
     and ENEMY_FLAG_HIT_ENEMY_MASK
     jr nz, .deathOfPointBalloon
     ; Is player alive
-    ldh a, [hPlayerAlive]
-    cp a, 0
+    ldh a, [hPlayerFlags]
+    and PLAYER_FLAG_ALIVE_MASK
     jr z, .endCollision
 .checkHit:
     ld bc, wOAM
