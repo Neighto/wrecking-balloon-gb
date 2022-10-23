@@ -108,8 +108,7 @@ LoadWindow::
     ld hl, _SCRN1 + SCRN_VX_B
     ld de, SCRN_X_B
     ld a, $D0
-    call MEMCPY_WITH_OFFSET
-    ret
+    jp MEMCPY_WITH_OFFSET
 
 RefreshWindow::
 	ldh a, [hGlobalTimer]

@@ -180,5 +180,6 @@ BossNeedleUpdate::
 
 .setStruct:
     ld hl, wEnemies
-    ADD_TO_HL [wEnemyOffset]
+    ldh a, [hEnemyOffset]
+    ADD_A_TO_HL
     jp SetEnemyStruct
