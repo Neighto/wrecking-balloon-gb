@@ -184,8 +184,8 @@ AnvilUpdate::
 
 .checkCollision:
     ; Is player alive
-    ldh a, [hPlayerAlive]
-    cp a, 0
+    ldh a, [hPlayerFlags]
+    and PLAYER_FLAG_ALIVE_MASK
     jr z, .checkHitAnotherEnemy
 .checkHit:
     ld bc, wOAM

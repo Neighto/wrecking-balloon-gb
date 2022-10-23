@@ -2,6 +2,7 @@ INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 INCLUDE "constants.inc"
+INCLUDE "playerConstants.inc"
 
 BIRD_OAM_SPRITES EQU 3
 BIRD_OAM_BYTES EQU BIRD_OAM_SPRITES * OAM_ATTRIBUTES_COUNT
@@ -280,8 +281,8 @@ BirdUpdate::
     and ENEMY_FLAG_HIT_ENEMY_MASK
     jr nz, .deathOfBird
     ; Is player alive
-    ldh a, [hPlayerAlive]
-    cp a, 0
+    ldh a, [hPlayerFlags]
+    and PLAYER_FLAG_ALIVE_MASK
     jr z, .endCollision
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM

@@ -2,6 +2,7 @@ INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
+INCLUDE "playerConstants.inc"
 
 BOSS_NEEDLE_OAM_SPRITES EQU 1
 BOSS_NEEDLE_OAM_BYTES EQU BOSS_NEEDLE_OAM_SPRITES * 4
@@ -140,8 +141,8 @@ BossNeedleUpdate::
     and	BOSS_NEEDLE_COLLISION_TIME
     jr nz, .endCollision
     ; Is player alive
-    ldh a, [hPlayerAlive]
-    cp a, 0
+    ldh a, [hPlayerFlags]
+    and PLAYER_FLAG_ALIVE_MASK
     jr z, .endCollision
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM

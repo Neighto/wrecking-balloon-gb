@@ -2,6 +2,7 @@ INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
+INCLUDE "playerConstants.inc"
 
 PROJECTILE_OAM_SPRITES EQU 1
 PROJECTILE_OAM_BYTES EQU PROJECTILE_OAM_SPRITES * 4
@@ -144,8 +145,8 @@ ProjectileUpdate::
     and	PROJECTILE_COLLISION_TIME
     jr nz, .endCollision
     ; Is player alive
-    ldh a, [hPlayerAlive]
-    cp a, 0
+    ldh a, [hPlayerFlags]
+    and PLAYER_FLAG_ALIVE_MASK
     jr z, .endCollision
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM

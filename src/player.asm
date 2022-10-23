@@ -4,27 +4,24 @@ INCLUDE "constants.inc"
 INCLUDE "macro.inc"
 
 SECTION "player vars", HRAM
+  hPlayerFlags:: DB ; BIT #: [0=active] [1=alive] [2=dying] [3=direction] [4=bobbed] [5-7=generic]
   hPlayerY:: DB
   hPlayerX:: DB
   hPlayerY2:: DB
   hPlayerX2:: DB
-  hPlayerAlive:: DB
-  hPlayerPopping:: DB
   hPlayerPoppingFrame:: DB
   hPlayerPoppingTimer:: DB
-  hPlayerFalling:: DB
-  hPlayerFallSpeed:: DB
   hPlayerRespawnTimer:: DB
   hPlayerSpeed:: DB
   hPlayerLives:: DB
-  hPlayerLookRight:: DB
-  hPlayerBobbedUp:: DB
+  hPlayerInvincible:: DB ; Timer
+  hPlayerBoost:: DB ; Timer
+  hPlayerAttack:: DB ; Timer
   hPlayerStunnedTimer:: DB
-
-  ; Operate like timers
-  hPlayerInvincible:: DB
-  hPlayerBoost:: DB ; TODO it would be a lot more logical to make these increase instead of decrease
-  hPlayerAttack:: DB
+  hPlayerCactusTile:: DB
+  hPlayerBalloonTile:: DB
+  hPlayerBalloonTurningTile:: DB
+  hPlayerBalloonTurningTile2:: DB
 
 SECTION "player", ROM0
 
@@ -34,27 +31,58 @@ InitializeLives::
   ret
 
 InitializePlayer::
+  ; FLAGS
   xor a ; ld a, 0
-  ldh [hPlayerPopping], a
+  ldh [hPlayerFlags], a
+  ldh a, [hPlayerFlags]
+  set PLAYER_FLAG_ACTIVE_BIT, a
+  set PLAYER_FLAG_ALIVE_BIT, a
+  ldh [hPlayerFlags], a
+
+  ; GENERAL
+  xor a ; ld a, 0
+  ; ldh [hPlayerY], a
+  ; ldh [hPlayerX], a
+  ; ldh [hPlayerY2], a
+  ; ldh [hPlayerX2], a
   ldh [hPlayerPoppingFrame], a
   ldh [hPlayerPoppingTimer], a
-  ldh [hPlayerFalling], a
   ldh [hPlayerRespawnTimer], a
   ldh [hPlayerInvincible], a
   ldh [hPlayerBoost], a
   ldh [hPlayerAttack], a
-  ldh [hPlayerBobbedUp], a
   ldh [hPlayerStunnedTimer], a
 
-  ld a, 1
-  ldh [hPlayerAlive], a
-  ldh [hPlayerFallSpeed], a
-  ldh [hPlayerLookRight], a
-
-  call SetPlayerPositionOpeningDefault
-
+  ; SPEED
   ld a, PLAYER_DEFAULT_SPEED
   ldh [hPlayerSpeed], a
+
+  ; POSITION
+  call SetPlayerPositionOpeningDefault
+
+  ; TILES
+  ld a, [wSecret]
+  cp a, SECRET_AMOUNT
+  jr c, .normalLook
+.secretLook:
+  ld a, PLAYER_SECRET_CACTUS_TILE
+  ld b, PLAYER_SECRET_BALLOON_TILE
+  ld c, PLAYER_SECRET_BALLOON_TURNING_TILE_1
+  ld d, PLAYER_SECRET_BALLOON_TURNING_TILE_2
+  jr .updateTiles
+.normalLook:
+  ld a, PLAYER_CACTUS_TILE
+  ld b, PLAYER_BALLOON_TILE
+  ld c, PLAYER_BALLOON_TURNING_TILE_1
+  ld d, PLAYER_BALLOON_TURNING_TILE_2
+.updateTiles:
+  ldh [hPlayerCactusTile], a
+  ld a, b
+  ldh [hPlayerBalloonTile], a
+  ld a, c
+  ldh [hPlayerBalloonTurningTile], a
+  ld a, d
+  ldh [hPlayerBalloonTurningTile2], a
   ret
 
 UpdateBalloonPosition:
@@ -108,26 +136,22 @@ SetPlayerPosition:
 SetPlayerPositionOpeningDefault:
   ld b, PLAYER_START_X
   ld c, PLAYER_START_Y
-  call SetPlayerPosition
-  ret
+  jp SetPlayerPosition
 
 SetPlayerPositionBoss::
   ld b, PLAYER_START_X - 40
   ld c, PLAYER_START_Y
-  call SetPlayerPosition
-  ret
+  jp SetPlayerPosition
 
 SetPlayerPositionOpeningCutscene::
   ld b, PLAYER_START_X
   ld c, 52
-  call SetPlayerPosition
-  ret
+  jp SetPlayerPosition
 
 SetPlayerPositionEndingCutscene::
   ld b, PLAYER_START_X
   ld c, 90
-  call SetPlayerPosition
-  ret
+  jp SetPlayerPosition
 
 SetPlayerCactusHappy::
   ld hl, wPlayerCactusOAM+2
@@ -143,17 +167,18 @@ BobPlayer::
   jr nz, .endWreckingBalloonCheck
   ld a, 1
   ldh [hPlayerSpeed], a
-  ldh a, [hPlayerBobbedUp]
-  cp a, 0
+  ldh a, [hPlayerFlags]
+  and PLAYER_FLAG_BOBBED_MASK
+  ldh a, [hPlayerFlags]
   jr z, .bobUp
 .bobDown:
-  xor a ; ld a, 0
-  ldh [hPlayerBobbedUp], a
+  res PLAYER_FLAG_BOBBED_BIT, a
+  ldh [hPlayerFlags], a
   ld d, %10000000
   jr .endWreckingBalloonCheck
 .bobUp:
-  ld a, 1
-  ldh [hPlayerBobbedUp], a
+  set PLAYER_FLAG_BOBBED_BIT, a
+  ldh [hPlayerFlags], a
   ld d, %01000000
 .endWreckingBalloonCheck:
   ld e, 0
@@ -175,38 +200,11 @@ MovePlayerUp::
   call UpdateCactusPosition
   ret
 
-GetPlayerTiles::
-  ; Returns b = balloon tile
-  ; Returns c = cactus tile
-  ld a, [wSecret]
-  cp a, SECRET_AMOUNT
-  jr c, .normalLook
-.secretLook:
-  ld b, PLAYER_SECRET_BALLOON_TILE
-  ld c, PLAYER_SECRET_CACTUS_TILE
-  ret
-.normalLook:
-  ld b, PLAYER_BALLOON_TILE
-  ld c, PLAYER_CACTUS_TILE
-  ret
-
-GetPlayerTurningTiles::
-  ; Returns h = left balloon tile
-  ; Returns l = right balloon tile
-  ld a, [wSecret]
-  cp a, SECRET_AMOUNT
-  jr c, .normalLook
-.secretLook:
-  ld h, PLAYER_SECRET_BALLOON_TURNING_TILE_1
-  ld l, PLAYER_SECRET_BALLOON_TURNING_TILE_2
-  ret
-.normalLook:
-  ld h, PLAYER_BALLOON_TURNING_TILE_1
-  ld l, PLAYER_BALLOON_TURNING_TILE_2
-  ret
-
 SpawnPlayer::
-  call GetPlayerTiles ; b = balloon tile, c = cactus tile
+  ldh a, [hPlayerBalloonTile]
+  ld b, a
+  ldh a, [hPlayerCactusTile]
+  ld c, a
 .cactusLeftOAM:
   ld hl, wPlayerCactusOAM
   ldh a, [hPlayerY2]
@@ -261,8 +259,9 @@ PlayerControls:
   and PADF_RIGHT
 	jr z, .endRight
 .setFacingRight:
-  ld a, 1
-  ldh [hPlayerLookRight], a
+  ldh a, [hPlayerFlags]
+  res PLAYER_FLAG_DIRECTION_BIT, a
+  ldh [hPlayerFlags], a
 .checkOffscreenRight:
   ldh a, [hPlayerX]
   ld b, a
@@ -288,10 +287,9 @@ PlayerControls:
   jr c, .cactusDriftLeft
 .cactusMaxDriftLeft:
   ; Update balloon turning tiles right
-  call GetPlayerTurningTiles
-  ld a, h
+  ldh a, [hPlayerBalloonTurningTile]
   ld [wPlayerBalloonOAM+2], a
-  ld a, l
+  ldh a, [hPlayerBalloonTurningTile2]
   ld [wPlayerBalloonOAM+6], a
   jr .endCheckHorizontal
 .cactusDriftLeft:
@@ -304,8 +302,9 @@ PlayerControls:
   and PADF_LEFT
 	jr z, .endLeft
 .setFacingLeft:
-  xor a ; ld a, 0
-  ldh [hPlayerLookRight], a
+  ldh a, [hPlayerFlags]
+  set PLAYER_FLAG_DIRECTION_BIT, a
+  ldh [hPlayerFlags], a
 .checkOffscreenLeft:
   ldh a, [hPlayerX]
   sub 10
@@ -331,10 +330,9 @@ PlayerControls:
   jr nc, .cactusDriftRight
 .cactusMaxDriftRight:
   ; Update balloon turning tiles left
-  call GetPlayerTurningTiles
-  ld a, l
+  ldh a, [hPlayerBalloonTurningTile2]
   ld [wPlayerBalloonOAM+2], a
-  ld a, h
+  ldh a, [hPlayerBalloonTurningTile]
   ld [wPlayerBalloonOAM+6], a
   jr .endCheckHorizontal
 .cactusDriftRight:
@@ -359,14 +357,11 @@ PlayerControls:
 .endDriftToCenterX:
 
 .checkBalloonString:
-  ; TODO maybe check balloon state to prevent updating these tiles every time we check playercontrols
-  push bc
-  call GetPlayerTiles
+  ldh a, [hPlayerBalloonTile]
   ld hl, wPlayerBalloonOAM+2
-  ld [hl], b
+  ld [hl], a
   ld hl, wPlayerBalloonOAM+6
-  ld [hl], b
-  pop bc
+  ld [hl], a
 .endCheckBalloonString:
 
 .endCheckHorizontal:
@@ -550,7 +545,9 @@ PopPlayerBalloonAnimation:
   ld bc, PLAYER_BALLOON_OAM_BYTES
   call ResetHLInRange
   ; Reset variables
-  ldh [hPlayerPopping], a
+  ldh a, [hPlayerFlags]
+  res PLAYER_FLAG_DYING_BIT, a
+  ldh [hPlayerFlags], a
   ret
 .endFrame:
   ldh a, [hPlayerPoppingFrame]
@@ -564,19 +561,20 @@ CollisionWithPlayer::
   cp a, 0
   ret nz
   ; Check if player is alive
-  ldh a, [hPlayerAlive]
-  cp a, 0
+  ldh a, [hPlayerFlags]
+  and PLAYER_FLAG_ALIVE_MASK
   ret z
 .deathOfPlayer:
-  xor a ; ld a, 0
-  ldh [hPlayerAlive], a
+  ldh a, [hPlayerFlags]
+  res PLAYER_FLAG_ALIVE_BIT, a
+  set PLAYER_FLAG_DYING_BIT, a
+  ldh [hPlayerFlags], a
   ldh a, [hPlayerLives]
   dec a
   ldh [hPlayerLives], a
-  ; Animation trigger
+  ; Speed now for falling speed
   ld a, 1
-  ldh [hPlayerPopping], a
-  ldh [hPlayerFalling], a
+  ldh [hPlayerSpeed], a
   ; Screaming cactus
   ld hl, wPlayerCactusOAM+2
   ld [hl], PLAYER_CACTUS_SCREAMING_TILE
@@ -592,8 +590,8 @@ CollisionWithPlayerCactus::
   ldh a, [hPlayerInvincible]
   cp a, 0
   ret nz
-  ldh a, [hPlayerAlive]
-  cp a, 0
+  ldh a, [hPlayerFlags]
+  and PLAYER_FLAG_ALIVE_MASK
   ret z
 .stunPlayer:
   ldh a, [hPlayerStunnedTimer]
@@ -607,8 +605,8 @@ CollisionWithPlayerCactus::
 PlayerUpdate::
 
 .checkAlive:
-  ldh a, [hPlayerAlive]
-  cp a, 0
+  ldh a, [hPlayerFlags]
+  and PLAYER_FLAG_ALIVE_MASK
   jr nz, .isAlive
 .popped:
 .checkRespawn:
@@ -618,25 +616,22 @@ PlayerUpdate::
   cp a, PLAYER_RESPAWN_TIME
   jr z, .respawning
 .popping:
-  ldh a, [hPlayerPopping]
-  cp a, 0
+  ldh a, [hPlayerFlags]
+  and PLAYER_FLAG_DYING_MASK
   call nz, PopPlayerBalloonAnimation
-.falling:
-  ldh a, [hPlayerFalling]
-  cp a, 0
-  ret z
+  ; FALLING CACTUS
 .checkFallingOffscreen:
   ld a, SCRN_X
   ld hl, hPlayerY2
   cp a, [hl]
-  jr c, .fellOffscreen
+  ret c
 .continueFalling:
   ldh a, [hGlobalTimer]
   and %00000001
   ret nz
-  ldh a, [hPlayerFallSpeed]
+  ldh a, [hPlayerSpeed]
   inc a 
-  ldh [hPlayerFallSpeed], a
+  ldh [hPlayerSpeed], a
   ld b, 4
   call DIVISION
   ld b, a
@@ -644,14 +639,6 @@ PlayerUpdate::
   add a, b
   ldh [hPlayerY2], a
   call UpdateCactusPosition
-  ret
-.fellOffscreen:
-  xor a ; ld a, 0
-  ldh [hPlayerFalling], a
-.clearPlayerCactus:
-  ld hl, wPlayerCactusOAM
-  ld bc, PLAYER_CACTUS_OAM_BYTES
-  call ResetHLInRange
   ret
 .respawning:
   ldh a, [hPlayerLives]
@@ -692,8 +679,7 @@ PlayerUpdate::
   ld [hli], a
   jr .endCheckStunned
 .blinkOn:
-  call GetPlayerTiles ; b = balloon tile, c = cactus tile
-  ld a, c
+  ldh a, [hPlayerCactusTile]
   ld [hli], a
   inc l
   inc l
@@ -737,15 +723,14 @@ PlayerUpdate::
   ld [hl], a
   jr .endInvincible
 .noBlink:
-  call GetPlayerTiles ; b = balloon tile, c = cactus tile
-  ld a, b
+  ldh a, [hPlayerBalloonTile]
   ld hl, wPlayerBalloonOAM+2
   ld [hli], a
   inc l
   inc l
   inc l
   ld [hl], a
-  ld a, c
+  ldh a, [hPlayerCactusTile]
   ld hl, wPlayerCactusOAM+2
   ld [hli], a
   inc l
