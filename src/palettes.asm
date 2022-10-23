@@ -55,12 +55,6 @@ InitializeEmptyPalettes::
 	ldh [rOBP1], a
 	ret
 
-InitializeFadedPalettes::
-	ld a, FADE_PALETTE_4
-	ldh [rBGP], a
-	ldh [rOBP0], a
-	ret
-
 FadeOutPalettes::
 	; Returns z flag as faded / nz flag as not faded
 	ld a, [wFadeOutFrame]

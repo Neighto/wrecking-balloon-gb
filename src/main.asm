@@ -230,13 +230,10 @@ GameOver::
 	call ResetGlobalTimer
 	call ClearOAM
 	call ClearSound
-	call ResetScroll
-	call InitializeInterrupts
-	call LoadGameOverGraphics
-	call InitializePalettes
 	call InitializeGameOver
 	ld hl, gameOverTheme
 	call hUGE_init
+	call RefreshGameOverWindow
 	call LCD_ON
 GameOverLoop:
 	call WaitVBlank

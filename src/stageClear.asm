@@ -64,7 +64,7 @@ LoadStageClearGraphics::
 SpawnStageNumber::
 	ld b, 1
 	call RequestOAMSpace
-	jr z, .end
+	ret z
 .availableSpace:
 	ld a, b
 	ld [wStageNumberOAM], a
@@ -78,7 +78,6 @@ SpawnStageNumber::
     add NUMBERS_TILE_OFFSET
 	ld [hli], a
 	ld [hl], OAMF_PAL0
-.end:
 	ret
 
 RefreshAddLives::
