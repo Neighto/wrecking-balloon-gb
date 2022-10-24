@@ -370,5 +370,4 @@ UpdateGame::
 .endModeSpecific:
     call RefreshWindow
     call IncrementScrollOffset
-    call _hUGE_dosound_with_end
-    ret
+    jp _hUGE_dosound_with_end
