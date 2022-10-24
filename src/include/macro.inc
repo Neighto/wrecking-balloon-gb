@@ -280,10 +280,10 @@ MACRO LVL__WAIT
     DB LEVEL_WAIT_KEY, \1
 ENDM
 
-; MACRO LEVEL_WAIT_BOSS
-;     ; Wait until boss is defeated
-;     DB LEVEL_WAIT_BOSS_KEY
-; ENDM
+MACRO LVL__WAIT_BOSS
+    ; Wait until boss is defeated
+    DB LEVEL_WAIT_BOSS_KEY
+ENDM
 
 MACRO LVL__VICTORY_SONG
     ; Change level song to victory song
