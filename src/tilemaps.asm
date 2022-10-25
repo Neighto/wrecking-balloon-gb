@@ -4,6 +4,18 @@ CutsceneMap::
     INCBIN "incbin/background/Cutscenes.tilemap"
 CutsceneMapEnd::
 
+CutsceneScoresMap::
+    INCBIN "incbin/background/CutscenesScores.tilemap"
+CutsceneScoresMapEnd::
+
+ManForEndingMap::
+    INCBIN "incbin/background/ManForEnding.tilemap"
+ManForEndingMapEnd::
+
+CutscenesStageClearBaseMap::
+    INCBIN "incbin/background/CutscenesStageClearBase.tilemap"
+CutscenesStageClearBaseMapEnd::
+
 LevelCityMap:: 
     INCBIN "incbin/background/City.tilemap"
 LevelCityMapEnd::

@@ -275,14 +275,26 @@ MACRO LVL__EXPLOSION_CONGRATULATIONS_______
     LVL__SPAWN EXPLOSION, EXPLOSION_CONGRATULATIONS_VARIANT, \1, \2
 ENDM
 
+; Level Other
+
 MACRO LVL__WAIT
-    ; Amount of iterations to wait
+    ; \1 = Amount of iterations to wait
     DB LEVEL_WAIT_KEY, \1
 ENDM
 
 MACRO LVL__WAIT_BOSS
     ; Wait until boss is defeated
     DB LEVEL_WAIT_BOSS_KEY
+ENDM
+
+MACRO LVL__JP ; TODO can use this for having a common ending header
+    ; \1 = Jump to this address
+ENDM
+
+MACRO LVL__REPT ; TODO can use this to fake extra content
+    ; \1 = Jump to this address
+    ; \2 = Iterate this many times
+
 ENDM
 
 MACRO LVL__VICTORY_SONG
