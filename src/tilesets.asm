@@ -56,6 +56,7 @@ MiscellaneousTiles::
     INCBIN "incbin/background/ShowdownWater.2bpp"
     INCBIN "incbin/background/CityPlane.2bpp"
     INCBIN "incbin/background/Black.2bpp"
+    INCBIN "incbin/background/CutscenesStageClearBase.2bpp"
 MiscellaneousTilesEnd::
 
 LevelCityTiles::
@@ -67,6 +68,14 @@ SECTION "tilesets 2", ROMX
 CutsceneTiles::
     INCBIN "incbin/background/Cutscenes.2bpp"
 CutsceneTilesEnd::
+
+CutscenesScoresTiles::
+    INCBIN "incbin/background/CutscenesScores.2bpp"
+CutscenesScoresTilesEnd::
+
+EndingCutsceneTiles::
+    INCBIN "incbin/background/ManForEnding.2bpp"
+EndingCutsceneTilesEnd::
 
 LevelDesertTiles::
     INCBIN "incbin/background/Desert.2bpp"

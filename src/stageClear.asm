@@ -49,16 +49,41 @@ StageClearSequenceData:
 
 LoadStageClearGraphics::
 .loadTiles:
-	ld bc, CutsceneTiles
+	ld bc, CutscenesScoresTiles
 	ld hl, _VRAM9000
-	ld de, CutsceneTilesEnd - CutsceneTiles
+	ld de, CutscenesScoresTilesEnd - CutscenesScoresTiles
 	call MEMCPY
 .drawMap:
-	ld bc, CutsceneMap + SCRN_X_B * STAGE_CLEAR_DISTANCE_FROM_TOP_IN_TILES
-    ld hl, _SCRN0
-    ld d, SCRN_Y_B
-    ld e, SCRN_X_B
+	ld hl, _SCRN0
+	ld bc, SCRN0_SIZE
+	ld d, $1C
+	call SetInRange
+
+	ld bc, CutsceneScoresMap + 16 * 5
+	ld hl, $9862
+	ld d, 9
+	ld e, 16
 	call MEMCPY_SINGLE_SCREEN
+
+	ld de, SCRN_X_B
+	ld bc, CutscenesStageClearBaseMap
+	ld hl, $99C0
+	ld a, $B5
+	call MEMCPY_WITH_OFFSET
+	ld de, SCRN_X_B
+	ld hl, $99E0
+	call MEMCPY_WITH_OFFSET
+	ld de, SCRN_X_B
+	ld hl, $9A00
+	call MEMCPY_WITH_OFFSET
+	ld de, SCRN_X_B
+	ld hl, $9A20
+	call MEMCPY_WITH_OFFSET
+
+	ld a, $D7
+	ld [$994A], a
+	ld a, $D8
+	ld [$994B], a
 	ret
 
 SpawnStageNumber::

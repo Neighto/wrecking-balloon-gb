@@ -117,8 +117,8 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	ld a, 6
-	ld [wLevel], a
+	; ld a, 6
+	; ld [wLevel], a
 	; ld a, 1
 	; ld [wSelectedMode], a
 	; ; ^^^
@@ -254,7 +254,6 @@ GameWon::
 	call SetPlayerCactusHappy
 	call SetPlayerPositionEndingCutscene
 	call SpawnHandClap
-	call SpawnCartBalloons
 	ld hl, menuTheme
 	call hUGE_init
 	ld b, 2 ; Channel 3
