@@ -2,6 +2,9 @@ INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "constants.inc"
 
+SECTION "memory vars", WRAM0 
+    wMemcpyTileOffset:: DB
+
 SECTION "memory", ROMX
 
 MEMCPY::
@@ -46,6 +49,9 @@ MEMCPY_WITH_OFFSET::
     ret
 
 MEMCPY_SINGLE_SCREEN::
+    xor a ; ld a, 0
+    ld [wMemcpyTileOffset], a
+MEMCPY_SINGLE_SCREEN_WITH_OFFSET::
     ; bc = source address
     ; hl = destination address
     ; d = Y counter (set to SCRN_Y_B if you want the entire screen height 144)
@@ -54,6 +60,10 @@ MEMCPY_SINGLE_SCREEN::
     push af
 .loop:
     ld a, [bc]
+    push hl
+    ld hl, wMemcpyTileOffset
+    add a, [hl]
+    pop hl
     ld [hli], a
     inc bc
     dec e

@@ -9,7 +9,7 @@ LEFT_HAND_CLAP_START_Y EQU 110
 RIGHT_HAND_CLAP_START_X EQU LEFT_HAND_CLAP_START_X + 5
 RIGHT_HAND_CLAP_START_Y EQU LEFT_HAND_CLAP_START_Y
 HAND_CLAP_TILE EQU $5C
-TOTAL_SC_INDEX_ONE_ADDRESS EQU $98CE
+TOTAL_SC_INDEX_ONE_ADDRESS EQU $98CF
 
 SECTION "ending cutscene vars", WRAM0
     wHandClappingFrame:: DB
@@ -45,60 +45,36 @@ SkipOpeningSequence:
     SEQUENCE_END
 
 LoadEndingCutsceneGraphics::
+    ; Reuse the opening cutscene
     call LoadOpeningCutsceneGraphics
 .loadTiles:
-	ld bc, EndingCutsceneTiles
+    ; Scoreboard tiles
+    ld bc, ScoreboardsTiles
 	ld hl, _VRAM9000 + CutsceneTilesEnd - CutsceneTiles
+	ld de, ScoreboardsTilesEnd - ScoreboardsTiles
+	call MEMCPY
+    ; Special ending tiles
+    ld bc, EndingCutsceneTiles
+	ld hl, _VRAM9000 + CutsceneTilesEnd - CutsceneTiles + ScoreboardsTilesEnd - ScoreboardsTiles
 	ld de, EndingCutsceneTilesEnd - EndingCutsceneTiles
 	call MEMCPY
-    ld bc, CutscenesScoresTiles
-	ld hl, _VRAM9000 + CutsceneTilesEnd - CutsceneTiles + EndingCutsceneTilesEnd - EndingCutsceneTiles
-	ld de, CutscenesScoresTilesEnd - CutscenesScoresTiles
-	call MEMCPY
 .drawMap:
-
+    ; Draw scoreboard
+    ld bc, ScoreboardsMap
+    ld hl, $9862
+    ld d, 5
+    ld e, 16
+    ld a, $34
+    ld [wMemcpyTileOffset], a
+    call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
+    ; Draw over man for ending cutscene
     ld bc, ManForEndingMap
-    ld a, $2F
-    ld de, 2
 	ld hl, $9946
-	call MEMCPY_WITH_OFFSET
-    ld de, 2
-	ld hl, $9966
-	call MEMCPY_WITH_OFFSET
-    ld de, 2
-	ld hl, $9986
-	call MEMCPY_WITH_OFFSET
-
-
-    ld bc, CutsceneScoresMap
-    ld a, $35
-    ld de, 16
-	ld hl, $9862
-	call MEMCPY_WITH_OFFSET
-    ld de, 16
-	ld hl, $9882
-	call MEMCPY_WITH_OFFSET
-    ld de, 16
-	ld hl, $98A2
-	call MEMCPY_WITH_OFFSET
-    ld de, 16
-	ld hl, $98C2
-	call MEMCPY_WITH_OFFSET
-    ld de, 16
-	ld hl, $98E2
-	call MEMCPY_WITH_OFFSET
-
-; .addBorders:
-;     ; Top
-;     ld hl, _SCRN0
-;     ld bc, $60
-;     ld d, BLACK_BKG_TILE
-;     call SetInRange
-;     ; Bottom
-;     ld hl, $99E0
-;     ld bc, $60
-;     ld d, BLACK_BKG_TILE
-;     call SetInRange
+    ld d, 3
+    ld e, 2
+    ld a, $5E
+    ld [wMemcpyTileOffset], a
+	call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
 	ret
 
 SpawnHandClap::

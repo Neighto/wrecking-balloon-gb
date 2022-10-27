@@ -49,37 +49,32 @@ StageClearSequenceData:
 
 LoadStageClearGraphics::
 .loadTiles:
-	ld bc, CutscenesScoresTiles
+	; Scoreboard tiles
+	ld bc, ScoreboardsTiles
 	ld hl, _VRAM9000
-	ld de, CutscenesScoresTilesEnd - CutscenesScoresTiles
+	ld de, ScoreboardsTilesEnd - ScoreboardsTiles
 	call MEMCPY
 .drawMap:
+	; Fill light grey
 	ld hl, _SCRN0
 	ld bc, SCRN0_SIZE
-	ld d, $1C
+	ld d, LIGHT_GREY_BKG_TILE
 	call SetInRange
-
-	ld bc, CutsceneScoresMap + 16 * 5
+	; Draw scoreboard
+	ld bc, ScoreboardsMap + 16 * 5
 	ld hl, $9862
 	ld d, 9
 	ld e, 16
 	call MEMCPY_SINGLE_SCREEN
-
-	ld de, SCRN_X_B
-	ld bc, CutscenesStageClearBaseMap
+	; Draw footer
+	ld bc, StageClearFooterMap
 	ld hl, $99C0
+	ld d, 4
+	ld e, SCRN_X_B
 	ld a, $B5
-	call MEMCPY_WITH_OFFSET
-	ld de, SCRN_X_B
-	ld hl, $99E0
-	call MEMCPY_WITH_OFFSET
-	ld de, SCRN_X_B
-	ld hl, $9A00
-	call MEMCPY_WITH_OFFSET
-	ld de, SCRN_X_B
-	ld hl, $9A20
-	call MEMCPY_WITH_OFFSET
-
+	ld [wMemcpyTileOffset], a
+	call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
+	; Draw lives icons
 	ld a, $D7
 	ld [$994A], a
 	ld a, $D8
