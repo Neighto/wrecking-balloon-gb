@@ -99,10 +99,10 @@ OpeningCutscene:
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateOpeningCutscene
-	; jp OpeningCutsceneLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateOpeningCutscene
+	jp OpeningCutsceneLoop
 
 SetupNextLevel::
 	call WaitVBlank
@@ -254,6 +254,7 @@ GameWon::
 	call SetPlayerCactusHappy
 	call SetPlayerPositionEndingCutscene
 	call SpawnHandClap
+	call SpawnCartBalloons ; might disable
 	ld hl, menuTheme
 	call hUGE_init
 	ld b, 2 ; Channel 3

@@ -92,9 +92,9 @@ SpawnCartBalloons::
     ldh [hEnemyNumber], a
     ld a, BALLOON_MEDIUM_VARIANT
     ldh [hEnemyVariant], a
-    ld a, 85
+    ld a, 86
     ldh [hEnemyY], a
-    ld a, 24
+    ld a, 24 + 96
     ldh [hEnemyX], a
     call SpawnPointBalloon
     ; EASY
@@ -102,9 +102,9 @@ SpawnCartBalloons::
     ldh [hEnemyNumber], a
     ld a, BALLOON_EASY_VARIANT
     ldh [hEnemyVariant], a
-    ld a, 84
+    ld a, 85
     ldh [hEnemyY], a
-    ld a, 8
+    ld a, 8 + 96
     ldh [hEnemyX], a
     call SpawnPointBalloon
     ; HARD
@@ -112,9 +112,9 @@ SpawnCartBalloons::
     ldh [hEnemyNumber], a
     ld a, BALLOON_HARD_VARIANT
     ldh [hEnemyVariant], a
-    ld a, 84
+    ld a, 85
     ldh [hEnemyY], a
-    ld a, 32
+    ld a, 32 + 96
     ldh [hEnemyX], a
     call SpawnPointBalloon
     ret
