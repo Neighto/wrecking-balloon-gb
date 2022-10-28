@@ -68,6 +68,10 @@ CityPlaneMap::
     INCBIN "incbin/background/CityPlane.tilemap"
 CityPlaneMapEnd::
 
+UFOMap:: 
+    INCBIN "incbin/background/UFO.tilemap"
+UFOMapEnd::
+
 ShowdownWaterMap::
     INCBIN "incbin/background/ShowdownWater.tilemap"
 ShowdownWaterMapEnd::
