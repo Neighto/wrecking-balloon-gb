@@ -150,7 +150,7 @@ SetPlayerPositionOpeningCutscene::
 
 SetPlayerPositionEndingCutscene::
   ld b, PLAYER_START_X
-  ld c, 90
+  ld c, 38
   jp SetPlayerPosition
 
 SetPlayerCactusHappy::
@@ -160,13 +160,16 @@ SetPlayerCactusHappy::
   ld [hl], PLAYER_CACTUS_HAPPY_TILE
   ret
 
+SetPlayerSpeedSlow::
+  ld a, 1
+  ldh [hPlayerSpeed], a
+  ret
+
 BobPlayer::
   ldh a, [hGlobalTimer]
   and %00011111
   ld d, %00000000
   jr nz, .endWreckingBalloonCheck
-  ld a, 1
-  ldh [hPlayerSpeed], a
   ldh a, [hPlayerFlags]
   and PLAYER_FLAG_BOBBED_MASK
   ldh a, [hPlayerFlags]
@@ -185,20 +188,25 @@ BobPlayer::
   ld c, 0
   call PlayerControls
   call UpdateBalloonPosition
-  call UpdateCactusPosition
-  ret
+  jp UpdateCactusPosition
 
-MovePlayerUp::
+MovePlayerAuto:
   ldh a, [hGlobalTimer]
   and %00000011
   ret nz
-  ld d, %01000000
   ld e, 0
   ld c, 0
   call PlayerControls
   call UpdateBalloonPosition
-  call UpdateCactusPosition
-  ret
+  jp UpdateCactusPosition
+
+MovePlayerAutoDown::
+  ld d, %10000000
+  jr MovePlayerAuto
+
+MovePlayerAutoUp::
+  ld d, %01000000
+  jr MovePlayerAuto
 
 ; SPAWN
 SpawnPlayer::

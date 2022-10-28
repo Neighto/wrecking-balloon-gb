@@ -37,7 +37,7 @@ OpeningCutsceneSequenceData:
 SkipOpeningSequence:
     SEQUENCE_HIDE_PALETTE
     SEQUENCE_WAIT 5
-    SEQUENCE_END
+    SEQUENCE_END SetupNextLevel
 
 LoadOpeningCutsceneGraphics::
 .loadTiles:
@@ -76,7 +76,9 @@ SpawnHandWave::
     ret z
     ld a, b
 	ld [wHandWaveOAM], a
-	SET_HL_TO_ADDRESS wOAM, wHandWaveOAM
+    ld hl, wOAM
+    ; ld a, [wHandWaveOAM]
+    ADD_A_TO_HL
     ld a, HAND_DOWN_START_Y
     ld [hli], a
     ld a, HAND_DOWN_START_X
@@ -119,30 +121,6 @@ SpawnCartBalloons::
     call SpawnPointBalloon
     ret
 
-HandWaveAnimation::
-    ld a, [wHandWavingFrame]
-    cp a, 0
-    jr nz, .frame1
-.frame0:
-    ldh a, [hGlobalTimer]
-    and 15
-    jp nz, .end
-    SET_HL_TO_ADDRESS wOAM+2, wHandWaveOAM
-    ld [hl], HAND_WAVE_TILE_2
-    ld hl, wHandWavingFrame
-    ld [hl], 1
-    ret
-.frame1:
-    ldh a, [hGlobalTimer]
-    and 15
-    jp nz, .end
-    SET_HL_TO_ADDRESS wOAM+2, wHandWaveOAM
-    ld [hl], HAND_WAVE_TILE_1
-    ld hl, wHandWavingFrame
-    ld [hl], 0
-.end:
-	ret
-
 UpdateOpeningCutscene::
     UPDATE_GLOBAL_TIMER
     call _hUGE_dosound
@@ -164,7 +142,6 @@ UpdateOpeningCutscene::
 
 .checkPhase:
     ld a, [wPhase]
-
 .phase0:
     cp a, 0
     jr nz, .phase1
@@ -182,12 +159,40 @@ UpdateOpeningCutscene::
     ld [hli], a
     inc l
     ld [hl], OAMF_PAL0 | OAMF_XFLIP
+    jr .endCheckPhase
 .phase2:
     ; cp a, 2
     ; jr nz, .endCheckPhase
     ; wave and fly away
-    call MovePlayerUp
-    call HandWaveAnimation
+    call MovePlayerAutoUp
+    ; hand wave animation
+.checkAnimateWave:
+    ld a, [wHandWavingFrame]
+.frame0:
+    cp a, 0
+    jr nz, .frame1
+    ldh a, [hGlobalTimer]
+    and 15
+    jr nz, .endCheckAnimateWave
+    SET_HL_TO_ADDRESS wOAM+2, wHandWaveOAM
+    ld [hl], HAND_WAVE_TILE_2
+    ld hl, wHandWavingFrame
+    ld [hl], 1
+    jr .endCheckAnimateWave
+.frame1:
+    ; cp a, 1
+    ; jr nz, .endCheckAnimateWave
+    ldh a, [hGlobalTimer]
+    and 15
+    jr nz, .endCheckAnimateWave
+    SET_HL_TO_ADDRESS wOAM+2, wHandWaveOAM
+    ld [hl], HAND_WAVE_TILE_1
+    ld hl, wHandWavingFrame
+    ld [hl], 0
+    ; jr .endCheckAnimateWave
+.endCheckAnimateWave:
+.end:
+    ; jr .endCheckPhase
 .endCheckPhase:
 
     jp SequenceDataUpdate

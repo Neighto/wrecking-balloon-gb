@@ -45,11 +45,15 @@ SequenceDataUpdate::
     cp a, SEQUENCE_ADD_SCORE_LIVES_KEY
     jr z, .addGainedLives
     cp a, SEQUENCE_END_KEY
-    jr z, .end
+    jp z, .end
     cp a, SEQUENCE_PALETTE_FADE_IN_KEY
     jr z, .fadeInPalette
+    cp a, SEQUENCE_PALETTE_FADE_OUT_KEY
+    jr z, .fadeOutPalette
     cp a, SEQUENCE_INCREASE_PHASE_KEY
     jr z, .increasePhase
+    cp a, SEQUENCE_WAIT_FOREVER_KEY
+    ; ret z
     ret
 .wait:
     ; Next instruction: amount to wait
@@ -110,6 +114,10 @@ SequenceDataUpdate::
     call FadeInPalettes
     jr nz, .updateSequenceDataCounter
     ret
+.fadeOutPalette:
+    call FadeOutPalettes
+    jr nz, .updateSequenceDataCounter
+    ret
 .increasePhase:
     ld a, [wPhase]
     inc a
@@ -123,4 +131,10 @@ SequenceDataUpdate::
     ld [wSequenceDataAddress+1], a
     ret
 .end:
-    jp SetupNextLevel
+    ; Next instructions: jump to address
+    inc hl
+    ld b, [hl]
+    inc hl
+    ld c, [hl]
+    LD_HL_BC
+    jp hl

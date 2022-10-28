@@ -45,7 +45,7 @@ StageClearSequenceData:
     SEQUENCE_WAIT 80
     SEQUENCE_HIDE_PALETTE
     SEQUENCE_WAIT 5
-    SEQUENCE_END
+    SEQUENCE_END SetupNextLevel
 
 LoadStageClearGraphics::
 .loadTiles:
