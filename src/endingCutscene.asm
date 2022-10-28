@@ -35,14 +35,17 @@ InitializeEndingCutscene::
 
 EndingCutsceneSequenceData:
     SEQUENCE_FADE_IN_PALETTE
-    SEQUENCE_WAIT 90
-    SEQUENCE_INCREASE_PHASE ; Hand up
-    SEQUENCE_INCREASE_PHASE ; Wave and fly away
-    SEQUENCE_WAIT 120
-SkipOpeningSequence:
-    SEQUENCE_HIDE_PALETTE
+    SEQUENCE_WAIT 65
+    SEQUENCE_INCREASE_PHASE ; Man look down
+    SEQUENCE_INCREASE_PHASE ; Continue moving down
+    SEQUENCE_WAIT 25
+    SEQUENCE_INCREASE_PHASE ; Show scoreboards
+    SEQUENCE_INCREASE_PHASE ; Bob
+    SEQUENCE_WAIT_FOREVER
+SkipEndingSequence:
+    SEQUENCE_FADE_OUT_PALETTE
     SEQUENCE_WAIT 5
-    SEQUENCE_END
+    SEQUENCE_END Start
 
 LoadEndingCutsceneGraphics::
     ; Reuse the opening cutscene
@@ -68,14 +71,13 @@ LoadEndingCutsceneGraphics::
     ld [wMemcpyTileOffset], a
     call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
     ; Draw over man for ending cutscene
-    ld bc, ManForEndingMap
-	ld hl, $9946
-    ld d, 3
+    ld bc, ManForEndingMap + 2
+	ld hl, $9966
+    ld d, 2
     ld e, 2
     ld a, $5E
     ld [wMemcpyTileOffset], a
-	call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
-	ret
+	jp MEMCPY_SINGLE_SCREEN_WITH_OFFSET
 
 SpawnHandClap::
 	ld b, 2
@@ -106,7 +108,60 @@ SpawnHandClap::
 UpdateEndingCutscene::
     UPDATE_GLOBAL_TIMER
     call _hUGE_dosound
+
+.checkSkip:
+	call ReadController
+	ldh a, [hControllerDown]
+    and PADF_START | PADF_A
+    jr z, .endSkip
+.skip:
+    call ClearSound
+    ld hl, wSequenceDataAddress
+    ld bc, SkipEndingSequence
+    ld a, LOW(bc)
+    ld [hli], a
+    ld a, HIGH(bc)
+    ld [hl], a
+.endSkip:
+
+.checkPhase:
+    ld a, [wPhase]
+.phase0:
+    cp a, 0
+    jr nz, .phase1
+    ; Move down
+    call MovePlayerAutoDown
+    jr .endCheckPhase
+.phase1:
+    cp a, 1
+    jr nz, .phase2
+    ; Man look down
+    ld bc, ManForEndingMap
+	ld hl, $9946
+    ld d, 1
+    ld e, 2
+    ld a, $5E
+    ld [wMemcpyTileOffset], a
+	call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
+    jr .endCheckPhase
+.phase2:
+    cp a, 2
+    jr nz, .phase3
+    ; Move down more
+    call MovePlayerAutoDown
+    jr .endCheckPhase
+.phase3:
+    cp a, 3
+    jr nz, .phase4
+    ; TODO NO PHASE 3
+    jr .endCheckPhase
+.phase4:
+    ; cp a, 4
+    ; jr nz, .endCheckPhase
     call BobPlayer
+    ; jr .endCheckPhase
+.endCheckPhase:
+
 
 .checkAnimateHands:
     ldh a, [hGlobalTimer]
@@ -133,20 +188,4 @@ UpdateEndingCutscene::
     ld [hl], 0
 .endCheckAnimateHands:
 
-.checkTriggerFadeOut:
-    call ReadController
-    ldh a, [hControllerDown]
-    and PADF_START | PADF_A
-    jr z, .endTriggerFadeOut
-    ld a, 1
-    ld [wTriggerFadeOut], a
-.endTriggerFadeOut:
-
-.fadeOut:
-    ld a, [wTriggerFadeOut]
-    cp a, 0
-    jr z, .endFadeOut
-    call FadeOutPalettes
-    jp nz, Start
-.endFadeOut:
-    ret
+    jp SequenceDataUpdate
