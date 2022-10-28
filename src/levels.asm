@@ -28,7 +28,6 @@ SECTION "level data", ROM0
 ; City Levels
 
 Level1:
-    LVL__GAME_WON
     LVL__POINT_BALLOON_EASY______________ SPAWN_X_C
     LVL__WAIT 8
     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_B

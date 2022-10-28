@@ -83,8 +83,8 @@ SpawnHandWave::
     ld [hli], a
     ld a, HAND_DOWN_START_X
     ld [hli], a
-    ld [hl], HAND_WAVE_TILE_1
-    inc l
+    ld a, HAND_WAVE_TILE_1
+    ld [hli], a
     ld [hl], OAMF_PAL0 | OAMF_XFLIP | OAMF_YFLIP
 	ret
 
@@ -191,7 +191,6 @@ UpdateOpeningCutscene::
     ld [hl], 0
     ; jr .endCheckAnimateWave
 .endCheckAnimateWave:
-.end:
     ; jr .endCheckPhase
 .endCheckPhase:
 

@@ -57,6 +57,7 @@ MiscellaneousTiles::
     INCBIN "incbin/background/CityPlane.2bpp"
     INCBIN "incbin/background/Black.2bpp"
     INCBIN "incbin/background/StageClearFooter.2bpp"
+    INCBIN "incbin/background/UFO.2bpp"
 MiscellaneousTilesEnd::
 
 LevelCityTiles::

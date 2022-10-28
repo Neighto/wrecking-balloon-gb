@@ -13,6 +13,7 @@ GAME_CITY_LCD_SCROLL_CLOSE EQU 102
 GAME_CITY_LCD_SCROLL_MIDDLE EQU 110
 GAME_CITY_LCD_SCROLL_RESET EQU WINDOW_START_Y
 GAME_CITY_LCD_SCROLL_CLOSE2 EQU SCRN_Y
+GAME_NIGHT_CITY_LCD_SCROLL_CLOSE EQU 31
 
 GAME_DESERT_LCD_SCROLL_FAR EQU 55
 GAME_DESERT_LCD_SCROLL_MIDDLE EQU 96
@@ -212,6 +213,15 @@ SetLevelCityInterrupts::
 
 LevelNightCityLCDInterrupt:
     ldh a, [rLYC]
+.closeNight:
+    cp a, GAME_NIGHT_CITY_LCD_SCROLL_CLOSE
+    jr nz, .far
+    ldh a, [hParallaxMiddle]
+    cpl
+	ldh [rSCX], a
+    ld a, GAME_CITY_LCD_SCROLL_FAR
+    ldh [rLYC], a
+    jp LCDInterruptEnd
 .far:
 	cp a, GAME_CITY_LCD_SCROLL_FAR
     jr nz, .close
@@ -220,7 +230,6 @@ LevelNightCityLCDInterrupt:
     ld a, GAME_CITY_LCD_SCROLL_CLOSE
     ldh [rLYC], a
     jp LCDInterruptEnd
-
 .close:
     cp a, GAME_CITY_LCD_SCROLL_CLOSE
     jr nz, .middle
@@ -262,7 +271,7 @@ LevelNightCityLCDInterrupt:
     jp nz, LCDInterruptEnd
     ld a, %11100001
 	ldh [rBGP], a
-    ld a, GAME_CITY_LCD_SCROLL_FAR
+    ld a, GAME_NIGHT_CITY_LCD_SCROLL_CLOSE
 	ldh [rLYC], a
     jp LCDInterruptEnd
 

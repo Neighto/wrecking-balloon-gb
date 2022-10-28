@@ -57,7 +57,22 @@ LoadLevelCityGraphics::
 	ld hl, _SCRN0 + $C0
 	ld de, LevelCityMapEnd - LevelCityMap
 	call MEMCPY
-    call SpawnCityPlanes
+    ; City Planes
+    ld bc, CityPlaneMap
+	ld hl, $9831 ; City Plane address
+    ld de, 3
+    ld a, $AF
+	call MEMCPY_WITH_OFFSET
+    ld bc, CityPlaneMap
+	ld hl, $9886 ; City Plane address
+    ld de, 3
+    ld a, $AF
+	call MEMCPY_WITH_OFFSET
+    ld bc, CityPlaneMap
+    ld hl, $987B ; City Plane address
+    ld de, 5
+    ld a, $AF
+	call MEMCPY_WITH_OFFSET
 	ret
 
 LoadLevelNightCityGraphics::
@@ -71,6 +86,7 @@ LoadLevelNightCityGraphics::
 	ld hl, _SCRN0 + $C0
 	ld de, LevelCityMapEnd - LevelCityMap
 	call MEMCPY
+    ; Stars
     ld hl, $9821
     ld [hl], STAR_TILE
     ld hl, $982D
@@ -85,6 +101,12 @@ LoadLevelNightCityGraphics::
     ld [hl], STAR_TILE
     ld hl, $986F
     ld [hl], STAR_TILE
+    ; UFO
+    ld bc, UFOMap
+    ld hl, $9897
+    ld de, 2
+    ld a, $BC
+	call MEMCPY_WITH_OFFSET
 	ret
 
 LoadLevelDesertGraphics::
@@ -171,24 +193,6 @@ SpawnSun::
 	call MEMCPY_WITH_OFFSET
 	ld hl, SUN_ADDRESS + $60
     ld de, 4
-	call MEMCPY_WITH_OFFSET
-    ret
-
-SpawnCityPlanes:
-    ld bc, CityPlaneMap
-	ld hl, $9831 ; City Plane address
-    ld de, 3
-    ld a, $AF
-	call MEMCPY_WITH_OFFSET
-    ld bc, CityPlaneMap
-	ld hl, $9886 ; City Plane address
-    ld de, 3
-    ld a, $AF
-	call MEMCPY_WITH_OFFSET
-    ld bc, CityPlaneMap
-    ld hl, $987B ; City Plane address
-    ld de, 5
-    ld a, $AF
 	call MEMCPY_WITH_OFFSET
     ret
 
