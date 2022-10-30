@@ -1,4 +1,5 @@
 INCLUDE "hardware.inc"
+INCLUDE "constants.inc"
 
 COMMON_LCD_SETTINGS EQU LCDCF_ON | LCDCF_BGON | LCDCF_OBJON | LCDCF_WIN9C00
 ENABLE_LCD_SETTINGS_NO_WINDOW EQU COMMON_LCD_SETTINGS | LCDCF_OBJ16 | LCDCF_WINOFF
@@ -50,7 +51,7 @@ WaitVBlank::
     ret
 
 SetupWindow::
-    ld a, 128
+    ld a, WINDOW_START_Y
 	ldh [rWY], a
 	ld a, 7
 	ldh [rWX], a
