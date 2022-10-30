@@ -489,6 +489,8 @@ PlayerControls:
   jr z, .endStart
   ld a, 1
   ldh [hPaused], a
+  call ShowPlayerBalloon
+  call ShowPlayerCactus
 .endStart:
 
 .AButton:
@@ -507,18 +509,21 @@ PlayerControls:
 .BButton:
   ld a, d
   and PADF_B
-	jr z, .endB
+	; jr z, .endB ; last button in controls, just ret
+  ret z
   ldh a, [hPlayerBoost]
   cp a, PLAYER_BOOST_FULL
-  jr nz, .endB
+  ; jr nz, .endB ; last button in controls, just ret
+  ret nz
 .activateBoost:
   ld a, PLAYER_BOOST_EMPTY
   ldh [hPlayerBoost], a
   ld hl, hPlayerSpeed
   ld [hl], PLAYER_DEFAULT_SPEED * 2
-  call BoostSound
+  ; call BoostSound ; last button in controls, just jp
+  jp BoostSound
 .endB:
-  ret
+  ; ret ; never reaches here
 
 PopPlayerBalloonAnimation:
   ldh a, [hPlayerPoppingFrame]
@@ -622,7 +627,38 @@ CollisionWithPlayerCactus::
   ret nz
   ld a, PLAYER_STUNNED_TIME
   ldh [hPlayerStunnedTimer], a
-  call HitSound
+  jp HitSound
+
+ShowPlayerCactus:
+  ldh a, [hPlayerCactusTile]
+  ld hl, wPlayerCactusOAM+2
+  ld [hl], a
+  ld hl, wPlayerCactusOAM+6
+  ld [hl], a
+  ret
+
+ShowPlayerBalloon:
+  ldh a, [hPlayerBalloonTile]
+  ld hl, wPlayerBalloonOAM+2
+  ld [hl], a
+  ld hl, wPlayerBalloonOAM+6
+  ld [hl], a
+  ret
+
+HidePlayerCactus:
+  ld a, EMPTY_TILE
+  ld hl, wPlayerCactusOAM+2
+  ld [hl], a
+  ld hl, wPlayerCactusOAM+6
+  ld [hl], a
+  ret
+
+HidePlayerBalloon:
+  ld a, EMPTY_TILE
+  ld hl, wPlayerBalloonOAM+2
+  ld [hl], a
+  ld hl, wPlayerBalloonOAM+6
+  ld [hl], a
   ret
 
 ; UPDATE
@@ -662,8 +698,7 @@ PlayerUpdate::
   ldh a, [hPlayerY2]
   add a, b
   ldh [hPlayerY2], a
-  call UpdateCactusPosition
-  ret
+  jp UpdateCactusPosition
 .respawning:
   ldh a, [hPlayerLives]
   cp a, 0
@@ -690,25 +725,15 @@ PlayerUpdate::
   and PLAYER_STUNNED_SLOW_TIME
   jr nz, .endCheckStunned
 .blinking:
-  ld hl, wPlayerCactusOAM + 2
+  ld hl, wPlayerCactusOAM+2
   ld a, [hl]
   cp a, EMPTY_TILE
   jr z, .blinkOn
 .blinkOff:
-  ld a, EMPTY_TILE
-  ld [hli], a
-  inc l
-  inc l
-  inc l
-  ld [hli], a
+  call HidePlayerCactus
   jr .endCheckStunned
 .blinkOn:
-  ldh a, [hPlayerCactusTile]
-  ld [hli], a
-  inc l
-  inc l
-  inc l
-  ld [hli], a
+  call ShowPlayerCactus
 .endCheckStunned:
 
 .checkInvincible:
@@ -717,7 +742,7 @@ PlayerUpdate::
   jr z, .endInvincible
 .isInvincible:
   dec a
-  ldh [hPlayerInvincible], a
+  ldh [hPlayerInvincible], a  
   ; If at the end make sure we stop on default tileset
   cp a, 2
   jr c, .noBlink
@@ -732,35 +757,12 @@ PlayerUpdate::
 	and INVINCIBLE_BLINK_FAST_SPEED
   jr z, .noBlink
 .blinkEnd:
-  ld a, EMPTY_TILE
-  ld hl, wPlayerBalloonOAM+2
-  ld [hli], a
-  inc l
-  inc l
-  inc l
-  ld [hl], a
-  ld hl, wPlayerCactusOAM+2
-  ld [hli], a
-  inc l
-  inc l
-  inc l
-  ld [hl], a
+  call HidePlayerBalloon
+  call HidePlayerCactus
   jr .endInvincible
 .noBlink:
-  ldh a, [hPlayerBalloonTile]
-  ld hl, wPlayerBalloonOAM+2
-  ld [hli], a
-  inc l
-  inc l
-  inc l
-  ld [hl], a
-  ldh a, [hPlayerCactusTile]
-  ld hl, wPlayerCactusOAM+2
-  ld [hli], a
-  inc l
-  inc l
-  inc l
-  ld [hl], a
+  call ShowPlayerBalloon
+  call ShowPlayerCactus
 .endInvincible:
 
 .checkMove:

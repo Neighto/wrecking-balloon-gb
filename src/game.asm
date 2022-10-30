@@ -149,8 +149,7 @@ LoadLevelNightDesertGraphics::
     ld hl, $9871
     ld [hl], STAR_TILE
     ; Add in sun
-    call SpawnSun
-    ret
+    jp SpawnSun
 
 LoadLevelShowdownGraphics::
 .tiles:
