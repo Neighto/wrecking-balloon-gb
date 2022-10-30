@@ -118,7 +118,7 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	ld a, 2
+	ld a, 3
 	ld [wLevel], a
 	; ld a, 1
 	; ld [wSelectedMode], a
@@ -194,10 +194,10 @@ SetupNextLevel::
 	call LCD_ON
 	; Comment out GameCountdownLoop to skip countdown
 GameCountdownLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateGameCountdown
-	jp GameCountdownLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateGameCountdown
+	; jp GameCountdownLoop
 PreGameLoop::
 	call ClearCountdown
 GameLoop:

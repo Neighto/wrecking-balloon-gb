@@ -273,10 +273,13 @@ PlayerControls:
   ldh [hPlayerFlags], a
 .checkOffscreenRight:
   ldh a, [hPlayerX]
-  ld b, a
-  ld a, SCRN_X - 10
+  ld b, SCRN_X - 8
   cp a, b
-  jr c, .canCactusDriftCenterX
+  jr c, .moveRight
+.offscreenRight:
+  ld a, b
+  ldh [hPlayerX], a
+  jr .canCactusDriftCenterX
 .moveRight:
   ldh a, [hPlayerSpeed]
   ld b, a
@@ -316,11 +319,15 @@ PlayerControls:
   ldh [hPlayerFlags], a
 .checkOffscreenLeft:
   ldh a, [hPlayerX]
-  sub 10
-  ld b, a
-  ld a, SCRN_X
-  cp a, b
-  jr c, .canCactusDriftCenterX
+  ld b, 8 ; x = 8 when player is at leftmost part of screen
+  sub a, b
+  dec a ; sub 1 more so if we are at leftmost part of screen value is past 0
+  cp a, SCRN_X
+  jr c, .moveLeft
+.offscreenLeft:
+  ld a, b
+  ldh [hPlayerX], a
+  jr .canCactusDriftCenterX
 .moveLeft:
   ldh a, [hPlayerSpeed]
   ld b, a
@@ -387,11 +394,15 @@ PlayerControls:
   jr z, .moveUp
 .canCheckOffscreenUp:
   ldh a, [hPlayerY]
-  sub 18
-  ld b, a
-  ld a, SCRN_Y - WINDOW_LAYER_HEIGHT
-  cp a, b
-  jr c, .canCactusDriftCenterY
+  ld b, 16
+  sub a, b
+  dec a
+  cp a, SCRN_Y - WINDOW_LAYER_HEIGHT
+  jr c, .moveUp
+.offscreenUp:
+  ld a, b
+  ldh [hPlayerY], a
+  jr .canCactusDriftCenterY
 .moveUp:
   ldh a, [hPlayerSpeed]
   ld b, a
@@ -423,10 +434,13 @@ PlayerControls:
   jr z, .moveDown
 .canCheckOffscreenDown:
   ldh a, [hPlayerY]
-  ld b, a
-  ld a, SCRN_Y - 16 - WINDOW_LAYER_HEIGHT
+  ld b, SCRN_Y - 16 + 2 - WINDOW_LAYER_HEIGHT ; 16 = height of 2 sprites, 2 = free space bottom of cactus
   cp a, b
-  jr c, .canCactusDriftCenterY
+  jr c, .moveDown
+.offscreenDown:
+  ld a, b
+  ldh [hPlayerY], a
+  jr .canCactusDriftCenterY
 .moveDown:
   ldh a, [hPlayerSpeed]
   ld b, a
