@@ -10,12 +10,14 @@ HIT_SOUND_TIMER EQU 40
 SECTION "sound", ROMX
 
 AUDIO_OFF::
-	xor a ; ld a, 0
+  ldh a, [rNR52]
+	res 7, a
 	ldh [rNR52], a
 	ret
 
 AUDIO_ON::
-  ld a, %10001111
+  ldh a, [rNR52]
+  set 7, a
 	ldh [rNR52], a
 	ret
 
@@ -32,20 +34,31 @@ StopSweepSound::
   ret
 
 ClearSound::
-  xor a ; ld a, 0
+  ; Silence channel
+  ld a, $08
   ; C1
   ldh [rNR12], a
   ; C2
   ldh [rNR22], a
   ; C3
-  ldh [rNR30], a
+  ldh [rNR32], a
   ; C4
   ldh [rNR42], a
+  ; Retrigger channel and reload NRx2
+  ld a, $80
+  ; C1
+  ldh [rNR14], a
+  ; C2
+  ldh [rNR24], a
+  ; C3
+  ldh [rNR34], a
+  ; C4
+  ldh [rNR44], a
   ret
 
 SetWaveRAMToSquareWave::
-  ld a, %00000000
-  ldh [rNR30], a
+  ld a, $08
+  ldh [rNR32], a
   ld hl, _AUD3WAVERAM
   ld bc, $2
   ld d, 0
@@ -53,8 +66,8 @@ SetWaveRAMToSquareWave::
   ld bc, $D
   ld d, $FF
   call SetInRange
-  ld a, %10000000
-  ldh [rNR30], a
+  ld a, $80
+  ldh [rNR34], a
   ret
 
 ; Gameplay Sound Effects (CH1)

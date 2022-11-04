@@ -34,6 +34,8 @@ InitializeEndingCutscene::
     ret
 
 EndingCutsceneSequenceData:
+    SEQUENCE_WAIT 5
+    SEQUENCE_PLAY_SONG
     SEQUENCE_FADE_IN_PALETTE
     SEQUENCE_WAIT 65
     SEQUENCE_INCREASE_PHASE ; Man look down
@@ -107,7 +109,11 @@ SpawnHandClap::
 
 UpdateEndingCutscene::
     UPDATE_GLOBAL_TIMER
-    call _hUGE_dosound
+
+    ; Play song
+    ld a, [wSequencePlaySong]
+    cp a, 0
+    call nz, _hUGE_dosound
 
 .checkSkip:
 	call ReadController
@@ -115,6 +121,8 @@ UpdateEndingCutscene::
     and PADF_START | PADF_A
     jr z, .endSkip
 .skip:
+    xor a ; ld a, 0
+    ld [wSequencePlaySong], a
     call ClearSound
     ld hl, wSequenceDataAddress
     ld bc, SkipEndingSequence
@@ -125,7 +133,7 @@ UpdateEndingCutscene::
 .endSkip:
 
 .checkPhase:
-    ld a, [wPhase]
+    ld a, [wSequencePhase]
 .phase0:
     cp a, 0
     jr nz, .phase1
