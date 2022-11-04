@@ -934,7 +934,7 @@ fx_set_volume:
     ;; Arguments to this effect will be massaged to correct form for the channel
     ;; in the editor so we don't have to AND and SWAP and stuff.
 
-set_channel_volume:
+set_channel_volume::
     ;; Call with:
     ;; Correct volume value in C
     ;; Channel number in B

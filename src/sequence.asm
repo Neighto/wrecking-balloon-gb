@@ -7,14 +7,16 @@ SEQUENCE_UPDATE_REFRESH_TIME EQU %00000001
 SECTION "sequence vars", WRAM0
     wSequenceWaitCounter:: DB
     wSequenceDataAddress:: DS 2
-    wPhase:: DB
+    wSequencePhase:: DB
+    wSequencePlaySong:: DB
 
 SECTION "sequence", ROMX
 
 InitializeSequence::
     xor a ; ld a, 0
     ld [wSequenceWaitCounter], a
-    ld [wPhase], a
+    ld [wSequencePhase], a
+    ld [wSequencePlaySong], a
     ; Must initialize wSequenceDataAddress elsewhere
     ret
 
@@ -53,7 +55,9 @@ SequenceDataUpdate::
     cp a, SEQUENCE_INCREASE_PHASE_KEY
     jr z, .increasePhase
     cp a, SEQUENCE_WAIT_FOREVER_KEY
-    ; ret z
+    ret z
+    cp a, SEQUENCE_PLAY_SONG_KEY
+    jr z, .playSong
     ret
 .wait:
     ; Next instruction: amount to wait
@@ -118,10 +122,14 @@ SequenceDataUpdate::
     call FadeOutPalettes
     jr nz, .updateSequenceDataCounter
     ret
+.playSong:
+    ld a, 1
+    ld [wSequencePlaySong], a
+    jr .updateSequenceDataCounter
 .increasePhase:
-    ld a, [wPhase]
+    ld a, [wSequencePhase]
     inc a
-    ld [wPhase], a
+    ld [wSequencePhase], a
     ; jr .updateSequenceDataCounter
 .updateSequenceDataCounter:
     inc hl

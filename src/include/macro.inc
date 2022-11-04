@@ -142,11 +142,12 @@ ENDM
 ; Level Instructions
 LEVEL_SPAWN_KEY EQU 0 
 LEVEL_WAIT_KEY EQU 1
-LEVEL_WAIT_BOSS_KEY EQU 2
+LEVEL_WAIT_BOSS_KEY EQU 2 ; TODO rearrange these and sequence ones to make more sense
 LEVEL_END_KEY EQU 3
 GAME_WON_KEY EQU 4
 LEVEL_VICTORY_SONG_KEY EQU 5
 ENDLESS_KEY EQU 6
+LEVEL_REPEAT_KEY EQU 7
 
 MACRO LVL__SPAWN
     ; \1 = Enemy Number
@@ -287,14 +288,10 @@ MACRO LVL__WAIT_BOSS
     DB LEVEL_WAIT_BOSS_KEY
 ENDM
 
-MACRO LVL__JP ; TODO can use this for having a common ending header
-    ; \1 = Jump to this address
-ENDM
-
-MACRO LVL__REPT ; TODO can use this to fake extra content
-    ; \1 = Jump to this address
-    ; \2 = Iterate this many times
-
+MACRO LVL__REPT
+    ; \1 = Iterate this many times
+    ; \2 = Jump to this address
+    DB LEVEL_REPEAT_KEY, \1, LOW(\2), HIGH(\2)
 ENDM
 
 MACRO LVL__VICTORY_SONG
@@ -326,6 +323,7 @@ SEQUENCE_PALETTE_FADE_IN_KEY EQU 7
 SEQUENCE_PALETTE_FADE_OUT_KEY EQU 8
 SEQUENCE_INCREASE_PHASE_KEY EQU 9
 SEQUENCE_WAIT_FOREVER_KEY EQU 10
+SEQUENCE_PLAY_SONG_KEY EQU 11
 
 MACRO SEQUENCE_WAIT
     ; \1 = Amount of iterations to wait
@@ -371,6 +369,10 @@ ENDM
 
 MACRO SEQUENCE_WAIT_FOREVER
     DB SEQUENCE_WAIT_FOREVER_KEY
+ENDM
+
+MACRO SEQUENCE_PLAY_SONG
+    DB SEQUENCE_PLAY_SONG_KEY
 ENDM
 
 ; TIMER MACROS ****
