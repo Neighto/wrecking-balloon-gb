@@ -24,24 +24,23 @@ InitializeStageClear::
     ld [wLivesToAdd], a
     ld [wPointSound], a
     ld [wStageNumberOAM], a
-
     ld hl, wSequenceDataAddress
     ld bc, StageClearSequenceData
     ld a, LOW(bc)
     ld [hli], a
     ld a, HIGH(bc)
     ld [hl], a
-    call RefreshStageClear
-    ret
+    jp RefreshStageClear
 
 StageClearSequenceData:
     SEQUENCE_WAIT 5
     SEQUENCE_SHOW_PALETTE
     SEQUENCE_WAIT 40
-    SEQUENCE_COPY_SCORE_TO_TOTAL_1
-    SEQUENCE_COPY_SCORE_TO_TOTAL_2
+	SEQUENCE_INCREASE_PHASE ;SEQUENCE_COPY_SCORE_TO_TOTAL_1
+	SEQUENCE_INCREASE_PHASE ;SEQUENCE_COPY_SCORE_TO_TOTAL_2
+	SEQUENCE_WAIT_UNTIL IsScoreZero
     SEQUENCE_WAIT 40
-    SEQUENCE_ADD_SCORE_LIVES
+	SEQUENCE_INCREASE_PHASE ;SEQUENCE_ADD_SCORE_LIVES
     SEQUENCE_WAIT 80
     SEQUENCE_HIDE_PALETTE
     SEQUENCE_WAIT 5
@@ -88,7 +87,8 @@ SpawnStageNumber::
 .availableSpace:
 	ld a, b
 	ld [wStageNumberOAM], a
-	SET_HL_TO_ADDRESS wOAM, wStageNumberOAM
+	ld hl, wOAM
+	ADD_A_TO_HL
 	ld a, 48 ; y
 	ld [hli], a
 	ld a, 84 ; x
@@ -118,36 +118,89 @@ RefreshAddLives::
 	ld [hl], a
 	ret
 
-RefreshStageClear::
+RefreshStageClear:
 	ld hl, SCORE_SC_INDEX_ONE_ADDRESS
 	call RefreshScore
 	ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
 	call RefreshTotal
-
 	ldh a, [hPlayerLives]
 	add NUMBERS_TILE_OFFSET
 	ld [LIVES_SC_ADDRESS], a
+	jp RefreshAddLives
 
-	call RefreshAddLives
-	ret
+UpdateStageClear::
+    UPDATE_GLOBAL_TIMER
 
-PointSound::
+.checkPhase:
+    ld a, [wSequencePhase]
+.phase0:
+    cp a, 0
+    jr nz, .phase1
+	; Nothing
+	jr .endCheckPhase
+.phase1:
+    cp a, 1
+    jr nz, .phase2
+	; Copy first digit score to total
+	ld a, [wScore]
+    and HIGH_HALF_BYTE_MASK
+    ld d, a
+    call AddTotal
+    ld a, [wScore]
+    and HIGH_HALF_BYTE_MASK
+    ld d, a
+    call DecrementPoints
+	jr .endCheckPhase
+.phase2:
+    cp a, 2
+    jr nz, .phase3
+	; Copy score to total
+	ldh a, [hGlobalTimer]
+	and %00000001
+	jr nz, .endCheckPhase
+	call IsScoreZero
+    jr nz, .copyingScoreToTotal
+.doneCopyingScoreToTotal::
+	ld a, 1
+	ld [wSequenceWaitUntilCheck], a
+	jr .endCheckPhase
+.copyingScoreToTotal:
+    ld d, 10
+    call AddTotal
+    ld d, 10
+    call DecrementPoints
+.checkPointSound
 	ld a, [wPointSound]
 	cp a, 0
 	jr nz, .soundB
 .soundA:
-	ld a, 1
+	inc a
 	ld [wPointSound], a
 	call BassSoundA
 	jr .endPointSound
 .soundB:
-	ld a, 0
+	xor a ; ld a, 0
 	ld [wPointSound], a
 	call BassSoundB
 .endPointSound:
-    ret
+	jr .endCheckPhase
+.phase3:
+	; cp a, 3
+    ; jr nz, .endCheckPhase
+	; Add gained lives
+	ld a, [wLivesToAdd]
+    cp a, 0
+    jr z, .endCheckPhase
+    dec a
+    ld [wLivesToAdd], a
+    ldh a, [hPlayerLives]
+    cp a, PLAYER_MAX_LIVES
+	jr nc, .endCheckPhase
+    inc a
+    ldh [hPlayerLives], a
+    call CollectSound
+	; jr .endCheckPhase
+.endCheckPhase:
 
-UpdateStageClear::
-    UPDATE_GLOBAL_TIMER
     call RefreshStageClear
     jp SequenceDataUpdate

@@ -9,6 +9,7 @@ SECTION "sequence vars", WRAM0
     wSequenceDataAddress:: DS 2
     wSequencePhase:: DB
     wSequencePlaySong:: DB
+    wSequenceWaitUntilCheck:: DB
 
 SECTION "sequence", ROMX
 
@@ -17,6 +18,7 @@ InitializeSequence::
     ld [wSequenceWaitCounter], a
     ld [wSequencePhase], a
     ld [wSequencePlaySong], a
+    ld [wSequenceWaitUntilCheck], a
     ; Must initialize wSequenceDataAddress elsewhere
     ret
 
@@ -36,28 +38,22 @@ SequenceDataUpdate::
     ; Interpret
     cp a, SEQUENCE_WAIT_KEY
     jr z, .wait
-    cp a, SEQUENCE_HIDE_PALETTE_KEY
-    jr z, .hidePalette
-    cp a, SEQUENCE_SHOW_PALETTE_KEY
-    jr z, .showPalette
-    cp a, SEQUENCE_COPY_SCORE_TO_TOTAL_1_KEY
-    jr z, .copyFirstDigitScoreToTotal
-    cp a, SEQUENCE_COPY_SCORE_TO_TOTAL_2_KEY
-    jr z, .copyScoreToTotal
-    cp a, SEQUENCE_ADD_SCORE_LIVES_KEY
-    jr z, .addGainedLives
-    cp a, SEQUENCE_END_KEY
-    jp z, .end
+    cp a, SEQUENCE_WAIT_UNTIL_KEY
+    jr z, .waitUntil
     cp a, SEQUENCE_PALETTE_FADE_IN_KEY
     jr z, .fadeInPalette
     cp a, SEQUENCE_PALETTE_FADE_OUT_KEY
     jr z, .fadeOutPalette
+    cp a, SEQUENCE_HIDE_PALETTE_KEY
+    jr z, .hidePalette
+    cp a, SEQUENCE_SHOW_PALETTE_KEY
+    jr z, .showPalette
     cp a, SEQUENCE_INCREASE_PHASE_KEY
     jr z, .increasePhase
-    cp a, SEQUENCE_WAIT_FOREVER_KEY
-    ret z
     cp a, SEQUENCE_PLAY_SONG_KEY
     jr z, .playSong
+    cp a, SEQUENCE_END_KEY
+    jr z, .end
     ret
 .wait:
     ; Next instruction: amount to wait
@@ -72,48 +68,20 @@ SequenceDataUpdate::
     xor a ; ld a, 0
     ld [wSequenceWaitCounter], a
     jr .updateSequenceDataCounter
+.waitUntil:
+    ld a, [wSequenceWaitUntilCheck]
+    cp a, 0
+    ret z
+.waitUntilEnd:
+    xor a ; ld a, 0
+    ld [wSequenceWaitUntilCheck], a
+    jr .updateSequenceDataCounter
 .hidePalette:
     call InitializeEmptyPalettes
     jr .updateSequenceDataCounter
 .showPalette:
     call InitializePalettes
     jr .updateSequenceDataCounter
-.copyFirstDigitScoreToTotal:
-    push hl
-    ld a, [wScore]
-    and HIGH_HALF_BYTE_MASK
-    ld d, a
-    call AddTotal
-    ld a, [wScore]
-    and HIGH_HALF_BYTE_MASK
-    ld d, a
-    call DecrementPoints
-    pop hl
-    jr .updateSequenceDataCounter
-.copyScoreToTotal:
-    push hl
-    call IsScoreZero
-    pop hl
-    jr z, .updateSequenceDataCounter
-    ld d, 10
-    call AddTotal
-    ld d, 10
-    call DecrementPoints
-    call PointSound
-    ret
-.addGainedLives:
-    ld a, [wLivesToAdd]
-    cp a, 0
-    jr z, .updateSequenceDataCounter
-    dec a
-    ld [wLivesToAdd], a
-    ldh a, [hPlayerLives]
-    cp a, PLAYER_MAX_LIVES
-    ret nc
-    inc a
-    ldh [hPlayerLives], a
-    call CollectSound
-    ret
 .fadeInPalette:
     call FadeInPalettes
     jr nz, .updateSequenceDataCounter

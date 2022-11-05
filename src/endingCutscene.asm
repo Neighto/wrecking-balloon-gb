@@ -43,7 +43,7 @@ EndingCutsceneSequenceData:
     SEQUENCE_WAIT 25
     SEQUENCE_INCREASE_PHASE ; Show scoreboards
     SEQUENCE_INCREASE_PHASE ; Bob
-    SEQUENCE_WAIT_FOREVER
+    SEQUENCE_WAIT_UNTIL
 SkipEndingSequence:
     SEQUENCE_FADE_OUT_PALETTE
     SEQUENCE_WAIT 5
@@ -87,7 +87,8 @@ SpawnHandClap::
     ret z
     ld a, b
 	ld [wHandClapOAM], a
-	SET_HL_TO_ADDRESS wOAM, wHandClapOAM
+    ld hl, wOAM
+    ADD_A_TO_HL 
 .leftHandClap:
     ld a, LEFT_HAND_CLAP_START_Y
     ld [hli], a
