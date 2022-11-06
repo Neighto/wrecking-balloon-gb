@@ -100,7 +100,18 @@ SpawnStageNumber::
 	ld [hl], OAMF_PAL0
 	ret
 
-RefreshAddLives::
+RefreshStageClear:
+	; Score
+	ld hl, SCORE_SC_INDEX_ONE_ADDRESS
+	call RefreshScore
+	; Total
+	ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
+	call RefreshTotal
+	; Current lives
+	ldh a, [hPlayerLives]
+	add NUMBERS_TILE_OFFSET
+	ld [LIVES_SC_ADDRESS], a
+	; Add lives
 	ld a, [wLivesToAdd]
 	cp a, 0
 	jr nz, .hasLivesToAdd
@@ -117,16 +128,6 @@ RefreshAddLives::
 	add NUMBERS_TILE_OFFSET
 	ld [hl], a
 	ret
-
-RefreshStageClear:
-	ld hl, SCORE_SC_INDEX_ONE_ADDRESS
-	call RefreshScore
-	ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
-	call RefreshTotal
-	ldh a, [hPlayerLives]
-	add NUMBERS_TILE_OFFSET
-	ld [LIVES_SC_ADDRESS], a
-	jp RefreshAddLives
 
 UpdateStageClear::
     UPDATE_GLOBAL_TIMER
