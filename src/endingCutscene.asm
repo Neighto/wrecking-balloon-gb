@@ -171,7 +171,6 @@ UpdateEndingCutscene::
     ; jr .endCheckPhase
 .endCheckPhase:
 
-
 .checkAnimateHands:
     ldh a, [hGlobalTimer]
     and HAND_CLAP_SPEED
