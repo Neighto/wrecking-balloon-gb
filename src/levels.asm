@@ -828,8 +828,7 @@ LevelDataHandler::
     ld a, [wLevelWaitBoss]
     cp a, 0
     jr nz, .waitBossEnd
-    call WaitBossUpdate
-    ret
+    jp WaitBossUpdate
 .waitBossEnd:
     inc hl
     ld a, l
