@@ -3,14 +3,14 @@ include "src/include/hUGE.inc"
 SECTION "boss theme", ROMX
 
 bossTheme::
-db 4
+db 8
 dw order_cnt
 dw order1, order2, order3, order4
 dw duty_instruments, wave_instruments, noise_instruments
 dw routines
 dw waves
 
-order_cnt: db 2
+order_cnt: db 4
 order1: dw PE,PE
 order2: dw P1,P3
 order3: dw P2,P2
