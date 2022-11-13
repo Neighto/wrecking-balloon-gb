@@ -146,7 +146,7 @@ SetupNextLevel::
 	jr nz, .level4
 	call SetLevelDesertInterrupts
 	call LoadLevelDesertGraphics
-	ld hl, funkMachineTheme
+	ld hl, desertTheme
 	call hUGE_init
 	jr .endLevelSetup
 .level4:
@@ -154,7 +154,7 @@ SetupNextLevel::
 	jr nz, .level5
 	call SetLevelNightDesertInterrupts
 	call LoadLevelNightDesertGraphics
-	ld hl, funkMachineTheme
+	ld hl, desertTheme
 	call hUGE_init
 	call InitializeNightSpritePalettes
 	jr .endLevelSetup
@@ -163,7 +163,7 @@ SetupNextLevel::
 	jr nz, .level6
 	call SetLevelShowdownInterrupts
 	call LoadLevelShowdownGraphics
-	ld hl, funkMachineTheme
+	ld hl, showdownTheme
 	call hUGE_init
 	jr .endLevelSetup
 .level6:
@@ -191,10 +191,10 @@ SetupNextLevel::
 	call LCD_ON
 	; Comment out GameCountdownLoop to skip countdown
 GameCountdownLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateGameCountdown
-	; jp GameCountdownLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateGameCountdown
+	jp GameCountdownLoop
 PreGameLoop::
 	call ClearCountdown
 GameLoop:

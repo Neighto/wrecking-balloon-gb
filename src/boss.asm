@@ -117,7 +117,7 @@ SpawnBoss::
     set ENEMY_FLAG_ACTIVE_BIT, a
     set ENEMY_FLAG_ALIVE_BIT, a
     set PORCUPINE_FLAG_HEALTH_BIT1, a ; Boss health + 1
-    ; set PORCUPINE_FLAG_HEALTH_BIT2, a ; Boss health + 2
+    set PORCUPINE_FLAG_HEALTH_BIT2, a ; Boss health + 2
     ldh [hBossFlags], a
 	ld a, PORCUPINE_SPAWN_Y
 	ldh [hBossY], a 
@@ -202,39 +202,43 @@ BossUpdate::
     and ENEMY_FLAG_ACTIVE_MASK
     ret z
 
+    ; ==============================================================
+
 .checkSpawn:
     ldh a, [hBossFlags]
     ld b, a
     and PORCUPINE_FLAG_TRIGGER_SPAWN_MASK
     jr z, .endCheckSpawn
-.spawnTriggerActive:
+    ; Spawn trigger active
     ld a, b
     res PORCUPINE_FLAG_TRIGGER_SPAWN_BIT, a
     ldh [hBossFlags], a
-.matchPosition:
+    ; Match boss position
     ldh a, [hBossY]
     ldh [hEnemyY], a
     ldh a, [hBossX]
     ldh [hEnemyX], a
-.chooseSpawnType:
-    ldh a, [hBossFlags]
+    ; Choose spawn type (attack or drop balloon)
+    ld a, b
     and ENEMY_FLAG_ALIVE_MASK
     jr z, .spawnPointBalloon
+
+    ; SPAWN BOSS NEEDLE
 .spawnBossNeedle:
     ld a, BOSS_NEEDLE
     ldh [hEnemyNumber], a
     ld a, b
     and ENEMY_FLAG_DIRECTION_MASK
-    jr nz, .upRightNeedle
-    ; Enemy looking left
-.upLeftNeedle:
+    jr nz, .spawnBossNeedlesRight
+.spawnBossNeedlesLeft:
+    ; Up left needle
     ld a, NEEDLE_UP_MOVE_LEFT_VARIANT
     ldh [hEnemyVariant], a
     ldh a, [hEnemyX]
     add a, 8
     ldh [hEnemyX], a
     call SpawnBossNeedle
-.downLeftNeedle:
+    ; Down left needle
     ld a, NEEDLE_DOWN_MOVE_LEFT_VARIANT
     ldh [hEnemyVariant], a
     ldh a, [hEnemyY]
@@ -242,15 +246,15 @@ BossUpdate::
     ldh [hEnemyY], a
     call SpawnBossNeedle
     jr .endSpawnBossNeedle
-    ; Enemy looking right
-.upRightNeedle:
+.spawnBossNeedlesRight:
+    ; Up right needle
     ld a, NEEDLE_UP_MOVE_RIGHT_VARIANT
     ldh [hEnemyVariant], a
     ldh a, [hEnemyX]
     add a, 24
     ldh [hEnemyX], a
     call SpawnBossNeedle
-.downRightNeedle:
+    ; Down right needle
     ld a, NEEDLE_DOWN_MOVE_RIGHT_VARIANT
     ldh [hEnemyVariant], a
     ldh a, [hEnemyY]
@@ -259,6 +263,8 @@ BossUpdate::
     call SpawnBossNeedle
 .endSpawnBossNeedle:
     jp BossNeedleSound
+
+    ; SPAWN POINT BALLOON
 .spawnPointBalloon:
     ld a, POINT_BALLOON
     ldh [hEnemyNumber], a
@@ -273,17 +279,23 @@ BossUpdate::
     jp SpawnPointBalloon
 .endCheckSpawn:
 
+    ; ==============================================================
+
 .faceExpression:
+    ; Check cooldown for animation has expired
     ldh a, [hBossAnimationTimer]
     cp a, 0
     jr z, .canUpdateFaceExpression
+.cannotUpdateFaceExpression:
     dec a
     ldh [hBossAnimationTimer], a
     jr .endFaceExpression
 .canUpdateFaceExpression:
+    ; Point hl to enemy oam
     ld hl, wOAM+6
     ldh a, [hBossOAM]
     ADD_A_TO_HL
+    ; Update frame
     ldh a, [hBossAnimationFrame]
 .faceExpressionLeft:
     cp a, PORCUPINE_EXPRESSION_LEFT
@@ -299,7 +311,7 @@ BossUpdate::
     ld a, OAMF_PAL0
     ld [hli], a
     ld a, 255
-    jr .setExpressionTimer
+    jr .updateFaceExpressionCommon
 .faceExpressionRight:
     cp a, PORCUPINE_EXPRESSION_RIGHT
     jr nz, .faceExpressionConfident
@@ -314,7 +326,7 @@ BossUpdate::
     ld a, OAMF_PAL0 | OAMF_XFLIP
     ld [hli], a
     ld a, 255
-    jr .setExpressionTimer
+    jr .updateFaceExpressionCommon
 .faceExpressionConfident:
     cp a, PORCUPINE_EXPRESSION_CONFIDENT
     jr nz, .faceExpressionScared
@@ -329,8 +341,10 @@ BossUpdate::
     ld a, OAMF_PAL0 | OAMF_XFLIP
     ld [hli], a
     ld a, 35
-    jr .setExpressionTimer
+    jr .updateFaceExpressionCommon
 .faceExpressionScared:
+    ; cp a, PORCUPINE_EXPRESSION_SCARED
+    ; jr nz, .updateFaceExpressionCommon
     ld a, PORCUPINE_SCARED_FACE_TILE
     ld [hli], a
     ld a, OAMF_PAL0
@@ -342,9 +356,11 @@ BossUpdate::
     ld a, OAMF_PAL0 | OAMF_XFLIP
     ld [hli], a
     ld a, 255
-    ; jr .setExpressionTimer
-.setExpressionTimer:
+    ; jr .updateFaceExpressionCommon
+.updateFaceExpressionCommon:
+    ; Set expression timer
     ldh [hBossAnimationTimer], a
+    ; Set default next frame to be facing a direction
     ldh a, [hBossX]
     cp a, SCRN_X / 2
     jr c, .lookRight
@@ -356,6 +372,8 @@ BossUpdate::
 .updateLook:
     ldh [hBossAnimationFrame], a
 .endFaceExpression:
+
+    ; ==============================================================
 
 .checkKnockedOut:
     ldh a, [hBossKnockedOutTimer]
@@ -400,19 +418,14 @@ BossUpdate::
     ldh [hBossAnimationTimer], a
 .endKnockedOut:
 
+    ; ==============================================================
+
 .checkAlive:
     ldh a, [hBossFlags]
     and ENEMY_FLAG_ALIVE_MASK
     jr nz, .isAlive
 .isAtZeroHealth:
-    ldh a, [hBossFlags]
-    and ENEMY_FLAG_DYING_MASK
-    jr nz, .dying
-.dyingDone:
-    ld a, 1 
-    ld [wLevelWaitBoss], a
-    ld bc, PORCUPINE_OAM_BYTES
-    jp ClearEnemy
+
 .dying:
 .dyingOffscreen:
     ld a, SCRN_Y + 16 ; buffer
@@ -421,8 +434,10 @@ BossUpdate::
     jr nc, .checkFalling
 .isOffScreen:
     ldh a, [hBossFlags]
-    res ENEMY_FLAG_DYING_BIT, a
+    res ENEMY_FLAG_ACTIVE_BIT, a
     ldh [hBossFlags], a
+    ld a, 1 
+    ld [wLevelWaitBoss], a
     ret
 .checkFalling:
     ldh a, [hGlobalTimer]
@@ -440,6 +455,8 @@ BossUpdate::
     ldh [hBossY], a
     jp UpdateBossPosition
 .isAlive:
+
+    ; ==============================================================
 
 .checkDirection:
     ldh a, [hGlobalTimer]
@@ -496,6 +513,8 @@ BossUpdate::
 .endCheckDirectionY:
 .endCheckDirection:
 
+    ; ==============================================================
+
 .checkAttackCooldown:
     ldh a, [hBossAttackCooldownTimer]
     cp a, 0
@@ -503,6 +522,8 @@ BossUpdate::
     dec a
     ldh [hBossAttackCooldownTimer], a
 .endCheckAttackCooldown:
+
+    ; ==============================================================
 
 .checkMove:
     ldh a, [hGlobalTimer]
@@ -613,6 +634,8 @@ BossUpdate::
     call UpdateBossPosition
 .endMove:
 
+    ; ==============================================================
+
 .checkString:
     ldh a, [hGlobalTimer]
     and STRING_MOVE_TIME
@@ -630,6 +653,8 @@ BossUpdate::
     ld a, OAMF_XFLIP | OAMF_PAL0
     ld [hl], a
 .endString:
+
+    ; ==============================================================
 
 .checkCollision:
     ldh a, [hGlobalTimer]
@@ -702,6 +727,8 @@ BossUpdate::
     xor a ; ld a, 0
     ldh [hBossAnimationTimer], a
 .endCollision:
+
+    ; ==============================================================
     ret
 
 SECTION "boss miscellaneous vars", WRAM0
