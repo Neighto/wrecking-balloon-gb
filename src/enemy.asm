@@ -73,8 +73,7 @@ SECTION "enemy", ROM0
 InitializeEnemies::
     ld hl, wEnemies
     ld bc, ENEMY_DATA_SIZE
-    call ResetHLInRange
-    ret
+    jp ResetHLInRange
 
 EnemyUpdate::
 
@@ -325,46 +324,56 @@ HandleEnemyOffscreenHorizontal::
 SECTION "enemy animations", ROM0
 
 PopBalloonAnimation::
-    ldh a, [hEnemyParam1]
-    cp a, 0
-    jr z, .frame0
+    ; hEnemyParam1 = Animation Frame
+    ; hEnemyParam2 = Animation Timer
     ldh a, [hEnemyParam2]
-	inc	a
-	ldh [hEnemyParam2], a
+    inc a
+    ldh [hEnemyParam2], a
+    dec a
     and POPPING_BALLOON_ANIMATION_TIME
     ret nz
-.canSwitchFrames:
+.changeFrames:
+    ; Point hl to enemy oam
+    ld hl, wOAM+2
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
+    ; Update frame
     ldh a, [hEnemyParam1]
-    cp a, 1
-    jr z, .frame1
-    cp a, 2
-    jr z, .clear
-    ret
 .frame0:
+    cp a, 0
+    jr nz, .frame1
     ; Popped left - frame 0
-    SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM
-    ld [hl], POP_BALLOON_FRAME_0_TILE
-    inc l
-    ld [hl], OAMF_PAL0
+    ld a, POP_BALLOON_FRAME_0_TILE
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
     ; Popped right - frame 0
-    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
-    ld [hl], POP_BALLOON_FRAME_0_TILE
     inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+    inc l
+    ld a, POP_BALLOON_FRAME_0_TILE
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hl], a
     jr .endFrame
 .frame1:
+    cp a, 1
+    jr nz, .frame2
     ; Popped left - frame 1
-    SET_HL_TO_ADDRESS wOAM+2, hEnemyOAM
-    ld [hl], POP_BALLOON_FRAME_1_TILE
-    inc l
-    ld [hl], OAMF_PAL0
+    ld a, POP_BALLOON_FRAME_1_TILE
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
     ; Popped right - frame 1
-    SET_HL_TO_ADDRESS wOAM+6, hEnemyOAM
-    ld [hl], POP_BALLOON_FRAME_1_TILE
     inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+    inc l
+    ld a, POP_BALLOON_FRAME_1_TILE
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hl], a
     jr .endFrame
-.clear:
+.frame2:
+    ; jr nz, .frame3
+    ; cp a, 2
     ldh a, [hEnemyFlags]
     res ENEMY_FLAG_DYING_BIT, a
     ldh [hEnemyFlags], a

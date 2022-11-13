@@ -116,7 +116,7 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	ld a, 5
+	ld a, 6
 	ld [wLevel], a
 	; ld a, 1
 	; ld [wSelectedMode], a
@@ -163,7 +163,7 @@ SetupNextLevel::
 	jr nz, .level6
 	call SetLevelShowdownInterrupts
 	call LoadLevelShowdownGraphics
-	ld hl, bossTheme
+	ld hl, funkMachineTheme
 	call hUGE_init
 	jr .endLevelSetup
 .level6:
