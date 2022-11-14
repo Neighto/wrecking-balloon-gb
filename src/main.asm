@@ -1,5 +1,6 @@
 INCLUDE "hardware.inc"
 INCLUDE "header.inc"
+INCLUDE "constants.inc"
 
 SECTION "rom", ROM0
 
@@ -57,10 +58,10 @@ StartMenu::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateMenu
-	; jp MenuLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateMenu
+	jp MenuLoop
 
 StartGame::
 	ld a, [wSelectedMode]
@@ -71,7 +72,7 @@ OpeningCutscene:
 	call LCD_OFF
 	call Common
 	call InitializeEnemies
-	call SetOpeningCutsceneInterrupts
+	call SetCutsceneInterrupts
 	call LoadOpeningCutsceneGraphics
 	call InitializeSequence
 	call InitializeOpeningCutscene
@@ -98,10 +99,10 @@ OpeningCutscene:
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateOpeningCutscene
-	; jp OpeningCutsceneLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateOpeningCutscene
+	jp OpeningCutsceneLoop
 
 SetupNextLevel::
 	call WaitVBlank
@@ -116,13 +117,13 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	ld a, 6
-	ld [wLevel], a
+	; ld a, 2
+	; ld [wLevel], a
 	; ld a, 1
 	; ld [wSelectedMode], a
 	; ; ^^^
 	ld a, [wSelectedMode]
-	cp a, 0
+	cp a, CLASSIC_MODE
 	jp nz, .endless
 	ld a, [wLevel]
 .level1:
@@ -180,11 +181,12 @@ SetupNextLevel::
 .endless:
 	call SetEndlessInterrupts
 	call LoadEndlessGraphics
+	call InitializeEmptyPalettes
+	call InitializeEndless
 	ld hl, angryTheme
 	call hUGE_init
 .endLevelSetup:
 	call InitializeGame
-	call InitializeEndless
 	call InitializeScore
 	call InitializeNewLevel
 	call RefreshWindow
@@ -243,7 +245,7 @@ GameWon::
 	call LCD_OFF
 	call Common
 	call InitializeEnemies
-	call SetEndingCutsceneInterrupts
+	call SetCutsceneInterrupts
 	call LoadEndingCutsceneGraphics
 	call InitializeSequence
 	call InitializeEndingCutscene

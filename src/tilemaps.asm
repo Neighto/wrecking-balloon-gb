@@ -44,21 +44,9 @@ WindowMap::
     INCBIN "incbin/window/Window.tilemap"
 WindowMapEnd::
 
-DarkCloudsMap::
-    INCBIN "incbin/background/DarkClouds.tilemap"
-DarkCloudsMapEnd::
-
-LightCloudsMap::
-    INCBIN "incbin/background/LightClouds.tilemap"
-LightCloudsMapEnd::
-
-RainCloudsMap::
-    INCBIN "incbin/background/RainClouds.tilemap"
-RainCloudsMapEnd::
-
-ThinCloudsMap::
-    INCBIN "incbin/background/ThinClouds.tilemap"
-ThinCloudsMapEnd::
+CloudsMap::
+    INCBIN "incbin/background/Clouds.tilemap"
+CloudsMapEnd::
 
 SunMap::
     INCBIN "incbin/background/Sun.tilemap"

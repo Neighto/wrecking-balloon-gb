@@ -122,7 +122,7 @@ SetMenuInterrupts::
     ld [hl], a
     ret 
 
-OpeningCutsceneLCDInterrupt:
+CutsceneLCDInterrupt:
     ldh a, [rLYC]
     cp a, OPENING_CUTSCENE_HIDE
     jr z, .hide
@@ -143,14 +143,14 @@ OpeningCutsceneLCDInterrupt:
 .end:
     jp LCDInterruptEnd
 
-SetOpeningCutsceneInterrupts::
+SetCutsceneInterrupts::
     ld a, OPENING_CUTSCENE_HIDE
 	ldh [rLYC], a
 
     ld hl, wLCDInterrupt
-    ld a, LOW(OpeningCutsceneLCDInterrupt)
+    ld a, LOW(CutsceneLCDInterrupt)
     ld [hli], a
-    ld a, HIGH(OpeningCutsceneLCDInterrupt)
+    ld a, HIGH(CutsceneLCDInterrupt)
     ld [hl], a
     ret 
 
@@ -512,16 +512,5 @@ SetEndlessInterrupts::
     ld a, LOW(EndlessLCDInterrupt)
     ld [hli], a
     ld a, HIGH(EndlessLCDInterrupt)
-    ld [hl], a
-    ret 
-
-SetEndingCutsceneInterrupts::
-    ld a, ENDING_CUTSCENE_SCROLL_FAR
-	ldh [rLYC], a
-
-    ld hl, wLCDInterrupt
-    ld a, LOW(LCDInterruptEnd)
-    ld [hli], a
-    ld a, HIGH(LCDInterruptEnd)
     ld [hl], a
     ret 

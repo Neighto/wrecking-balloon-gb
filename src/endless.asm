@@ -85,7 +85,7 @@ SECTION "endless vars", HRAM
     ; Horizontal Enemy Info
     hEndlessHorizontalEnemyNumber:: DB
     hEndlessHorizontalEnemyVariant:: DB
-    hEndlessHorizontalEnemyDirection:: DB
+    hEndlessHorizontalEnemyDirection:: DB    
 
 SECTION "endless", ROM0
 
@@ -114,37 +114,33 @@ InitializeEndless::
     ret
 
 LoadEndlessGraphics::
+    ; Add scrolling thin clouds
+	ld bc, CloudsMap + $20 * 4
+	ld hl, $9900
+	ld de, $20
+	ld a, $80
+	call MEMCPY_WITH_OFFSET
+    ; Add scrolling light clouds
+    ld bc, CloudsMap
+    ld hl, $9980
+    ld de, $20
+    ld a, $80
+    call MEMCPY_WITH_OFFSET
+    ; Fill in light clouds space
+    ld bc, $20
+    ld d, $83
+    call SetInRange
     ; Add scrolling dark clouds
-	ld bc, DarkCloudsMap
-	ld hl, $99C0
-	ld de, DarkCloudsMapEnd - DarkCloudsMap
+	ld bc, CloudsMap + $20
+	ld de, $20
 	ld a, $80
 	call MEMCPY_WITH_OFFSET
     ; Fill in dark clouds space
-    ld hl, $99E0
     ld bc, $20
-    ld d, $81
+    ld d, $85
     call SetInRange
-    ; Add scrolling light clouds
-    ld bc, LightCloudsMap
-	ld hl, $9980
-	ld de, LightCloudsMapEnd - LightCloudsMap
-	ld a, $84
-	call MEMCPY_WITH_OFFSET
-    ; Fill in light clouds space
-    ld hl, $99A0
-    ld bc, $20
-    ld d, $87
-    call SetInRange
-    ; Add scrolling thin clouds
-	ld bc, ThinCloudsMap
-	ld hl, $9900
-	ld de, ThinCloudsMapEnd - ThinCloudsMap
-	ld a, $88
-	call MEMCPY_WITH_OFFSET
     ; Add sun
-    call SpawnSun
-    ret
+    jp SpawnSun
 
 ; UPDATE
 EndlessUpdate::

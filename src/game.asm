@@ -17,8 +17,9 @@ COUNTDOWN_1_TILE_1 EQU $4C
 COUNTDOWN_1_TILE_2 EQU $4E
 
 COUNTDOWN_NEUTRAL_BALLOON_TILE EQU $1E
-STAR_TILE EQU $99
+STAR_TILE EQU $9F
 SUN_ADDRESS EQU $9848
+SUN_TILE_OFFSET EQU $92
 
 SECTION "game vars", WRAM0
     wCountdownFrame:: DB
@@ -61,17 +62,17 @@ LoadLevelCityGraphics::
     ld bc, CityPlaneMap
 	ld hl, $9831 ; City Plane address
     ld de, 3
-    ld a, $AF
+    ld a, $AD
 	call MEMCPY_WITH_OFFSET
     ld bc, CityPlaneMap
 	ld hl, $9886 ; City Plane address
     ld de, 3
-    ld a, $AF
+    ld a, $AD
 	call MEMCPY_WITH_OFFSET
     ld bc, CityPlaneMap
     ld hl, $987B ; City Plane address
     ld de, 5
-    ld a, $AF
+    ld a, $AD
 	call MEMCPY_WITH_OFFSET
 	ret
 
@@ -105,7 +106,7 @@ LoadLevelNightCityGraphics::
     ld bc, UFOMap
     ld hl, $9897
     ld de, 2
-    ld a, $BC
+    ld a, $BA
 	call MEMCPY_WITH_OFFSET
 	ret
 
@@ -164,17 +165,21 @@ LoadLevelShowdownGraphics::
     ld d, SCRN_VY_B - 4 ; height of scrolling water on the bottom
     ld e, SCRN_X_B
 	call MEMCPY_SINGLE_SCREEN
+    ; Fill in dark clouds space
+    ld hl, _SCRN0
+    ld bc, $60
+    ld d, $85
+    call SetInRange
     ; Add scrolling rain clouds
-	ld bc, RainCloudsMap
-	ld hl, _SCRN0
-	ld de, RainCloudsMapEnd - RainCloudsMap
-	ld a, $9A
+	ld bc, CloudsMap + $20 * 2
+	ld de, $40
+	ld a, $80
 	call MEMCPY_WITH_OFFSET
     ; Add scrolling water
 	ld bc, ShowdownWaterMap
 	ld hl, $9BA0
 	ld de, ShowdownWaterMapEnd - ShowdownWaterMap
-	ld a, $A2
+	ld a, $A0
 	call MEMCPY_WITH_OFFSET
     ret
 
@@ -182,7 +187,7 @@ SpawnSun::
     ld bc, SunMap
 	ld hl, SUN_ADDRESS
     ld de, 4
-    ld a, $8C
+    ld a, SUN_TILE_OFFSET
 	call MEMCPY_WITH_OFFSET
 	ld hl, SUN_ADDRESS + $20
     ld de, 4
@@ -232,8 +237,19 @@ ClearCountdown::
 ; UPDATE GAME COUNTDOWN ======================================
 
 UpdateGameCountdown::
+
     UPDATE_GLOBAL_TIMER
     call IncrementScrollOffset
+
+.checkFadeIn:
+    ; Only in endless
+    ld a, [wSelectedMode]
+    cp a, ENDLESS_MODE
+    jr nz, .endCheckFadeIn
+    call FadeInPalettes
+    ret z
+.hasFadedIn:
+.endCheckFadeIn:
 
 .checkCountdownAnimation:
     ld a, [wCountdownFrame]
