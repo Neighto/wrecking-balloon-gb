@@ -58,14 +58,14 @@ StartMenu::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateMenu
-	jp MenuLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateMenu
+	; jp MenuLoop
 
 StartGame::
 	ld a, [wSelectedMode]
-	cp a, 0
+	cp a, CLASSIC_MODE
 	jr nz, SetupNextLevel
 OpeningCutscene:
 	call WaitVBlank
@@ -99,10 +99,10 @@ OpeningCutscene:
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateOpeningCutscene
-	jp OpeningCutsceneLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateOpeningCutscene
+	; jp OpeningCutsceneLoop
 
 SetupNextLevel::
 	call WaitVBlank
@@ -117,9 +117,9 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	; ld a, 2
-	; ld [wLevel], a
-	; ld a, 1
+	ld a, 6
+	ld [wLevel], a
+	; ld a, ENDLESS_MODE
 	; ld [wSelectedMode], a
 	; ; ^^^
 	ld a, [wSelectedMode]

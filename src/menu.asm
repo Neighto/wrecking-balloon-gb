@@ -236,16 +236,16 @@ UpdateMenu::
 	ld [hld], a
 	dec hl ; Now pointing to Y
 	ld a, [wSelectedMode]
-	cp a, 0
+	cp a, CLASSIC_MODE
 	jr z, .selectEndless
 .selectClassic:
-	xor a ; ld a, 0
+	ld a, CLASSIC_MODE
 	ld [wSelectedMode], a
 	ld a, MENU_SPRITE_CLASSIC_Y
 	ld [hl], a
 	ret
 .selectEndless:
-	ld a, 1
+	ld a, ENDLESS_MODE
 	ld [wSelectedMode], a
 	ld a, MENU_SPRITE_ENDLESS_Y
 	ld [hl], a
