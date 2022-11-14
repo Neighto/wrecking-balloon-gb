@@ -664,14 +664,14 @@ BossUpdate::
     and ENEMY_FLAG_HIT_ENEMY_MASK
     jr nz, .bossDamaged
 ; .checkHitBullet: ; FOR DEBUGGING *****
-    ld bc, wPlayerBulletOAM
-    ld hl, wOAM
-    ldh a, [hBossOAM]
-    ADD_A_TO_HL
-    ld d, 32
-    ld e, 32
-    call CollisionCheck
-    jr nz, .bossDamaged
+    ; ld bc, wPlayerBulletOAM
+    ; ld hl, wOAM
+    ; ldh a, [hBossOAM]
+    ; ADD_A_TO_HL
+    ; ld d, 32
+    ; ld e, 32
+    ; call CollisionCheck
+    ; jr nz, .bossDamaged
 ;     ; ***********
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
