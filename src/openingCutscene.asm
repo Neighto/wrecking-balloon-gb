@@ -54,10 +54,10 @@ LoadOpeningCutsceneGraphics::
     ld e, SCRN_X_B
 	call MEMCPY_SINGLE_SCREEN
     ; Add thin clouds
-	ld bc, ThinCloudsMap
+	ld bc, CloudsMap + $20 * 4
 	ld hl, $9880
-	ld de, ThinCloudsMapEnd - ThinCloudsMap
-	ld a, $88
+	ld de, $20
+	ld a, $80
 	call MEMCPY_WITH_OFFSET
 .addBorders:
     ; Top

@@ -62,22 +62,16 @@ LoadMenuGraphics::
 	ld d, TITLE_HEIGHT_IN_TILES
 	ld e, SCRN_X_B
 	call MEMCPY_SINGLE_SCREEN
-	; Add scrolling dark clouds
-	ld bc, DarkCloudsMap
-	ld hl, $99E0
-	ld de, DarkCloudsMapEnd - DarkCloudsMap
-	ld a, $80
-	call MEMCPY_WITH_OFFSET
-	; Add scrolling light clouds
-	ld bc, LightCloudsMap
+	; Add scrolling dark clouds and light clouds
+	ld bc, CloudsMap
 	ld hl, $99C0
-	ld de, LightCloudsMapEnd - LightCloudsMap
-	ld a, $84
+	ld de, $40
+	ld a, $80
 	call MEMCPY_WITH_OFFSET
 	; Fill in dark clouds space
 	ld hl, $9A00
     ld bc, $40
-    ld d, $81
+    ld d, $85
     call SetInRange
 	; Add texts
 	ld bc, ModesMap

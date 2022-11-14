@@ -60,53 +60,49 @@ FadeOutPalettes::
 	ld a, [wFadeOutFrame]
 	cp a, 5
 	jr c, .fadeOut
-.hasFadedIn:
+.hasFadedOut:
 	ld a, 1
 	and a
 	ret
 .fadeOut:
 	ldh a, [hGlobalTimer]
 	and FADE_SPEED
-	jr nz, .end
+	jr nz, .isStillFadingOut
 	ld a, [wFadeOutFrame]
 .fade1:
 	cp a, 0
 	jr nz, .fade2
-	ld a, FADE_PALETTE2_1
-	ldh [rOBP1], a
     ld a, FADE_PALETTE_1
+	ld b, FADE_PALETTE2_1
 	jr .fadePalettes
 .fade2:
 	cp a, 1
 	jr nz, .fade3
-	ld a, FADE_PALETTE2_2
-	ldh [rOBP1], a
 	ld a, FADE_PALETTE_2
+	ld b, FADE_PALETTE2_2
 	jr .fadePalettes
 .fade3:
 	cp a, 2
 	jr nz, .fade4
-	ld a, FADE_PALETTE2_3
-	ldh [rOBP1], a
 	ld a, FADE_PALETTE_3
+	ld b, FADE_PALETTE2_3
 	jr .fadePalettes
 .fade4:
-	cp a, 3
-	jr nz, .fade5
-	ld a, FADE_PALETTE2_4
-	ldh [rOBP1], a
+	; cp a, 3
+	; jr nz, .fade5
 	ld a, FADE_PALETTE_4
-	jr .fadePalettes
-.fade5:
-	jr .increaseFrame
+	ld b, FADE_PALETTE2_4
+	; jr .fadePalettes
 .fadePalettes:
 	ldh [rBGP], a
 	ldh [rOBP0], a
+	ld a, b
+	ldh [rOBP1], a
 .increaseFrame:
 	ld a, [wFadeOutFrame]
 	inc a
 	ld [wFadeOutFrame], a
-.end:
+.isStillFadingOut:
 	xor a ; ld a, 0
 	and a
 	ret
@@ -123,46 +119,42 @@ FadeInPalettes::
 .fadeIn:
 	ldh a, [hGlobalTimer]
 	and FADE_SPEED
-	jr nz, .end
+	jr nz, .isStillFadingIn
 	ld a, [wFadeInFrame]
 .fade1:
 	cp a, 0
 	jr nz, .fade2
-	ld a, FADE_PALETTE2_4
-	ldh [rOBP1], a
     ld a, FADE_PALETTE_4
+	ld b, FADE_PALETTE2_4
 	jr .fadePalettes
 .fade2:
 	cp a, 1
 	jr nz, .fade3
-	ld a, FADE_PALETTE2_3
-	ldh [rOBP1], a
 	ld a, FADE_PALETTE_3
+	ld b, FADE_PALETTE2_3
 	jr .fadePalettes
 .fade3:
 	cp a, 2
 	jr nz, .fade4
-	ld a, FADE_PALETTE2_2
-	ldh [rOBP1], a
 	ld a, FADE_PALETTE_2
+	ld b, FADE_PALETTE2_2
 	jr .fadePalettes
 .fade4:
-	cp a, 3
-	jr nz, .fade5
-	ld a, FADE_PALETTE2_1
-	ldh [rOBP1], a
+	; cp a, 3
+	; jr nz, .fade5
 	ld a, FADE_PALETTE_1
-	jr .fadePalettes
-.fade5:
-	jr .increaseFrame
+	ld b, FADE_PALETTE2_1
+	; jr .fadePalettes
 .fadePalettes:
 	ldh [rBGP], a
 	ldh [rOBP0], a
+	ld a, b
+	ldh [rOBP1], a
 .increaseFrame:
 	ld a, [wFadeInFrame]
 	inc a
 	ld [wFadeInFrame], a
-.end:
+.isStillFadingIn:
 	xor a ; ld a, 0
 	and a
 	ret

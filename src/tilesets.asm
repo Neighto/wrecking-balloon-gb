@@ -47,12 +47,9 @@ GameSpriteTiles::
 GameSpriteTilesEnd::
 
 MiscellaneousTiles::
-    INCBIN "incbin/background/DarkClouds.2bpp"
-    INCBIN "incbin/background/LightClouds.2bpp"
-    INCBIN "incbin/background/ThinClouds.2bpp"
+    INCBIN "incbin/background/Clouds.2bpp"
     INCBIN "incbin/background/Sun.2bpp"
     INCBIN "incbin/background/DesertStar.2bpp"
-    INCBIN "incbin/background/RainClouds.2bpp"
     INCBIN "incbin/background/ShowdownWater.2bpp"
     INCBIN "incbin/background/CityPlane.2bpp"
     INCBIN "incbin/background/Black.2bpp"
