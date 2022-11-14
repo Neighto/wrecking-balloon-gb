@@ -8,6 +8,7 @@ ANVIL_OAM_SPRITES EQU 2
 ANVIL_OAM_BYTES EQU ANVIL_OAM_SPRITES * OAM_ATTRIBUTES_COUNT
 ANVIL_DEAD_BLINKING_TIME EQU %00000011
 ANVIL_DEAD_BLINKING_DURATION EQU 20
+ANVIL_WARNING_DURATION EQU 20
 
 ANVIL_FALLING_SPEED_DELAY EQU 3
 
@@ -18,6 +19,7 @@ CACTUS_SCREAMING_TILE EQU $2E
 
 ; hEnemyParam1 = Speed
 ; hEnemyParam2 = Animation Timer
+; hEnemyParam3 = Warning Timer
 
 SECTION "anvil", ROMX
 
@@ -42,22 +44,31 @@ SpawnAnvil::
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_ACTIVE_BIT, a
     ldh [hEnemyFlags], a
+
+    ; Variant speed
 .variantSpeed:
     ldh a, [hEnemyVariant]
 .cactusSpeed:
     cp a, ANVIL_CACTUS_VARIANT
     jr nz, .anvilSpeed
     ld a, CACTUS_INITIAL_SPEED
-    jr .endVariantSpeed
+    jr .updateVariantSpeed
 .anvilSpeed:
+    ; cp a, ANVIL_NORMAL_VARIANT or ANVIL_WARNING_VARIANT
+    ; jr nz, .endVariantSpeed
     ld a, ANVIL_INITIAL_SPEED
-.endVariantSpeed:
+    ; jr .updateVariantSpeed
+.updateVariantSpeed:
     ldh [hEnemyParam1], a
+.endVariantSpeed:
+
     ; Get hl pointing to OAM address
     LD_BC_HL ; bc now contains RAM address
     ld hl, wOAM
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
+
+    ; Variant visual
 .variantVisualLeft:
     ldh a, [hEnemyVariant]
 .cactusVisual:
@@ -67,8 +78,11 @@ SpawnAnvil::
     ld e, OAMF_PAL0
     jr .endVariantVisualLeft
 .anvilVisualLeft:
+    ; cp a, ANVIL_NORMAL_VARIANT or ANVIL_WARNING_VARIANT
+    ; jr nz, .endVariantVisualLeft
     ld d, ANVIL_TILE_1
     ld e, OAMF_PAL0
+    ; jr .endVariantVisualLeft
 .endVariantVisualLeft:
 
 .anvilLeftOAM:
@@ -81,6 +95,7 @@ SpawnAnvil::
     ld a, e
     ld [hli], a
 
+    ; Variant visual
 .variantVisualRight:
     ldh a, [hEnemyVariant]
 .cactusVisualRight:
@@ -90,8 +105,11 @@ SpawnAnvil::
     ld e, OAMF_PAL0 | OAMF_XFLIP
     jr .endVariantVisualRight
 .anvilVisualRight:
+    ; cp a, ANVIL_NORMAL_VARIANT or ANVIL_WARNING_VARIANT
+    ; jr nz, .endVariantVisualRight
     ld d, ANVIL_TILE_2
     ld e, OAMF_PAL0
+    ; jr .endVariantVisualRight
 .endVariantVisualRight:
 
 .anvilRightOAM:
@@ -104,12 +122,26 @@ SpawnAnvil::
     ld [hli], a
     ld a, e
     ld [hl], a
+
 .setStruct:
     LD_HL_BC
     jp SetEnemyStruct
 
 ; UPDATE
 AnvilUpdate::
+
+.checkWarningVariant:
+    ldh a, [hEnemyVariant]
+    cp a, ANVIL_WARNING_VARIANT
+    jr nz, .endCheckWarningVariant
+.waitBeforeFallingToWarnPlayer:
+    ldh a, [hEnemyParam3]
+    cp a, ANVIL_WARNING_DURATION
+    jr nc, .endCheckWarningVariant
+    inc a
+    ldh [hEnemyParam3], a
+    jp .setStruct
+.endCheckWarningVariant:
 
 .checkDying:
     ldh a, [hEnemyFlags]
@@ -151,8 +183,11 @@ AnvilUpdate::
     ld e, CACTUS_SCREAMING_TILE
     jr .endVariantBlinkOn
 .variantAnvil:
+    ; cp a, ANVIL_NORMAL_VARIANT or ANVIL_WARNING_VARIANT
+    ; jr nz, .endVariantBlinkOn
     ld d, ANVIL_TILE_1
     ld e, ANVIL_TILE_2
+    ; jr .endVariantBlinkOn
 .endVariantBlinkOn:
     ld a, d
     ld [hli], a
@@ -183,11 +218,12 @@ AnvilUpdate::
 .endMove:
 
 .checkCollision:
+.checkHitPlayer:
     ; Is player alive
     ldh a, [hPlayerFlags]
     and PLAYER_FLAG_ALIVE_MASK
     jr z, .checkHitAnotherEnemy
-.checkHit:
+    ; Get bc pointing to OAM address
     ld bc, wOAM
     ldh a, [hEnemyOAM]
     ADD_A_TO_BC
@@ -202,9 +238,10 @@ AnvilUpdate::
     call EnemyInterCollision
     jr nz, .hitSomething
 .checkHitBoss:
-    ld a, [wLevel]
-    cp a, BOSS_LEVEL
-    jr nz, .endCollision
+    ; Is boss alive
+    ldh a, [hBossFlags]
+    and ENEMY_FLAG_ALIVE_MASK
+    jr z, .endCollision
     ldh a, [hEnemyVariant]
     cp a, ANVIL_NORMAL_VARIANT
     jr nz, .endCollision
@@ -220,6 +257,7 @@ AnvilUpdate::
     jr z, .endCollision
     call CollisionWithBoss
 .hitSomething:
+    ; Set our dying flag
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_DYING_BIT, a
     ldh [hEnemyFlags], a
