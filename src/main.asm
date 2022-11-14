@@ -117,10 +117,10 @@ SetupNextLevel::
 	call SpawnCountdown
 
 	; ; testing
-	ld a, 6
-	ld [wLevel], a
-	; ld a, ENDLESS_MODE
-	; ld [wSelectedMode], a
+	; ld a, 6
+	; ld [wLevel], a
+	ld a, ENDLESS_MODE
+	ld [wSelectedMode], a
 	; ; ^^^
 	ld a, [wSelectedMode]
 	cp a, CLASSIC_MODE
