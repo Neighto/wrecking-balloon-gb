@@ -11,6 +11,7 @@ TOTAL_SC_INDEX_ONE_ADDRESS EQU $990F
 LIVES_SC_ADDRESS EQU $994C
 LIVES_TO_ADD_SC_ADDRESS EQU $994E
 STAGE_NUMBER_ADDRESS EQU $9889
+STAGE_CLEAR_FOOTER_TILE_OFFSET EQU $B3
 
 SECTION "stage clear vars", WRAM0
     wLivesToAdd:: DB
@@ -70,7 +71,7 @@ LoadStageClearGraphics::
 	ld hl, $99C0
 	ld d, 4
 	ld e, SCRN_X_B
-	ld a, $B5
+	ld a, STAGE_CLEAR_FOOTER_TILE_OFFSET
 	ld [wMemcpyTileOffset], a
 	call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
 	; Draw lives icons

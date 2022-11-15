@@ -85,7 +85,11 @@ SECTION "endless vars", HRAM
     ; Horizontal Enemy Info
     hEndlessHorizontalEnemyNumber:: DB
     hEndlessHorizontalEnemyVariant:: DB
-    hEndlessHorizontalEnemyDirection:: DB    
+    hEndlessHorizontalEnemyDirection:: DB
+    
+    ; Level Switch
+    hEndlessLevel:: DB
+    hEndlessLevelSwitchTimer:: DB
 
 SECTION "endless", ROM0
 
@@ -111,6 +115,16 @@ InitializeEndless::
     ldh [hEndlessHorizontalEnemyNumber], a
     ldh [hEndlessHorizontalEnemyVariant], a
     ldh [hEndlessHorizontalEnemyDirection], a
+
+    ldh [hEndlessLevel], a
+    ldh [hEndlessLevelSwitchTimer], a
+
+    ; Set level to endless if endless mode
+    ld a, [wSelectedMode]
+    cp a, CLASSIC_MODE
+    ret z
+    ld a, LEVEL_ENDLESS
+    ld [wLevel], a
     ret
 
 LoadEndlessGraphics::
@@ -144,6 +158,48 @@ LoadEndlessGraphics::
 
 ; UPDATE
 EndlessUpdate::
+
+.checkEndlessLevel:
+    ; Delay increasing level switch timer
+    ldh a, [hGlobalTimer]
+    and %11111111
+    jr nz, .endCheckEndlessLevel
+    ; Check if it's time to switch levels
+    ldh a, [hEndlessLevelSwitchTimer]
+    cp a, 3
+    jr nc, .changeLevel
+    ; Increase level switch timer
+    inc a
+    ldh [hEndlessLevelSwitchTimer], a
+    jr .endCheckEndlessLevel
+.changeLevel:
+    ; Stop enemy spawns
+    ; Show countdown: 3, 2, 1
+
+    ; Change level
+    ; ldh a, [hEndlessLevel]
+    ; cp a, 0
+    ; ret nz
+    ; inc a
+    ; ldh [hEndlessLevel], a
+
+    ; Get random level
+    RANDOM 5
+    inc a
+    ; Compare with current
+    ld hl, wLevel
+    cp a, [hl]
+    jr nz, .updateLevel
+    ; Same so offset
+    inc a
+    ld d, 5
+    call MODULO
+.updateLevel:
+    ; Update level
+    ld [hl], a
+    ; Load the next level
+    jp SetupNextLevelEndless
+.endCheckEndlessLevel:
 
 .checkEndlessTimer:
     ldh a, [hEndlessTimer]
