@@ -125,7 +125,6 @@ SetupNextLevel::
 	call InitializeEndless
 	call InitializeScore
 	call SpawnPlayer
-	call SpawnCountdown
 
 .levelSelect:
 	ld a, [wLevel]
@@ -194,15 +193,18 @@ SetupNextLevel::
 	call InitializeNewLevel
 	call RefreshWindow
 	call LCD_ON
-	; Comment out GameCountdownLoop to skip countdown
+	; Check flag to skip countdown for endless level switching
+	ld a, [hEndlessLevelSwitchSkip]
+	cp a, 0
+	jr nz, GameLoop
+	; Comment out GameCountdownLoop and SpawnCountdown to skip countdown
+	call SpawnCountdown
 GameCountdownLoop:
 	call WaitVBlank
 	call OAMDMA
 	call UpdateGameCountdown
 	jp GameCountdownLoop
-PreGameLoop::
-	call ClearCountdown
-GameLoop:
+GameLoop::
 	call WaitVBlank
 	call OAMDMA
 	call UpdateGame
@@ -210,11 +212,11 @@ GameLoop:
 
 	; SetupNextLevelEndless
 SetupNextLevelEndless::
+	call ClearSound
 	call WaitVBlank
 	call LCD_OFF
 	call ClearMap
 	call InitializePalettes
-
 	jp SetupNextLevel.levelSelect
 
 StageClear::

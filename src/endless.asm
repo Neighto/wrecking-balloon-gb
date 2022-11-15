@@ -88,7 +88,7 @@ SECTION "endless vars", HRAM
     hEndlessHorizontalEnemyDirection:: DB
     
     ; Level Switch
-    hEndlessLevel:: DB
+    hEndlessLevelSwitchSkip:: DB
     hEndlessLevelSwitchTimer:: DB
 
 SECTION "endless", ROM0
@@ -116,7 +116,7 @@ InitializeEndless::
     ldh [hEndlessHorizontalEnemyVariant], a
     ldh [hEndlessHorizontalEnemyDirection], a
 
-    ldh [hEndlessLevel], a
+    ldh [hEndlessLevelSwitchSkip], a
     ldh [hEndlessLevelSwitchTimer], a
 
     ; Set level to endless if endless mode
@@ -176,13 +176,12 @@ EndlessUpdate::
     ; Stop enemy spawns
     ; Show countdown: 3, 2, 1
 
-    ; Change level
-    ; ldh a, [hEndlessLevel]
-    ; cp a, 0
-    ; ret nz
-    ; inc a
-    ; ldh [hEndlessLevel], a
-
+    ; Set level switch skip
+    ld a, 1 
+    ldh [hEndlessLevelSwitchSkip], a
+    ; Reset level switch timer
+    xor a ; ld a, 0
+    ld [hEndlessLevelSwitchTimer], a
     ; Get random level
     RANDOM 5
     inc a
