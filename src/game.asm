@@ -360,7 +360,7 @@ UpdateGameCountdown::
     call ClearCountdown
     ; jr .endFrame
 .gameLoop:
-    jp PreGameLoop
+    jp GameLoop
 .endFrame:
     ld a, [wCountdownFrame]
     inc a 
