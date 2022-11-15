@@ -65,8 +65,8 @@ MenuLoop:
 
 StartGame::
 	ld a, [wSelectedMode]
-	cp a, CLASSIC_MODE
-	jr nz, SetupNextLevel
+	cp a, ENDLESS_MODE
+	jr z, SetupNextLevel
 OpeningCutscene:
 	call WaitVBlank
 	call LCD_OFF
@@ -104,7 +104,15 @@ OpeningCutsceneLoop:
 	; call UpdateOpeningCutscene
 	; jp OpeningCutsceneLoop
 
+	; SetupNextLevel
 SetupNextLevel::
+	; testing
+	; ld a, 6
+	; ld [wLevel], a
+	ld a, ENDLESS_MODE
+	ld [wSelectedMode], a
+	; ^^^
+
 	call WaitVBlank
 	call LCD_OFF
 	call Common
@@ -113,21 +121,16 @@ SetupNextLevel::
 	call InitializeBullet
 	call InitializePalettes
 	call InitializeBossMiscellaneous
+	call InitializeGame
+	call InitializeEndless
+	call InitializeScore
 	call SpawnPlayer
 	call SpawnCountdown
 
-	; ; testing
-	; ld a, 6
-	; ld [wLevel], a
-	ld a, ENDLESS_MODE
-	ld [wSelectedMode], a
-	; ; ^^^
-	ld a, [wSelectedMode]
-	cp a, CLASSIC_MODE
-	jp nz, .endless
+.levelSelect:
 	ld a, [wLevel]
 .level1:
-	cp a, 1
+	cp a, LEVEL_1
 	jr nz, .level2
 	call SetLevelCityInterrupts
 	call LoadLevelCityGraphics
@@ -135,7 +138,7 @@ SetupNextLevel::
 	call hUGE_init
 	jp .endLevelSetup
 .level2:
-	cp a, 2
+	cp a, LEVEL_2
 	jr nz, .level3
 	call SetLevelNightCityInterrupts
 	call LoadLevelNightCityGraphics
@@ -143,7 +146,7 @@ SetupNextLevel::
 	call hUGE_init
 	jp .endLevelSetup
 .level3:
-	cp a, 3
+	cp a, LEVEL_3
 	jr nz, .level4
 	call SetLevelDesertInterrupts
 	call LoadLevelDesertGraphics
@@ -151,7 +154,7 @@ SetupNextLevel::
 	call hUGE_init
 	jr .endLevelSetup
 .level4:
-	cp a, 4
+	cp a, LEVEL_4
 	jr nz, .level5
 	call SetLevelNightDesertInterrupts
 	call LoadLevelNightDesertGraphics
@@ -160,7 +163,7 @@ SetupNextLevel::
 	call InitializeNightSpritePalettes
 	jr .endLevelSetup
 .level5:
-	cp a, 5
+	cp a, LEVEL_5
 	jr nz, .level6
 	call SetLevelShowdownInterrupts
 	call LoadLevelShowdownGraphics
@@ -168,8 +171,8 @@ SetupNextLevel::
 	call hUGE_init
 	jr .endLevelSetup
 .level6:
-	; cp a, 6
-	; jr nz, .level7
+	cp a, LEVEL_BOSS
+	jr nz, .endless
 	call SetLevelShowdownInterrupts
 	call LoadLevelShowdownGraphics
 	ld hl, bossTheme
@@ -179,15 +182,15 @@ SetupNextLevel::
 	call SetPlayerPositionBoss
 	jr .endLevelSetup
 .endless:
+	; cp a, LEVEL_ENDLESS
+	; jr nz, .endLevelSetup
 	call SetEndlessInterrupts
 	call LoadEndlessGraphics
 	call InitializeEmptyPalettes
-	call InitializeEndless
 	ld hl, angryTheme
 	call hUGE_init
+	; jr .endLevelSetup
 .endLevelSetup:
-	call InitializeGame
-	call InitializeScore
 	call InitializeNewLevel
 	call RefreshWindow
 	call LCD_ON
@@ -204,6 +207,15 @@ GameLoop:
 	call OAMDMA
 	call UpdateGame
 	jp GameLoop
+
+	; SetupNextLevelEndless
+SetupNextLevelEndless::
+	call WaitVBlank
+	call LCD_OFF
+	call ClearMap
+	call InitializePalettes
+
+	jp SetupNextLevel.levelSelect
 
 StageClear::
 	call WaitVBlank

@@ -22,7 +22,7 @@ COUNTDOWN_FRAME_2 EQU 2
 COUNTDOWN_FRAME_3 EQU 3
 COUNTDOWN_FRAME_4 EQU 4 ; Becomes balloon pop instead
 COUNTDOWN_FRAME_5 EQU 5
-COUNTDOWN_FRAME_6 EQU 6
+COUNTDOWN_FRAME_6 EQU 6 ; Clear
 
 COUNTDOWN_NEUTRAL_BALLOON_TILE EQU $1E
 STAR_TILE EQU $9F
@@ -251,8 +251,8 @@ UpdateGameCountdown::
 
 .checkFadeIn:
     ; Only in endless
-    ld a, [wSelectedMode]
-    cp a, ENDLESS_MODE
+    ld a, [wLevel]
+    cp a, LEVEL_ENDLESS
     jr nz, .endCheckFadeIn
     call FadeInPalettes
     ret z
@@ -403,7 +403,7 @@ UpdateGame::
 .classicMode:
     call LevelDataHandler
     ld a, [wLevel]
-    cp a, BOSS_LEVEL
+    cp a, LEVEL_BOSS
     call z, BossUpdate
     jr .endModeSpecific
 .endlessMode:
