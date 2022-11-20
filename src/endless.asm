@@ -160,28 +160,26 @@ LoadEndlessGraphics::
 EndlessUpdate::
 
 .checkEndlessLevel:
+    ld hl, hEndlessLevelSwitchTimer
+
     ; Delay increasing level switch timer
     ldh a, [hGlobalTimer]
     and %11111111
-    jr nz, .endCheckEndlessLevel
+    jr nz, .checkEndlessLevelCommon
     ; Check if it's time to switch levels
-    ldh a, [hEndlessLevelSwitchTimer]
-    cp a, 3
+    ld a, [hl]
+    cp a, 4
     jr nc, .changeLevel
     ; Increase level switch timer
-    inc a
-    ldh [hEndlessLevelSwitchTimer], a
-    jr .endCheckEndlessLevel
+    inc [hl]
+    jr .checkEndlessLevelCommon
 .changeLevel:
-    ; Stop enemy spawns
-    ; Show countdown: 3, 2, 1
-
     ; Set level switch skip
     ld a, 1 
     ldh [hEndlessLevelSwitchSkip], a
     ; Reset level switch timer
     xor a ; ld a, 0
-    ld [hEndlessLevelSwitchTimer], a
+    ld [hl], a
     ; Get random level
     RANDOM 5
     inc a
@@ -198,6 +196,11 @@ EndlessUpdate::
     ld [hl], a
     ; Load the next level
     jp SetupNextLevelEndless
+.checkEndlessLevelCommon:
+    ; Check if it's time to stop enemy spawns
+    ld a, [hl]
+    cp a, 4-1
+    ret nc
 .endCheckEndlessLevel:
 
 .checkEndlessTimer:
