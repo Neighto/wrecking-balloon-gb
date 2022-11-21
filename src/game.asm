@@ -167,10 +167,15 @@ LoadLevelShowdownGraphics::
 	ld de, LevelShowdownTilesEnd - LevelShowdownTiles
 	call MEMCPY
 .tilemap:
-    ; Add in rain
+    ; Add in rain layer 1
 	ld bc, LevelShowdownMap
 	ld hl, _SCRN0
-    ld d, SCRN_VY_B - 4 ; height of scrolling water on the bottom
+    ld d, 14 ; height of rain
+    ld e, SCRN_X_B
+	call MEMCPY_SINGLE_SCREEN
+    ; Add in rain layer 2
+    ld bc, LevelShowdownMap
+    ld d, 14 ; height of rain
     ld e, SCRN_X_B
 	call MEMCPY_SINGLE_SCREEN
     ; Fill in dark clouds space
