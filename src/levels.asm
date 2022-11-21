@@ -140,14 +140,7 @@ Level1:
     LVL__POINT_BALLOON_HARD______________ SPAWN_X_D
     LVL__POINT_BALLOON_HARD______________ SPAWN_X_D
 .outro:
-    LVL__WAIT 11
-    LVL__VICTORY_SONG
-    LVL__WAIT 8
-    LVL__EXPLOSION_CONGRATULATIONS_______ 40, 40
-    LVL__EXPLOSION_CONGRATULATIONS_______ 30, 90
-    LVL__EXPLOSION_CONGRATULATIONS_______ 42, 112
-    LVL__WAIT 4
-    LVL__END
+    LVL__REPT 1, LevelOutro
     
 ; Level 2
 Level2:
@@ -263,14 +256,7 @@ Level2:
     LVL__POINT_BALLOON_HARD______________ SPAWN_X_A + 4
     LVL__POINT_BALLOON_HARD______________ MIDDLE_SCREEN
 .outro:
-    LVL__WAIT 16
-    LVL__VICTORY_SONG
-    LVL__WAIT 8
-    LVL__EXPLOSION_CONGRATULATIONS_______ 46, 108
-    LVL__EXPLOSION_CONGRATULATIONS_______ 34, 40
-    LVL__EXPLOSION_CONGRATULATIONS_______ 40, 74
-    LVL__WAIT 4
-    LVL__END
+    LVL__REPT 1, LevelOutro
 
 ; Desert Levels
 
@@ -374,14 +360,7 @@ Level3:
     LVL__POINT_BALLOON_HARD______________ MIDDLE_SCREEN + 16
     ; Could add here, about 1 minute now
 .outro:
-    LVL__WAIT 16
-    LVL__VICTORY_SONG
-    LVL__WAIT 8
-    LVL__EXPLOSION_CONGRATULATIONS_______ 20, 120
-    LVL__EXPLOSION_CONGRATULATIONS_______ 46, 114
-    LVL__EXPLOSION_CONGRATULATIONS_______ 24, 40
-    LVL__WAIT 4
-    LVL__END
+    LVL__REPT 1, LevelOutro
 
 ; Level 4
 Level4:
@@ -526,14 +505,7 @@ Level4:
     LVL__POINT_BALLOON_HARD______________ MIDDLE_SCREEN - 18
     LVL__POINT_BALLOON_HARD______________ MIDDLE_SCREEN + 12
 .outro:
-    LVL__WAIT 16
-    LVL__VICTORY_SONG
-    LVL__WAIT 8
-    LVL__EXPLOSION_CONGRATULATIONS_______ 60, 60
-    LVL__EXPLOSION_CONGRATULATIONS_______ 46, 106
-    LVL__EXPLOSION_CONGRATULATIONS_______ 36, 40
-    LVL__WAIT 4
-    LVL__END
+    LVL__REPT 1, LevelOutro
 
 ; Showdown Levels
 
@@ -629,29 +601,28 @@ Level5:
     LVL__WAIT 2
     LVL__POINT_BALLOON_HARD______________ MIDDLE_SCREEN
 .outro:
-    LVL__WAIT 16
-    LVL__VICTORY_SONG
-    LVL__WAIT 8
-    LVL__EXPLOSION_CONGRATULATIONS_______ 90, 130
-    LVL__EXPLOSION_CONGRATULATIONS_______ 84, 50
-    LVL__EXPLOSION_CONGRATULATIONS_______ 60, 90
-    LVL__WAIT 4
-    LVL__END
+    LVL__REPT 1, LevelOutro
 
 ; Level 6
 Level6:
     LVL__WAIT_BOSS
 .outro:
-    LVL__WAIT 6
+    LVL__WAIT 2
     LVL__VICTORY_SONG
     LVL__WAIT 8
-    LVL__EXPLOSION_CONGRATULATIONS_______ 40, 74
-    LVL__EXPLOSION_CONGRATULATIONS_______ 20, 30
-    LVL__EXPLOSION_CONGRATULATIONS_______ 38, 40
-    LVL__EXPLOSION_CONGRATULATIONS_______ 20, 130
-    LVL__EXPLOSION_CONGRATULATIONS_______ 38, 116
-    LVL__WAIT 4
     LVL__GAME_WON
+
+LevelOutro:
+    LVL__WAIT 16
+    LVL__VICTORY_SONG
+    LVL__WAIT 8
+    LVL__SPAWN_RANDOM EXPLOSION, EXPLOSION_CONGRATULATIONS_VARIANT, 16, 8, 60, 144
+    LVL__SPAWN_RANDOM EXPLOSION, EXPLOSION_CONGRATULATIONS_VARIANT, 16, 8, 60, 144
+    LVL__SPAWN_RANDOM EXPLOSION, EXPLOSION_CONGRATULATIONS_VARIANT, 16, 8, 60, 144
+    LVL__SPAWN_RANDOM EXPLOSION, EXPLOSION_CONGRATULATIONS_VARIANT, 16, 8, 60, 144
+    LVL__SPAWN_RANDOM EXPLOSION, EXPLOSION_CONGRATULATIONS_VARIANT, 16, 8, 60, 144
+    LVL__WAIT 4
+    LVL__END
 
 ; Handler and Initializer
 
@@ -703,8 +674,34 @@ InitializeNewLevel::
 InitializeLevelVars::
     ld a, 1
     ld [wLevel], a
-    call InitializeNewLevel
-    ret
+    jp InitializeNewLevel
+
+SpawnDataRandomHandler:
+    ; Argument hl = source address
+
+    ; Update enemy number
+    ld a, [hli]
+    ldh [hEnemyNumber], a
+    ld b, a
+    ; Update variant
+    ld a, [hli]
+    ldh [hEnemyVariant], a
+    ; Update enemy Y/X
+    ld a, [hli] ; y1
+    ld e, a 
+    ld a, [hli] ; x1
+    ld c, a 
+    ld a, [hli] ; y2
+    sub a, e
+    RANDOM a
+    add a, e
+    ldh [hEnemyY], a
+    ld a, [hli] ; x2
+    sub a, c
+    RANDOM a
+    add a, c
+    ldh [hEnemyX], a
+    jp SpawnDataHandler.handleSpawns
 
 SpawnDataHandler:
     ; Argument hl = source address
@@ -721,6 +718,7 @@ SpawnDataHandler:
     ldh [hEnemyY], a
     ld a, [hli]
     ldh [hEnemyX], a
+.handleSpawns:
     ; Spawns
     ld a, b
     push hl
@@ -793,19 +791,22 @@ LevelDataHandler::
     cp a, LEVEL_END_KEY
     jr z, .end
     cp a, GAME_WON_KEY
-    jp z, .won
+    jr z, .won
     cp a, LEVEL_REPEAT_KEY
     jr z, .repeat
+    cp a, LEVEL_SPAWN_RANDOM_KEY
+    jr z, .spawnRandom
     ret
 .spawn:
-    ; Next instructions: enemy, y, x
+    ; Next instructions: enemy, variant, y, x
     inc hl
     call SpawnDataHandler
-    ld a, l
-    ld [wLevelDataAddress], a
-    ld a, h
-    ld [wLevelDataAddress+1], a
-    ret
+    jr .incrementLevelDataAddress
+.spawnRandom:
+    ; Next instructions: enemy, variant, y1, x1, y2, x2
+    inc hl
+    call SpawnDataRandomHandler
+    jr .incrementLevelDataAddress
 .wait:
     ; Next instruction: amount to wait
     inc hl
@@ -817,13 +818,9 @@ LevelDataHandler::
     ret
 .waitEnd:
     inc hl
-    ld a, l
-    ld [wLevelDataAddress], a
-    ld a, h
-    ld [wLevelDataAddress+1], a
     xor a ; ld a, 0
     ld [wLevelWaitCounter], a
-    ret
+    jr .incrementLevelDataAddress
 .waitBoss:
     ld a, [wLevelWaitBoss]
     cp a, 0
@@ -831,20 +828,7 @@ LevelDataHandler::
     jp WaitBossUpdate
 .waitBossEnd:
     inc hl
-    ld a, l
-    ld [wLevelDataAddress], a
-    ld a, h
-    ld [wLevelDataAddress+1], a
-    ret
-.victorySong:
-    inc hl
-    ld a, l
-    ld [wLevelDataAddress], a
-    ld a, h
-    ld [wLevelDataAddress+1], a
-    call ClearSound
-    ld hl, levelWonTheme
-	jp hUGE_init
+    jr .incrementLevelDataAddress
 .repeat:
     ; Next instructions: times to repeat and address
     inc hl
@@ -863,12 +847,22 @@ LevelDataHandler::
     inc hl
     inc hl
     inc hl
+    xor a ; ld a, 0
+    ld [wLevelRepeatCounter], a
+    jr .incrementLevelDataAddress
+.victorySong:
+    inc hl
+    push hl
+    call ClearSound
+    ld hl, levelWonTheme
+	call hUGE_init
+    pop hl
+    ; jr .incrementLevelDataAddress
+.incrementLevelDataAddress:
     ld a, l
     ld [wLevelDataAddress], a
     ld a, h
     ld [wLevelDataAddress+1], a
-    xor a ; ld a, 0
-    ld [wLevelRepeatCounter], a
     ret
 .end:
     ld a, [wLevel] 
