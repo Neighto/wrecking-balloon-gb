@@ -44,9 +44,9 @@ Start::
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	call WaitVBlank
-	call UpdateMenuOpening
-	jp MenuLoopOpening
+	; call WaitVBlank
+	; call UpdateMenuOpening
+	; jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
 	call TitleSplashSound
@@ -59,10 +59,10 @@ StartMenu::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateMenu
-	jp MenuLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateMenu
+	; jp MenuLoop
 
 StartGame::
 	ld a, [wSelectedMode]
@@ -100,10 +100,10 @@ OpeningCutscene:
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateOpeningCutscene
-	jp OpeningCutsceneLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateOpeningCutscene
+	; jp OpeningCutsceneLoop
 
 	; SetupNextLevel
 SetupNextLevel::
@@ -122,7 +122,7 @@ SetupNextLevel::
 	call InitializeBullet
 	call InitializePalettes
 	call InitializeGame
-	call InitializeEndless ; Call before we reset global timer so we can use it as seed
+	call InitializeEndless
 	call InitializeScore
 	call SpawnPlayer
 
