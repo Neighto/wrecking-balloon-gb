@@ -1,6 +1,7 @@
 INCLUDE "hardware.inc"
 INCLUDE "header.inc"
 INCLUDE "constants.inc"
+INCLUDE "macro.inc"
 
 SECTION "rom", ROM0
 
@@ -8,9 +9,9 @@ Common::
 	call ClearMap
 	call ClearOAM
 	call ClearVRAM9000
-	call ResetGlobalTimer
-	call ResetScroll
 	call ClearSound
+	call ResetScroll
+	RESET_GLOBAL_TIMER
 	jp ResetFading
 
 Start::
@@ -43,9 +44,9 @@ Start::
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	; call WaitVBlank
-	; call UpdateMenuOpening
-	; jp MenuLoopOpening
+	call WaitVBlank
+	call UpdateMenuOpening
+	jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
 	call TitleSplashSound
@@ -58,10 +59,10 @@ StartMenu::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateMenu
-	; jp MenuLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateMenu
+	jp MenuLoop
 
 StartGame::
 	ld a, [wSelectedMode]
@@ -99,18 +100,18 @@ OpeningCutscene:
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateOpeningCutscene
-	; jp OpeningCutsceneLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateOpeningCutscene
+	jp OpeningCutsceneLoop
 
 	; SetupNextLevel
 SetupNextLevel::
 	; testing
 	; ld a, 6
 	; ld [wLevel], a
-	ld a, ENDLESS_MODE
-	ld [wSelectedMode], a
+	; ld a, ENDLESS_MODE
+	; ld [wSelectedMode], a
 	; ^^^
 
 	call WaitVBlank
@@ -120,9 +121,8 @@ SetupNextLevel::
 	call InitializePlayer
 	call InitializeBullet
 	call InitializePalettes
-	call InitializeBossMiscellaneous
 	call InitializeGame
-	call InitializeEndless
+	call InitializeEndless ; Call before we reset global timer so we can use it as seed
 	call InitializeScore
 	call SpawnPlayer
 
@@ -177,6 +177,7 @@ SetupNextLevel::
 	ld hl, bossTheme
 	call hUGE_init
 	call InitializeBoss
+	call InitializeBossMiscellaneous
 	call SpawnBoss
 	call SetPlayerPositionBoss
 	jr .endLevelSetup
@@ -185,9 +186,13 @@ SetupNextLevel::
 	; jr nz, .endLevelSetup
 	call SetEndlessInterrupts
 	call LoadEndlessGraphics
-	call InitializeEmptyPalettes
 	ld hl, angryTheme
 	call hUGE_init
+	; clean this
+	ld a, [hEndlessLevelSwitchSkip]
+	cp a, 0
+	jr nz, .endLevelSetup
+	call InitializeEmptyPalettes
 	; jr .endLevelSetup
 .endLevelSetup:
 	call InitializeNewLevel
@@ -217,6 +222,7 @@ SetupNextLevelEndless::
 	call LCD_OFF
 	call ClearMap
 	call InitializePalettes
+	call InitializeSound
 	jp SetupNextLevel.levelSelect
 
 StageClear::
@@ -241,7 +247,6 @@ StageClearLoop:
 GameOver::
 	call WaitVBlank
 	call LCD_OFF
-	call ResetGlobalTimer
 	call ClearSound
 	call ClearOAM
 	call InitializeGameOver

@@ -7,6 +7,9 @@ BULLET_SOUND_TIMER EQU 20
 BOOST_SOUND_TIMER EQU 40
 HIT_SOUND_TIMER EQU 40
 
+SECTION "sound vars", HRAM
+  hStopMusic:: DB
+
 SECTION "sound", ROMX
 
 AUDIO_OFF::
@@ -26,6 +29,8 @@ InitializeSound::
   ld a, %11111111
   ldh [rNR50], a
   ldh [rNR51], a
+  xor a ; ld a, 0
+  ldh [hStopMusic], a
   ret
 
 StopSweepSound::
