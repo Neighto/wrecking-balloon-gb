@@ -11,32 +11,10 @@ dw routines
 dw waves
 
 order_cnt: db 2
-order1: dw P0
+order1: dw PE
 order2: dw P1
 order3: dw P2
-order4: dw P0
-
-P0:
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn STOP_SONG,0,0
+order4: dw PE
 
 P1:
     dn ___,0,$000

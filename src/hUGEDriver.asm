@@ -1355,7 +1355,10 @@ _hUGE_dosound::
     ;; Note playback
     loadShort pattern2, b, c
     ld de, channel_note2
-    call _lookup_note
+    call _load_note_data
+    cp a, STOP_SONG
+    ret z
+    call _lookup_note_with_note_data
     push af
     jr nc, .do_setvol2
 
@@ -1397,7 +1400,10 @@ _hUGE_dosound::
 .after_note2:
     loadShort pattern3, b, c
     ld de, channel_note3
-    call _lookup_note
+    call _load_note_data
+    cp a, STOP_SONG
+    ret z
+    call _lookup_note_with_note_data
 
     ld a, h
     ld [temp_note_value], a
@@ -1464,6 +1470,9 @@ _addr = _addr + 1
 .after_note3:
     loadShort pattern4, b, c
     call _load_note_data
+    cp a, STOP_SONG
+    ret z
+    
     ld [channel_note4], a
     cp LAST_NOTE
     push af
