@@ -12,11 +12,9 @@ dw waves
 
 order_cnt: db 2
 order1: dw P0
-order2: dw P1
-order3: dw P1
-order4: dw P1
-
-;; TODO need to set the end notes, prevent looping
+order2: dw PE
+order3: dw PE
+order4: dw PE
 
 P0:
  dn C_4,1,$C0C
@@ -40,28 +38,4 @@ P0:
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$E00
- dn STOP_SONG,0,0
-
-P1:
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
  dn STOP_SONG,0,0

@@ -20,6 +20,12 @@ ENDLESS_HORIZONTAL_COOLDOWN EQU 40
 ENDLESS_VERTICAL_COOLDOWN_TIMER EQU %00000011
 ENDLESS_HORIZONTAL_COOLDOWN_TIMER EQU %00000011
 
+ENDLESS_LEVEL_SWITCH_OFF EQU 0
+ENDLESS_LEVEL_SWITCH_ON EQU 1
+
+ENDLESS_LEVEL_DURATION EQU 8
+ENDLESS_LEVEL_STOP_SPAWN_DURATION EQU 1
+
 ; VERTICAL ENEMY SPAWN RATES
 
 ENDLESS_VERTICAL_SPAWN_DENOMINATOR EQU 11
@@ -88,6 +94,7 @@ SECTION "endless vars", HRAM
     hEndlessHorizontalEnemyDirection:: DB
     
     ; Level Switch
+    hEndlessLevelSwitch:: DB
     hEndlessLevelSwitchSkip:: DB
     hEndlessLevelSwitchTimer:: DB
 
@@ -159,47 +166,74 @@ LoadEndlessGraphics::
 ; UPDATE
 EndlessUpdate::
 
-.checkEndlessLevel:
-    ld hl, hEndlessLevelSwitchTimer
-
-    ; Delay increasing level switch timer
-    ldh a, [hGlobalTimer]
-    and %11111111
-    jr nz, .checkEndlessLevelCommon
-    ; Check if it's time to switch levels
-    ld a, [hl]
-    cp a, 4
-    jr nc, .changeLevel
-    ; Increase level switch timer
-    inc [hl]
-    jr .checkEndlessLevelCommon
-.changeLevel:
+.checkCountdown:
+    ; Run countdown if not ended
+    call Countdown
+    jr nz, .endCheckCountdown
+    ; Countdown is running
+    ldh a, [hEndlessLevelSwitch]
+    cp a, ENDLESS_LEVEL_SWITCH_ON
+    jr nz, .endCheckCountdown
+    call IsCountdownAtBalloonPop
+    jr nz, .endCheckCountdown
+.levelSwitch:
     ; Set level switch skip
     ld a, 1 
     ldh [hEndlessLevelSwitchSkip], a
     ; Reset level switch timer
     xor a ; ld a, 0
-    ld [hl], a
+    ld [hEndlessLevelSwitchTimer], a
     ; Get random level
-    RANDOM 5
-    inc a
+    RANDOM ENDLESS_LEVEL_SWITCH_TOTAL
     ; Compare with current
     ld hl, wLevel
     cp a, [hl]
     jr nz, .updateLevel
     ; Same so offset
     inc a
-    ld d, 5
+    ld d, ENDLESS_LEVEL_SWITCH_TOTAL
     call MODULO
 .updateLevel:
     ; Update level
     ld [hl], a
+    ; Reset level switch
+    ld a, ENDLESS_LEVEL_SWITCH_OFF
+    ldh [hEndlessLevelSwitch], a
     ; Load the next level
     jp SetupNextLevelEndless
+.endCheckCountdown:
+
+.checkEndlessLevel:
+    ld hl, hEndlessLevelSwitchTimer
+    ; Delay increasing level switch timer
+    ldh a, [hGlobalTimer]
+    and %11111111
+    jr nz, .checkEndlessLevelCommon
+    ; Check if it's time to switch levels
+    ld a, [hl]
+    cp a, ENDLESS_LEVEL_DURATION
+    jr nc, .initiateCountdown
+    ; Increase level switch timer
+    inc [hl]
+    jr .checkEndlessLevelCommon
+.initiateCountdown:
+    ldh a, [hEndlessLevelSwitch] ; TODO maybe checkCountdown can just be part of this
+    cp a, ENDLESS_LEVEL_SWITCH_ON
+    jr z, .checkEndlessLevelCommon
+    ; Set level switch
+    ld a, ENDLESS_LEVEL_SWITCH_ON
+    ldh [hEndlessLevelSwitch], a
+    ; Initiate countdown for level switch
+    call InitializeGame
+    call SpawnCountdown
+    ; Stop music
+    ld a, 1 
+    ldh [hStopMusic], a
+    call ClearSound
 .checkEndlessLevelCommon:
     ; Check if it's time to stop enemy spawns
     ld a, [hl]
-    cp a, 4-1
+    cp a, ENDLESS_LEVEL_DURATION - ENDLESS_LEVEL_STOP_SPAWN_DURATION
     ret nc
 .endCheckEndlessLevel:
 

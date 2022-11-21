@@ -336,6 +336,7 @@ _lookup_note:
     ;; Stores effect params in C
     ;; Stores note number in the memory pointed to by DE
     call _load_note_data
+_lookup_note_with_note_data:
     ld hl, 0
 
     ;; If the note we found is greater than LAST_NOTE, then it's not a valid note
@@ -1293,15 +1294,12 @@ checkMute: MACRO
     jp nz, \2
 ENDM
 
-_hUGE_dosound_with_end::
-    ; Use if we don't want to loop song and song data includes STOP_SONG
-    loadShort pattern1, b, c
-    call _load_note_data
-    cp a, STOP_SONG
-    ret z
-
 _hUGE_dosound_banked::
 _hUGE_dosound::
+    ldh a, [hStopMusic]
+    cp a, 0
+    ret nz
+
     ld a, [tick]
     or a
     jp nz, .process_effects
@@ -1309,7 +1307,10 @@ _hUGE_dosound::
     ;; Note playback
     loadShort pattern1, b, c
     ld de, channel_note1
-    call _lookup_note
+    call _load_note_data
+    cp a, STOP_SONG
+    ret z
+    call _lookup_note_with_note_data
     push af
     jr nc, .do_setvol1
 

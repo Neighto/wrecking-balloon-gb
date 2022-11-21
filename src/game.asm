@@ -242,25 +242,14 @@ ClearCountdown::
     call ResetHLInRange
     ret
 
-; UPDATE GAME COUNTDOWN ======================================
+IsCountdownAtBalloonPop::
+    ; Returns z flag as yes / nz flag as no
+    ld a, [wCountdownFrame]
+    cp a, COUNTDOWN_FRAME_4
+    ret
 
-UpdateGameCountdown::
-
-    UPDATE_GLOBAL_TIMER
-    call IncrementScrollOffset
-
-.checkFadeIn:
-    ; Only in endless
-    ld a, [wLevel]
-    cp a, LEVEL_ENDLESS
-    jr nz, .endCheckFadeIn
-    call FadeInPalettes
-    ret z
-.hasFadedIn:
-.endCheckFadeIn:
-
-.checkCountdownAnimation:
-
+Countdown::
+    ; Returns z flag as still running / nz flag as finished
     ; Frame speed
 .frameSpeed:
     ld a, [wCountdownFrame]
@@ -269,12 +258,12 @@ UpdateGameCountdown::
 .countdownSpeed:
     ldh a, [hGlobalTimer]
     and COUNTDOWN_SPEED
-    ret nz
+    jp nz, .hasNotFinished
     jr .endFrameSpeed
 .countdownBalloonPopSpeed:
     ldh a, [hGlobalTimer]
     and COUNTDOWN_BALLOON_POP_SPEED
-    ret nz
+    jp nz, .hasNotFinished
 .endFrameSpeed:
 
     ; Update frame
@@ -355,16 +344,43 @@ UpdateGameCountdown::
     ld [hl], a
     jr .endFrame
 .frame6:
-    ; cp a, COUNTDOWN_FRAME_6
-    ; jr nz, .frame7
+    cp a, COUNTDOWN_FRAME_6
+    jr nz, .hasFinished
     call ClearCountdown
     ; jr .endFrame
-.gameLoop:
-    jp GameLoop
 .endFrame:
     ld a, [wCountdownFrame]
     inc a 
     ld [wCountdownFrame], a
+.hasNotFinished:
+    xor a ; ld a, 0
+    ret
+.hasFinished:
+    ld a, 1
+    and a
+    ret
+
+; UPDATE GAME COUNTDOWN ======================================
+
+UpdateGameCountdown::
+
+    UPDATE_GLOBAL_TIMER
+    call IncrementScrollOffset
+
+.checkFadeIn:
+    ; Only in endless
+    ld a, [wLevel]
+    cp a, LEVEL_ENDLESS
+    jr nz, .endCheckFadeIn
+    call FadeInPalettes
+    ret z
+.hasFadedIn:
+.endCheckFadeIn:
+
+.checkCountdownAnimation:
+    call Countdown
+    jp nz, GameLoop
+.endCheckCountdownAnimation:
     ret
 
 ; UPDATE GAME ======================================
@@ -411,4 +427,4 @@ UpdateGame::
 .endModeSpecific:
     call RefreshWindow
     call IncrementScrollOffset
-    jp _hUGE_dosound_with_end
+    jp _hUGE_dosound

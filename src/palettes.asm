@@ -104,7 +104,6 @@ FadeOutPalettes::
 	ld [wFadeOutFrame], a
 .isStillFadingOut:
 	xor a ; ld a, 0
-	and a
 	ret
 
 FadeInPalettes::
@@ -156,5 +155,4 @@ FadeInPalettes::
 	ld [wFadeInFrame], a
 .isStillFadingIn:
 	xor a ; ld a, 0
-	and a
 	ret

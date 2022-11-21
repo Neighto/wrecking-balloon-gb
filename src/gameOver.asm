@@ -8,7 +8,7 @@ InitializeGameOver::
 
 UpdateGameOver::
     UPDATE_GLOBAL_TIMER
-    call _hUGE_dosound_with_end
+    call _hUGE_dosound
     call ReadController
     ldh a, [hControllerDown]
     and PADF_START | PADF_A
