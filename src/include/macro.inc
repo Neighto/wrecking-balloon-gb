@@ -148,6 +148,7 @@ GAME_WON_KEY EQU 4
 LEVEL_VICTORY_SONG_KEY EQU 5
 ENDLESS_KEY EQU 6
 LEVEL_REPEAT_KEY EQU 7
+LEVEL_SPAWN_RANDOM_KEY EQU 8
 
 MACRO LVL__SPAWN
     ; \1 = Enemy Number
@@ -155,6 +156,17 @@ MACRO LVL__SPAWN
     ; \3 = Y
     ; \4 = X
     DB LEVEL_SPAWN_KEY, \1, \2, \3, \4
+ENDM
+
+; Y2 and X2 must be larger than Y1 and X1 respectively
+MACRO LVL__SPAWN_RANDOM
+    ; \1 = Enemy
+    ; \2 = Variant
+    ; \3 = Y1
+    ; \4 = X1
+    ; \5 = Y2
+    ; \6 = X2
+    DB LEVEL_SPAWN_RANDOM_KEY, \1, \2, \3, \4, \5, \6
 ENDM
 
 ; Level Point Balloon
@@ -293,6 +305,8 @@ MACRO LVL__WAIT_BOSS
     DB LEVEL_WAIT_BOSS_KEY
 ENDM
 
+; Iteration will break if you set address as anywhere other than earlier on in the level data
+; Iteration will break if you use nested LVL__REPT
 MACRO LVL__REPT
     ; \1 = Iterate this many times
     ; \2 = Jump to this address

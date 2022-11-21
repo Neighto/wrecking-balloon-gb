@@ -178,7 +178,7 @@ BombUpdate::
     ; Is player alive
     ldh a, [hPlayerFlags]
     and PLAYER_FLAG_ALIVE_MASK
-    jr z, .endCollision
+    jr z, .checkHitByBullet
 .checkHit:
     ld bc, wOAM
     ldh a, [hEnemyOAM]

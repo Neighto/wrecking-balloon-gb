@@ -490,7 +490,7 @@ BalloonCarrierUpdate::
     ; Is player alive
     ldh a, [hPlayerFlags]
     and PLAYER_FLAG_ALIVE_MASK
-    jp z, .endCollision
+    jr z, .checkHitByBullet
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     SET_HL_TO_ADDRESS wOAM+8, hEnemyOAM
