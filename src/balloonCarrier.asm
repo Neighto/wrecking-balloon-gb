@@ -80,7 +80,9 @@ SpawnBalloonCarrier::
 
     ; Get hl pointing to OAM address
     LD_BC_HL ; bc now contains RAM address
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
 .variantVisualBalloon:
     ldh a, [hEnemyVariant]
 .followVisualBalloon:
@@ -207,7 +209,9 @@ BalloonCarrierUpdate::
     res BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_BIT, a
     ldh [hEnemyFlags], a
     ; Hide carry visual
-    SET_HL_TO_ADDRESS wOAM+10, hEnemyOAM
+    ld hl, wOAM+10
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
     ld a, EMPTY_TILE
     ld [hli], a
     inc l
@@ -292,7 +296,9 @@ BalloonCarrierUpdate::
     cp a, PROJECTILE_RESPAWN_TIME
     jr nc, .endFlicker
 .canFlicker:
-    SET_HL_TO_ADDRESS wOAM+3, hEnemyOAM
+    ld hl, wOAM+3
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
     ldh a, [hEnemyParam3]
     and	%00000011
     jr nz, .flickerOn
@@ -410,7 +416,9 @@ BalloonCarrierUpdate::
 
 .updatePosition:
 .balloonLeftOAM:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -455,7 +463,9 @@ BalloonCarrierUpdate::
     cp a, CARRIER_ANVIL_VARIANT
     jr z, .endCheckCactusBob
 .changeHandPositions:
-    SET_HL_TO_ADDRESS wOAM+10, hEnemyOAM
+    ld hl, wOAM+10
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
     ld a, [hl]
     cp a, BALLOON_CACTUS_TILE
     jr z, .leftHandUp
@@ -493,13 +503,17 @@ BalloonCarrierUpdate::
     jr z, .checkHitByBullet
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
-    SET_HL_TO_ADDRESS wOAM+8, hEnemyOAM
+    ld hl, wOAM+8
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
     ld d, 16
     ld e, 12
     call CollisionCheck
     call nz, CollisionWithPlayer
 .checkHit:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
     LD_BC_HL
     ld hl, wPlayerCactusOAM
     ld d, 16
@@ -510,17 +524,10 @@ BalloonCarrierUpdate::
     ldh a, [hEnemyVariant]
     cp a, CARRIER_BOMB_VARIANT 
     call z, CollisionWithPlayer
-.endCheckHitBombVariant:
     jr .deathOfBalloonCarrier
 .checkHitByBullet:
-    SET_HL_TO_ADDRESS wOAM, hEnemyOAM
-    LD_BC_HL
-    ld hl, wPlayerBulletOAM
-    ld d, PLAYER_BULLET_WIDTH
-    ld e, PLAYER_BULLET_HEIGHT
-    call CollisionCheck
+    call EnemyHitBullet
     jr z, .endCollision
-    call ClearBullet
 
 .deathOfBalloonCarrier:
 .variantPoints:

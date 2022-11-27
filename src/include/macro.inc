@@ -72,13 +72,6 @@ MACRO SUB_FROM_HL_16
     ld h, a
 ENDM
 
-MACRO SET_HL_TO_ADDRESS
-    ; argument 1 is starting address
-    ; argument 2 is offset
-    ld hl, \1
-    ADD_TO_HL [\2]
-ENDM
-
 MACRO ADD_A_TO_BC
     add a, c ; 1 cycle
     ld c, a ; 1 cycle

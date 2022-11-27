@@ -191,15 +191,8 @@ BombUpdate::
     call CollisionWithPlayer
     jr .deathOfBomb
 .checkHitByBullet:
-    ld bc, wOAM
-    ldh a, [hEnemyOAM]
-    ADD_A_TO_BC
-    ld hl, wPlayerBulletOAM
-    ld d, PLAYER_BULLET_WIDTH
-    ld e, PLAYER_BULLET_HEIGHT
-    call CollisionCheck
+    call EnemyHitBullet
     jr z, .endCollision
-    call ClearBullet
 .deathOfBomb:
     ldh a, [hEnemyFlags]
     res ENEMY_FLAG_ALIVE_BIT, a
