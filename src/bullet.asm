@@ -3,33 +3,37 @@ INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 
 SECTION "bullet vars", HRAM
+    hPlayerBulletFlags:: DB ; BIT #: [0=active] [1=direction]
     hPlayerBulletY:: DB
     hPlayerBulletX:: DB
-    hPlayerBulletAlive:: DB
-    hPlayerBulletDirection:: DB ; right=0 left=1
 
 SECTION "bullet", ROMX
 
 InitializeBullet::
     xor a ; ld a, 0
+    ldh [hPlayerBulletFlags], a
     ldh [hPlayerBulletY], a
     ldh [hPlayerBulletX], a
-    ldh [hPlayerBulletAlive], a
-    ldh [hPlayerBulletDirection], a
     ret
 
 ; SPAWN
 SpawnBullet::
     call BulletSound
-    ld a, 1 
-    ldh [hPlayerBulletAlive], a
     ldh a, [hPlayerY2]
     add 5
     ldh [hPlayerBulletY], a
-    ld hl, wPlayerBulletOAM
+    ; Update flags
     ldh a, [hPlayerFlags]
-    and PLAYER_FLAG_DIRECTION_MASK
-    ldh [hPlayerBulletDirection], a
+    bit PLAYER_FLAG_DIRECTION_BIT, a
+    ldh a, [hPlayerBulletFlags]
+    jr z, .updateFlags
+.spawnBulletRight:
+    set PLAYER_BULLET_FLAG_DIRECTION_BIT, a
+.updateFlags:
+    set PLAYER_BULLET_FLAG_ACTIVE_BIT, a
+    ldh [hPlayerBulletFlags], a
+    ; Add to OAM
+    ld hl, wPlayerBulletOAM
     jr z, .spawnFromRight
 .spawnFromLeft:
     ldh a, [hPlayerX2]
@@ -62,7 +66,7 @@ SpawnBullet::
   
 ClearBullet::
     xor a ; ld a, 0
-    ldh [hPlayerBulletAlive], a
+    ldh [hPlayerBulletFlags], a
     ld hl, wPlayerBulletOAM
     ld [hli], a
     ld [hli], a
@@ -74,19 +78,14 @@ ClearBullet::
 BulletUpdate::
 
 .checkAlive:
-    ldh a, [hPlayerBulletAlive]
-    cp a, 0
+    ldh a, [hPlayerBulletFlags]
+    and PLAYER_BULLET_FLAG_ACTIVE_MASK
     ret z
 .isAlive:
 
 .checkOffscreen:
     ldh a, [hPlayerBulletX]
-    ld b, a 
-    ld a, SCRN_X + OFF_SCREEN_ENEMY_BUFFER
-    cp a, b
-    jr nc, .endOffscreen
-    ld a, SCRN_VX - OFF_SCREEN_ENEMY_BUFFER
-    cp a, b
+    cp a, SCRN_X + OFF_SCREEN_ENEMY_BUFFER
     jr c, .endOffscreen
 .offscreen:
     jp ClearBullet
@@ -97,17 +96,18 @@ BulletUpdate::
     and PLAYER_BULLET_TIME
     ret nz
 .move:
-    ldh a, [hPlayerBulletDirection]
-    cp a, 0
+    ldh a, [hPlayerBulletFlags]
+    and PLAYER_BULLET_FLAG_DIRECTION_MASK
     ldh a, [hPlayerBulletX]
+    ld b, PLAYER_BULLET_SPEED
     jr z, .moveRight
 .moveLeft:
-    sub PLAYER_BULLET_SPEED
-    ldh [hPlayerBulletX], a
-    ld [wPlayerBulletOAM+1], a
-    ret
+    sub b
+    jr .updateMove
 .moveRight:
-    add PLAYER_BULLET_SPEED
+    add b
+    ; jr .updateMove
+.updateMove:
     ldh [hPlayerBulletX], a
     ld [wPlayerBulletOAM+1], a
 .endMove:

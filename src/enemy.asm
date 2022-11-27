@@ -2,6 +2,7 @@ INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
+INCLUDE "playerConstants.inc"
 
 SECTION "enemy struct vars", HRAM
     ; NOTE: UPDATE ENEMY_STRUCT_SIZE in enemyConstants if we add vars here!
@@ -255,6 +256,30 @@ EnemyInterCollision::
     ld a, 1
     cp a, 0
     ; nz flag set
+    ret
+
+EnemyHitBullet::
+    ; Call from enemy script
+    ; Returns z flag as failed / nz flag as succeeded
+    ldh a, [hPlayerBulletFlags]
+    and PLAYER_BULLET_FLAG_ACTIVE_MASK
+    jr z, .notHitByBullet
+    ; Collision check
+    ld bc, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_BC
+    ld hl, wPlayerBulletOAM
+    ld d, PLAYER_BULLET_WIDTH
+    ld e, PLAYER_BULLET_HEIGHT
+    call CollisionCheck
+.notHitByBullet:
+    ; z flag set
+    ret z
+.hitByBullet:
+    call ClearBullet
+    ; nz flag set
+    xor a ; ld a, 0
+    inc a
     ret
 
 FindBalloonCarrier::

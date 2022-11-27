@@ -158,7 +158,8 @@ UpdateOpeningCutscene::
     cp a, 1
     jr nz, .phase2
     ; move hand up
-    SET_HL_TO_ADDRESS wOAM, wHandWaveOAM
+    ld hl, wOAM
+    ADD_TO_HL [wHandWaveOAM]
     ld a, HAND_WAVE_START_Y
     ld [hli], a
     ld a, HAND_WAVE_START_X
@@ -180,7 +181,8 @@ UpdateOpeningCutscene::
     ldh a, [hGlobalTimer]
     and 15
     jr nz, .endCheckAnimateWave
-    SET_HL_TO_ADDRESS wOAM+2, wHandWaveOAM
+    ld hl, wOAM+2
+    ADD_TO_HL [wHandWaveOAM]
     ld [hl], HAND_WAVE_TILE_2
     ld hl, wHandWavingFrame
     ld [hl], 1
@@ -191,7 +193,8 @@ UpdateOpeningCutscene::
     ldh a, [hGlobalTimer]
     and 15
     jr nz, .endCheckAnimateWave
-    SET_HL_TO_ADDRESS wOAM+2, wHandWaveOAM
+    ld hl, wOAM+2
+    ADD_TO_HL [wHandWaveOAM]
     ld [hl], HAND_WAVE_TILE_1
     ld hl, wHandWavingFrame
     ld [hl], 0
