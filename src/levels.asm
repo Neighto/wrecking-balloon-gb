@@ -2,6 +2,7 @@ INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "constants.inc"
 INCLUDE "enemyConstants.inc"
+INCLUDE "playerConstants.inc"
 
 LEVEL_UPDATE_REFRESH_TIME EQU %00001111
 
@@ -805,55 +806,44 @@ LevelDataHandler::
     ld a, [hl]
 
     ; Interpret
-    cp a, LEVEL_SPAWN_BOTTOM_KEY
-    jr z, .spawnBottom
-    cp a, LEVEL_SPAWN_RIGHT_KEY
-    jr z, .spawnRight
-    cp a, LEVEL_SPAWN_LEFT_KEY
-    jr z, .spawnLeft
-    cp a, LEVEL_SPAWN_TOP_KEY
-    jr z, .spawnTop
-    cp a, LEVEL_SPAWN_RANDOM_KEY
-    jr z, .spawnRandom
-    cp a, LEVEL_WAIT_KEY
-    jr z, .wait
-    cp a, LEVEL_WAIT_BOSS_KEY
-    jr z, .waitBoss
-    cp a, LEVEL_REPEAT_KEY
-    jr z, .repeat
-    cp a, LEVEL_VICTORY_SONG_KEY
-    jr z, .victorySong
-    cp a, LEVEL_END_KEY
-    jr z, .end
-    cp a, GAME_WON_KEY
-    jr z, .won
-    ret
 .spawnBottom:
+    cp a, LEVEL_SPAWN_BOTTOM_KEY
+    jr nz, .spawnRight
     ; Next instructions: x, variant, enemy
     inc hl
     call SpawnDataHandler.bottom
-    jr .incrementLevelDataAddress
+    jp .incrementLevelDataAddress
 .spawnRight:
+    cp a, LEVEL_SPAWN_RIGHT_KEY
+    jr nz, .spawnLeft
     ; Next instructions: y, variant, enemy
     inc hl
     call SpawnDataHandler.right
     jr .incrementLevelDataAddress
 .spawnLeft:
+    cp a, LEVEL_SPAWN_LEFT_KEY
+    jr nz, .spawnTop
     ; Next instructions: y, variant, enemy
     inc hl
     call SpawnDataHandler.left
     jr .incrementLevelDataAddress
 .spawnTop:
+    cp a, LEVEL_SPAWN_TOP_KEY
+    jr nz, .spawnRandom
     ; Next instructions: x, variant, enemy
     inc hl
     call SpawnDataHandler.top
     jr .incrementLevelDataAddress
 .spawnRandom:
+    cp a, LEVEL_SPAWN_RANDOM_KEY
+    jr nz, .wait
     ; Next instructions: y1, x1, y2, x2, variant, enemy
     inc hl
     call SpawnDataHandler.random
     jr .incrementLevelDataAddress
 .wait:
+    cp a, LEVEL_WAIT_KEY
+    jr nz, .waitBoss
     ; Next instruction: amount to wait
     inc hl
     ld a, [wLevelWaitCounter]
@@ -868,6 +858,8 @@ LevelDataHandler::
     ld [wLevelWaitCounter], a
     jr .incrementLevelDataAddress
 .waitBoss:
+    cp a, LEVEL_WAIT_BOSS_KEY
+    jr nz, .repeat
     ld a, [wLevelWaitBoss]
     cp a, 0
     jr nz, .waitBossEnd
@@ -876,6 +868,8 @@ LevelDataHandler::
     inc hl
     jr .incrementLevelDataAddress
 .repeat:
+    cp a, LEVEL_REPEAT_KEY
+    jr nz, .victorySong
     ; Next instructions: times to repeat and address
     inc hl
     ld a, [wLevelRepeatCounter]
@@ -897,6 +891,8 @@ LevelDataHandler::
     ld [wLevelRepeatCounter], a
     jr .incrementLevelDataAddress
 .victorySong:
+    cp a, LEVEL_VICTORY_SONG_KEY
+    jr nz, .end
     inc hl
     push hl
     call ClearSound
@@ -911,11 +907,21 @@ LevelDataHandler::
     ld [wLevelDataAddress+1], a
     ret
 .end:
+    cp a, LEVEL_END_KEY
+    jr nz, .won
+    ldh a, [hPlayerFlags]
+    and PLAYER_FLAG_ALIVE_MASK
+    ret z
     ld a, [wLevel] 
     inc a
     ld [wLevel], a 
     jp StageClear
 .won:
+    ; cp a, GAME_WON_KEY
+    ; jr nz, .next
+    ldh a, [hPlayerFlags]
+    and PLAYER_FLAG_ALIVE_MASK
+    ret z
     call FadeOutPalettes
     ret z
     jp GameWon
