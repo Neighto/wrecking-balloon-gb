@@ -693,17 +693,11 @@ InitializeLevelVars::
     ld [wLevel], a
     jp InitializeNewLevel
 
-SpawnDataRandomHandler:
+SpawnDataHandler:
     ; Argument hl = source address
 
-    ; Update enemy number
-    ld a, [hli]
-    ldh [hEnemyNumber], a
-    ld b, a
-    ; Update variant
-    ld a, [hli]
-    ldh [hEnemyVariant], a
     ; Update enemy Y/X
+.random:
     ld a, [hli] ; y1
     ld e, a 
     ld a, [hli] ; x1
@@ -718,26 +712,40 @@ SpawnDataRandomHandler:
     RANDOM a
     add a, c
     ldh [hEnemyX], a
-    jp SpawnDataHandler.handleSpawns
-
-SpawnDataHandler:
-    ; Argument hl = source address
-
-    ; Update enemy number
-    ld a, [hli]
-    ldh [hEnemyNumber], a
-    ld b, a
-    ; Update variant
-    ld a, [hli]
-    ldh [hEnemyVariant], a
-    ; Update enemy Y/X
-    ld a, [hli]
+    jr .updateAfterXY
+.top:
+    ld a, OFFSCREEN_TOP
     ldh [hEnemyY], a
     ld a, [hli]
     ldh [hEnemyX], a
+    jr .updateAfterXY
+.left:
+    ld a, [hli]
+    ldh [hEnemyY], a
+    ld a, OFFSCREEN_LEFT
+    ldh [hEnemyX], a
+    jr .updateAfterXY
+.right:
+    ld a, [hli]
+    ldh [hEnemyY], a
+    ld a, OFFSCREEN_RIGHT
+    ldh [hEnemyX], a
+    jr .updateAfterXY
+.bottom:
+    ld a, OFFSCREEN_BOTTOM
+    ldh [hEnemyY], a
+    ld a, [hli]
+    ldh [hEnemyX], a
+    ; jr .updateAfterXY
+.updateAfterXY:
+    ; Update variant
+    ld a, [hli]
+    ldh [hEnemyVariant], a
+    ; Update enemy number
+    ld a, [hli]
+    ldh [hEnemyNumber], a
 .handleSpawns:
     ; Spawns
-    ld a, b
     push hl
 .pointBalloon:
     cp a, POINT_BALLOON
@@ -797,32 +805,53 @@ LevelDataHandler::
     ld a, [hl]
 
     ; Interpret
-    cp a, LEVEL_SPAWN_KEY
-    jr z, .spawn
+    cp a, LEVEL_SPAWN_BOTTOM_KEY
+    jr z, .spawnBottom
+    cp a, LEVEL_SPAWN_RIGHT_KEY
+    jr z, .spawnRight
+    cp a, LEVEL_SPAWN_LEFT_KEY
+    jr z, .spawnLeft
+    cp a, LEVEL_SPAWN_TOP_KEY
+    jr z, .spawnTop
+    cp a, LEVEL_SPAWN_RANDOM_KEY
+    jr z, .spawnRandom
     cp a, LEVEL_WAIT_KEY
     jr z, .wait
     cp a, LEVEL_WAIT_BOSS_KEY
     jr z, .waitBoss
+    cp a, LEVEL_REPEAT_KEY
+    jr z, .repeat
     cp a, LEVEL_VICTORY_SONG_KEY
     jr z, .victorySong
     cp a, LEVEL_END_KEY
     jr z, .end
     cp a, GAME_WON_KEY
     jr z, .won
-    cp a, LEVEL_REPEAT_KEY
-    jr z, .repeat
-    cp a, LEVEL_SPAWN_RANDOM_KEY
-    jr z, .spawnRandom
     ret
-.spawn:
-    ; Next instructions: enemy, variant, y, x
+.spawnBottom:
+    ; Next instructions: x, variant, enemy
     inc hl
-    call SpawnDataHandler
+    call SpawnDataHandler.bottom
+    jr .incrementLevelDataAddress
+.spawnRight:
+    ; Next instructions: y, variant, enemy
+    inc hl
+    call SpawnDataHandler.right
+    jr .incrementLevelDataAddress
+.spawnLeft:
+    ; Next instructions: y, variant, enemy
+    inc hl
+    call SpawnDataHandler.left
+    jr .incrementLevelDataAddress
+.spawnTop:
+    ; Next instructions: x, variant, enemy
+    inc hl
+    call SpawnDataHandler.top
     jr .incrementLevelDataAddress
 .spawnRandom:
-    ; Next instructions: enemy, variant, y1, x1, y2, x2
+    ; Next instructions: y1, x1, y2, x2, variant, enemy
     inc hl
-    call SpawnDataRandomHandler
+    call SpawnDataHandler.random
     jr .incrementLevelDataAddress
 .wait:
     ; Next instruction: amount to wait
