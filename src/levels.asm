@@ -320,9 +320,9 @@ Level3:
     LVL__POINT_BALLOON_EASY______________ SPAWN_X_D + 5
     LVL__BIRD_EASY_LEFT__________________ SPAWN_Y_B + 16
     LVL__WAIT 5
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_A - 2
-    LVL__BOMB_DIRECT_____________________ SPAWN_X_B
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_B
+    LVL__POINT_BALLOON_EASY______________ SPAWN_X_B + 8
+    LVL__BOMB_DIRECT_____________________ SPAWN_X_A
+    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_A
     LVL__WAIT 5
 .trick1:
     LVL__BIRD_EASY_LEFT__________________ SPAWN_Y_A
@@ -394,11 +394,39 @@ Level3:
     LVL__WAIT 2
     LVL__BALLOON_CARRIER_FOLLOW_LEFT_____ SPAWN_Y_A
     LVL__WAIT 8
+.birdStorm:
+    LVL__BIRD_EASY_RIGHT_________________ SPAWN_X_C - 8
+    LVL__BIRD_EASY_LEFT__________________ SPAWN_X_A
+    LVL__WAIT 4
+    LVL__BIRD_EASY_RIGHT_________________ SPAWN_X_D - 16
+    LVL__BIRD_EASY_LEFT__________________ SPAWN_X_B
+    LVL__WAIT 2
+    LVL__POINT_BALLOON_MEDIUM____________ MIDDLE_SCREEN
+    LVL__REPT 2, .birdStorm
+    LVL__WAIT 5
 .trickFinal:
-    LVL__BOMB_DIRECT_____________________ MIDDLE_SCREEN
+    LVL__POINT_BALLOON_EASY______________ MIDDLE_SCREEN - 24
+    LVL__WAIT 2
+    LVL__POINT_BALLOON_EASY______________ MIDDLE_SCREEN
+    LVL__WAIT 2
+    LVL__POINT_BALLOON_EASY______________ MIDDLE_SCREEN + 24
+    LVL__WAIT 2
+    LVL__POINT_BALLOON_EASY______________ MIDDLE_SCREEN
+    LVL__WAIT 2
+    LVL__POINT_BALLOON_EASY______________ MIDDLE_SCREEN - 24
+    LVL__WAIT 8
+    LVL__BOMB_FOLLOW_____________________ MIDDLE_SCREEN
     LVL__POINT_BALLOON_HARD______________ MIDDLE_SCREEN - 16
     LVL__POINT_BALLOON_HARD______________ MIDDLE_SCREEN + 16
-    ; Could add here, about 1 minute now
+    LVL__BALLOON_CARRIER_NORMAL_LEFT_____ SPAWN_Y_B
+    LVL__BALLOON_CARRIER_NORMAL_RIGHT____ SPAWN_Y_B
+    LVL__WAIT 6
+    LVL__POINT_BALLOON_EASY______________ SPAWN_X_B
+    LVL__POINT_BALLOON_EASY______________ SPAWN_X_C
+    LVL__WAIT 6
+    LVL__BOMB_DIRECT_____________________ MIDDLE_SCREEN
+    LVL__POINT_BALLOON_HARD______________ MIDDLE_SCREEN + 16
+    LVL__POINT_BALLOON_HARD______________ MIDDLE_SCREEN - 16
 .outro:
     LVL__REPT 1, LevelOutro
 
