@@ -108,8 +108,8 @@ OpeningCutsceneLoop:
 	; SetupNextLevel
 SetupNextLevel::
 	; testing
-	; ld a, 4
-	; ld [wLevel], a
+	ld a, 3
+	ld [wLevel], a
 	; ld a, ENDLESS_MODE
 	; ld [wSelectedMode], a
 	; ^^^
