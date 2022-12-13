@@ -250,7 +250,7 @@ EndlessUpdate::
 ; VERTICAL ****
 .handleVertical:
 
-; PREPARE TO SPAWN
+; 1 - PREPARE TO SPAWN
 .prepareVerticalSpawn:
     ldh a, [hEndlessTimer]
     cp a, ENDLESS_PREPARE_VERTICAL_SPAWN_TIME
@@ -378,7 +378,7 @@ EndlessUpdate::
 .endChooseVerticalEnemy:
 .endPrepareVerticalSpawn:
 
-; COOLDOWN LANES
+; 2 - COOLDOWN LANES
 .cooldownVerticalLanes:
     ldh a, [hGlobalTimer]
     and ENDLESS_VERTICAL_COOLDOWN_TIMER
@@ -409,7 +409,7 @@ EndlessUpdate::
     ldh [hEndlessVertical_D_Cooldown], a
 .endCooldownVerticalLanes: 
 
-; TRY TO SPAWN
+; 3 - TRY TO SPAWN
 .tryToVerticalSpawn:
     ldh a, [hEndlessTimer]
     cp a, ENDLESS_VERTICAL_SPAWN_TIME
@@ -462,7 +462,7 @@ EndlessUpdate::
 ; HORIZONTAL ****
 .handleHorizontal:
 
-; PREPARE TO SPAWN
+; 1 - PREPARE TO SPAWN
 .prepareHorizontalSpawn:
     ldh a, [hEndlessTimer]
     cp a, 60
@@ -601,7 +601,7 @@ EndlessUpdate::
 .endChooseHorizontalEnemy:
 .endPrepareHorizontalSpawn:
 
-; COOLDOWN LANES
+; 2 - COOLDOWN LANES
 .cooldownHorizontalLanes:
     ldh a, [hGlobalTimer]
     and ENDLESS_HORIZONTAL_COOLDOWN_TIMER
@@ -632,7 +632,7 @@ EndlessUpdate::
     ldh [hEndlessHorizontal_D_Cooldown], a
 .endCooldownHorizontalLanes: 
 
-; TRY TO SPAWN
+; 3 - TRY TO SPAWN
 .tryToHorizontalSpawn:
     ldh a, [hEndlessTimer]
     cp a, ENDLESS_HORIZONTAL_SPAWN_TIME

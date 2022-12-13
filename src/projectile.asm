@@ -17,11 +17,11 @@ PROJECTILE_HORIZONTAL_SPEED EQU 2
 
 PROJECTILE_TILE EQU $26
 
-PROJECTILE_WAIT_TO_KILL_DURATION EQU 10
+PROJECTILE_WAIT_TO_KILL_DURATION EQU 7
 
 ; hEnemyParam1 = Add to Y
 ; hEnemyParam2 = Add to X
-; hEnemyParam3 = Kill Timer
+; hEnemyParam3 = Can Kill Timer
 
 SECTION "enemy projectile", ROM0
 
