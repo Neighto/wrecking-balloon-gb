@@ -17,8 +17,10 @@ CACTUS_INITIAL_SPEED EQU 1
 
 CACTUS_SCREAMING_TILE EQU $2E
 
+ANVIL_WAIT_TO_KILL_DURATION EQU 6
+
 ; hEnemyParam1 = Speed
-; hEnemyParam2 = Animation Timer
+; hEnemyParam2 = Can Kill Timer / Animation Timer
 ; hEnemyParam3 = Warning Timer
 
 SECTION "anvil", ROMX
@@ -218,11 +220,19 @@ AnvilUpdate::
 .endMove:
 
 .checkCollision:
-.checkHitPlayer:
+    ; Has been alive long enough (prevent hit immediately after spawning)
+    ldh a, [hEnemyParam2]
+    cp a, ANVIL_WAIT_TO_KILL_DURATION
+    jr nc, .checkCollisionContinue
+    inc a
+    ldh [hEnemyParam2], a
+    jr .endCollision
+.checkCollisionContinue:
     ; Is player alive
     ldh a, [hPlayerFlags]
     and PLAYER_FLAG_ALIVE_MASK
     jr z, .checkHitAnotherEnemy
+.checkHitPlayer:
     ; Get bc pointing to OAM address
     ld bc, wOAM
     ldh a, [hEnemyOAM]
@@ -261,6 +271,9 @@ AnvilUpdate::
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_DYING_BIT, a
     ldh [hEnemyFlags], a
+    ; Reset our shared var hEnemyParam2
+    xor a ; ld a, 0
+    ldh [hEnemyParam2], a
 .endCollision:
 
 .checkOffscreen:
