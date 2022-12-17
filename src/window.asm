@@ -20,37 +20,37 @@ RefreshScore::
 	ld bc, wScore
 	; First digit
 	ld a, [bc]
-	and HIGH_HALF_BYTE_MASK
+	and LOW_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Second digit
     ld a, [bc]
     swap a
-	and HIGH_HALF_BYTE_MASK
+	and LOW_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Third digit
 	inc bc ; Move up score
 	ld a, [bc]
-    and HIGH_HALF_BYTE_MASK
+    and LOW_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Fourth digit
 	ld a, [bc]
 	swap a
-    and HIGH_HALF_BYTE_MASK
+    and LOW_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Fifth digit
 	inc bc ; Move up score
 	ld a, [bc]
-	and HIGH_HALF_BYTE_MASK
+	and LOW_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Sixth digit
 	ld a, [bc]
 	swap a
-    and HIGH_HALF_BYTE_MASK
+    and LOW_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hl], a
 	ret
@@ -60,37 +60,37 @@ RefreshTotal::
 	ld bc, wTotal
 	; First digit
 	ld a, [bc]
-	and HIGH_HALF_BYTE_MASK
+	and LOW_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Second digit
     ld a, [wTotal]
     swap a
-	and HIGH_HALF_BYTE_MASK
+	and LOW_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Third digit
 	inc bc ; Move up total
 	ld a, [bc]
-    and HIGH_HALF_BYTE_MASK
+    and LOW_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Fourth digit
 	ld a, [bc]
 	swap a
-    and HIGH_HALF_BYTE_MASK
+    and LOW_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Fifth digit
 	inc bc ; Move up total
 	ld a, [bc]
-	and HIGH_HALF_BYTE_MASK
+	and LOW_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hld], a
 	; Sixth digit
 	ld a, [bc]
 	swap a
-    and HIGH_HALF_BYTE_MASK
+    and LOW_HALF_BYTE_MASK
 	add NUMBERS_TILE_OFFSET
 	ld [hl], a
 	ret
