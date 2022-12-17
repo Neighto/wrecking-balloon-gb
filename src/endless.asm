@@ -3,28 +3,31 @@ INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 
-ENDLESS_TIMER_RESET_TIME EQU 100
+; PREPARE / SPAWN TIMING
+ENDLESS_TIMER_RESET_TIME_EASY EQU 200
+ENDLESS_TIMER_RESET_TIME_MEDIUM EQU 150
+ENDLESS_TIMER_RESET_TIME_HARD EQU 100
+ENDLESS_PREPARE_VERTICAL_SPAWN_TIME EQU 50 ; Must be < ENDLESS_TIMER_RESET_TIME_<DIFFICULTY>
+ENDLESS_PREPARE_HORIZONTAL_SPAWN_TIME EQU 55 ; Must be < ENDLESS_TIMER_RESET_TIME_<DIFFICULTY>
+ENDLESS_VERTICAL_SPAWN_TIME EQU 90 ; Must be < ENDLESS_TIMER_RESET_TIME_<DIFFICULTY>
+ENDLESS_HORIZONTAL_SPAWN_TIME EQU 95 ; Must be < ENDLESS_TIMER_RESET_TIME_<DIFFICULTY>
 
-ENDLESS_PREPARE_VERTICAL_SPAWN_TIME EQU 50
-ENDLESS_PREPARE_HORIZONTAL_SPAWN_TIME EQU 55
-
-ENDLESS_VERTICAL_SPAWN_TIME EQU 90
-ENDLESS_HORIZONTAL_SPAWN_TIME EQU 95
+; LANES
 
 ENDLESS_VERTICAL_LANES EQU 4
 ENDLESS_HORIZONTAL_LANES EQU 4
+ENDLESS_VERTICAL_COOLDOWN EQU 20 ; Cooldown before that lane is available again
+ENDLESS_HORIZONTAL_COOLDOWN EQU 40 ; Cooldown before that lane is available again
+ENDLESS_VERTICAL_COOLDOWN_TIMER EQU %00000011 ; Wait time before decrementing cooldown counter
+ENDLESS_HORIZONTAL_COOLDOWN_TIMER EQU %00000011 ; Wait time before decrementing cooldown counter
 
-ENDLESS_VERTICAL_COOLDOWN EQU 20
-ENDLESS_HORIZONTAL_COOLDOWN EQU 40
-
-ENDLESS_VERTICAL_COOLDOWN_TIMER EQU %00000011
-ENDLESS_HORIZONTAL_COOLDOWN_TIMER EQU %00000011
+; LEVEL SWITCHING MID-GAME
 
 ENDLESS_LEVEL_SWITCH_OFF EQU 0
 ENDLESS_LEVEL_SWITCH_ON EQU 1
-
-ENDLESS_LEVEL_DURATION EQU 12
+ENDLESS_LEVEL_DURATION EQU 20
 ENDLESS_LEVEL_STOP_SPAWN_DURATION EQU 1
+ENDLESS_LEVEL_DURATION_TIMER EQU %01111111
 
 ; VERTICAL ENEMY SPAWN RATES
 
@@ -69,6 +72,7 @@ ENDLESS_SPAWN_BIRD_VARIANT_HARD_RATE EQU 1
 
 SECTION "endless vars", HRAM
     hEndlessTimer:: DB
+    hEndlessResetTime:: DB ; Changes based on difficulty
 
     ; Vertical Lanes
     hEndlessVerticalLane:: DB
@@ -126,6 +130,9 @@ InitializeEndless::
     ldh [hEndlessLevelSwitchSkip], a
     ldh [hEndlessLevelSwitchTimer], a
 
+    ld a, ENDLESS_TIMER_RESET_TIME_EASY
+    ldh [hEndlessResetTime], a
+
     ; Set level to endless if endless mode
     ld a, [wSelectedMode]
     cp a, CLASSIC_MODE
@@ -177,6 +184,25 @@ EndlessUpdate::
     call IsCountdownAtBalloonPop
     jr nz, .endCheckCountdown
 .levelSwitch:
+    ; Update reset time (difficulty)
+    ldh a, [hEndlessResetTime]
+.easyResetTime:
+    cp a, ENDLESS_TIMER_RESET_TIME_EASY
+    jr nz, .mediumResetTime
+    ld a, ENDLESS_TIMER_RESET_TIME_MEDIUM
+    jr .updateResetTime
+.mediumResetTime:
+    cp a, ENDLESS_TIMER_RESET_TIME_MEDIUM
+    jr nz, .hardResetTime
+    ld a, ENDLESS_TIMER_RESET_TIME_HARD
+    jr .updateResetTime
+.hardResetTime:
+    ; cp a, ENDLESS_TIMER_RESET_TIME_HARD
+    ; jr nz, .veryHardResetTime
+    ld a, ENDLESS_TIMER_RESET_TIME_HARD
+    ; jr .updateResetTime
+.updateResetTime:
+    ldh [hEndlessResetTime], a
     ; Set level switch skip
     ld a, 1 
     ldh [hEndlessLevelSwitchSkip], a
@@ -207,7 +233,7 @@ EndlessUpdate::
     ld hl, hEndlessLevelSwitchTimer
     ; Delay increasing level switch timer
     ldh a, [hGlobalTimer]
-    and %11111111
+    and ENDLESS_LEVEL_DURATION_TIMER
     jr nz, .checkEndlessLevelCommon
     ; Check if it's time to switch levels
     ld a, [hl]
@@ -238,10 +264,12 @@ EndlessUpdate::
 .endCheckEndlessLevel:
 
 .checkEndlessTimer:
+    ldh a, [hEndlessResetTime]
+    ld b, a
     ldh a, [hEndlessTimer]
     inc a
     ldh [hEndlessTimer], a
-    cp a, ENDLESS_TIMER_RESET_TIME
+    cp a, b
     jr nz, .endCheckEndlessTimer
     xor a ; ld a, 0
     ldh [hEndlessTimer], a

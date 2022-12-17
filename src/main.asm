@@ -108,10 +108,10 @@ OpeningCutsceneLoop:
 	; SetupNextLevel
 SetupNextLevel::
 	; testing
-	; ld a, 2
-	; ld [wLevel], a
-	ld a, ENDLESS_MODE
-	ld [wSelectedMode], a
+	ld a, 2
+	ld [wLevel], a
+	; ld a, ENDLESS_MODE
+	; ld [wSelectedMode], a
 	; ^^^
 
 	call WaitVBlank
@@ -141,7 +141,7 @@ SetupNextLevel::
 	jr nz, .level3
 	call SetLevelNightCityInterrupts
 	call LoadLevelNightCityGraphics
-	ld hl, angryTheme
+	ld hl, cityNightTheme
 	call hUGE_init
 	jp .endLevelSetup
 .level3:
