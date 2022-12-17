@@ -145,11 +145,11 @@ UpdateStageClear::
     jr nz, .phase2
 	; Copy first digit score to total
 	ld a, [wScore]
-    and HIGH_HALF_BYTE_MASK
+    and LOW_HALF_BYTE_MASK
     ld d, a
     call AddTotal
     ld a, [wScore]
-    and HIGH_HALF_BYTE_MASK
+    and LOW_HALF_BYTE_MASK
     ld d, a
     call DecrementPoints
 	jr .endCheckPhase

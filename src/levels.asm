@@ -902,9 +902,13 @@ SpawnDataHandler:
 .updateAfterXY:
     ; Update variant
     ld a, [hli]
+    ld b, a
+    and LOW_HALF_BYTE_MASK
     ldh [hEnemyVariant], a
     ; Update enemy number
-    ld a, [hli]
+    ld a, b
+    and HIGH_HALF_BYTE_MASK
+    swap a
     ldh [hEnemyNumber], a
 .handleSpawns:
     ; Spawns
@@ -970,35 +974,35 @@ LevelDataHandler::
 .spawnBottom:
     cp a, LEVEL_SPAWN_BOTTOM_KEY
     jr nz, .spawnRight
-    ; Next instructions: x, variant, enemy
+    ; Next instructions: x, enemy 4-upper-bits | variant 4-lower-bits
     inc hl
     call SpawnDataHandler.bottom
     jp .incrementLevelDataAddress
 .spawnRight:
     cp a, LEVEL_SPAWN_RIGHT_KEY
     jr nz, .spawnLeft
-    ; Next instructions: y, variant, enemy
+    ; Next instructions: y, enemy 4-upper-bits | variant 4-lower-bits
     inc hl
     call SpawnDataHandler.right
     jr .incrementLevelDataAddress
 .spawnLeft:
     cp a, LEVEL_SPAWN_LEFT_KEY
     jr nz, .spawnTop
-    ; Next instructions: y, variant, enemy
+    ; Next instructions: y, enemy 4-upper-bits | variant 4-lower-bits
     inc hl
     call SpawnDataHandler.left
     jr .incrementLevelDataAddress
 .spawnTop:
     cp a, LEVEL_SPAWN_TOP_KEY
     jr nz, .spawnRandom
-    ; Next instructions: x, variant, enemy
+    ; Next instructions: x, enemy 4-upper-bits | variant 4-lower-bits
     inc hl
     call SpawnDataHandler.top
     jr .incrementLevelDataAddress
 .spawnRandom:
     cp a, LEVEL_SPAWN_RANDOM_KEY
     jr nz, .wait
-    ; Next instructions: y1, x1, y2, x2, variant, enemy
+    ; Next instructions: y1, x1, y2, x2, enemy 4-upper-bits | variant 4-lower-bits
     inc hl
     call SpawnDataHandler.random
     jr .incrementLevelDataAddress

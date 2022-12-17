@@ -96,7 +96,7 @@ AddTotal::
 .saveFourthDigit:
     ld a, [wTotal+1]
     swap a
-    and HIGH_HALF_BYTE_MASK
+    and LOW_HALF_BYTE_MASK
     ld e, a
 .toBCD:
     ld a, d
@@ -110,7 +110,7 @@ AddTotal::
 .checkAddLife:
     ld a, [wTotal+1]
     swap a
-    and HIGH_HALF_BYTE_MASK
+    and LOW_HALF_BYTE_MASK
     cp a, e
     jr z, .checkLoop
 .addLife:
@@ -141,11 +141,11 @@ AddScoreToTotal::
     ret
 .isNotZeroTotal:
     ld a, [wScore]
-    and HIGH_HALF_BYTE_MASK
+    and LOW_HALF_BYTE_MASK
     ld d, a
     call AddTotal
     ld a, [wScore]
-    and HIGH_HALF_BYTE_MASK
+    and LOW_HALF_BYTE_MASK
     ld d, a
     call DecrementPoints
 .loop:

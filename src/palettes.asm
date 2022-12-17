@@ -22,7 +22,7 @@ SECTION "palettes vars", WRAM0
 	wTriggerFadeOut:: DB
 	wFlickerTimer:: DB
 
-SECTION "palettes", ROMX
+SECTION "palettes", ROM0
 
 ResetFading::
 	xor a ; ld a, 0

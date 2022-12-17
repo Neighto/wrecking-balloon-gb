@@ -23,7 +23,7 @@ ReadController::
 	ldh a, [_IO]
 	ldh a, [_IO]
 	cpl
-	and HIGH_HALF_BYTE_MASK
+	and LOW_HALF_BYTE_MASK
 	swap a
 	ld b, a ; DPad info stored in b low bits
 .buttons:
@@ -33,7 +33,7 @@ ReadController::
 	ldh a, [_IO]
 	ldh a, [_IO]
 	cpl
-	and HIGH_HALF_BYTE_MASK
+	and LOW_HALF_BYTE_MASK
 	or b 
 	ld b, a ; Button info stored in b high bits
 .setControllerVars:

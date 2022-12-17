@@ -149,28 +149,28 @@ MACRO LVL__SPAWN_BOTTOM
     ; \1 = Enemy Number
     ; \2 = Variant
     ; \3 = X
-    DB LEVEL_SPAWN_BOTTOM_KEY, \3, \2, \1
+    DB LEVEL_SPAWN_BOTTOM_KEY, \3, (\1 << 4) | \2
 ENDM
 
 MACRO LVL__SPAWN_RIGHT
     ; \1 = Enemy Number
     ; \2 = Variant
     ; \3 = Y
-    DB LEVEL_SPAWN_RIGHT_KEY, \3, \2, \1
+    DB LEVEL_SPAWN_RIGHT_KEY, \3, (\1 << 4) | \2
 ENDM
 
 MACRO LVL__SPAWN_LEFT
     ; \1 = Enemy Number
     ; \2 = Variant
     ; \3 = Y
-    DB LEVEL_SPAWN_LEFT_KEY, \3, \2, \1
+    DB LEVEL_SPAWN_LEFT_KEY, \3, (\1 << 4) | \2
 ENDM
 
 MACRO LVL__SPAWN_TOP
     ; \1 = Enemy Number
     ; \2 = Variant
     ; \3 = X
-    DB LEVEL_SPAWN_TOP_KEY, \3, \2, \1
+    DB LEVEL_SPAWN_TOP_KEY, \3, (\1 << 4) | \2
 ENDM
 
 ; Y2 and X2 must be larger than Y1 and X1 respectively
@@ -181,7 +181,7 @@ MACRO LVL__SPAWN_RANDOM
     ; \4 = X1
     ; \5 = Y2
     ; \6 = X2
-    DB LEVEL_SPAWN_RANDOM_KEY, \3, \4, \5, \6, \2, \1
+    DB LEVEL_SPAWN_RANDOM_KEY, \3, \4, \5, \6, (\1 << 4) | \2
 ENDM
 
 ; Level Point Balloon
