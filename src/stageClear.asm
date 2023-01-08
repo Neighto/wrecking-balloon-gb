@@ -5,18 +5,27 @@ INCLUDE "macro.inc"
 
 STAGE_CLEAR_DISTANCE_FROM_TOP_IN_TILES EQU 22
 
-PLUS_TILE EQU $FA
 SCORE_SC_INDEX_ONE_ADDRESS EQU $98CF
 TOTAL_SC_INDEX_ONE_ADDRESS EQU $990F
-LIVES_SC_ADDRESS EQU $994C
-LIVES_TO_ADD_SC_ADDRESS EQU $994E
+LIVES_SC_ADDRESS EQU $994F
+LIVES_TO_ADD_SC_ADDRESS EQU $9948
 STAGE_NUMBER_ADDRESS EQU $9889
 STAGE_CLEAR_FOOTER_TILE_OFFSET EQU $B3
+
+METER_SC_INDEX_ONE_ADDRESS EQU $9944
+METER_BLOCKS EQU 9
+METER_PHASES EQU 4
+METER_FULL_SCORE EQU 20 * METER_BLOCKS * METER_PHASES
+METER_PROGRESS_SCORE EQU METER_FULL_SCORE / (METER_BLOCKS * METER_PHASES)
+
+STAGE_CLEAR_MOVE_POINTS EQU 10
 
 SECTION "stage clear vars", WRAM0
     wLivesToAdd:: DB
     wPointSound:: DB
     wStageNumberOAM:: DB
+	wExtraLifeFromScoreMeter:: DB
+	wExtraLifeFromScorePhase:: DB
 
 SECTION "stage clear", ROMX
 
@@ -25,6 +34,8 @@ InitializeStageClear::
     ld [wLivesToAdd], a
     ld [wPointSound], a
     ld [wStageNumberOAM], a
+	ld [wExtraLifeFromScoreMeter], a
+	ld [wExtraLifeFromScorePhase], a
     ld hl, wSequenceDataAddress
     ld bc, StageClearSequenceData
     ld a, LOW(bc)
@@ -74,11 +85,36 @@ LoadStageClearGraphics::
 	ld a, STAGE_CLEAR_FOOTER_TILE_OFFSET
 	ld [wMemcpyTileOffset], a
 	call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
-	; Draw lives icons
-	ld a, $D7
-	ld [$994A], a
-	ld a, $D8
-	ld [$994B], a
+	; Draw meter
+	ld hl, METER_SC_INDEX_ONE_ADDRESS - 1
+	ld a, BAR_LEFT_EDGE
+	ld [hli], a
+	ld a, BAR_0
+	ld [hli], a
+	ld [hli], a
+	ld [hli], a
+	ld [hli], a
+	ld [hli], a
+	ld [hli], a
+	ld [hli], a
+	ld [hli], a
+	ld [hli], a
+	ld a, BAR_RIGHT_EDGE_AND_ARROW
+	ld [hl], a
+	; Draw life icons
+	ld a, PLUS_1_TILE
+	ld [$994E], a
+	ld a, LIVES_CACTUS
+	ld [$994F], a
+	ret
+
+	; todo not in use
+ShowLives::
+	; Draw life icons
+	ld a, LIVES_CACTUS
+	ld [$994D], a
+	ld a, X_AMOUNT
+	ld [$994E], a
 	ret
 
 SpawnStageNumber::
@@ -109,37 +145,107 @@ RefreshStageClear:
 	ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
 	call RefreshTotal
 	; Current lives
-	ldh a, [hPlayerLives]
-	add NUMBERS_TILE_OFFSET
-	ld [LIVES_SC_ADDRESS], a
+	; ldh a, [hPlayerLives]
+	; add NUMBERS_TILE_OFFSET
+	; ld [LIVES_SC_ADDRESS], a
+
 	; Add lives
-	ld a, [wLivesToAdd]
+; 	ld a, [wLivesToAdd]
+; 	cp a, 0
+; 	jr nz, .hasLivesToAdd
+; 	ld hl, LIVES_TO_ADD_SC_ADDRESS
+; 	ld a, PLUS_TILE
+; 	ld [hli], a
+; 	ld a, NUMBERS_TILE_OFFSET
+; 	ld [hl], a
+; 	ret
+; .hasLivesToAdd:
+; 	ld hl, LIVES_TO_ADD_SC_ADDRESS
+; 	ld a, PLUS_TILE
+; 	ld [hli], a
+; 	ld a, [wLivesToAdd]
+; 	add NUMBERS_TILE_OFFSET
+; 	ld [hl], a
+	ret
+
+FillMeter:
+	; d = Points to fill
+
+	; Is full
+	ld a, [wExtraLifeFromScorePhase]
+	cp a, METER_BLOCKS * METER_PHASES
+	ret z
+	; Add points from score to our meter
+	ld a, [wExtraLifeFromScoreMeter]
+	add d
+	ld [wExtraLifeFromScoreMeter], a
+	; Check if enough score to bump progress
+	sub METER_PROGRESS_SCORE
+	ret c
+	ld [wExtraLifeFromScoreMeter], a
+	; Step 1: Get meter address based on phase
+	ld hl, METER_SC_INDEX_ONE_ADDRESS
+	ld a, [wExtraLifeFromScorePhase]
+	ld b, METER_PHASES
+	call DIVISION
+	add l
+	ld l, a
+	; Step 2: Get % full based on phase
+	ld a, [wExtraLifeFromScorePhase]
+	ld d, METER_PHASES
+	call MODULO
+.phase1:
 	cp a, 0
-	jr nz, .hasLivesToAdd
-	ld a, DARK_GREY_BKG_TILE
-	ld hl, LIVES_TO_ADD_SC_ADDRESS
-	ld [hli], a
+	jr nz, .phase2
+	ld a, BAR_25
 	ld [hl], a
-	ret
-.hasLivesToAdd:
-	ld hl, LIVES_TO_ADD_SC_ADDRESS
-	ld a, PLUS_TILE
-	ld [hli], a
+	jr .next
+.phase2:
+	cp a, 1
+	jr nz, .phase3
+	ld a, BAR_50
+	ld [hl], a
+	jr .next
+.phase3:
+	cp a, 2
+	jr nz, .phase4
+	ld a, BAR_75
+	ld [hl], a
+	jr .next
+.phase4:
+	; cp a, 3
+	; jr nz, .phase5
+	ld a, BAR_100
+	ld [hl], a
+	; jr .next
+.next:
+	; Increment phase so we know which chunk we are adding progress to
+	ld a, [wExtraLifeFromScorePhase]
+	inc a
+	ld [wExtraLifeFromScorePhase], a
+	; Add to lives to add if full
+	ld a, [wExtraLifeFromScorePhase]
+	cp a, METER_BLOCKS * METER_PHASES
+	ret nz
 	ld a, [wLivesToAdd]
-	add NUMBERS_TILE_OFFSET
-	ld [hl], a
-	ret
+	cp a, PLAYER_MAX_LIVES
+    ret nc
+    inc a
+    ld [wLivesToAdd], a
+    jp PopSound
 
 UpdateStageClear::
     UPDATE_GLOBAL_TIMER
 
 .checkPhase:
     ld a, [wSequencePhase]
+; PHASE 0
 .phase0:
     cp a, 0
     jr nz, .phase1
 	; Nothing
 	jr .endCheckPhase
+; PHASE 1
 .phase1:
     cp a, 1
     jr nz, .phase2
@@ -153,6 +259,7 @@ UpdateStageClear::
     ld d, a
     call DecrementPoints
 	jr .endCheckPhase
+; PHASE 2
 .phase2:
     cp a, 2
     jr nz, .phase3
@@ -167,10 +274,12 @@ UpdateStageClear::
 	ld [wSequenceWaitUntilCheck], a
 	jr .endCheckPhase
 .copyingScoreToTotal:
-    ld d, 10
+    ld d, STAGE_CLEAR_MOVE_POINTS
     call AddTotal
-    ld d, 10
+    ld d, STAGE_CLEAR_MOVE_POINTS
     call DecrementPoints
+	ld d, STAGE_CLEAR_MOVE_POINTS
+	call FillMeter
 .checkPointSound
 	ld a, [wPointSound]
 	cp a, 0
@@ -186,6 +295,7 @@ UpdateStageClear::
 	call BassSoundB
 .endPointSound:
 	jr .endCheckPhase
+; PHASE 3
 .phase3:
 	; cp a, 3
     ; jr nz, .endCheckPhase

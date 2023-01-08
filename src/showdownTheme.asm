@@ -17,7 +17,7 @@ order3: dw P2,P2
 order4: dw PE,PE
 
 P1:
- dn G#4,4,$C09
+ dn G#4,4,$C07
  dn ___,0,$A10
  dn ___,0,$A10
  dn ___,0,$A10
@@ -25,13 +25,13 @@ P1:
  dn ___,0,$A10
  dn ___,0,$A10
  dn ___,0,$103
- dn F#4,4,$C0E
+ dn F#4,4,$C0C
  dn ___,0,$A10
- dn G#4,4,$C0E
+ dn G#4,4,$C0C
  dn ___,0,$A10
- dn B_4,4,$C0E
+ dn B_4,4,$C0C
  dn ___,0,$A10
- dn G#4,4,$C09
+ dn G#4,4,$C07
  dn ___,0,$A10
  dn ___,0,$A10
  dn ___,0,$A10
@@ -41,13 +41,13 @@ P1:
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$103
- dn F#4,4,$C0E
+ dn F#4,4,$C0C
  dn ___,0,$A10
- dn G#4,4,$C0E
+ dn G#4,4,$C0C
  dn ___,0,$A10
- dn C#5,4,$C0E
+ dn C#5,4,$C0C
  dn ___,0,$A10
- dn G#4,4,$C09
+ dn G#4,4,$C07
  dn ___,0,$A10
  dn ___,0,$A10
  dn ___,0,$A10
@@ -65,22 +65,22 @@ P1:
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$E00
+ dn C#5,2,$C0C
+ dn C#5,1,$C0C
+ dn C#5,2,$C0C
  dn C#5,2,$C0A
- dn C#5,1,$C0A
+ dn C#5,2,$C0C
+ dn C#5,1,$C0C
+ dn C#5,2,$C0C
  dn C#5,2,$C0A
- dn C#5,2,$C08
- dn C#5,2,$C0A
- dn C#5,1,$C0A
- dn C#5,2,$C0A
- dn C#5,2,$C08
- dn C#5,1,$C0A
- dn E_5,2,$C0A
+ dn C#5,1,$C0C
+ dn E_5,2,$C0C
+ dn E_5,1,$C0C
  dn E_5,1,$C0A
- dn E_5,1,$C08
- dn C#5,2,$C0A
- dn F#5,1,$C0A
- dn F#5,2,$C0A
- dn B_4,2,$C08
+ dn C#5,2,$C0C
+ dn F#5,1,$C0C
+ dn F#5,2,$C0C
+ dn B_4,2,$C0A
 
 P2:
  dn G#3,2,$C0A
@@ -149,7 +149,7 @@ P2:
  dn ___,0,$E00
 
 P3:
- dn G#4,4,$C09
+ dn G#4,4,$C07
  dn ___,0,$A10
  dn ___,0,$A10
  dn ___,0,$A10
@@ -157,15 +157,15 @@ P3:
  dn ___,0,$A10
  dn ___,0,$A10
  dn ___,0,$103
- dn C#5,4,$C0E
+ dn C#5,4,$C0C
  dn ___,0,$A10
- dn B_4,4,$C09
+ dn B_4,4,$C07
  dn ___,0,$A10
  dn ___,0,$A10
  dn ___,0,$A10
- dn C#5,4,$C0E
+ dn C#5,4,$C0C
  dn ___,0,$A10
- dn G#4,4,$C09
+ dn G#4,4,$C07
  dn ___,0,$A10
  dn ___,0,$A10
  dn ___,0,$A10
@@ -173,13 +173,13 @@ P3:
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$103
- dn B_4,4,$C0E
+ dn B_4,4,$C0C
  dn ___,0,$A10
- dn C#5,4,$C0E
+ dn C#5,4,$C0C
  dn ___,0,$A10
- dn B_4,4,$C0E
+ dn B_4,4,$C0C
  dn ___,0,$A10
- dn G#4,4,$C09
+ dn G#4,4,$C07
  dn ___,0,$A10
  dn ___,0,$A10
  dn ___,0,$A10
@@ -197,19 +197,19 @@ P3:
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$E00
+ dn C#6,2,$C0C
+ dn C#6,1,$C0C
+ dn C#6,2,$C0C
  dn C#6,2,$C0A
- dn C#6,1,$C0A
+ dn C#6,2,$C0C
+ dn C#6,1,$C0C
+ dn C#6,2,$C0C
  dn C#6,2,$C0A
- dn C#6,2,$C08
- dn C#6,2,$C0A
- dn C#6,1,$C0A
- dn C#6,2,$C0A
- dn C#6,2,$C08
- dn C#6,1,$C0A
- dn E_6,2,$C0A
+ dn C#6,1,$C0C
+ dn E_6,2,$C0C
+ dn E_6,1,$C0C
  dn E_6,1,$C0A
- dn E_6,1,$C08
- dn C#6,2,$C0A
- dn F#6,1,$C0A
- dn F#6,2,$C0A
- dn B_5,2,$C08
+ dn C#6,2,$C0C
+ dn F#6,1,$C0C
+ dn F#6,2,$C0C
+ dn B_5,2,$C0A

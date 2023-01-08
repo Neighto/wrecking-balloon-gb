@@ -106,22 +106,7 @@ AddTotal::
     add a, [hl]
     daa
     ld [hl], a
-    push af
-.checkAddLife:
-    ld a, [wTotal+1]
-    swap a
-    and LOW_HALF_BYTE_MASK
-    cp a, e
-    jr z, .checkLoop
-.addLife:
-    ld a, [wLivesToAdd]
-    cp a, PLAYER_MAX_LIVES
-    jr nc, .checkLoop
-    inc a
-    ld [wLivesToAdd], a
-    call PopSound
 .checkLoop:
-    pop af
     ret nc
     inc l
     ld a, 1

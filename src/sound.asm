@@ -10,7 +10,7 @@ HIT_SOUND_TIMER EQU 40
 SECTION "sound vars", HRAM
   hStopMusic:: DB
 
-SECTION "sound", ROMX
+SECTION "sound", ROM0
 
 AUDIO_OFF::
   ldh a, [rNR52]
