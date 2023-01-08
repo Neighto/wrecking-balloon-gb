@@ -4,16 +4,14 @@ INCLUDE "constants.inc"
 
 SCORE_INDEX_ONE_ADDRESS EQU $9C32
 LIVES_ADDRESS EQU $9C0B
-BAR_LEFT_EMPTY EQU $DF
-BAR_LEFT_FULL EQU $E1
-BAR_LEFT_HALF EQU $E3
 BOOST_BAR_ADDRESS EQU $9C22
 ATTACK_BAR_ADDRESS EQU $9C26
 REFRESH_WINDOW_WAIT_TIME EQU %00000011
+WINDOW_TILES_8800_OFFSET EQU $D0
 
 GAME_OVER_DISTANCE_FROM_TOP_IN_TILES EQU 2
 
-SECTION "window", ROMX
+SECTION "window", ROM0
 
 RefreshScore::
 	; Argument hl is index one address to update
@@ -98,19 +96,29 @@ RefreshTotal::
 LoadWindow::
 .loadTiles:
     ld bc, WindowTiles
-    ld hl, _VRAM8800+$500
+    ld hl, _VRAM8800 + ((WINDOW_TILES_8800_OFFSET - $80) * $10)
     ld de, WindowTilesEnd - WindowTiles
     call MEMCPY
 .drawMap:
+	; Draw first row
     ld bc, WindowMap
     ld hl, _SCRN1
     ld de, SCRN_X_B
-    ld a, $D0
+    ld a, WINDOW_TILES_8800_OFFSET
     call MEMCPY_WITH_OFFSET
-    ld hl, _SCRN1 + SCRN_VX_B
-    ld de, SCRN_X_B
-    ld a, $D0
-    jp MEMCPY_WITH_OFFSET
+	; Fill in dark grey
+	ld hl, _SCRN1 + SCRN_VX_B
+	ld bc, SCRN_X_B
+	ld d, DARK_GREY_BKG_TILE
+	call SetInRange
+	; Draw boost and attack meter ends
+	ld a, BAR_LEFT_EDGE
+	ld [$9C21], a ; Boost
+	ld [$9C25], a ; Attack
+	ld a, BAR_RIGHT_EDGE
+	ld [$9C24], a ; Boost
+	ld [$9C28], a ; Attack
+	ret
 
 RefreshWindow::
 	ldh a, [hGlobalTimer]
@@ -139,33 +147,31 @@ RefreshWindow::
 	cp a, PLAYER_BOOST_25_PERC
 	jr c, .isBoost25Percent
 .isBoostEmpty:
-	ld a, BAR_LEFT_EMPTY
+	ld a, BAR_0
 	ld [hli], a
-	inc a
 	ld [hl], a
 	jr .refreshAttackBar
 .isBoost25Percent:
-	ld a, BAR_LEFT_HALF
+	ld a, BAR_50
 	ld [hli], a
-	ld a, BAR_LEFT_EMPTY+1
+	ld a, BAR_0
 	ld [hl], a
 	jr .refreshAttackBar
 .isBoost50Percent:
-	ld a, BAR_LEFT_FULL
+	ld a, BAR_100
 	ld [hli], a
-	ld a, BAR_LEFT_EMPTY+1
+	ld a, BAR_0
 	ld [hl], a
 	jr .refreshAttackBar
 .isBoost75Percent:
-	ld a, BAR_LEFT_FULL
+	ld a, BAR_100
 	ld [hli], a
-	ld a, BAR_LEFT_HALF+1
+	ld a, BAR_50
 	ld [hl], a
 	jr .refreshAttackBar
 .isBoostReady:
-	ld a, BAR_LEFT_FULL
+	ld a, BAR_100
 	ld [hli], a
-	inc a
 	ld [hl], a
 	; ATTACK
 .refreshAttackBar:
@@ -181,33 +187,31 @@ RefreshWindow::
 	cp a, PLAYER_ATTACK_25_PERC
 	jr c, .isAttack25Percent
 .isAttackEmpty:
-	ld a, BAR_LEFT_EMPTY
+	ld a, BAR_0
 	ld [hli], a
-	inc a
 	ld [hl], a
 	ret
 .isAttack25Percent:
-	ld a, BAR_LEFT_HALF
+	ld a, BAR_50
 	ld [hli], a
-	ld a, BAR_LEFT_EMPTY+1
+	ld a, BAR_0
 	ld [hl], a
 	ret
 .isAttack50Percent:
-	ld a, BAR_LEFT_FULL
+	ld a, BAR_100
 	ld [hli], a
-	ld a, BAR_LEFT_EMPTY+1
+	ld a, BAR_0
 	ld [hl], a
 	ret
 .isAttack75Percent:
-	ld a, BAR_LEFT_FULL
+	ld a, BAR_100
 	ld [hli], a
-	ld a, BAR_LEFT_HALF+1
+	ld a, BAR_50
 	ld [hl], a
 	ret
 .isAttackReady:
-	ld a, BAR_LEFT_FULL
+	ld a, BAR_100
 	ld [hli], a
-	inc a
 	ld [hl], a
 	ret
 

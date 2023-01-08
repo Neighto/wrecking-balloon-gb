@@ -31,6 +31,7 @@ SECTION "level data", ROM0
 
 ; Level 1
 Level1:
+    LVL__END ; TESTING
 .intro:
     LVL__POINT_BALLOON_EASY______________ SPAWN_X_C
     LVL__WAIT 8
@@ -46,122 +47,123 @@ Level1:
     LVL__POINT_BALLOON_EASY______________ MIDDLE_SCREEN - 28
     LVL__POINT_BALLOON_EASY______________ MIDDLE_SCREEN + 28
     LVL__WAIT 6
-.trick1:
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_A
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_B
-    LVL__WAIT 3
-    LVL__POINT_BALLOON_HARD______________ SPAWN_X_D
-    LVL__WAIT 8
-.trick2:
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_B - 8
-    LVL__WAIT 6
-    LVL__BOMB_DIRECT_____________________ SPAWN_X_B - 8
-    LVL__WAIT 4
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_C + 8
-    LVL__WAIT 6
-    LVL__BOMB_DIRECT_____________________ SPAWN_X_C + 8
-    LVL__WAIT 8
-.introduceFollowCarrier:
-    LVL__BALLOON_CARRIER_NORMAL_LEFT_____ SPAWN_Y_A
-    LVL__WAIT 2
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_A
-    LVL__BALLOON_CARRIER_FOLLOW_RIGHT____ SPAWN_Y_C
-    LVL__WAIT 5
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_D - 8
-    LVL__BOMB_DIRECT_____________________ MIDDLE_SCREEN
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_A + 8
-    LVL__WAIT 2
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_C
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_B
-    LVL__WAIT 4
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_D
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_A
-    LVL__BOMB_DIRECT_____________________ SPAWN_X_C + 8
-    LVL__BOMB_DIRECT_____________________ SPAWN_X_B - 8
-    LVL__WAIT 8
-.trick3:
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_B - 2
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_B - 16
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_A + 2
-    LVL__BALLOON_CARRIER_FOLLOW_LEFT_____ SPAWN_Y_C + 8
-    LVL__WAIT 4
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_C + 2
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_C + 16
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_D - 2
-    LVL__BALLOON_CARRIER_FOLLOW_RIGHT____ SPAWN_Y_D - 8
-    LVL__WAIT 4
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_C - 6
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_C - 19
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_B - 3
-    LVL__BOMB_DIRECT_____________________ SPAWN_X_B - 19
-    LVL__WAIT 4
-.trick4:
-    LVL__BALLOON_CARRIER_NORMAL_RIGHT____ SPAWN_Y_A - 1
-    LVL__BALLOON_CARRIER_NORMAL_LEFT_____ SPAWN_Y_B - 1
-    LVL__BALLOON_CARRIER_NORMAL_RIGHT____ SPAWN_Y_C - 1
-    LVL__BALLOON_CARRIER_NORMAL_LEFT_____ SPAWN_Y_D - 1
-    LVL__WAIT 6
-    LVL__POINT_BALLOON_MEDIUM____________ MIDDLE_SCREEN
-    LVL__WAIT 3
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_A - 16
-    LVL__WAIT 7
-.trick5:
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_A
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_B
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_C
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_D
-    LVL__WAIT 2
-    LVL__BOMB_DIRECT_____________________ SPAWN_X_D
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_C
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_B
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_A
-    LVL__WAIT 2
-    LVL__BOMB_DIRECT_____________________ SPAWN_X_A
-    LVL__REPT 1, .trick5
-.trick6:
-    LVL__POINT_BALLOON_EASY______________ MIDDLE_SCREEN - 32
-    LVL__BALLOON_CARRIER_FOLLOW_RIGHT____ SPAWN_Y_D + 12
-    LVL__POINT_BALLOON_EASY______________ MIDDLE_SCREEN + 8
-    LVL__BALLOON_CARRIER_FOLLOW_RIGHT____ SPAWN_Y_A - 8
-    LVL__WAIT 8
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_A
-    LVL__WAIT 2
-    LVL__BOMB_DIRECT_____________________ SPAWN_X_A + 24
-    LVL__BOMB_DIRECT_____________________ SPAWN_X_A + 50
-    LVL__BOMB_DIRECT_____________________ SPAWN_X_A + 76
-    LVL__WAIT 6
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_D
-    LVL__WAIT 2
-    LVL__BOMB_DIRECT_____________________ SPAWN_X_D - 24
-    LVL__BOMB_DIRECT_____________________ SPAWN_X_D - 50
-    LVL__BOMB_DIRECT_____________________ SPAWN_X_D - 76
-    LVL__WAIT 6
-.trick7:
-    LVL__BALLOON_CARRIER_NORMAL_LEFT_____ SPAWN_Y_B - 8
-    LVL__BALLOON_CARRIER_NORMAL_RIGHT____ SPAWN_Y_A
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_A - 8
-    LVL__BALLOON_CARRIER_FOLLOW_RIGHT____ SPAWN_Y_D
-    LVL__WAIT 5
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_B + 8
-    LVL__WAIT 2
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_D - 10
-    LVL__BALLOON_CARRIER_FOLLOW_LEFT_____ SPAWN_Y_B
-    LVL__WAIT 3
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_B + 32
-    LVL__BOMB_DIRECT_____________________ SPAWN_X_D
-    LVL__BOMB_DIRECT_____________________ SPAWN_X_C
-    LVL__BOMB_DIRECT_____________________ SPAWN_X_B
-    LVL__WAIT 5
-    LVL__POINT_BALLOON_HARD______________ SPAWN_X_D
-    LVL__POINT_BALLOON_HARD______________ SPAWN_X_D
-    LVL__WAIT 3
-.fun:
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_A - 8
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_D + 8
-    LVL__WAIT 2
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_B - 8
-    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_C + 8
-    LVL__POINT_BALLOON_HARD______________ MIDDLE_SCREEN
+
+; .trick1:
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_A
+;     LVL__POINT_BALLOON_EASY______________ SPAWN_X_B
+;     LVL__WAIT 3
+;     LVL__POINT_BALLOON_HARD______________ SPAWN_X_D
+;     LVL__WAIT 8
+; .trick2:
+;     LVL__POINT_BALLOON_EASY______________ SPAWN_X_B - 8
+;     LVL__WAIT 6
+;     LVL__BOMB_DIRECT_____________________ SPAWN_X_B - 8
+;     LVL__WAIT 4
+;     LVL__POINT_BALLOON_EASY______________ SPAWN_X_C + 8
+;     LVL__WAIT 6
+;     LVL__BOMB_DIRECT_____________________ SPAWN_X_C + 8
+;     LVL__WAIT 8
+; .introduceFollowCarrier:
+;     LVL__BALLOON_CARRIER_NORMAL_LEFT_____ SPAWN_Y_A
+;     LVL__WAIT 2
+;     LVL__POINT_BALLOON_EASY______________ SPAWN_X_A
+;     LVL__BALLOON_CARRIER_FOLLOW_RIGHT____ SPAWN_Y_C
+;     LVL__WAIT 5
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_D - 8
+;     LVL__BOMB_DIRECT_____________________ MIDDLE_SCREEN
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_A + 8
+;     LVL__WAIT 2
+;     LVL__POINT_BALLOON_EASY______________ SPAWN_X_C
+;     LVL__POINT_BALLOON_EASY______________ SPAWN_X_B
+;     LVL__WAIT 4
+;     LVL__POINT_BALLOON_EASY______________ SPAWN_X_D
+;     LVL__POINT_BALLOON_EASY______________ SPAWN_X_A
+;     LVL__BOMB_DIRECT_____________________ SPAWN_X_C + 8
+;     LVL__BOMB_DIRECT_____________________ SPAWN_X_B - 8
+;     LVL__WAIT 8
+; .trick3:
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_B - 2
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_B - 16
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_A + 2
+;     LVL__BALLOON_CARRIER_FOLLOW_LEFT_____ SPAWN_Y_C + 8
+;     LVL__WAIT 4
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_C + 2
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_C + 16
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_D - 2
+;     LVL__BALLOON_CARRIER_FOLLOW_RIGHT____ SPAWN_Y_D - 8
+;     LVL__WAIT 4
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_C - 6
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_C - 19
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_B - 3
+;     LVL__BOMB_DIRECT_____________________ SPAWN_X_B - 19
+;     LVL__WAIT 4
+; .trick4:
+;     LVL__BALLOON_CARRIER_NORMAL_RIGHT____ SPAWN_Y_A - 1
+;     LVL__BALLOON_CARRIER_NORMAL_LEFT_____ SPAWN_Y_B - 1
+;     LVL__BALLOON_CARRIER_NORMAL_RIGHT____ SPAWN_Y_C - 1
+;     LVL__BALLOON_CARRIER_NORMAL_LEFT_____ SPAWN_Y_D - 1
+;     LVL__WAIT 6
+;     LVL__POINT_BALLOON_MEDIUM____________ MIDDLE_SCREEN
+;     LVL__WAIT 3
+;     LVL__POINT_BALLOON_EASY______________ SPAWN_X_A - 16
+;     LVL__WAIT 7
+; .trick5:
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_A
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_B
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_C
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_D
+;     LVL__WAIT 2
+;     LVL__BOMB_DIRECT_____________________ SPAWN_X_D
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_C
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_B
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_A
+;     LVL__WAIT 2
+;     LVL__BOMB_DIRECT_____________________ SPAWN_X_A
+;     LVL__REPT 1, .trick5
+; .trick6:
+;     LVL__POINT_BALLOON_EASY______________ MIDDLE_SCREEN - 32
+;     LVL__BALLOON_CARRIER_FOLLOW_RIGHT____ SPAWN_Y_D + 12
+;     LVL__POINT_BALLOON_EASY______________ MIDDLE_SCREEN + 8
+;     LVL__BALLOON_CARRIER_FOLLOW_RIGHT____ SPAWN_Y_A - 8
+;     LVL__WAIT 8
+;     LVL__POINT_BALLOON_EASY______________ SPAWN_X_A
+;     LVL__WAIT 2
+;     LVL__BOMB_DIRECT_____________________ SPAWN_X_A + 24
+;     LVL__BOMB_DIRECT_____________________ SPAWN_X_A + 50
+;     LVL__BOMB_DIRECT_____________________ SPAWN_X_A + 76
+;     LVL__WAIT 6
+;     LVL__POINT_BALLOON_EASY______________ SPAWN_X_D
+;     LVL__WAIT 2
+;     LVL__BOMB_DIRECT_____________________ SPAWN_X_D - 24
+;     LVL__BOMB_DIRECT_____________________ SPAWN_X_D - 50
+;     LVL__BOMB_DIRECT_____________________ SPAWN_X_D - 76
+;     LVL__WAIT 6
+; .trick7:
+;     LVL__BALLOON_CARRIER_NORMAL_LEFT_____ SPAWN_Y_B - 8
+;     LVL__BALLOON_CARRIER_NORMAL_RIGHT____ SPAWN_Y_A
+;     LVL__POINT_BALLOON_EASY______________ SPAWN_X_A - 8
+;     LVL__BALLOON_CARRIER_FOLLOW_RIGHT____ SPAWN_Y_D
+;     LVL__WAIT 5
+;     LVL__POINT_BALLOON_EASY______________ SPAWN_X_B + 8
+;     LVL__WAIT 2
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_D - 10
+;     LVL__BALLOON_CARRIER_FOLLOW_LEFT_____ SPAWN_Y_B
+;     LVL__WAIT 3
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_B + 32
+;     LVL__BOMB_DIRECT_____________________ SPAWN_X_D
+;     LVL__BOMB_DIRECT_____________________ SPAWN_X_C
+;     LVL__BOMB_DIRECT_____________________ SPAWN_X_B
+;     LVL__WAIT 5
+;     LVL__POINT_BALLOON_HARD______________ SPAWN_X_D
+;     LVL__POINT_BALLOON_HARD______________ SPAWN_X_D
+;     LVL__WAIT 3
+; .fun:
+;     LVL__POINT_BALLOON_EASY______________ SPAWN_X_A - 8
+;     LVL__POINT_BALLOON_EASY______________ SPAWN_X_D + 8
+;     LVL__WAIT 2
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_B - 8
+;     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_C + 8
+;     LVL__POINT_BALLOON_HARD______________ MIDDLE_SCREEN
 .outro:
     LVL__REPT 1, LevelOutro
     
@@ -866,11 +868,13 @@ SpawnDataHandler:
     ld c, a 
     ld a, [hli] ; y2
     sub a, e
+    inc a
     RANDOM a
     add a, e
     ldh [hEnemyY], a
     ld a, [hli] ; x2
     sub a, c
+    inc a
     RANDOM a
     add a, c
     ldh [hEnemyX], a
@@ -1080,6 +1084,25 @@ LevelDataHandler::
     ld a, [wLevel] 
     inc a
     ld [wLevel], a 
+
+    ; testing
+    ld a, 90
+    call AddPoints
+    ld a, 90
+    call AddPoints
+    ld a, 90
+    call AddPoints
+    ld a, 90
+    call AddPoints
+    ld a, 90
+    call AddPoints
+    ld a, 90
+    call AddPoints
+    ld a, 90
+    call AddPoints
+    ld a, 90
+    call AddPoints
+
     jp StageClear
 .won:
     ; cp a, GAME_WON_KEY

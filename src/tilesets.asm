@@ -85,7 +85,6 @@ LevelShowdownTilesEnd::
 
 WindowTiles::
     INCBIN "incbin/window/Window.2bpp"
-    INCBIN "incbin/window/WindowNumbers.2bpp"
 WindowTilesEnd::
 
 MenuTiles::
