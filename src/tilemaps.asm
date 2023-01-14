@@ -40,6 +40,14 @@ WindowMap::
     INCBIN "incbin/window/Window.tilemap"
 WindowMapEnd::
 
+ScoreTextMap::
+    DB $D9, $DA, $DB, $DC, $DD, $DE
+ScoreTextMapEnd::
+
+TotalTextMap::
+    DB $F5, $DB, $F5, $F2, $F6, $DE
+TotalTextMapEnd::
+
 CloudsMap::
     INCBIN "incbin/background/Clouds.tilemap"
 CloudsMapEnd::
