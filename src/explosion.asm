@@ -2,18 +2,13 @@ INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
+INCLUDE "tileConstants.inc"
 
 EXPLOSION_OAM_SPRITES EQU 3
 EXPLOSION_OAM_BYTES EQU EXPLOSION_OAM_SPRITES * 4
 EXPLOSION_WAIT_TIME EQU %00000001
 EXPLOSION_BLINK_TIME EQU %00000001
 EXPLOSION_DURATION EQU 15
-
-EXPLOSION_BOMB_TILE_1 EQU $48
-EXPLOSION_BOMB_TILE_2 EQU $4A
-
-EXPLOSION_CONGRATULATIONS_TILE_1 EQU $44
-EXPLOSION_CONGRATULATIONS_TILE_2 EQU $46
 
 ; hEnemyParam1 = Animation Frame
 
@@ -158,8 +153,8 @@ ExplosionUpdate::
 .endVariantVisual:
     jr .explosionCommon
 .hideExplosion:
-    ld b, EMPTY_TILE
-    ld c, EMPTY_TILE
+    ld b, WHITE_SPR_TILE
+    ld c, WHITE_SPR_TILE
 .explosionCommon:
     ld a, b
     ld [hli], a

@@ -1,6 +1,7 @@
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "constants.inc"
+INCLUDE "tileConstants.inc"
 
 CUTSCENE_DISTANCE_FROM_TOP_IN_TILES EQU 10
 HAND_CLAP_SPEED EQU %00000111
@@ -8,8 +9,10 @@ LEFT_HAND_CLAP_START_X EQU 58
 LEFT_HAND_CLAP_START_Y EQU 110
 RIGHT_HAND_CLAP_START_X EQU LEFT_HAND_CLAP_START_X + 5
 RIGHT_HAND_CLAP_START_Y EQU LEFT_HAND_CLAP_START_Y
-HAND_CLAP_TILE EQU $5C
 TOTAL_SC_INDEX_ONE_ADDRESS EQU $98CF
+
+SCOREBOARD_OFFSET EQU $3A
+MAN_FOR_ENDING_OFFSET EQU $34
 
 SECTION "ending cutscene vars", WRAM0
     wHandClappingFrame:: DB
@@ -58,18 +61,13 @@ LoadEndingCutsceneGraphics::
 	ld hl, _VRAM9000 + CutsceneTilesEnd - CutsceneTiles
 	ld de, ScoreboardsTilesEnd - ScoreboardsTiles
 	call MEMCPY
-    ; Special ending tiles
-    ld bc, EndingCutsceneTiles
-	ld hl, _VRAM9000 + CutsceneTilesEnd - CutsceneTiles + ScoreboardsTilesEnd - ScoreboardsTiles
-	ld de, EndingCutsceneTilesEnd - EndingCutsceneTiles
-	call MEMCPY
 .drawMap:
     ; Draw scoreboard
     ld bc, ScoreboardsMap
     ld hl, $9862
     ld d, 5
     ld e, 16
-    ld a, $34
+    ld a, SCOREBOARD_OFFSET
     ld [wMemcpyTileOffset], a
     call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
     ; Draw over man for ending cutscene
@@ -77,7 +75,7 @@ LoadEndingCutsceneGraphics::
 	ld hl, $9966
     ld d, 2
     ld e, 2
-    ld a, $5E
+    ld a, MAN_FOR_ENDING_OFFSET
     ld [wMemcpyTileOffset], a
 	jp MEMCPY_SINGLE_SCREEN_WITH_OFFSET
 
@@ -149,7 +147,7 @@ UpdateEndingCutscene::
 	ld hl, $9946
     ld d, 1
     ld e, 2
-    ld a, $5E
+    ld a, MAN_FOR_ENDING_OFFSET
     ld [wMemcpyTileOffset], a
 	call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
     jr .endCheckPhase

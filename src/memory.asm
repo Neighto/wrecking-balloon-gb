@@ -5,7 +5,7 @@ INCLUDE "constants.inc"
 SECTION "memory vars", WRAM0 
     wMemcpyTileOffset:: DB
 
-SECTION "memory", ROMX
+SECTION "memory", ROM0
 
 MEMCPY::
     ; de = block size

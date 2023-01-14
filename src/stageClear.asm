@@ -2,6 +2,7 @@ INCLUDE "playerConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 INCLUDE "macro.inc"
+INCLUDE "tileConstants.inc"
 
 STAGE_CLEAR_DISTANCE_FROM_TOP_IN_TILES EQU 22
 
@@ -10,12 +11,11 @@ TOTAL_SC_INDEX_ONE_ADDRESS EQU $990F
 LIVES_SC_ADDRESS EQU $994F
 LIVES_TO_ADD_SC_ADDRESS EQU $9948
 STAGE_NUMBER_ADDRESS EQU $9889
-STAGE_CLEAR_FOOTER_TILE_OFFSET EQU $B3
 
 METER_SC_INDEX_ONE_ADDRESS EQU $9944
-METER_BLOCKS EQU 9
+METER_BLOCKS EQU 10
 METER_PHASES EQU 4
-METER_FULL_SCORE EQU 20 * METER_BLOCKS * METER_PHASES
+METER_FULL_SCORE EQU 50 * METER_BLOCKS * METER_PHASES
 METER_PROGRESS_SCORE EQU METER_FULL_SCORE / (METER_BLOCKS * METER_PHASES)
 
 STAGE_CLEAR_MOVE_POINTS EQU 10
@@ -48,8 +48,7 @@ StageClearSequenceData:
     SEQUENCE_WAIT 5
     SEQUENCE_SHOW_PALETTE
     SEQUENCE_WAIT 40
-	SEQUENCE_INCREASE_PHASE ;SEQUENCE_COPY_SCORE_TO_TOTAL_1
-	SEQUENCE_INCREASE_PHASE ;SEQUENCE_COPY_SCORE_TO_TOTAL_2
+	SEQUENCE_INCREASE_PHASE ;SEQUENCE_COPY_SCORE_TO_TOTAL
 	SEQUENCE_WAIT_UNTIL IsScoreZero
     SEQUENCE_WAIT 40
 	SEQUENCE_INCREASE_PHASE ;SEQUENCE_ADD_SCORE_LIVES
@@ -89,32 +88,13 @@ LoadStageClearGraphics::
 	ld hl, METER_SC_INDEX_ONE_ADDRESS - 1
 	ld a, BAR_LEFT_EDGE
 	ld [hli], a
-	ld a, BAR_0
+	ld d, BAR_0
+	ld bc, METER_BLOCKS
+	call SetInRange
+	ld a, BAR_RIGHT_EDGE_AND_PLUS
 	ld [hli], a
-	ld [hli], a
-	ld [hli], a
-	ld [hli], a
-	ld [hli], a
-	ld [hli], a
-	ld [hli], a
-	ld [hli], a
-	ld [hli], a
-	ld a, BAR_RIGHT_EDGE_AND_ARROW
+	ld a, LIVES_CACTUS
 	ld [hl], a
-	; Draw life icons
-	ld a, PLUS_1_TILE
-	ld [$994E], a
-	ld a, LIVES_CACTUS
-	ld [$994F], a
-	ret
-
-	; todo not in use
-ShowLives::
-	; Draw life icons
-	ld a, LIVES_CACTUS
-	ld [$994D], a
-	ld a, X_AMOUNT
-	ld [$994E], a
 	ret
 
 SpawnStageNumber::
@@ -143,34 +123,10 @@ RefreshStageClear:
 	call RefreshScore
 	; Total
 	ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
-	call RefreshTotal
-	; Current lives
-	; ldh a, [hPlayerLives]
-	; add NUMBERS_TILE_OFFSET
-	; ld [LIVES_SC_ADDRESS], a
-
-	; Add lives
-; 	ld a, [wLivesToAdd]
-; 	cp a, 0
-; 	jr nz, .hasLivesToAdd
-; 	ld hl, LIVES_TO_ADD_SC_ADDRESS
-; 	ld a, PLUS_TILE
-; 	ld [hli], a
-; 	ld a, NUMBERS_TILE_OFFSET
-; 	ld [hl], a
-; 	ret
-; .hasLivesToAdd:
-; 	ld hl, LIVES_TO_ADD_SC_ADDRESS
-; 	ld a, PLUS_TILE
-; 	ld [hli], a
-; 	ld a, [wLivesToAdd]
-; 	add NUMBERS_TILE_OFFSET
-; 	ld [hl], a
-	ret
+	jp RefreshTotal
 
 FillMeter:
 	; d = Points to fill
-
 	; Is full
 	ld a, [wExtraLifeFromScorePhase]
 	cp a, METER_BLOCKS * METER_PHASES
@@ -249,24 +205,11 @@ UpdateStageClear::
 .phase1:
     cp a, 1
     jr nz, .phase2
-	; Copy first digit score to total
-	ld a, [wScore]
-    and LOW_HALF_BYTE_MASK
-    ld d, a
-    call AddTotal
-    ld a, [wScore]
-    and LOW_HALF_BYTE_MASK
-    ld d, a
-    call DecrementPoints
-	jr .endCheckPhase
-; PHASE 2
-.phase2:
-    cp a, 2
-    jr nz, .phase3
 	; Copy score to total
 	ldh a, [hGlobalTimer]
 	and %00000001
 	jr nz, .endCheckPhase
+	; TODO if first score pos is not 0 just add it
 	call IsScoreZero
     jr nz, .copyingScoreToTotal
 .doneCopyingScoreToTotal::
@@ -295,9 +238,9 @@ UpdateStageClear::
 	call BassSoundB
 .endPointSound:
 	jr .endCheckPhase
-; PHASE 3
-.phase3:
-	; cp a, 3
+; PHASE 2 ; TODO add an intermediate phase that will hide the +1, empty the meter tiles, and insert livesXcurrentLives, then phase3 1 sec later will increment it
+.phase2:
+	; cp a, 2
     ; jr nz, .endCheckPhase
 	; Add gained lives
 	ld a, [wLivesToAdd]

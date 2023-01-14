@@ -3,6 +3,7 @@ INCLUDE "enemyConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 INCLUDE "playerConstants.inc"
+INCLUDE "tileConstants.inc"
 
 SECTION "enemy struct vars", HRAM
     ; NOTE: UPDATE ENEMY_STRUCT_SIZE in enemyConstants if we add vars here!

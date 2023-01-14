@@ -1,13 +1,14 @@
 INCLUDE "playerConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
+INCLUDE "tileConstants.inc"
 
 SECTION "bullet vars", HRAM
     hPlayerBulletFlags:: DB ; BIT #: [0=active] [1=direction]
     hPlayerBulletY:: DB
     hPlayerBulletX:: DB
 
-SECTION "bullet", ROMX
+SECTION "bullet", ROM0
 
 InitializeBullet::
     xor a ; ld a, 0

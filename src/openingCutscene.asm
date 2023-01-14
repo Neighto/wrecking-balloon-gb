@@ -2,13 +2,12 @@ INCLUDE "macro.inc"
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 INCLUDE "enemyConstants.inc"
+INCLUDE "tileConstants.inc"
 
 HAND_DOWN_START_X EQU 51
 HAND_DOWN_START_Y EQU 105
 HAND_WAVE_START_X EQU HAND_DOWN_START_X - 2
 HAND_WAVE_START_Y EQU 97
-HAND_WAVE_TILE_1 EQU $58
-HAND_WAVE_TILE_2 EQU $5A
 
 SECTION "opening cutscene vars", WRAM0
     wHandWavingFrame:: DB
