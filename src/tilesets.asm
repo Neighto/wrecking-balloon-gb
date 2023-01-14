@@ -86,6 +86,5 @@ LevelShowdownTilesEnd::
 
 MenuTiles::
     INCBIN "incbin/background/Title.2bpp"
-    INCBIN "incbin/background/Name.2bpp"
     INCBIN "incbin/background/Modes.2bpp"
 MenuTilesEnd::

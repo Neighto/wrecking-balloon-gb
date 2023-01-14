@@ -14,6 +14,10 @@ TITLE_ADDRESS_OFFSET EQU TITLE_ADDRESS - _SCRN0
 TITLE_DISTANCE_FROM_TOP_IN_TILES EQU 4
 TITLE_HEIGHT_IN_TILES EQU 5
 
+MODES_OFFSET EQU $4D
+YEAR_NAME_DISTANCE_FROM_TOP_IN_TILES EQU 4
+YEAR_NAME_ADDRESS EQU $9A00
+
 SECTION "menu vars", WRAM0
 	wMenuFrame:: DB
 	wSelectedMode:: DB
@@ -75,25 +79,17 @@ LoadMenuGraphics::
 	ld bc, ModesMap
 	ld hl, MODES_ADDRESS
 	ld de, 7
-	ld a, $51
+	ld a, MODES_OFFSET
 	call MEMCPY_WITH_OFFSET
 	ld hl, MODES_ADDRESS + $40
 	ld de, 7
 	call MEMCPY_WITH_OFFSET
-	ld bc, NameMap
-	ld hl, $9A0B
-	ld de, NameMapEnd - NameMap
-	ld a, $4D
-	call MEMCPY_WITH_OFFSET 
-	ld hl, $9A04
-	ld a, 2 + NUMBERS_TILE_OFFSET
-	ld [hli], a
-	ld a, 0 + NUMBERS_TILE_OFFSET
-	ld [hli], a
-	ld a, 2 + NUMBERS_TILE_OFFSET
-	ld [hli], a
-	ld [hl], a
-	ret
+	; Year + name row
+	ld bc, WindowMap + SCRN_X_B * YEAR_NAME_DISTANCE_FROM_TOP_IN_TILES
+	ld hl, YEAR_NAME_ADDRESS
+	ld de, SCRN_X_B
+	ld a, WINDOW_TILES_8800_OFFSET
+	jp MEMCPY_WITH_OFFSET
 
 SpawnMenuCursor::
 	ld b, 1 ; need 1 sprite for cursor
