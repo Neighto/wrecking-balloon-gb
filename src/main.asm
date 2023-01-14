@@ -30,7 +30,6 @@ Start::
 	call LoadWindow
 	call LoadGameSpriteAndMiscellaneousTiles
 	call SetupWindow
-	call InitializeLives
 	call InitializeParallaxScrolling
 	call InitializeController
 	call InitializeMenu
@@ -43,9 +42,9 @@ Start::
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	call WaitVBlank
-	call UpdateMenuOpening
-	jp MenuLoopOpening
+	; call WaitVBlank
+	; call UpdateMenuOpening
+	; jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
 	call TitleSplashSound
@@ -58,15 +57,21 @@ StartMenu::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateMenu
-	jp MenuLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateMenu
+	; jp MenuLoop
 
 StartGame::
 	ld a, [wSelectedMode]
-	cp a, ENDLESS_MODE
-	jr z, SetupNextLevel
+	cp a, CLASSIC_MODE
+	jr z, .enteringClassic
+.enteringEndless:
+	call InitializeLivesEndless
+	jr SetupNextLevel
+.enteringClassic:
+	call InitializeLivesClassic
+
 OpeningCutscene:
 	call WaitVBlank
 	call LCD_OFF
@@ -99,10 +104,10 @@ OpeningCutscene:
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateOpeningCutscene
-	jp OpeningCutsceneLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateOpeningCutscene
+	; jp OpeningCutsceneLoop
 
 	; SetupNextLevel
 SetupNextLevel::
@@ -204,10 +209,10 @@ SetupNextLevel::
 	; Comment out GameCountdownLoop and SpawnCountdown to skip countdown
 	call SpawnCountdown
 GameCountdownLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateGameCountdown
-	jp GameCountdownLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateGameCountdown
+	; jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA

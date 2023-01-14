@@ -21,27 +21,37 @@ TOTAL_TEXT_ADDRESS EQU $9904
 METER_SC_INDEX_ONE_ADDRESS EQU $9944
 METER_BLOCKS EQU 10
 METER_PHASES EQU 4
-METER_FULL_SCORE EQU 50 * METER_BLOCKS * METER_PHASES
-METER_PROGRESS_SCORE EQU METER_FULL_SCORE / (METER_BLOCKS * METER_PHASES)
+METER_TOTAL_PHASES EQU METER_BLOCKS * METER_PHASES
+METER_FULL_SCORE EQU 50 * METER_TOTAL_PHASES
+METER_PROGRESS_SCORE EQU METER_FULL_SCORE / METER_TOTAL_PHASES
 
 STAGE_CLEAR_MOVE_POINTS EQU 10
 
+POINT_SOUND_PLAY_A EQU 0
+POINT_SOUND_PLAY_B EQU 1
+
+EXTRA_LIFE_BLINK_TIME EQU %00011111
+EXTRA_LIFE_BLINK_SPEED EQU %00000011
+
 SECTION "stage clear vars", WRAM0
-    wLivesToAdd:: DB
     wPointSound:: DB
     wStageNumberOAM:: DB
-	wExtraLifeFromScoreMeter:: DB
-	wExtraLifeFromScorePhase:: DB
+	wExtraLife:: DB
+	wExtraLifeScoreMeter:: DB
+	wExtraLifeScorePhase:: DB
+	wExtraLifeBlinkTimer:: DB
 
 SECTION "stage clear", ROMX
 
 InitializeStageClear::
     xor a ; ld a, 0
-    ld [wLivesToAdd], a
     ld [wPointSound], a
     ld [wStageNumberOAM], a
-	ld [wExtraLifeFromScoreMeter], a
-	ld [wExtraLifeFromScorePhase], a
+	ld [wExtraLife], a
+	ld [wExtraLifeScoreMeter], a
+	ld [wExtraLifeScorePhase], a
+	ld a, EXTRA_LIFE_BLINK_TIME
+	ld [wExtraLifeBlinkTimer], a
     ld hl, wSequenceDataAddress
     ld bc, StageClearSequenceData
     ld a, LOW(bc)
@@ -58,6 +68,7 @@ StageClearSequenceData:
 	SEQUENCE_WAIT_UNTIL IsScoreZero
     SEQUENCE_WAIT 40
 	SEQUENCE_INCREASE_PHASE ;SEQUENCE_ADD_SCORE_LIVES
+	SEQUENCE_INCREASE_PHASE ;SEQUENCE_BLINK_LIVES
     SEQUENCE_WAIT 80
     SEQUENCE_HIDE_PALETTE
     SEQUENCE_WAIT 5
@@ -152,68 +163,64 @@ RefreshStageClear:
 	jp RefreshTotal
 
 FillMeter:
-	; d = Points to fill
+	; a = Points to fill
+	ld d, a
 	; Is full
-	ld a, [wExtraLifeFromScorePhase]
-	cp a, METER_BLOCKS * METER_PHASES
+	ld a, [wExtraLifeScorePhase]
+	cp a, METER_TOTAL_PHASES
 	ret z
 	; Add points from score to our meter
-	ld a, [wExtraLifeFromScoreMeter]
+	ld a, [wExtraLifeScoreMeter]
 	add d
-	ld [wExtraLifeFromScoreMeter], a
+	ld [wExtraLifeScoreMeter], a
 	; Check if enough score to bump progress
 	sub METER_PROGRESS_SCORE
 	ret c
-	ld [wExtraLifeFromScoreMeter], a
+	ld [wExtraLifeScoreMeter], a
 	; Step 1: Get meter address based on phase
 	ld hl, METER_SC_INDEX_ONE_ADDRESS
-	ld a, [wExtraLifeFromScorePhase]
+	ld a, [wExtraLifeScorePhase]
 	ld b, METER_PHASES
 	call DIVISION
 	add l
 	ld l, a
 	; Step 2: Get % full based on phase
-	ld a, [wExtraLifeFromScorePhase]
+	ld a, [wExtraLifeScorePhase]
 	ld d, METER_PHASES
 	call MODULO
 .phase1:
 	cp a, 0
 	jr nz, .phase2
 	ld a, BAR_25
-	ld [hl], a
 	jr .next
 .phase2:
 	cp a, 1
 	jr nz, .phase3
 	ld a, BAR_50
-	ld [hl], a
 	jr .next
 .phase3:
 	cp a, 2
 	jr nz, .phase4
 	ld a, BAR_75
-	ld [hl], a
 	jr .next
 .phase4:
 	; cp a, 3
 	; jr nz, .phase5
 	ld a, BAR_100
-	ld [hl], a
 	; jr .next
 .next:
+	ld [hl], a
 	; Increment phase so we know which chunk we are adding progress to
-	ld a, [wExtraLifeFromScorePhase]
+	ld a, [wExtraLifeScorePhase]
 	inc a
-	ld [wExtraLifeFromScorePhase], a
-	; Add to lives to add if full
-	ld a, [wExtraLifeFromScorePhase]
-	cp a, METER_BLOCKS * METER_PHASES
+	ld [wExtraLifeScorePhase], a
+	; Flag we have life to add if full
+	ld a, [wExtraLifeScorePhase]
+	cp a, METER_TOTAL_PHASES
 	ret nz
-	ld a, [wLivesToAdd]
-	cp a, PLAYER_MAX_LIVES
-    ret nc
-    inc a
-    ld [wLivesToAdd], a
+	ld a, [wExtraLife]
+	inc a
+	ld [wExtraLife], a
     jp PopSound
 
 UpdateStageClear::
@@ -226,7 +233,7 @@ UpdateStageClear::
     cp a, 0
     jr nz, .phase1
 	; Nothing
-	jr .endCheckPhase
+	jp .endCheckPhase
 ; PHASE 1
 .phase1:
     cp a, 1
@@ -234,52 +241,94 @@ UpdateStageClear::
 	; Copy score to total
 	ldh a, [hGlobalTimer]
 	and %00000001
-	jr nz, .endCheckPhase
-	; TODO if first score pos is not 0 just add it
+	jp nz, .endCheckPhase
 	call IsScoreZero
     jr nz, .copyingScoreToTotal
 .doneCopyingScoreToTotal::
 	ld a, 1
 	ld [wSequenceWaitUntilCheck], a
-	jr .endCheckPhase
+	jp .endCheckPhase
 .copyingScoreToTotal:
-    ld d, STAGE_CLEAR_MOVE_POINTS
+	; Copy over score at 0th (does not fill meter)
+    ld a, [wScore]
+    and LOW_HALF_BYTE_MASK
     call AddTotal
-    ld d, STAGE_CLEAR_MOVE_POINTS
+    ld a, [wScore]
+    and LOW_HALF_BYTE_MASK
     call DecrementPoints
-	ld d, STAGE_CLEAR_MOVE_POINTS
+	; Copy over score by 10s
+    ld a, STAGE_CLEAR_MOVE_POINTS
+    call AddTotal
+    ld a, STAGE_CLEAR_MOVE_POINTS
+    call DecrementPoints
+	ld a, STAGE_CLEAR_MOVE_POINTS
 	call FillMeter
 .checkPointSound
 	ld a, [wPointSound]
-	cp a, 0
+	cp a, POINT_SOUND_PLAY_A
 	jr nz, .soundB
 .soundA:
-	inc a
-	ld [wPointSound], a
 	call BassSoundA
+	ld a, POINT_SOUND_PLAY_B
 	jr .endPointSound
 .soundB:
-	xor a ; ld a, 0
-	ld [wPointSound], a
 	call BassSoundB
+	ld a, POINT_SOUND_PLAY_A
 .endPointSound:
+	ld [wPointSound], a
 	jr .endCheckPhase
-; PHASE 2 ; TODO add an intermediate phase that will hide the +1, empty the meter tiles, and insert livesXcurrentLives, then phase3 1 sec later will increment it
+; PHASE 2
 .phase2:
-	; cp a, 2
-    ; jr nz, .endCheckPhase
-	; Add gained lives
-	ld a, [wLivesToAdd]
-    cp a, 0
-    jr z, .endCheckPhase
-    dec a
-    ld [wLivesToAdd], a
-    ldh a, [hPlayerLives]
-    cp a, PLAYER_MAX_LIVES
+	cp a, 2
+    jr nz, .phase3
+	; Skip if added or no extra life
+	ld a, [wExtraLife]
+	cp a, 0
+	jr z, .endCheckPhase
+	; Flag off extra life
+	xor a ; ld a, 0
+	ld [wExtraLife], a
+	call CollectSound
+	; Confirm we are not at max lives
+	ldh a, [hPlayerLives]
+	cp a, PLAYER_MAX_LIVES
 	jr nc, .endCheckPhase
-    inc a
-    ldh [hPlayerLives], a
-    call CollectSound
+	; Add life
+	inc a
+	ldh [hPlayerLives], a
+	jr .endCheckPhase
+; PHASE 3
+.phase3:
+	; cp a, 3
+    ; jr nz, .phase4
+	ld hl, METER_SC_INDEX_ONE_ADDRESS + METER_BLOCKS
+	; If meter is full, blink
+	ld a, [wExtraLifeScorePhase]
+	cp a, METER_TOTAL_PHASES
+	jr nz, .endCheckPhase
+	; Time
+	ld a, [wExtraLifeBlinkTimer]
+	cp a, 0
+	jr z, .showExtraLife
+	dec a
+	ld [wExtraLifeBlinkTimer], a
+	and EXTRA_LIFE_BLINK_SPEED
+	jr nz, .endCheckPhase
+	; Can blink
+	ld a, BAR_RIGHT_EDGE_AND_PLUS
+	cp a, [hl]
+	jr z, .showNothing
+.showExtraLife:
+	ld a, BAR_RIGHT_EDGE_AND_PLUS
+	ld [hli], a
+	ld a, LIVES_CACTUS
+	ld [hl], a
+	jr .endCheckPhase
+.showNothing:
+	ld a, BAR_RIGHT_EDGE
+	ld [hli], a
+	ld a, DARK_GREY_BKG_TILE
+	ld [hl], a
 	; jr .endCheckPhase
 .endCheckPhase:
 
