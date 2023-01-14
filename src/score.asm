@@ -41,8 +41,7 @@ AddPoints::
     jr .carry
 
 DecrementPoints::
-    ; d = points to remove (must be 1 byte BCD [max 99])
-    ld a, d
+    ; a = points to remove (must be 1 byte BCD [max 99])
     call ToBCD
     ld hl, wScore
     ld e, SCORE_SIZE
@@ -58,8 +57,7 @@ DecrementPoints::
     ld a, e
     cp a, 0
     jr nz, .noCap
-    call InitializeScore
-    ret
+    jp InitializeScore
 .noCap:
     inc l
     ld a, 1
@@ -78,6 +76,20 @@ IsScoreZero::
     cp a, 0
     ret
 
+AddTotal::
+    ; a = points to receive (must be 1 byte BCD [max 99])
+    ; Warning no CAP at max points
+    call ToBCD
+    ld hl, wTotal
+.carry:
+    add a, [hl]
+    daa
+    ld [hl], a
+    ret nc
+    inc l
+    ld a, 1
+    jr .carry
+
 IsTotalZero:
     ; z = zero
     ld hl, wTotal
@@ -90,27 +102,6 @@ IsTotalZero:
     ld a, [hli]
     cp a, 0
     ret
-
-AddTotal::
-    ; d = points to receive (must be 1 byte BCD [max 99])
-.saveFourthDigit:
-    ld a, [wTotal+1]
-    swap a
-    and LOW_HALF_BYTE_MASK
-    ld e, a
-.toBCD:
-    ld a, d
-    call ToBCD
-    ld hl, wTotal
-.carry:
-    add a, [hl]
-    daa
-    ld [hl], a
-.checkLoop:
-    ret nc
-    inc l
-    ld a, 1
-    jr .carry
 
 AddScoreToTotal::
     call IsTotalZero
@@ -125,19 +116,18 @@ AddScoreToTotal::
     ld [wTotal+2], a
     ret
 .isNotZeroTotal:
+    ; TODO - this is super inefficient
     ld a, [wScore]
     and LOW_HALF_BYTE_MASK
-    ld d, a
     call AddTotal
     ld a, [wScore]
     and LOW_HALF_BYTE_MASK
-    ld d, a
     call DecrementPoints
 .loop:
     call IsScoreZero
     ret z
-    ld d, 10
+    ld a, 10
     call AddTotal
-    ld d, 10
+    ld a, 10
     call DecrementPoints
     jr .loop

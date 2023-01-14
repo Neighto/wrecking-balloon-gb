@@ -26,8 +26,13 @@ SECTION "player vars", HRAM
 
 SECTION "player", ROM0
 
-InitializeLives::
-	ld a, PLAYER_START_LIVES
+InitializeLivesClassic::
+  ld a, PLAYER_START_LIVES_CLASSIC
+	ldh [hPlayerLives], a
+  ret
+
+InitializeLivesEndless::
+  ld a, PLAYER_START_LIVES_ENDLESS
 	ldh [hPlayerLives], a
   ret
 
