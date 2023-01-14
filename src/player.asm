@@ -504,10 +504,10 @@ PlayerControls:
 	and PADF_A
 	jr z, .endA
   ldh a, [hPlayerAttack]
-  cp a, PLAYER_ATTACK_FULL
+  cp a, PLAYER_SPECIAL_FULL
   jr nz, .endA
 .activateAttack:
-  ld a, PLAYER_ATTACK_EMPTY
+  ld a, PLAYER_SPECIAL_EMPTY
   ldh [hPlayerAttack], a
   call SpawnBullet
 .endA:
@@ -518,11 +518,11 @@ PlayerControls:
 	; jr z, .endB ; last button in controls, just ret
   ret z
   ldh a, [hPlayerBoost]
-  cp a, PLAYER_BOOST_FULL
+  cp a, PLAYER_SPECIAL_FULL
   ; jr nz, .endB ; last button in controls, just ret
   ret nz
 .activateBoost:
-  ld a, PLAYER_BOOST_EMPTY
+  ld a, PLAYER_SPECIAL_EMPTY
   ldh [hPlayerBoost], a
   ld hl, hPlayerSpeed
   ld [hl], PLAYER_DEFAULT_SPEED * 2
@@ -792,7 +792,7 @@ PlayerUpdate::
 
 .checkBoost:
   ldh a, [hPlayerBoost]
-  cp a, PLAYER_BOOST_FULL
+  cp a, PLAYER_SPECIAL_FULL
   jr z, .endBoost
 .isChargingBoost:
   dec a
@@ -806,7 +806,7 @@ PlayerUpdate::
 
 .checkAttack:
   ldh a, [hPlayerAttack]
-  cp a, PLAYER_ATTACK_FULL
+  cp a, PLAYER_SPECIAL_FULL
   jr z, .endAttack
 .isChargingAttack:
   dec a

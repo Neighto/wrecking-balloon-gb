@@ -125,42 +125,67 @@ LoadWindow::
 RefreshBar:
 	; hl = bar address
 	; a = bar meter
+	ld b, a
 
-	; Check if special is charging
-	cp a, PLAYER_SPECIAL_FULL
-	jr z, .special100
-	cp a, PLAYER_SPECIAL_75_PERC
-	jr c, .special75
-	cp a, PLAYER_SPECIAL_50_PERC
-	jr c, .special50
-	cp a, PLAYER_SPECIAL_25_PERC
-	jr c, .special25
-.specialEmpty:
-	ld a, BAR_0
-	ld [hli], a
-	ld [hl], a
-	ret
-.special25:
+	; BLOCK 1 (LEFT)
+.block1:
+.special_1_100:
+	cp a, PLAYER_SPECIAL_BLOCK_1_100
+	jr nc, .special_1_75
+	ld a, BAR_100
+	jr .endBlock1
+.special_1_75:
+	cp a, PLAYER_SPECIAL_BLOCK_1_75
+	jr nc, .special_1_50
+	ld a, BAR_75
+	jr .endBlock1
+.special_1_50:
+	cp a, PLAYER_SPECIAL_BLOCK_1_50
+	jr nc, .special_1_25
 	ld a, BAR_50
-	ld [hli], a
+	jr .endBlock1
+.special_1_25:
+	cp a, PLAYER_SPECIAL_BLOCK_1_25
+	jr nc, .special_1_0
+	ld a, BAR_25
+	jr .endBlock1
+.special_1_0:
+	; cp a, PLAYER_SPECIAL_EMPTY
+	; jr nc, .endBlock1
 	ld a, BAR_0
-	ld [hl], a
-	ret
-.special50:
-	ld a, BAR_100
+	; jr .endBlock1
+.endBlock1:
 	ld [hli], a
-	ld a, BAR_0
-	ld [hl], a
-	ret
-.special75:
+	ld a, b
+
+	; BLOCK 2 (RIGHT)
+.block2:
+.special_2_100:
+	cp a, PLAYER_SPECIAL_BLOCK_2_100
+	jr nz, .special_2_75
 	ld a, BAR_100
-	ld [hli], a
+	jr .endBlock2
+.special_2_75:
+	cp a, PLAYER_SPECIAL_BLOCK_2_75
+	jr nc, .special_2_50
+	ld a, BAR_75
+	jr .endBlock2
+.special_2_50:
+	cp a, PLAYER_SPECIAL_BLOCK_2_50
+	jr nc, .special_2_25
 	ld a, BAR_50
-	ld [hl], a
-	ret
-.special100:
-	ld a, BAR_100
-	ld [hli], a
+	jr .endBlock2
+.special_2_25:
+	cp a, PLAYER_SPECIAL_BLOCK_2_25
+	jr nc, .special_2_0
+	ld a, BAR_25
+	jr .endBlock2
+.special_2_0:
+	; cp a, PLAYER_SPECIAL_EMPTY
+	; jr nc, .endBlock2
+	ld a, BAR_0
+	; jr .endBlock2
+.endBlock2:
 	ld [hl], a
 	ret 
 
