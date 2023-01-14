@@ -112,10 +112,10 @@ OpeningCutsceneLoop:
 	; SetupNextLevel
 SetupNextLevel::
 	; testing
-	ld a, 6
-	ld [wLevel], a
-	; ld a, ENDLESS_MODE
-	; ld [wSelectedMode], a
+	; ld a, 6
+	; ld [wLevel], a
+	ld a, ENDLESS_MODE
+	ld [wSelectedMode], a
 	; ^^^
 
 	call WaitVBlank
@@ -209,10 +209,10 @@ SetupNextLevel::
 	; Comment out GameCountdownLoop and SpawnCountdown to skip countdown
 	call SpawnCountdown
 GameCountdownLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateGameCountdown
-	; jp GameCountdownLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateGameCountdown
+	jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA
