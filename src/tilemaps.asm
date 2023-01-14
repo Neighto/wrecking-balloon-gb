@@ -36,10 +36,6 @@ ModesMap::
     INCBIN "incbin/background/Modes.tilemap"
 ModesMapEnd::
 
-NameMap::
-    INCBIN "incbin/background/Name.tilemap"
-NameMapEnd::
-
 WindowMap::
     INCBIN "incbin/window/Window.tilemap"
 WindowMapEnd::
