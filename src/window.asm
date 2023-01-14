@@ -5,11 +5,13 @@ INCLUDE "tileConstants.inc"
 
 SCORE_INDEX_ONE_ADDRESS EQU $9C32
 LIVES_ADDRESS EQU $9C0B
-BOOST_BAR_ADDRESS EQU $9C22
-ATTACK_BAR_ADDRESS EQU $9C26
+BOOST_BAR_ADDRESS EQU $9C21
+ATTACK_BAR_ADDRESS EQU $9C25
+BAR_TILES EQU 4
 REFRESH_WINDOW_WAIT_TIME EQU %00000011
 
 GAME_OVER_DISTANCE_FROM_TOP_IN_TILES EQU 2
+TOTAL_GAME_OVER_INDEX_ONE_ADDRESS EQU $9C2F
 
 SECTION "window", ROM0
 
@@ -113,12 +115,54 @@ LoadWindow::
 	call SetInRange
 	; Draw boost and attack meter ends
 	ld a, BAR_LEFT_EDGE
-	ld [$9C21], a ; Boost
-	ld [$9C25], a ; Attack
+	ld [BOOST_BAR_ADDRESS], a ; Boost
+	ld [ATTACK_BAR_ADDRESS], a ; Attack
 	ld a, BAR_RIGHT_EDGE
-	ld [$9C24], a ; Boost
-	ld [$9C28], a ; Attack
+	ld [BOOST_BAR_ADDRESS + BAR_TILES - 1], a ; Boost
+	ld [ATTACK_BAR_ADDRESS + BAR_TILES - 1], a ; Attack
 	ret
+
+RefreshBar:
+	; hl = bar address
+	; a = bar meter
+
+	; Check if special is charging
+	cp a, PLAYER_SPECIAL_FULL
+	jr z, .special100
+	cp a, PLAYER_SPECIAL_75_PERC
+	jr c, .special75
+	cp a, PLAYER_SPECIAL_50_PERC
+	jr c, .special50
+	cp a, PLAYER_SPECIAL_25_PERC
+	jr c, .special25
+.specialEmpty:
+	ld a, BAR_0
+	ld [hli], a
+	ld [hl], a
+	ret
+.special25:
+	ld a, BAR_50
+	ld [hli], a
+	ld a, BAR_0
+	ld [hl], a
+	ret
+.special50:
+	ld a, BAR_100
+	ld [hli], a
+	ld a, BAR_0
+	ld [hl], a
+	ret
+.special75:
+	ld a, BAR_100
+	ld [hli], a
+	ld a, BAR_50
+	ld [hl], a
+	ret
+.special100:
+	ld a, BAR_100
+	ld [hli], a
+	ld [hl], a
+	ret 
 
 RefreshWindow::
 	ldh a, [hGlobalTimer]
@@ -135,85 +179,14 @@ RefreshWindow::
 	ld [LIVES_ADDRESS], a
 	; BOOST
 .refreshBoostBar:
-	ld hl, BOOST_BAR_ADDRESS
+	ld hl, BOOST_BAR_ADDRESS + 1
 	ldh a, [hPlayerBoost]
-	cp a, PLAYER_BOOST_FULL
-	jr z, .isBoostReady
-.isBoostCharging:
-	cp a, PLAYER_BOOST_75_PERC
-	jr c, .isBoost75Percent
-	cp a, PLAYER_BOOST_50_PERC
-	jr c, .isBoost50Percent
-	cp a, PLAYER_BOOST_25_PERC
-	jr c, .isBoost25Percent
-.isBoostEmpty:
-	ld a, BAR_0
-	ld [hli], a
-	ld [hl], a
-	jr .refreshAttackBar
-.isBoost25Percent:
-	ld a, BAR_50
-	ld [hli], a
-	ld a, BAR_0
-	ld [hl], a
-	jr .refreshAttackBar
-.isBoost50Percent:
-	ld a, BAR_100
-	ld [hli], a
-	ld a, BAR_0
-	ld [hl], a
-	jr .refreshAttackBar
-.isBoost75Percent:
-	ld a, BAR_100
-	ld [hli], a
-	ld a, BAR_50
-	ld [hl], a
-	jr .refreshAttackBar
-.isBoostReady:
-	ld a, BAR_100
-	ld [hli], a
-	ld [hl], a
+	call RefreshBar
 	; ATTACK
 .refreshAttackBar:
-	ld hl, ATTACK_BAR_ADDRESS
+	ld hl, ATTACK_BAR_ADDRESS + 1
 	ldh a, [hPlayerAttack]
-	cp a, PLAYER_ATTACK_FULL
-	jr z, .isAttackReady
-.isAttackCharging:
-	cp a, PLAYER_ATTACK_75_PERC
-	jr c, .isAttack75Percent
-	cp a, PLAYER_ATTACK_50_PERC
-	jr c, .isAttack50Percent
-	cp a, PLAYER_ATTACK_25_PERC
-	jr c, .isAttack25Percent
-.isAttackEmpty:
-	ld a, BAR_0
-	ld [hli], a
-	ld [hl], a
-	ret
-.isAttack25Percent:
-	ld a, BAR_50
-	ld [hli], a
-	ld a, BAR_0
-	ld [hl], a
-	ret
-.isAttack50Percent:
-	ld a, BAR_100
-	ld [hli], a
-	ld a, BAR_0
-	ld [hl], a
-	ret
-.isAttack75Percent:
-	ld a, BAR_100
-	ld [hli], a
-	ld a, BAR_50
-	ld [hl], a
-	ret
-.isAttackReady:
-	ld a, BAR_100
-	ld [hli], a
-	ld [hl], a
-	ret
+	jp RefreshBar
 
 RefreshGameOverWindow::
 	; Game over row
@@ -228,5 +201,5 @@ RefreshGameOverWindow::
     ld a, WINDOW_TILES_8800_OFFSET
     call MEMCPY_WITH_OFFSET
 	; Score
-	ld hl, $9C2F
+	ld hl, TOTAL_GAME_OVER_INDEX_ONE_ADDRESS
 	jp RefreshTotal
