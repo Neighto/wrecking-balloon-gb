@@ -27,15 +27,22 @@ InitializeTotal::
 
 AddPoints::
     ; a = points to receive (must be 1 byte BCD [max 99])
-    ; Warning no CAP at max points
-    call ToBCD ; a is now BCD
-    ld hl, wScore ; 1st byte of score
+    ; Warning, will loop if we reach max points
+    call ToBCD
+    ld hl, wScore
+    ld e, SCORE_SIZE
     ; Now update hl and if there's a carry add to hl+1
 .carry:
     add a, [hl]
     daa
     ld [hl], a
     ret nc
+    ; Check if we reached end of score size
+    dec e
+    ld a, e
+    cp a, 0
+    ret z
+    ; Continue
     inc l ; next byte of score
     ld a, 1 ; The carry value
     jr .carry
@@ -46,19 +53,18 @@ DecrementPoints::
     ld hl, wScore
     ld e, SCORE_SIZE
 .carry:
-    dec e
     ld d, a
     ld a, [hl]
     sub a, d
     daa
     ld [hl], a
     ret nc
-.checkCapAtZero:
+    ; Check if we reached the end of score size
+    dec e
     ld a, e
     cp a, 0
-    jr nz, .noCap
-    jp InitializeScore
-.noCap:
+    jp z, InitializeScore
+    ; Continue
     inc l
     ld a, 1
     jr .carry
@@ -78,7 +84,7 @@ IsScoreZero::
 
 AddTotal::
     ; a = points to receive (must be 1 byte BCD [max 99])
-    ; Warning no CAP at max points
+    ; Warning no restriction for hl going off rails but it never should
     call ToBCD
     ld hl, wTotal
 .carry:
