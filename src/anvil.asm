@@ -2,6 +2,7 @@ INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
 INCLUDE "constants.inc"
+INCLUDE "tileConstants.inc"
 INCLUDE "playerConstants.inc"
 
 ANVIL_OAM_SPRITES EQU 2
@@ -9,14 +10,9 @@ ANVIL_OAM_BYTES EQU ANVIL_OAM_SPRITES * OAM_ATTRIBUTES_COUNT
 ANVIL_DEAD_BLINKING_TIME EQU %00000011
 ANVIL_DEAD_BLINKING_DURATION EQU 20
 ANVIL_WARNING_DURATION EQU 15
-
 ANVIL_FALLING_SPEED_DELAY EQU 3
-
 ANVIL_INITIAL_SPEED EQU 4
 CACTUS_INITIAL_SPEED EQU 1
-
-CACTUS_SCREAMING_TILE EQU $2E
-
 ANVIL_WAIT_TO_KILL_DURATION EQU 6
 
 ; hEnemyParam1 = Speed
@@ -165,10 +161,10 @@ AnvilUpdate::
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
     ld a, [hl]
-    cp a, EMPTY_TILE
+    cp a, WHITE_SPR_TILE
     jr z, .blinkOn
 .blinkOff:
-    ld a, EMPTY_TILE
+    ld a, WHITE_SPR_TILE
     ld [hli], a
     inc l
     inc l

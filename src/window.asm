@@ -1,6 +1,7 @@
 INCLUDE "playerConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
+INCLUDE "tileConstants.inc"
 
 SCORE_INDEX_ONE_ADDRESS EQU $9C32
 LIVES_ADDRESS EQU $9C0B

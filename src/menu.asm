@@ -1,10 +1,9 @@
 INCLUDE "constants.inc"
 INCLUDE "macro.inc"
 INCLUDE "hardware.inc"
+INCLUDE "tileConstants.inc"
 
-MENU_CURSOR_TILE EQU $74
 MODES_ADDRESS EQU $9926
-
 MENU_SPRITE_CLASSIC_Y EQU 88
 MENU_SPRITE_ENDLESS_Y EQU 104
 MENU_SPRITE_X EQU 48
@@ -46,8 +45,7 @@ LoadMenuOpeningGraphics::
 	ld hl, TITLE_ADDRESS
 	ld d, TITLE_HEIGHT_IN_TILES
 	ld e, SCRN_X_B
-	call MEMCPY_SINGLE_SCREEN
-	ret
+	jp MEMCPY_SINGLE_SCREEN
 
 LoadMenuGraphics::
 .tiles:
@@ -205,14 +203,14 @@ UpdateMenu::
 	ld hl, wOAM+2
 	ADD_A_TO_HL [wMenuCursorOAM]
 	ld a, [hl]
-	cp a, EMPTY_TILE
+	cp a, WHITE_SPR_TILE
 	jr nz, .empty
 .show:
 	ld a, MENU_CURSOR_TILE
 	ld [hl], a
 	jr .blinkMenuCursorEnd
 .empty:
-	ld a, EMPTY_TILE
+	ld a, WHITE_SPR_TILE
 	ld [hl], a
 .blinkMenuCursorEnd:
 
@@ -260,8 +258,7 @@ UpdateMenu::
 	ld b, 0
 	ld c, 1
 	call hUGE_mute_channel
-	call CollectSound
-	ret
+	jp CollectSound
 .fadeOut:
 	call FadeOutPalettes
 	jp nz, StartGame

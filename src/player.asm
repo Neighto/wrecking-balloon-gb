@@ -2,6 +2,7 @@ INCLUDE "hardware.inc"
 INCLUDE "playerConstants.inc"
 INCLUDE "constants.inc"
 INCLUDE "macro.inc"
+INCLUDE "tileConstants.inc"
 
 SECTION "player vars", HRAM
   hPlayerFlags:: DB ; BIT #: [0=active] [1=alive] [2=dying] [3=direction] [4=bobbed] [5-7=generic]
@@ -646,7 +647,7 @@ ShowPlayerBalloon:
   ret
 
 HidePlayerCactus:
-  ld a, EMPTY_TILE
+  ld a, WHITE_SPR_TILE
   ld hl, wPlayerCactusOAM+2
   ld [hl], a
   ld hl, wPlayerCactusOAM+6
@@ -654,7 +655,7 @@ HidePlayerCactus:
   ret
 
 HidePlayerBalloon:
-  ld a, EMPTY_TILE
+  ld a, WHITE_SPR_TILE
   ld hl, wPlayerBalloonOAM+2
   ld [hl], a
   ld hl, wPlayerBalloonOAM+6
@@ -727,7 +728,7 @@ PlayerUpdate::
 .blinking:
   ld hl, wPlayerCactusOAM+2
   ld a, [hl]
-  cp a, EMPTY_TILE
+  cp a, WHITE_SPR_TILE
   jr z, .blinkOn
 .blinkOff:
   call HidePlayerCactus

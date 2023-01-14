@@ -2,6 +2,7 @@ INCLUDE "constants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
+INCLUDE "tileConstants.inc"
 
 COUNTDOWN_OAM_SPRITES EQU 2
 COUNTDOWN_OAM_BYTES EQU COUNTDOWN_OAM_SPRITES * 4
@@ -9,12 +10,6 @@ COUNTDOWN_START_X EQU 80
 COUNTDOWN_START_Y EQU 40
 COUNTDOWN_SPEED EQU %00011111
 COUNTDOWN_BALLOON_POP_SPEED EQU %00000111
-COUNTDOWN_3_TILE_1 EQU $54
-COUNTDOWN_3_TILE_2 EQU $56
-COUNTDOWN_2_TILE_1 EQU $50
-COUNTDOWN_2_TILE_2 EQU $52
-COUNTDOWN_1_TILE_1 EQU $4C
-COUNTDOWN_1_TILE_2 EQU $4E
 
 COUNTDOWN_FRAME_0 EQU 0
 COUNTDOWN_FRAME_1 EQU 1
@@ -24,10 +19,7 @@ COUNTDOWN_FRAME_4 EQU 4 ; Becomes balloon pop instead
 COUNTDOWN_FRAME_5 EQU 5
 COUNTDOWN_FRAME_6 EQU 6 ; Clear
 
-COUNTDOWN_NEUTRAL_BALLOON_TILE EQU $1E
-STAR_TILE EQU $9F
 SUN_ADDRESS EQU $9848
-SUN_TILE_OFFSET EQU $92
 
 SECTION "game vars", WRAM0
     wCountdownFrame:: DB
@@ -41,19 +33,15 @@ InitializeGame::
 	ld [wCountdownFrame], a
     ret
 
-LoadGameSpriteTiles::
+LoadGameSpriteAndMiscellaneousTiles::
 	ld bc, GameSpriteTiles
 	ld hl, _VRAM8000+$20 ; Offset first 2 tiles as empty
 	ld de, GameSpriteTilesEnd - GameSpriteTiles
-	call MEMCPY
-	ret
-
-LoadGameMiscellaneousTiles::
-	ld bc, MiscellaneousTiles
+    call MEMCPY
+    ld bc, MiscellaneousTiles
 	ld hl, _VRAM8800
 	ld de, MiscellaneousTilesEnd - MiscellaneousTiles
-	call MEMCPY
-    ret
+	jp MEMCPY
     
 LoadLevelCityGraphics::
 .tiles:
@@ -81,8 +69,7 @@ LoadLevelCityGraphics::
     ld hl, $987B ; City Plane address
     ld de, 5
     ld a, $AD
-	call MEMCPY_WITH_OFFSET
-	ret
+	jp MEMCPY_WITH_OFFSET
 
 LoadLevelNightCityGraphics::
 .tiles:
@@ -227,7 +214,7 @@ SpawnCountdown::
     ld [hli], a
     ld a, COUNTDOWN_START_X
     ld [hli], a
-    ld a, EMPTY_TILE
+    ld a, WHITE_SPR_TILE
     ld [hl], a
     inc l
     inc l
@@ -235,7 +222,7 @@ SpawnCountdown::
     ld [hli], a
     ld a, COUNTDOWN_START_X+8
     ld [hli], a
-    ld a, EMPTY_TILE
+    ld a, WHITE_SPR_TILE
     ld [hl], a
 	ret
 

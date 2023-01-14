@@ -57,23 +57,24 @@ MiscellaneousTiles::
     INCBIN "incbin/background/UFO.2bpp"
 MiscellaneousTilesEnd::
 
-LevelCityTiles::
-    INCBIN "incbin/background/City.2bpp"
-LevelCityTilesEnd::
+WindowTiles::
+    INCBIN "incbin/window/Window.2bpp"
+WindowTilesEnd::
 
 SECTION "tilesets 2", ROMX
 
 CutsceneTiles::
     INCBIN "incbin/background/Cutscene.2bpp"
+    INCBIN "incbin/background/ManForEnding.2bpp"
 CutsceneTilesEnd::
 
 ScoreboardsTiles::
     INCBIN "incbin/background/Scoreboards.2bpp"
 ScoreboardsTilesEnd::
 
-EndingCutsceneTiles::
-    INCBIN "incbin/background/ManForEnding.2bpp"
-EndingCutsceneTilesEnd::
+LevelCityTiles::
+    INCBIN "incbin/background/City.2bpp"
+LevelCityTilesEnd::
 
 LevelDesertTiles::
     INCBIN "incbin/background/Desert.2bpp"
@@ -82,10 +83,6 @@ LevelDesertTilesEnd::
 LevelShowdownTiles::
     INCBIN "incbin/background/Showdown.2bpp"
 LevelShowdownTilesEnd::
-
-WindowTiles::
-    INCBIN "incbin/window/Window.2bpp"
-WindowTilesEnd::
 
 MenuTiles::
     INCBIN "incbin/background/Title.2bpp"
