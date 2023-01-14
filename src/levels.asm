@@ -787,6 +787,7 @@ Level6:
     LVL__WAIT_BOSS
 .outro:
     LVL__WAIT 2
+    LVL__POINTS_FOR_LIVES
     LVL__VICTORY_SONG
     LVL__WAIT 8
     LVL__GAME_WON
@@ -986,14 +987,14 @@ LevelDataHandler::
     ; Next instructions: y, enemy 4-upper-bits | variant 4-lower-bits
     inc hl
     call SpawnDataHandler.right
-    jr .incrementLevelDataAddress
+    jp .incrementLevelDataAddress
 .spawnLeft:
     cp a, LEVEL_SPAWN_LEFT_KEY
     jr nz, .spawnTop
     ; Next instructions: y, enemy 4-upper-bits | variant 4-lower-bits
     inc hl
     call SpawnDataHandler.left
-    jr .incrementLevelDataAddress
+    jp .incrementLevelDataAddress
 .spawnTop:
     cp a, LEVEL_SPAWN_TOP_KEY
     jr nz, .spawnRandom
@@ -1059,13 +1060,30 @@ LevelDataHandler::
     jr .incrementLevelDataAddress
 .victorySong:
     cp a, LEVEL_VICTORY_SONG_KEY
-    jr nz, .end
+    jr nz, .pointsForLives
     inc hl
     push hl
     call ClearSound
     ld hl, levelWonTheme
 	call hUGE_init
     pop hl
+    jr .incrementLevelDataAddress
+.pointsForLives:
+    cp a, LEVEL_POINTS_FOR_LIVES_KEY
+    jr nz, .end
+    inc hl
+    ldh a, [hPlayerLives]
+.pointsForLivesLoop:
+    cp a, 0
+    jr z, .incrementLevelDataAddress
+    dec a
+    push af
+    push hl
+    ld a, EXTRA_LIFE_POINTS
+    call AddPoints
+    pop hl
+    pop af
+    jr .pointsForLivesLoop
     ; jr .incrementLevelDataAddress
 .incrementLevelDataAddress:
     ld a, l
