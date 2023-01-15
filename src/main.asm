@@ -128,7 +128,7 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; === testing ===
-	ld a, 3
+	ld a, 4
 	ld [wLevel], a
 	; ===============
 
@@ -163,7 +163,7 @@ SetupNextLevel::
 	jr nz, .level5
 	call SetLevelNightDesertInterrupts
 	call LoadLevelNightDesertGraphics
-	ld hl, desertTheme
+	ld hl, desertNightTheme
 	call hUGE_init
 	call InitializeNightSpritePalettes
 	jr .endLevelSetup
