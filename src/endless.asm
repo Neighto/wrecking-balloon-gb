@@ -138,7 +138,7 @@ InitializeEndless::
     cp a, CLASSIC_MODE
     ret z
     ld a, LEVEL_ENDLESS
-    ld [wLevel], a
+    ldh [hLevel], a
     ret
 
 LoadEndlessGraphics::
@@ -212,7 +212,7 @@ EndlessUpdate::
     ; Get random level
     RANDOM ENDLESS_LEVEL_SWITCH_TOTAL
     ; Compare with current
-    ld hl, wLevel
+    ld hl, hLevel
     cp a, [hl]
     jr nz, .updateLevel
     ; Same so offset

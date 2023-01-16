@@ -425,7 +425,7 @@ BossUpdate::
     res ENEMY_FLAG_ACTIVE_BIT, a
     ldh [hBossFlags], a
     ld a, 1 
-    ld [wLevelWaitBoss], a
+    ldh [hLevelWaitBoss], a
     ret
 .checkFalling:
     ldh a, [hGlobalTimer]

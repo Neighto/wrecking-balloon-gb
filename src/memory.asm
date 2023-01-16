@@ -114,20 +114,17 @@ ClearOAM::
     call ResetHLInRange
     ld hl, $C100
     ld bc, OAM_COUNT * OAM_ATTRIBUTES_COUNT
-    call ResetHLInRange
-    ret
+    jp ResetHLInRange
 
 ClearRAM::
     ld hl, _RAM
     ld bc, _OAMRAM - _RAM
-    call ResetHLInRange
-    ret
+    jp ResetHLInRange
 
 ClearHRAM::
     ld hl, _HRAM
     ld bc, $FFFC - _HRAM
-    call ResetHLInRange
-    ret
+    jp ResetHLInRange
 
 RequestOAMSpace::
     ; Argument b = sprite space needed (4 bytes each)

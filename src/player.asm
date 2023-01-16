@@ -136,8 +136,7 @@ SetPlayerPosition:
   add a, 16
   ldh [hPlayerY2], a
   call UpdateBalloonPosition
-  call UpdateCactusPosition
-  ret
+  jp UpdateCactusPosition
 
 SetPlayerPositionOpeningDefault:
   ld b, PLAYER_START_X
@@ -149,12 +148,16 @@ SetPlayerPositionBoss::
   ld c, PLAYER_START_Y
   jp SetPlayerPosition
 
-SetPlayerPositionOpeningCutscene::
+SetPlayerPositionAndSpeedOpeningCutscene::
+  ld a, 1
+  ldh [hPlayerSpeed], a
   ld b, PLAYER_START_X
   ld c, 52
   jp SetPlayerPosition
 
-SetPlayerPositionEndingCutscene::
+SetPlayerPositionAndSpeedEndingCutscene::
+  ld a, 1
+  ldh [hPlayerSpeed], a
   ld b, PLAYER_START_X
   ld c, 38
   jp SetPlayerPosition
@@ -164,11 +167,6 @@ SetPlayerCactusHappy::
   ld [hl], PLAYER_CACTUS_HAPPY_TILE
   ld hl, wPlayerCactusOAM+6
   ld [hl], PLAYER_CACTUS_HAPPY_TILE
-  ret
-
-SetPlayerSpeedSlow::
-  ld a, 1
-  ldh [hPlayerSpeed], a
   ret
 
 BobPlayer::
@@ -196,7 +194,15 @@ BobPlayer::
   call UpdateBalloonPosition
   jp UpdateCactusPosition
 
-MovePlayerAuto:
+MovePlayerAuto::
+  ; d = input
+.autoDown::
+  ld d, %10000000
+  jr .auto
+.autoUp::
+  ld d, %01000000
+  ; jr .auto
+.auto:
   ldh a, [hGlobalTimer]
   and %00000011
   ret nz
@@ -205,14 +211,6 @@ MovePlayerAuto:
   call PlayerControls
   call UpdateBalloonPosition
   jp UpdateCactusPosition
-
-MovePlayerAutoDown::
-  ld d, %10000000
-  jr MovePlayerAuto
-
-MovePlayerAutoUp::
-  ld d, %01000000
-  jr MovePlayerAuto
 
 ; SPAWN
 SpawnPlayer::
@@ -616,8 +614,7 @@ CollisionWithPlayer::
   ld [hl], PLAYER_CACTUS_SCREAMING_TILE
   ; Sound
   call PopSound
-  call FallingSound
-  ret
+  jp FallingSound
 
 CollisionWithPlayerCactus::
   ; Check if player is invincible

@@ -16,12 +16,12 @@ SPAWN_X_B EQU 64
 SPAWN_X_C EQU 96
 SPAWN_X_D EQU 128
 
-SECTION "level vars", WRAM0
-    wLevel:: DB
-    wLevelDataAddress:: DS 2
-    wLevelWaitCounter:: DB
-    wLevelWaitBoss:: DB
-    wLevelRepeatCounter:: DB
+SECTION "level vars", HRAM
+    hLevel:: DB
+    hLevelDataAddress:: DS 2
+    hLevelWaitCounter:: DB
+    hLevelWaitBoss:: DB
+    hLevelRepeatCounter:: DB
 
 SECTION "level data", ROM0
 
@@ -808,11 +808,11 @@ LevelOutro:
 
 InitializeNewLevel::
     xor a ; ld a, 0
-    ld [wLevelWaitCounter], a
-    ld [wLevelWaitBoss], a
-    ld [wLevelRepeatCounter], a
+    ldh [hLevelWaitCounter], a
+    ldh [hLevelWaitBoss], a
+    ldh [hLevelRepeatCounter], a
 
-    ld a, [wLevel]
+    ldh a, [hLevel]
 .level1:
     cp a, 1
     jr nz, .level2
@@ -844,7 +844,7 @@ InitializeNewLevel::
     ld bc, Level6
     ; jr .setLevelDataAddress
 .setLevelDataAddress:
-    ld hl, wLevelDataAddress
+    ld hl, hLevelDataAddress
     ld a, LOW(bc)
     ld [hli], a
     ld a, HIGH(bc)
@@ -853,7 +853,7 @@ InitializeNewLevel::
 
 InitializeLevelVars::
     ld a, 1
-    ld [wLevel], a
+    ldh [hLevel], a
     jp InitializeNewLevel
 
 SpawnDataHandler:
@@ -967,9 +967,9 @@ LevelDataHandler::
     ret nz
 
     ; Read next level instruction
-    ld a, [wLevelDataAddress]
+    ldh a, [hLevelDataAddress]
     ld l, a
-    ld a, [wLevelDataAddress+1]
+    ldh a, [hLevelDataAddress+1]
     ld h, a
     ld a, [hl]
 
@@ -1014,21 +1014,21 @@ LevelDataHandler::
     jr nz, .waitBoss
     ; Next instruction: amount to wait
     inc hl
-    ld a, [wLevelWaitCounter]
+    ldh a, [hLevelWaitCounter]
     cp a, [hl]
     jr nc, .waitEnd
     inc a
-    ld [wLevelWaitCounter], a
+    ldh [hLevelWaitCounter], a
     ret
 .waitEnd:
     inc hl
     xor a ; ld a, 0
-    ld [wLevelWaitCounter], a
+    ldh [hLevelWaitCounter], a
     jr .incrementLevelDataAddress
 .waitBoss:
     cp a, LEVEL_WAIT_BOSS_KEY
     jr nz, .repeat
-    ld a, [wLevelWaitBoss]
+    ldh a, [hLevelWaitBoss]
     cp a, 0
     jr nz, .waitBossEnd
     jp WaitBossUpdate
@@ -1040,23 +1040,23 @@ LevelDataHandler::
     jr nz, .victorySong
     ; Next instructions: times to repeat and address
     inc hl
-    ld a, [wLevelRepeatCounter]
+    ldh a, [hLevelRepeatCounter]
     cp a, [hl]
     jr nc, .repeatEnd
     inc a
-    ld [wLevelRepeatCounter], a
+    ldh [hLevelRepeatCounter], a
     inc hl
     ld a, [hli]
-    ld [wLevelDataAddress], a
+    ldh [hLevelDataAddress], a
     ld a, [hl]
-    ld [wLevelDataAddress+1], a
+    ldh [hLevelDataAddress+1], a
     ret
 .repeatEnd:
     inc hl
     inc hl
     inc hl
     xor a ; ld a, 0
-    ld [wLevelRepeatCounter], a
+    ldh [hLevelRepeatCounter], a
     jr .incrementLevelDataAddress
 .victorySong:
     cp a, LEVEL_VICTORY_SONG_KEY
@@ -1087,9 +1087,9 @@ LevelDataHandler::
     ; jr .incrementLevelDataAddress
 .incrementLevelDataAddress:
     ld a, l
-    ld [wLevelDataAddress], a
+    ldh [hLevelDataAddress], a
     ld a, h
-    ld [wLevelDataAddress+1], a
+    ldh [hLevelDataAddress+1], a
     ret
 .end:
     cp a, LEVEL_END_KEY
@@ -1097,9 +1097,9 @@ LevelDataHandler::
     ldh a, [hPlayerFlags]
     and PLAYER_FLAG_ALIVE_MASK
     ret z
-    ld a, [wLevel] 
+    ldh a, [hLevel] 
     inc a
-    ld [wLevel], a 
+    ldh [hLevel], a 
     jp StageClear
 .won:
     ; cp a, GAME_WON_KEY
