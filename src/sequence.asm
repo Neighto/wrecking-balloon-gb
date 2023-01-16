@@ -4,22 +4,22 @@ INCLUDE "constants.inc"
 
 SEQUENCE_UPDATE_REFRESH_TIME EQU %00000001
 
-SECTION "sequence vars", WRAM0
-    wSequenceWaitCounter:: DB
-    wSequenceDataAddress:: DS 2
-    wSequencePhase:: DB
-    wSequencePlaySong:: DB
-    wSequenceWaitUntilCheck:: DB
+SECTION "sequence vars", HRAM
+    hSequenceWaitCounter:: DB
+    hSequenceDataAddress:: DS 2
+    hSequencePhase:: DB
+    hSequencePlaySong:: DB
+    hSequenceWaitUntilCheck:: DB
 
 SECTION "sequence", ROMX
 
 InitializeSequence::
     xor a ; ld a, 0
-    ld [wSequenceWaitCounter], a
-    ld [wSequencePhase], a
-    ld [wSequencePlaySong], a
-    ld [wSequenceWaitUntilCheck], a
-    ; Must initialize wSequenceDataAddress elsewhere
+    ldh [hSequenceWaitCounter], a
+    ldh [hSequencePhase], a
+    ldh [hSequencePlaySong], a
+    ldh [hSequenceWaitUntilCheck], a
+    ; Must initialize hSequenceDataAddress elsewhere
     ret
 
 SequenceDataUpdate::
@@ -29,9 +29,9 @@ SequenceDataUpdate::
     ret nz
 
     ; Read next sequence instruction
-    ld a, [wSequenceDataAddress]
+    ldh a, [hSequenceDataAddress]
     ld l, a
-    ld a, [wSequenceDataAddress+1]
+    ldh a, [hSequenceDataAddress+1]
     ld h, a
     ld a, [hl]
 
@@ -58,23 +58,23 @@ SequenceDataUpdate::
 .wait:
     ; Next instruction: amount to wait
     inc hl
-    ld a, [wSequenceWaitCounter]
+    ldh a, [hSequenceWaitCounter]
     cp a, [hl]
     jr nc, .waitEnd
     inc a
-    ld [wSequenceWaitCounter], a
+    ldh [hSequenceWaitCounter], a
     ret
 .waitEnd:
     xor a ; ld a, 0
-    ld [wSequenceWaitCounter], a
+    ldh [hSequenceWaitCounter], a
     jr .updateSequenceDataCounter
 .waitUntil:
-    ld a, [wSequenceWaitUntilCheck]
+    ldh a, [hSequenceWaitUntilCheck]
     cp a, 0
     ret z
 .waitUntilEnd:
     xor a ; ld a, 0
-    ld [wSequenceWaitUntilCheck], a
+    ldh [hSequenceWaitUntilCheck], a
     jr .updateSequenceDataCounter
 .hidePalette:
     call InitializeEmptyPalettes
@@ -92,19 +92,19 @@ SequenceDataUpdate::
     ret
 .playSong:
     ld a, 1
-    ld [wSequencePlaySong], a
+    ldh [hSequencePlaySong], a
     jr .updateSequenceDataCounter
 .increasePhase:
-    ld a, [wSequencePhase]
+    ldh a, [hSequencePhase]
     inc a
-    ld [wSequencePhase], a
+    ldh [hSequencePhase], a
     ; jr .updateSequenceDataCounter
 .updateSequenceDataCounter:
     inc hl
     ld a, l
-    ld [wSequenceDataAddress], a
+    ldh [hSequenceDataAddress], a
     ld a, h
-    ld [wSequenceDataAddress+1], a
+    ldh [hSequenceDataAddress+1], a
     ret
 .end:
     ; Next instructions: jump to address

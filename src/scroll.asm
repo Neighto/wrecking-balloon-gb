@@ -12,7 +12,7 @@ SECTION "scroll vars", HRAM
     hParallaxFar:: DB
     hRain:: DB
 
-SECTION "scroll", ROMX
+SECTION "scroll", ROM0
 
 InitializeParallaxScrolling::
 	xor a ; ld a, 0

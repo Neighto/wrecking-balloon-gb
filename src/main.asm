@@ -42,9 +42,9 @@ Start::
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	; call WaitVBlank
-	; call UpdateMenuOpening
-	; jp MenuLoopOpening
+	call WaitVBlank
+	call UpdateMenuOpening
+	jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
 	call TitleSplashSound
@@ -57,10 +57,10 @@ StartMenu::
 	call LCD_ON_NO_WINDOW
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateMenu
-	; jp MenuLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateMenu
+	jp MenuLoop
 
 StartGame::
 	; === testing ===
@@ -90,8 +90,7 @@ OpeningCutscene:
 	call InitializePlayer
 	call InitializeBullet
 	call SpawnPlayer
-	call SetPlayerPositionOpeningCutscene
-	call SetPlayerSpeedSlow
+	call SetPlayerPositionAndSpeedOpeningCutscene
 	call SpawnHandWave
 	call SpawnCartBalloons
 	ld hl, menuTheme
@@ -108,10 +107,10 @@ OpeningCutscene:
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateOpeningCutscene
-	; jp OpeningCutsceneLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateOpeningCutscene
+	jp OpeningCutsceneLoop
 
 	; SetupNextLevel
 SetupNextLevel::
@@ -128,12 +127,12 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; === testing ===
-	ld a, 4
-	ld [wLevel], a
+	; ld a, 4
+	; ldh [hLevel], a
 	; ===============
 
 .levelSelect:
-	ld a, [wLevel]
+	ldh a, [hLevel]
 .level1:
 	cp a, LEVEL_1
 	jr nz, .level2
@@ -277,8 +276,7 @@ GameWon::
 	call InitializePlayer
 	call SpawnPlayer
 	call SetPlayerCactusHappy
-	call SetPlayerPositionEndingCutscene
-	call SetPlayerSpeedSlow
+	call SetPlayerPositionAndSpeedEndingCutscene
 	call SpawnHandClap
 	call SpawnCartBalloons
 	ld hl, menuTheme

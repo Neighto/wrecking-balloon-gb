@@ -33,7 +33,7 @@ InitializeEndingCutscene::
     ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
 	call RefreshTotal
 
-    ld hl, wSequenceDataAddress
+    ld hl, hSequenceDataAddress
     ld bc, EndingCutsceneSequenceData
     ld a, LOW(bc)
     ld [hli], a
@@ -126,7 +126,7 @@ UpdateEndingCutscene::
     UPDATE_GLOBAL_TIMER
 
     ; Play song
-    ld a, [wSequencePlaySong]
+    ldh a, [hSequencePlaySong]
     cp a, 0
     call nz, _hUGE_dosound
 
@@ -137,9 +137,9 @@ UpdateEndingCutscene::
     jr z, .endSkip
 .skip:
     xor a ; ld a, 0
-    ld [wSequencePlaySong], a
+    ldh [hSequencePlaySong], a
     call ClearSound
-    ld hl, wSequenceDataAddress
+    ld hl, hSequenceDataAddress
     ld bc, SkipEndingSequence
     ld a, LOW(bc)
     ld [hli], a
@@ -148,12 +148,12 @@ UpdateEndingCutscene::
 .endSkip:
 
 .checkPhase:
-    ld a, [wSequencePhase]
+    ldh a, [hSequencePhase]
 .phase0:
     cp a, 0
     jr nz, .phase1
     ; Move down
-    call MovePlayerAutoDown
+    call MovePlayerAuto.autoDown
     jr .endCheckPhase
 .phase1:
     cp a, 1
@@ -171,7 +171,7 @@ UpdateEndingCutscene::
     cp a, 2
     jr nz, .phase3
     ; Move down more
-    call MovePlayerAutoDown
+    call MovePlayerAuto.autoDown
     jr .endCheckPhase
 .phase3:
     cp a, 3

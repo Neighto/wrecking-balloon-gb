@@ -83,27 +83,27 @@ LoadLevelNightCityGraphics::
 	ld de, LevelCityMapEnd - LevelCityMap
 	call MEMCPY
     ; Stars
+    ld a, STAR_TILE
     ld hl, $9821
-    ld [hl], STAR_TILE
+    ld [hl], a
     ld hl, $982D
-    ld [hl], STAR_TILE
+    ld [hl], a
     ld hl, $9844
-    ld [hl], STAR_TILE
+    ld [hl], a
     ld hl, $984A
-    ld [hl], STAR_TILE
+    ld [hl], a
     ld hl, $9853
-    ld [hl], STAR_TILE
+    ld [hl], a
     ld hl, $9866
-    ld [hl], STAR_TILE
+    ld [hl], a
     ld hl, $986F
-    ld [hl], STAR_TILE
+    ld [hl], a
     ; UFO
     ld bc, UFOMap
     ld hl, $9897
     ld de, 2
     ld a, $BA
-	call MEMCPY_WITH_OFFSET
-	ret
+	jp MEMCPY_WITH_OFFSET
 
 LoadLevelDesertGraphics::
 .tiles:
@@ -118,8 +118,7 @@ LoadLevelDesertGraphics::
 	ld de, LevelDesertMapEnd - LevelDesertMap
 	call MEMCPY
     ; Add in sun
-    call SpawnSun
-    ret
+    jp SpawnSun
 
 LoadLevelNightDesertGraphics::
 .tiles:
@@ -180,8 +179,7 @@ LoadLevelShowdownGraphics::
 	ld hl, $9BA0
 	ld de, ShowdownWaterMapEnd - ShowdownWaterMap
 	ld a, $A0
-	call MEMCPY_WITH_OFFSET
-    ret
+	jp MEMCPY_WITH_OFFSET
 
 SpawnSun::
     ld bc, SunMap
@@ -197,8 +195,7 @@ SpawnSun::
 	call MEMCPY_WITH_OFFSET
 	ld hl, SUN_ADDRESS + $60
     ld de, 4
-	call MEMCPY_WITH_OFFSET
-    ret
+	jp MEMCPY_WITH_OFFSET
 
 SpawnCountdown::
 	ld b, 2
@@ -231,8 +228,7 @@ ClearCountdown::
     ld a, [wCountdownOAM]
     ADD_TO_HL [wCountdownOAM]
     ld bc, COUNTDOWN_OAM_BYTES
-    call ResetHLInRange
-    ret
+    jp ResetHLInRange
 
 IsCountdownAtBalloonPop::
     ; Returns z flag as yes / nz flag as no
@@ -348,8 +344,8 @@ Countdown::
     xor a ; ld a, 0
     ret
 .hasFinished:
-    ld a, 1
-    and a
+    xor a ; ld a, 0
+    inc a
     ret
 
 ; UPDATE GAME COUNTDOWN ======================================
@@ -361,7 +357,7 @@ UpdateGameCountdown::
 
 .checkFadeIn:
     ; Only in endless
-    ld a, [wLevel]
+    ldh a, [hLevel]
     cp a, LEVEL_ENDLESS
     jr nz, .endCheckFadeIn
     call FadeInPalettes
@@ -410,7 +406,7 @@ UpdateGame::
     jr nz, .endlessMode
 .classicMode:
     call LevelDataHandler
-    ld a, [wLevel]
+    ldh a, [hLevel]
     cp a, LEVEL_BOSS
     call z, BossUpdate
     jr .endModeSpecific

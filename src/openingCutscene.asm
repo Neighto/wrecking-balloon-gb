@@ -19,7 +19,7 @@ InitializeOpeningCutscene::
 	xor a ; ld a, 0
 	ld [wHandWavingFrame], a
 
-    ld hl, wSequenceDataAddress
+    ld hl, hSequenceDataAddress
     ld bc, OpeningCutsceneSequenceData
     ld a, LOW(bc)
     ld [hli], a
@@ -124,7 +124,7 @@ UpdateOpeningCutscene::
     UPDATE_GLOBAL_TIMER
 
     ; Play song
-    ld a, [wSequencePlaySong]
+    ldh a, [hSequencePlaySong]
     cp a, 0
     call nz, _hUGE_dosound
 
@@ -135,9 +135,9 @@ UpdateOpeningCutscene::
     jr z, .endSkip
 .skip:
     xor a ; ld a, 0
-    ld [wSequencePlaySong], a
+    ldh [hSequencePlaySong], a
     call ClearSound
-    ld hl, wSequenceDataAddress
+    ld hl, hSequenceDataAddress
     ld bc, SkipOpeningSequence
     ld a, LOW(bc)
     ld [hli], a
@@ -146,7 +146,7 @@ UpdateOpeningCutscene::
 .endSkip:
 
 .checkPhase:
-    ld a, [wSequencePhase]
+    ldh a, [hSequencePhase]
 .phase0:
     cp a, 0
     jr nz, .phase1
@@ -170,7 +170,7 @@ UpdateOpeningCutscene::
     ; cp a, 2
     ; jr nz, .endCheckPhase
     ; wave and fly away
-    call MovePlayerAutoUp
+    call MovePlayerAuto.autoUp
     ; hand wave animation
 .checkAnimateWave:
     ld a, [wHandWavingFrame]

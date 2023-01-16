@@ -33,13 +33,12 @@ ResetFading::
 	ret
 
 InitializePalettes::
-	call ResetFading
 	ld a, MAIN_PAL0
 	ldh [rBGP], a
 	ldh [rOBP0], a
 	ld a, MAIN_PAL1
 	ldh [rOBP1], a
-	ret
+	jp ResetFading
 
 InitializeNightSpritePalettes::
 	ld a, NIGHT_SPRITE_PAL0
@@ -61,8 +60,8 @@ FadeOutPalettes::
 	cp a, 5
 	jr c, .fadeOut
 .hasFadedOut:
-	ld a, 1
-	and a
+	xor a ; ld a, 0
+	inc a
 	ret
 .fadeOut:
 	ldh a, [hGlobalTimer]
@@ -112,8 +111,8 @@ FadeInPalettes::
 	cp a, 5
 	jr c, .fadeIn
 .hasFadedIn:
-	ld a, 1
-	and a
+	xor a ; ld a, 0
+	inc a
 	ret
 .fadeIn:
 	ldh a, [hGlobalTimer]

@@ -52,7 +52,7 @@ InitializeStageClear::
 	ld [wExtraLifeScorePhase], a
 	ld a, EXTRA_LIFE_BLINK_TIME
 	ld [wExtraLifeBlinkTimer], a
-    ld hl, wSequenceDataAddress
+    ld hl, hSequenceDataAddress
     ld bc, StageClearSequenceData
     ld a, LOW(bc)
     ld [hli], a
@@ -147,7 +147,7 @@ SpawnStageNumber::
 	ld [hli], a
 	ld a, 84 ; x
 	ld [hli], a
-    ld a, [wLevel]
+    ldh a, [hLevel]
     dec a
     add NUMBERS_TILE_OFFSET
 	ld [hli], a
@@ -227,7 +227,7 @@ UpdateStageClear::
     UPDATE_GLOBAL_TIMER
 
 .checkPhase:
-    ld a, [wSequencePhase]
+    ldh a, [hSequencePhase]
 ; PHASE 0
 .phase0:
     cp a, 0
@@ -246,7 +246,7 @@ UpdateStageClear::
     jr nz, .copyingScoreToTotal
 .doneCopyingScoreToTotal::
 	ld a, 1
-	ld [wSequenceWaitUntilCheck], a
+	ldh [hSequenceWaitUntilCheck], a
 	jp .endCheckPhase
 .copyingScoreToTotal:
 	; Copy over score at 0th (does not fill meter)
