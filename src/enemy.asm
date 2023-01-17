@@ -183,6 +183,26 @@ EnemyUpdate::
     jp nz, .loop
     ret
 
+FindRAMAndOAMForEnemy::
+    ; b = sprite space needed
+    ; Call from enemy script
+    ; Returns z flag as failed / nz flag as succeeded
+    ; Returns hl as free RAM space address
+    ; Returns b as free OAM space address offset
+
+    ; Check Enemy RAM
+    ld hl, wEnemies
+    ld d, NUMBER_OF_ENEMIES
+    ld e, ENEMY_STRUCT_SIZE
+    call RequestRAMSpace ; hl now contains free RAM space address
+    ret z
+    ; Check OAM
+    push hl
+	call RequestOAMSpace ; b now contains OAM address
+    pop hl
+    ret z
+    jp InitializeEnemyStructVars
+
 EnemyInterCollision::
     ; Call from enemy script
     ; Returns z flag as failed / nz flag as succeeded

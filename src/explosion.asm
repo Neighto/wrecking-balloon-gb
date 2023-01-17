@@ -16,20 +16,10 @@ SECTION "explosion", ROMX
 
 ; SPAWN
 SpawnExplosion::
-    ld hl, wEnemies
-    ld d, NUMBER_OF_ENEMIES
-    ld e, ENEMY_STRUCT_SIZE
-    call RequestRAMSpace ; hl now contains free RAM space address
-    ret z
-.availableSpace:
     ld b, EXPLOSION_OAM_SPRITES
-    push hl
-	call RequestOAMSpace ; b now contains OAM address
-    pop hl
+    call FindRAMAndOAMForEnemy ; hl = RAM space, b = OAM offset
     ret z
-.availableOAMSpace:
     ; Initialize
-    call InitializeEnemyStructVars
     ld a, b
     ldh [hEnemyOAM], a
     ldh a, [hEnemyFlags]
