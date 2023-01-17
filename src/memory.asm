@@ -203,8 +203,7 @@ RequestRAMSpace::
     cp a, 0
     jr nz, .checkLoop
 .availableSpace:
-    ld a, 1
-    cp a, 0
+    or a, 1
     ret
 .checkLoop:
     ADD_TO_HL e
@@ -214,5 +213,4 @@ RequestRAMSpace::
     jr nz, .loop
 .noFreeSpace:
     xor a ; ld a, 0
-    cp a, 0
     ret

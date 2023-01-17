@@ -60,8 +60,7 @@ FadeOutPalettes::
 	cp a, 5
 	jr c, .fadeOut
 .hasFadedOut:
-	xor a ; ld a, 0
-	inc a
+	or a, 1
 	ret
 .fadeOut:
 	ldh a, [hGlobalTimer]
@@ -111,8 +110,7 @@ FadeInPalettes::
 	cp a, 5
 	jr c, .fadeIn
 .hasFadedIn:
-	xor a ; ld a, 0
-	inc a
+	or a, 1
 	ret
 .fadeIn:
 	ldh a, [hGlobalTimer]
