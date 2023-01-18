@@ -50,10 +50,9 @@ MiscellaneousTiles::
     INCBIN "incbin/background/Clouds.2bpp"
     INCBIN "incbin/background/Sun.2bpp"
     INCBIN "incbin/background/DesertStar.2bpp"
-    INCBIN "incbin/background/ShowdownWater.2bpp"
+    INCBIN "incbin/background/ShowdownMountains.2bpp"
     INCBIN "incbin/background/CityPlane.2bpp"
     INCBIN "incbin/background/Black.2bpp"
-    INCBIN "incbin/background/StageClearFooter.2bpp"
     INCBIN "incbin/background/UFO.2bpp"
 MiscellaneousTilesEnd::
 

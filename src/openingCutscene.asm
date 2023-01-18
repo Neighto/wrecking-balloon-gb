@@ -53,11 +53,13 @@ LoadOpeningCutsceneGraphics::
     ld e, SCRN_X_B
 	call MEMCPY_SINGLE_SCREEN
     ; Add thin clouds
-	ld bc, CloudsMap + $20 * 4
+    ld bc, CloudsMap + $04 * 4
 	ld hl, $9880
-	ld de, $20
-	ld a, $80
-	call MEMCPY_WITH_OFFSET
+	ld d, $20
+	ld e, 4
+	ld a, CLOUDS_TILE_OFFSET
+	ld [wMemcpyTileOffset], a
+	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
 .addBorders:
     ; Top
     ld hl, _SCRN0

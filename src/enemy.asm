@@ -201,7 +201,9 @@ FindRAMAndOAMForEnemy::
 	call RequestOAMSpace ; b now contains OAM address
     pop hl
     ret z
-    jp InitializeEnemyStructVars
+    call InitializeEnemyStructVars
+    inc a
+    ret ; TODO fix this ending is dumb maybe just return to the way it was
 
 EnemyInterCollision::
     ; Call from enemy script

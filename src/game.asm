@@ -58,17 +58,17 @@ LoadLevelCityGraphics::
     ld bc, CityPlaneMap
 	ld hl, $9831 ; City Plane address
     ld de, 3
-    ld a, $AD
+    ld a, PLANE_TILE_OFFSET
 	call MEMCPY_WITH_OFFSET
     ld bc, CityPlaneMap
 	ld hl, $9886 ; City Plane address
     ld de, 3
-    ld a, $AD
+    ld a, PLANE_TILE_OFFSET
 	call MEMCPY_WITH_OFFSET
     ld bc, CityPlaneMap
     ld hl, $987B ; City Plane address
     ld de, 5
-    ld a, $AD
+    ld a, PLANE_TILE_OFFSET
 	jp MEMCPY_WITH_OFFSET
 
 LoadLevelNightCityGraphics::
@@ -83,7 +83,7 @@ LoadLevelNightCityGraphics::
 	ld de, LevelCityMapEnd - LevelCityMap
 	call MEMCPY
     ; Stars
-    ld a, STAR_TILE
+    ld a, STAR_TILE_OFFSET
     ld hl, $9821
     ld [hl], a
     ld hl, $982D
@@ -102,7 +102,7 @@ LoadLevelNightCityGraphics::
     ld bc, UFOMap
     ld hl, $9897
     ld de, 2
-    ld a, $BA
+    ld a, UFO_TILE_OFFSET
 	jp MEMCPY_WITH_OFFSET
 
 LoadLevelDesertGraphics::
@@ -131,18 +131,19 @@ LoadLevelNightDesertGraphics::
 	ld hl, $98E0
 	ld de, LevelDesertMapEnd - LevelDesertMap
 	call MEMCPY
+    ld a, STAR_TILE_OFFSET
     ld hl, $9826
-    ld [hl], STAR_TILE
+    ld [hl], a
     ld hl, $9832
-    ld [hl], STAR_TILE
+    ld [hl], a
     ld hl, $9842
-    ld [hl], STAR_TILE
+    ld [hl], a
     ld hl, $984E
-    ld [hl], STAR_TILE
+    ld [hl], a
     ld hl, $9864
-    ld [hl], STAR_TILE
+    ld [hl], a
     ld hl, $9871
-    ld [hl], STAR_TILE
+    ld [hl], a
     ; Add in sun
     jp SpawnSun
 
@@ -170,16 +171,27 @@ LoadLevelShowdownGraphics::
     ld d, $85
     call SetInRange
     ; Add scrolling rain clouds
-	ld bc, CloudsMap + $20 * 2
-	ld de, $40
-	ld a, $80
-	call MEMCPY_WITH_OFFSET
-    ; Add scrolling water
+    ld bc, CloudsMap + $04 * 2
+	ld d, $20
+	ld e, 4
+	ld a, CLOUDS_TILE_OFFSET
+	ld [wMemcpyTileOffset], a
+	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+    ld bc, CloudsMap + $04 * 3
+	ld d, $20
+	ld e, 4
+	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+    ; Add scrolling mountains
 	ld bc, ShowdownWaterMap
 	ld hl, $9BA0
 	ld de, ShowdownWaterMapEnd - ShowdownWaterMap
-	ld a, $A0
-	jp MEMCPY_WITH_OFFSET
+	ld a, SHOWDOWN_MOUTAINS_OFFSET
+    call MEMCPY_WITH_OFFSET
+    ; Add scrolling water
+    ld bc, CloudsMap + $04 * 9
+	ld d, $20
+	ld e, 4
+	jp MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
 
 SpawnSun::
     ld bc, SunMap

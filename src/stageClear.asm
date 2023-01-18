@@ -114,13 +114,29 @@ LoadStageClearGraphics::
 	ld de, TotalTextMapEnd - TotalTextMap
 	call MEMCPY
 	; Draw footer
-	ld bc, StageClearFooterMap
+	; Row 1
+	ld bc, CloudsMap + $04 * 5
 	ld hl, $99C0
-	ld d, 4
-	ld e, SCRN_X_B
-	ld a, STAGE_CLEAR_FOOTER_TILE_OFFSET
+	ld d, $20
+	ld e, 4
+	ld a, CLOUDS_TILE_OFFSET
 	ld [wMemcpyTileOffset], a
-	call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
+	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+	; Row 2
+	ld bc, CloudsMap + $04 * 6
+	ld d, $20
+	ld e, 4
+	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+	; Row 3
+	ld bc, CloudsMap + $04 * 7
+	ld d, $20
+	ld e, 4
+	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+	; Row 4
+	ld bc, CloudsMap + $04 * 8
+	ld d, $20
+	ld e, 4
+	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
 	; Draw meter
 	ld hl, METER_SC_INDEX_ONE_ADDRESS - 1
 	ld a, BAR_LEFT_EDGE

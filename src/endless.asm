@@ -1,4 +1,5 @@
 INCLUDE "constants.inc"
+INCLUDE "tileConstants.inc"
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "enemyConstants.inc"
@@ -143,26 +144,28 @@ InitializeEndless::
 
 LoadEndlessGraphics::
     ; Add scrolling thin clouds
-	ld bc, CloudsMap + $20 * 4
+    ld bc, CloudsMap + $04 * 4
 	ld hl, $9900
-	ld de, $20
-	ld a, $80
-	call MEMCPY_WITH_OFFSET
+	ld d, $20
+	ld e, 4
+	ld a, CLOUDS_TILE_OFFSET
+	ld [wMemcpyTileOffset], a
+	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
     ; Add scrolling light clouds
     ld bc, CloudsMap
-    ld hl, $9980
-    ld de, $20
-    ld a, $80
-    call MEMCPY_WITH_OFFSET
+	ld hl, $9980
+	ld d, $20
+	ld e, 4
+	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
     ; Fill in light clouds space
     ld bc, $20
     ld d, $83
     call SetInRange
     ; Add scrolling dark clouds
-	ld bc, CloudsMap + $20
-	ld de, $20
-	ld a, $80
-	call MEMCPY_WITH_OFFSET
+    ld bc, CloudsMap + $04 * 1
+	ld d, $20
+	ld e, 4
+	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
     ; Fill in dark clouds space
     ld bc, $20
     ld d, $85
