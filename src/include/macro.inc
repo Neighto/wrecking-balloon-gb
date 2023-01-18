@@ -86,6 +86,18 @@ MACRO ADD_TO_BC
     ADD_A_TO_BC
 ENDM
 
+MACRO SUB_FROM_R16
+    ; argument 1 is high value r16
+    ; argument 2 is low value r16
+    ; argument 3 is value
+    ld a, \2
+    sub \3
+    ld \2, a
+    sbc a
+    add \1
+    ld \1, a
+ENDM
+
 ; ENEMY MACROS ****
 
 MACRO UPDATE_OAM_POSITION_HRAM

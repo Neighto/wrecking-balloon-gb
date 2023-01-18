@@ -48,6 +48,63 @@ MEMCPY_WITH_OFFSET::
     pop af
     ret
 
+; MEMCPY_SIMPLE_OFFSET::
+;     ; d = block size (byte)
+;     ; e = offset
+;     ; bc = source address
+;     ; hl = destination address
+; .loop:
+;     ld a, [bc]
+;     add a, e
+;     ld [hli], a
+;     inc bc
+;     dec d
+;     ld a, d
+;     cp a, 0
+;     jr nz, .loop
+;     ret
+
+MEMCPY_SIMPLE_PATTERN::
+    xor a ; ld a, 0
+    ld [wMemcpyTileOffset], a
+MEMCPY_SIMPLE_PATTERN_WITH_OFFSET::
+    ; d = block size (byte)
+    ; e = pattern size (byte)
+    ; bc = source address
+    ; hl = destination address
+    ld a, e
+    push af
+.loop:
+    ; Have we visited all blocks?
+    ld a, d
+    cp a, 0
+    jr z, .end
+    ; Copy
+    ld a, [bc]
+    inc bc
+    push hl
+    ld hl, wMemcpyTileOffset
+    add a, [hl]
+    pop hl
+    ld [hli], a
+    ; Reduce blocks to copy
+    dec d
+    ; Reset to pattern start if its over
+    dec e
+    ld a, e
+    cp a, 0
+    jr nz, .loop
+.resetPattern:
+    pop af
+    ld e, a
+    push af
+    ld a, e
+    SUB_FROM_R16 b, c, e
+    jr .loop
+.end:
+    pop af
+    ret
+
 MEMCPY_SINGLE_SCREEN::
     xor a ; ld a, 0
     ld [wMemcpyTileOffset], a
