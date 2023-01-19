@@ -30,7 +30,6 @@ MEMCPY_WITH_OFFSET::
     push af
 .loop:
     pop af
-
     push de
     ld d, a
     ld a, [bc]
@@ -47,22 +46,6 @@ MEMCPY_WITH_OFFSET::
 	jr nz, .loop
     pop af
     ret
-
-; MEMCPY_SIMPLE_OFFSET::
-;     ; d = block size (byte)
-;     ; e = offset
-;     ; bc = source address
-;     ; hl = destination address
-; .loop:
-;     ld a, [bc]
-;     add a, e
-;     ld [hli], a
-;     inc bc
-;     dec d
-;     ld a, d
-;     cp a, 0
-;     jr nz, .loop
-;     ret
 
 MEMCPY_SIMPLE_PATTERN::
     xor a ; ld a, 0

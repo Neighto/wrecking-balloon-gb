@@ -11,7 +11,7 @@ SECTION "sequence vars", HRAM
     hSequencePlaySong:: DB
     hSequenceWaitUntilCheck:: DB
 
-SECTION "sequence", ROM0
+SECTION "sequence", ROMX
 
 InitializeSequence::
     xor a ; ld a, 0

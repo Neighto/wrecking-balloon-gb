@@ -60,16 +60,16 @@ WindowTiles::
     INCBIN "incbin/window/Window.2bpp"
 WindowTilesEnd::
 
+ScoreboardsTiles::
+    INCBIN "incbin/background/Scoreboards.2bpp"
+ScoreboardsTilesEnd::
+
 SECTION "tilesets 2", ROMX
 
 CutsceneTiles::
     INCBIN "incbin/background/Cutscene.2bpp"
     INCBIN "incbin/background/ManForEnding.2bpp"
 CutsceneTilesEnd::
-
-ScoreboardsTiles::
-    INCBIN "incbin/background/Scoreboards.2bpp"
-ScoreboardsTilesEnd::
 
 LevelCityTiles::
     INCBIN "incbin/background/City.2bpp"

@@ -224,12 +224,11 @@ SpawnCountdown::
     ld a, COUNTDOWN_START_X
     ld [hli], a
     ld a, WHITE_SPR_TILE
-    ld [hl], a
-    inc l
+    ld [hli], a
     inc l
     ld a, COUNTDOWN_START_Y
     ld [hli], a
-    ld a, COUNTDOWN_START_X+8
+    ld a, COUNTDOWN_START_X + 8
     ld [hli], a
     ld a, WHITE_SPR_TILE
     ld [hl], a
@@ -268,87 +267,67 @@ Countdown::
 
     ; Update frame
 .frames:
-    ld hl, wOAM+2
-    ADD_TO_HL [wCountdownOAM]
     ld a, [wCountdownFrame]
 .frame0:
     cp a, COUNTDOWN_FRAME_0
     jr nz, .frame1
     call CountdownSound
-    ld a, COUNTDOWN_3_TILE_1
-    ld [hli], a
-    inc l
-    inc l
-    inc l
-    ld a, COUNTDOWN_3_TILE_2
-    ld [hl], a
-    jr .endFrame
+    ld b, COUNTDOWN_3_TILE_1
+    ld c, COUNTDOWN_3_TILE_2
+    jr .updateFrame
 .frame1:
     cp a, COUNTDOWN_FRAME_1
     jr nz, .frame2
     call CountdownSound
-    ld a, COUNTDOWN_2_TILE_1
-    ld [hli], a
-    inc l
-    inc l
-    inc l
-    ld a, COUNTDOWN_2_TILE_2
-    ld [hl], a
-    jr .endFrame
+    ld b, COUNTDOWN_2_TILE_1
+    ld c, COUNTDOWN_2_TILE_2
+    jr .updateFrame
 .frame2:
     cp a, COUNTDOWN_FRAME_2
     jr nz, .frame3
     call CountdownSound
-    ld a, COUNTDOWN_1_TILE_1
-    ld [hli], a
-    inc l
-    inc l
-    inc l
-    ld a, COUNTDOWN_1_TILE_2
-    ld [hl], a
-    jr .endFrame
+    ld b, COUNTDOWN_1_TILE_1
+    ld c, COUNTDOWN_1_TILE_2
+    jr .updateFrame
 .frame3:
     cp a, COUNTDOWN_FRAME_3
     jr nz, .frame4
-    ld a, COUNTDOWN_NEUTRAL_BALLOON_TILE
-    ld [hli], a
-    inc l
-    inc l
-    inc l
-    ld a, COUNTDOWN_NEUTRAL_BALLOON_TILE
-    ld [hli], a
+    ld hl, wOAM+7
+    ADD_TO_HL [wCountdownOAM]
     ld a, OAMF_XFLIP
     ld [hl], a
-    jr .endFrame
+    ld b, COUNTDOWN_NEUTRAL_BALLOON_TILE
+    ld c, COUNTDOWN_NEUTRAL_BALLOON_TILE
+    jr .updateFrame
 .frame4:
     cp a, COUNTDOWN_FRAME_4
     jr nz, .frame5
     call PopSound
-    ld a, POP_BALLOON_FRAME_0_TILE
-    ld [hli], a
-    inc l
-    inc l
-    inc l
-    ld a, POP_BALLOON_FRAME_0_TILE
-    ld [hl], a
-    jr .endFrame
+    ld b, POP_BALLOON_FRAME_0_TILE
+    ld c, POP_BALLOON_FRAME_0_TILE
+    jr .updateFrame
 .frame5:
     cp a, COUNTDOWN_FRAME_5
     jr nz, .frame6
-    ld a, POP_BALLOON_FRAME_1_TILE
-    ld [hli], a
-    inc l
-    inc l
-    inc l
-    ld a, POP_BALLOON_FRAME_1_TILE
-    ld [hl], a
-    jr .endFrame
+    ld b, POP_BALLOON_FRAME_1_TILE
+    ld c, POP_BALLOON_FRAME_1_TILE
+    jr .updateFrame
 .frame6:
     cp a, COUNTDOWN_FRAME_6
     jr nz, .hasFinished
     call ClearCountdown
-    ; jr .endFrame
-.endFrame:
+    jr .nextFrame
+.updateFrame:
+    ld hl, wOAM+2
+    ADD_TO_HL [wCountdownOAM]
+    ld a, b
+    ld [hli], a
+    inc l
+    inc l
+    inc l
+    ld a, c
+    ld [hl], a
+.nextFrame:
     ld a, [wCountdownFrame]
     inc a 
     ld [wCountdownFrame], a
@@ -356,8 +335,7 @@ Countdown::
     xor a ; ld a, 0
     ret
 .hasFinished:
-    xor a ; ld a, 0
-    inc a
+    or a, 1
     ret
 
 ; UPDATE GAME COUNTDOWN ======================================
