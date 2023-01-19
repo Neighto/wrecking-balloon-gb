@@ -108,18 +108,19 @@ SpawnHandClap::
     ld [hli], a
     ld a, LEFT_HAND_CLAP_START_X
     ld [hli], a
-    ld [hl], HAND_CLAP_TILE
-    inc l
-    ld [hl], OAMF_PAL0
-    inc l
+    ld a, HAND_CLAP_TILE
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
 .rightHandClap:
     ld a, RIGHT_HAND_CLAP_START_Y
     ld [hli], a
     ld a, RIGHT_HAND_CLAP_START_X
     ld [hli], a
-    ld [hl], HAND_CLAP_TILE
-    inc l
-    ld [hl], OAMF_PAL0 | OAMF_XFLIP
+    ld a, HAND_CLAP_TILE
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hl], a
 	ret
 
 UpdateEndingCutscene::
