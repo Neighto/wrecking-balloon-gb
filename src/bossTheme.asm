@@ -1,4 +1,4 @@
-include "src/include/hUGE.inc"
+include "hUGE.inc"
 
 SECTION "boss theme", ROMX
 

@@ -1,4 +1,4 @@
-include "src/include/hUGE.inc"
+include "hUGE.inc"
 
 SECTION "city night theme", ROMX
 
@@ -10,7 +10,7 @@ dw duty_instruments, wave_instruments, noise_instruments
 dw routines
 dw waves
 
-order_cnt: db 4
+order_cnt: db 6
 order1: dw PE,PE
 order2: dw P1,P3
 order3: dw P2,P4
@@ -76,11 +76,7 @@ P1:
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
- dn ___,0,$000
- dn D_5,2,$C0A
- dn ___,0,$E00
- dn D_5,2,$C0A
- dn ___,0,$E00
+ dn ___,0,$B00
 
 P2:
  dn D_4,1,$C0A
@@ -142,13 +138,13 @@ P2:
  dn D_4,1,$C0A
  dn A_3,2,$C0A
  dn B_3,2,$C0A
- dn A_3,2,$C0A
- dn D_4,1,$C0A
- dn ___,0,$E00
- dn ___,0,$000
- dn ___,0,$000
+ dn A_3,2,$B00
 
 P3:
+ dn D_5,2,$C0A
+ dn ___,0,$E00
+ dn D_5,2,$C0A
+ dn ___,0,$E00
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
@@ -204,17 +200,13 @@ P3:
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
- dn ___,0,$000
- dn D_5,2,$C0A
- dn ___,0,$A01
- dn ___,0,$A01
- dn ___,0,$A01
- dn ___,0,$A01
- dn ___,0,$A01
- dn ___,0,$A60
- dn ___,0,$108
+ dn ___,0,$B00
 
 P4:
+ dn D_4,1,$C0A
+ dn ___,0,$E00
+ dn ___,0,$000
+ dn ___,0,$000
  dn ___,0,$000
  dn D_4,1,$C0A
  dn D_4,1,$C0A
@@ -270,12 +262,4 @@ P4:
  dn E_4,1,$C0A
  dn B_3,2,$C0A
  dn C#4,2,$C0A
- dn B_3,2,$C0A
- dn ___,0,$E00
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
+ dn B_3,2,$B00

@@ -11,8 +11,8 @@ dw routines
 dw waves
 
 order_cnt: db 2
-order1: dw P0
-order2: dw PE
+order1: dw PE
+order2: dw P0
 order3: dw PE
 order4: dw PE
 
