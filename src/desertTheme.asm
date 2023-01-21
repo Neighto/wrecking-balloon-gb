@@ -1,6 +1,6 @@
 include "hUGE.inc"
 
-SECTION "Song Data", ROMX
+SECTION "desert theme", ROMX
 
 desertTheme::
 db 8
@@ -83,78 +83,78 @@ P1:
  dn ___,0,$E00
 
 P2:
- dn C_5,2,$C09
+ dn C_5,2,$C0A
  dn ___,0,$E00
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
- dn C_5,2,$C09
- dn C_5,2,$C09
- dn C_5,2,$C09
+ dn C_5,2,$C0A
+ dn C_5,2,$C0A
+ dn C_5,2,$C0A
  dn ___,0,$E00
- dn C_4,1,$C09
- dn C_4,1,$C09
- dn C_4,1,$C09
- dn C_4,1,$C09
- dn C_4,1,$C09
- dn G_4,2,$C09
- dn ___,0,$E00
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn G_4,2,$C09
- dn G_4,2,$C09
- dn G_4,2,$C09
- dn ___,0,$E00
- dn G_3,1,$C09
- dn G_3,1,$C09
- dn G_3,1,$C09
- dn G_3,1,$C09
- dn G_3,1,$C09
- dn F_5,2,$C09
+ dn C_4,1,$C0A
+ dn C_4,1,$C0A
+ dn C_4,1,$C0A
+ dn C_4,1,$C0A
+ dn C_4,1,$C0A
+ dn G_4,2,$C0A
  dn ___,0,$E00
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
- dn F_5,2,$C09
- dn F_5,2,$C09
- dn F_5,2,$C09
+ dn G_4,2,$C0A
+ dn G_4,2,$C0A
+ dn G_4,2,$C0A
  dn ___,0,$E00
- dn F_4,1,$C09
- dn F_4,1,$C09
- dn F_4,1,$C09
- dn F_4,1,$C09
- dn F_4,1,$C09
- dn C_5,2,$C09
+ dn G_3,1,$C0A
+ dn G_3,1,$C0A
+ dn G_3,1,$C0A
+ dn G_3,1,$C0A
+ dn G_3,1,$C0A
+ dn F_5,2,$C0A
  dn ___,0,$E00
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
- dn C_5,2,$C09
- dn C_5,2,$C09
- dn C_5,2,$C09
+ dn F_5,2,$C0A
+ dn F_5,2,$C0A
+ dn F_5,2,$C0A
  dn ___,0,$E00
- dn C_4,1,$C09
- dn C_4,1,$C09
- dn C_4,1,$C09
- dn C_4,1,$C09
- dn C_4,1,$C09
- dn C_5,2,$C09
+ dn F_4,1,$C0A
+ dn F_4,1,$C0A
+ dn F_4,1,$C0A
+ dn F_4,1,$C0A
+ dn F_4,1,$C0A
+ dn C_5,2,$C0A
  dn ___,0,$E00
- dn D#5,2,$C09
+ dn ___,0,$000
+ dn ___,0,$000
+ dn ___,0,$000
+ dn C_5,2,$C0A
+ dn C_5,2,$C0A
+ dn C_5,2,$C0A
  dn ___,0,$E00
- dn C_5,2,$C09
+ dn C_4,1,$C0A
+ dn C_4,1,$C0A
+ dn C_4,1,$C0A
+ dn C_4,1,$C0A
+ dn C_4,1,$C0A
+ dn C_5,2,$C0A
  dn ___,0,$E00
- dn D#5,2,$C09
+ dn D#5,2,$C0A
+ dn ___,0,$E00
+ dn C_5,2,$C0A
+ dn ___,0,$E00
+ dn D#5,2,$C0A
  dn ___,0,$E00
 
 P3:
  dn C_4,2,$C0C
- dn C_4,2,$C0C
- dn C_4,2,$C0C
- dn C_4,2,$C0C
- dn C_4,2,$C0C
- dn C_4,2,$C0C
+ dn ___,0,$000
+ dn ___,0,$000
+ dn ___,0,$000
+ dn ___,0,$000
+ dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
  dn G_4,2,$C0C
@@ -212,70 +212,70 @@ P3:
  dn C_4,2,$C0C
  dn ___,0,$A03
  dn C_4,2,$C0C
- dn ___,0,$E00
+ dn ___,0,$A03
 
 P4:
- dn C_5,2,$C09
+ dn C_5,2,$C0A
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
- dn C_5,2,$C09
- dn C_5,2,$C09
- dn C_5,2,$C09
- dn G_5,2,$C09
+ dn C_5,2,$C0A
+ dn C_5,2,$C0A
+ dn C_5,2,$C0A
+ dn G_5,2,$C0A
  dn ___,0,$E00
- dn D#5,2,$C09
+ dn D#5,2,$C0A
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
- dn F_5,2,$C09
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn F_5,2,$C09
- dn F_5,2,$C09
- dn F_5,2,$C09
- dn F_5,2,$C09
- dn ___,0,$000
- dn C_5,2,$C09
+ dn F_5,2,$C0A
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
- dn C_5,2,$C09
- dn C_5,2,$C09
- dn C_5,2,$C09
- dn G_5,2,$C09
+ dn F_5,2,$C0A
+ dn F_5,2,$C0A
+ dn F_5,2,$C0A
+ dn F_5,2,$C0A
  dn ___,0,$000
- dn D#5,2,$C09
- dn ___,0,$000
- dn ___,0,$000
- dn ___,0,$000
- dn F_5,2,$C09
+ dn C_5,2,$C0A
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
- dn F_5,2,$C09
- dn F_5,2,$C09
- dn F_5,2,$C09
- dn F_5,2,$C09
+ dn ___,0,$000
+ dn C_5,2,$C0A
+ dn C_5,2,$C0A
+ dn C_5,2,$C0A
+ dn G_5,2,$C0A
+ dn ___,0,$000
+ dn D#5,2,$C0A
+ dn ___,0,$000
+ dn ___,0,$000
+ dn ___,0,$000
+ dn F_5,2,$C0A
+ dn ___,0,$000
+ dn ___,0,$000
+ dn ___,0,$000
+ dn F_5,2,$C0A
+ dn F_5,2,$C0A
+ dn F_5,2,$C0A
+ dn F_5,2,$C0A
  dn ___,0,$E00
- dn C_5,2,$C09
- dn C_5,2,$C09
- dn C_5,2,$C09
+ dn C_5,2,$C0B
+ dn C_5,2,$C0B
+ dn C_5,2,$C0B
  dn ___,0,$E00
- dn C_4,1,$C09
- dn C_4,1,$C09
- dn C_4,1,$C09
- dn C_4,1,$C09
- dn C_4,1,$C09
- dn D#5,2,$C09
+ dn C_4,1,$C0A
+ dn C_4,1,$C0A
+ dn C_4,1,$C0A
+ dn C_4,1,$C0A
+ dn C_4,1,$C0A
+ dn D#5,2,$C0A
  dn ___,0,$E00
- dn D#5,2,$C09
+ dn D#5,2,$C0A
  dn ___,0,$E00
- dn C_5,2,$C09
+ dn C_5,2,$C0A
  dn ___,0,$E00
- dn C_5,2,$C09
+ dn C_5,2,$C0A
  dn ___,0,$A03

@@ -21,7 +21,7 @@ PROJECTILE_HORIZONTAL_SPEED EQU 2
 ; hEnemyParam2 = Add to X
 ; hEnemyParam3 = Can Kill Timer
 
-SECTION "enemy projectile", ROM0
+SECTION "enemy projectile", ROMX
 
 ; SPAWN
 SpawnProjectile::

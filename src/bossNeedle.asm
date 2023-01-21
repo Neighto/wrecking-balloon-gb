@@ -17,7 +17,7 @@ BOSS_NEEDLE_SPEED EQU 4
 
 ; hEnemyParam1 = Vertical Movement Counter
 
-SECTION "boss needle", ROM0
+SECTION "boss needle", ROMX
 
 ; SPAWN
 SpawnBossNeedle::
