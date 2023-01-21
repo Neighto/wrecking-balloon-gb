@@ -1,4 +1,4 @@
-include "src/include/hUGE.inc"
+include "hUGE.inc"
 
 SECTION "desert night theme", ROMX
 
@@ -10,11 +10,11 @@ dw duty_instruments, wave_instruments, noise_instruments
 dw routines
 dw waves
 
-order_cnt: db 4
-order1: dw PE,PE
-order2: dw P1,P1
-order3: dw P2,P3
-order4: dw PE,PE
+order_cnt: db 10
+order1: dw PE,PE,PE,PE,PE
+order2: dw P1,P1,P1,P1,P1
+order3: dw P2,P3,P2,P3,P1
+order4: dw PE,PE,PE,PE,PE
 
 P1:
  dn D#4,1,$C04
