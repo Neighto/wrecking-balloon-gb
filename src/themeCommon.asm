@@ -105,103 +105,24 @@ itWaveinst15: db 0,32,14,128
 
 
 noise_instruments::
-itNoiseinst1: db 240,0,0,0,0,0,0,0
-itNoiseinst2: db 240,0,0,0,0,0,0,0
-itNoiseinst3: db 240,0,0,0,0,0,0,0
-itNoiseinst4: db 240,0,0,0,0,0,0,0
-itNoiseinst5: db 240,0,0,0,0,0,0,0
-itNoiseinst6: db 240,0,0,0,0,0,0,0
-itNoiseinst7: db 240,0,0,0,0,0,0,0
-itNoiseinst8: db 240,0,0,0,0,0,0,0
-itNoiseinst9: db 240,0,0,0,0,0,0,0
-itNoiseinst10: db 240,0,0,0,0,0,0,0
-itNoiseinst11: db 240,0,0,0,0,0,0,0
-itNoiseinst12: db 240,0,0,0,0,0,0,0
-itNoiseinst13: db 240,0,0,0,0,0,0,0
-itNoiseinst14: db 240,0,0,0,0,0,0,0
-itNoiseinst15: db 240,0,0,0,0,0,0,0
-
+; itNoiseinst1: db 240,0,0,0,0,0,0,0
+; itNoiseinst2: db 240,0,0,0,0,0,0,0
+; itNoiseinst3: db 240,0,0,0,0,0,0,0
+; itNoiseinst4: db 240,0,0,0,0,0,0,0
+; itNoiseinst5: db 240,0,0,0,0,0,0,0
+; itNoiseinst6: db 240,0,0,0,0,0,0,0
+; itNoiseinst7: db 240,0,0,0,0,0,0,0
+; itNoiseinst8: db 240,0,0,0,0,0,0,0
+; itNoiseinst9: db 240,0,0,0,0,0,0,0
+; itNoiseinst10: db 240,0,0,0,0,0,0,0
+; itNoiseinst11: db 240,0,0,0,0,0,0,0
+; itNoiseinst12: db 240,0,0,0,0,0,0,0
+; itNoiseinst13: db 240,0,0,0,0,0,0,0
+; itNoiseinst14: db 240,0,0,0,0,0,0,0
+; itNoiseinst15: db 240,0,0,0,0,0,0,0
 
 routines::
-__hUGE_Routine_0:
-
-__end_hUGE_Routine_0:
-ret
-
-__hUGE_Routine_1:
-
-__end_hUGE_Routine_1:
-ret
-
-__hUGE_Routine_2:
-
-__end_hUGE_Routine_2:
-ret
-
-__hUGE_Routine_3:
-
-__end_hUGE_Routine_3:
-ret
-
-__hUGE_Routine_4:
-
-__end_hUGE_Routine_4:
-ret
-
-__hUGE_Routine_5:
-
-__end_hUGE_Routine_5:
-ret
-
-__hUGE_Routine_6:
-
-__end_hUGE_Routine_6:
-ret
-
-__hUGE_Routine_7:
-
-__end_hUGE_Routine_7:
-ret
-
-__hUGE_Routine_8:
-
-__end_hUGE_Routine_8:
-ret
-
-__hUGE_Routine_9:
-
-__end_hUGE_Routine_9:
-ret
-
-__hUGE_Routine_10:
-
-__end_hUGE_Routine_10:
-ret
-
-__hUGE_Routine_11:
-
-__end_hUGE_Routine_11:
-ret
-
-__hUGE_Routine_12:
-
-__end_hUGE_Routine_12:
-ret
-
-__hUGE_Routine_13:
-
-__end_hUGE_Routine_13:
-ret
-
-__hUGE_Routine_14:
-
-__end_hUGE_Routine_14:
-ret
-
-__hUGE_Routine_15:
-
-__end_hUGE_Routine_15:
-ret
+    ; Removed for space (I don't use routines)
 
 waves::
 wave0: db 0,0,255,255,255,255,255,255,255,255,255,255,255,255,255,255
