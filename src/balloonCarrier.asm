@@ -199,23 +199,12 @@ BalloonCarrierUpdate::
     ldh a, [hEnemyOffset]
     ADD_A_TO_HL
     call SetEnemyStruct
-.variantSpawnExplosion:
+
+    ; Hold onto enemy variant for checking spawn explosion
     ldh a, [hEnemyVariant]
-    cp a, CARRIER_BOMB_VARIANT
-    jr nz, .endVariantSpawnExplosion
-    ld a, EXPLOSION
-    ldh [hEnemyNumber], a
-    ld a, EXPLOSION_BOMB_VARIANT
-    ldh [hEnemyVariant], a
-    ldh a, [hEnemyX]
-    sub 4
-    ldh [hEnemyX], a
-    call SpawnExplosion
-    ldh a, [hEnemyX]
-    add 4
-    ldh [hEnemyX], a
-.endVariantSpawnExplosion:
-.variantSpawnCarry:
+    push af
+
+    ; VARIANT SPAWN CARRY
     ldh a, [hEnemyVariant]
 .anvilSpawnCarry:
     cp a, CARRIER_ANVIL_VARIANT
@@ -233,10 +222,29 @@ BalloonCarrierUpdate::
     add 16
     ldh [hEnemyY], a
     call SpawnAnvil
-.variantEndSpawnCarry:
+
+    ; a is enemy variant
+    pop af
+
+    ; VARIANT SPAWN EXPLOSION
+    cp a, CARRIER_BOMB_VARIANT
+    jr nz, .endVariantSpawnExplosion
+    ld a, EXPLOSION
+    ldh [hEnemyNumber], a
+    ld a, EXPLOSION_BOMB_VARIANT
+    ldh [hEnemyVariant], a
+    ldh a, [hEnemyX]
+    sub 4
+    ldh [hEnemyX], a
+    ldh a, [hEnemyY]
+    sub 16
+    ldh [hEnemyY], a
+    call SpawnExplosion
+.endVariantSpawnExplosion:
     ; Since we messed with shared enemy struct vars we end here
     ; Plus we do this to mitigate a peak in cycles
     ret
+
 .endCheckSpawnCarry:
     
     ld a, b
@@ -530,13 +538,21 @@ BalloonCarrierUpdate::
 .updatePoints:
     call AddPoints
 .endVariantPoints:
-
-    ldh a, [hEnemyFlags]
-    res ENEMY_FLAG_ALIVE_BIT, a
-    ld [hEnemyFlags], a
-    ; Animation trigger
-    ldh a, [hEnemyFlags]
+    ; Only set the dying bit if not bomb carrier 
+    ; It sets the dying animation and we spawn explosion instead
+    ldh a, [hEnemyVariant]
+    cp a, CARRIER_BOMB_VARIANT
+    ldh a, [hEnemyFlags] ; Load hEnemyFlags here
+    jr nz, .setDying
+.resDying:
+    res ENEMY_FLAG_DYING_BIT, a
+    jr .updatedDying
+.setDying:
     set ENEMY_FLAG_DYING_BIT, a
+    ; jr .updatedDying
+.updatedDying:
+    ; ldh a, [hEnemyFlags]
+    res ENEMY_FLAG_ALIVE_BIT, a
     set BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_BIT, a
     ldh [hEnemyFlags], a
     ; Sound
@@ -550,7 +566,7 @@ BalloonCarrierUpdate::
 .endOffscreen:
 
 .setStruct:
-    ld hl, wEnemies
+    ld hl, wEnemies ;; TODO this set of instructions could be a call (though would slow things)
     ldh a, [hEnemyOffset]
     ADD_A_TO_HL
     jp SetEnemyStruct
