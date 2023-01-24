@@ -191,6 +191,10 @@ LoadLevelShowdownGraphics::
     ld bc, CloudsMap + $04 * 9
 	ld d, $20
 	ld e, 4
+	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+    ld bc, CloudsMap + $04 * 10
+	ld d, $20
+	ld e, 4
 	jp MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
 
 SpawnSun::

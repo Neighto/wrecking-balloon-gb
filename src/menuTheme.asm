@@ -5,7 +5,7 @@ SECTION "menu theme", ROMX
 menuTheme::
 db 8
 dw order_cnt
-dw order1, order2, order3, order4
+dw order1, order2, order3, outOfOrder
 dw duty_instruments, wave_instruments, noise_instruments
 dw routines
 dw waves
@@ -14,7 +14,6 @@ order_cnt: db 8
 order1: dw P3,PE,PE,PE
 order2: dw P1,P2,P1,P1
 order3: dw P2,P1,P3,P2
-order4: dw PE,PE,PE,PE
 
 P1:
  dn G_5,3,$C08

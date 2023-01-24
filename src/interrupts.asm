@@ -407,6 +407,8 @@ LevelShowdownLCDInterrupt:
     ldh [rLYC], a
     ldh a, [hParallaxMiddle]
 	ldh [rSCX], a
+    ; ld a, %11111001 ; testi
+	; ldh [rBGP], a ; test
     jp LCDInterruptEnd
 .far:
     cp a, GAME_SHOWDOWN_LCD_SCROLL_FAR
@@ -421,10 +423,10 @@ LevelShowdownLCDInterrupt:
     jr nz, .far2
     ld a, GAME_SHOWDOWN_LCD_SCROLL_FAR2
     ldh [rLYC], a
+    xor a ; ld a, 0
+    ldh [rSCX], a ; must be before rSCY otherwise it shifts rain
     ldh a, [hRain]    
     ldh [rSCY], a
-    xor a ; ld a, 0
-    ldh [rSCX], a
     jp LCDInterruptEnd
 .far2:
     cp a, GAME_SHOWDOWN_LCD_SCROLL_FAR2
@@ -443,6 +445,8 @@ LevelShowdownLCDInterrupt:
     ldh [rLYC], a
     ldh a, [hParallaxClose]
 	ldh [rSCX], a
+    ; ld a, MAIN_PAL0 ; testi
+	; ldh [rBGP], a ; test
     jp LCDInterruptEnd
 .window:
     cp a, GAME_SHOWDOWN_LCD_SCROLL_RESET

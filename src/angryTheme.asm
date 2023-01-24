@@ -5,16 +5,14 @@ SECTION "angry theme", ROMX
 angryTheme::
 db 6
 dw order_cnt
-dw order1, order2, order3, order4
+dw outOfOrder, order2, order3, outOfOrder
 dw duty_instruments, wave_instruments, noise_instruments
 dw routines
 dw waves
 
 order_cnt: db 14
-order1: dw PE,PE,PE,PE,PE,PE,PE
 order2: dw P1,P3,P5,P5,P3,P5,P5
 order3: dw P2,P4,P6,P7,P4,P6,P7
-order4: dw PE,PE,PE,PE,PE,PE,PE
 
 P1:
  dn G_4,1,$C0C
