@@ -127,8 +127,8 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; === testing ===
-	ld a, 6
-	ldh [hLevel], a
+	; ld a, 6
+	; ldh [hLevel], a
 	; ===============
 
 .levelSelect:
@@ -279,14 +279,8 @@ GameWon::
 	call SetPlayerPositionAndSpeedEndingCutscene
 	call SpawnHandClap
 	call SpawnCartBalloons
-	ld hl, menuTheme
+	ld hl, menuThemeShort
 	call hUGE_init
-	ld b, 2 ; Channel 3
-	ld c, 1 ; Mute
-	call hUGE_mute_channel
-	ld b, 3 ; Channel 4
-	ld c, 1 ; Mute
-	call hUGE_mute_channel
 	call LCD_ON_NO_WINDOW
 GameWonLoop:
 	call WaitVBlank
