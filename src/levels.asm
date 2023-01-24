@@ -635,9 +635,6 @@ Level4:
 
 ; Level 5
 Level5:
-    LVL__BALLOON_CARRIER_BOMB_LEFT_______ SPAWN_Y_D - 8
-    LVL__WAIT 8
-
 .intro:
     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_D
     LVL__POINT_BALLOON_EASY______________ SPAWN_X_A

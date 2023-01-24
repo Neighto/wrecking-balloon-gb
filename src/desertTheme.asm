@@ -5,16 +5,14 @@ SECTION "desert theme", ROMX
 desertTheme::
 db 8
 dw order_cnt
-dw order1, order2, order3, order4
+dw outOfOrder, order2, order3, outOfOrder
 dw duty_instruments, wave_instruments, noise_instruments
 dw routines
 dw waves
 
 order_cnt: db 10
-order1: dw PE,PE,PE,PE,PE
 order2: dw P1,P3,P1,P4,P2
 order3: dw P2,P4,P2,P3,P2
-order4: dw PE,PE,PE,PE,PE
 
 P1:
  dn C_5,2,$C0C
