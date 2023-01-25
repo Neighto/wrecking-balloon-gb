@@ -200,10 +200,7 @@ FindRAMAndOAMForEnemy::
     push hl
 	call RequestOAMSpace ; b now contains OAM address
     pop hl
-    ret z
-    call InitializeEnemyStructVars
-    inc a
-    ret ; TODO fix this ending is dumb maybe just return to the way it was
+    ret
 
 EnemyInterCollision::
     ; Call from enemy script
@@ -276,9 +273,8 @@ EnemyInterCollision::
     ldh a, [hEnemyOffset2]
     ADD_A_TO_HL
     set ENEMY_FLAG_HIT_ENEMY_BIT, [hl]
-    ld a, 1
-    cp a, 0
     ; nz flag set
+    or a, 1
     ret
 
 EnemyHitBullet::
@@ -301,8 +297,7 @@ EnemyHitBullet::
 .hitByBullet:
     call ClearBullet
     ; nz flag set
-    xor a ; ld a, 0
-    inc a
+    or a, 1
     ret
 
 FindBalloonCarrier::
@@ -319,8 +314,8 @@ FindBalloonCarrier::
     ld a, [hl]
     cp a, BALLOON_CARRIER
     jr nz, .checkLoop
-    or 1
     ; nz flag set
+    or a, 1
     ret
 .checkLoop:
     ldh a, [hEnemyOffset3]
@@ -331,7 +326,6 @@ FindBalloonCarrier::
     ldh [hEnemyLoopIndex3], a
     cp a, 0
     jr nz, .loop
-.end:
     ; z flag set
     ret
 
@@ -380,45 +374,18 @@ PopBalloonAnimation::
     dec a
     and POPPING_BALLOON_ANIMATION_TIME
     ret nz
-.changeFrames:
-    ; Point hl to enemy oam
-    ld hl, wOAM+2
-    ldh a, [hEnemyOAM]
-    ADD_A_TO_HL
-    ; Update frame
+    ; Find our frame
     ldh a, [hEnemyParam1]
 .frame0:
     cp a, 0
     jr nz, .frame1
-    ; Popped left - frame 0
-    ld a, POP_BALLOON_FRAME_0_TILE
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-    ; Popped right - frame 0
-    inc l
-    inc l
-    ld a, POP_BALLOON_FRAME_0_TILE
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hl], a
-    jr .endFrame
+    ld b, POP_BALLOON_FRAME_0_TILE
+    jr .updateFrame
 .frame1:
     cp a, 1
     jr nz, .frame2
-    ; Popped left - frame 1
-    ld a, POP_BALLOON_FRAME_1_TILE
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-    ; Popped right - frame 1
-    inc l
-    inc l
-    ld a, POP_BALLOON_FRAME_1_TILE
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hl], a
-    jr .endFrame
+    ld b, POP_BALLOON_FRAME_1_TILE
+    jr .updateFrame
 .frame2:
     ; jr nz, .frame3
     ; cp a, 2
@@ -426,7 +393,24 @@ PopBalloonAnimation::
     res ENEMY_FLAG_DYING_BIT, a
     ldh [hEnemyFlags], a
     ret
-.endFrame:
+.updateFrame:
+    ; Point hl to enemy oam
+    ld hl, wOAM+2
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
+    ; Left sprite
+    ld a, b
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hli], a
+    inc l
+    inc l
+    ; Right sprite
+    ld a, b
+    ld [hli], a
+    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld [hl], a
+    ; Next frame
     ldh a, [hEnemyParam1]
     inc a 
     ldh [hEnemyParam1], a
