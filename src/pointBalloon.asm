@@ -22,6 +22,7 @@ SpawnPointBalloon::
     call FindRAMAndOAMForEnemy ; hl = RAM space, b = OAM offset
     ret z
     ; Initialize
+    call InitializeEnemyStructVars
     ld a, b
     ldh [hEnemyOAM], a
     ldh a, [hEnemyFlags]

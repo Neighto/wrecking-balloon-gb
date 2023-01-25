@@ -27,6 +27,7 @@ SpawnAnvil::
     call FindRAMAndOAMForEnemy ; hl = RAM space, b = OAM offset
     ret z
     ; Initialize
+    call InitializeEnemyStructVars
     ld a, b
     ldh [hEnemyOAM], a
     ldh a, [hEnemyFlags]
@@ -76,7 +77,7 @@ SpawnAnvil::
 .anvilLeftOAM:
     ldh a, [hEnemyY]
     ld [hli], a
-    ld a, [hEnemyX]
+    ldh a, [hEnemyX]
     ld [hli], a
     ld a, d
     ld [hli], a
