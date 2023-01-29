@@ -94,14 +94,8 @@ OpeningCutscene:
 	call SpawnHandWave
 	call SpawnCartBalloons
 	ld hl, menuTheme
-	call hUGE_init
-	ld b, 0 ; Channel 1
-	ld c, 1 ; Mute
-	call hUGE_mute_channel
+	call hUGE_init_game_song
 	ld b, 1 ; Channel 2
-	ld c, 1 ; Mute
-	call hUGE_mute_channel
-	ld b, 3 ; Channel 4
 	ld c, 1 ; Mute
 	call hUGE_mute_channel
 	call LCD_ON_NO_WINDOW
@@ -127,8 +121,8 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; === testing ===
-	; ld a, 6
-	; ldh [hLevel], a
+	ld a, 1
+	ldh [hLevel], a
 	; ===============
 
 .levelSelect:
@@ -139,7 +133,7 @@ SetupNextLevel::
 	call SetLevelCityInterrupts
 	call LoadLevelCityGraphics
 	ld hl, angryTheme
-	call hUGE_init
+	call hUGE_init_game_song
 	jp .endLevelSetup
 .level2:
 	cp a, LEVEL_2
@@ -147,7 +141,7 @@ SetupNextLevel::
 	call SetLevelNightCityInterrupts
 	call LoadLevelNightCityGraphics
 	ld hl, cityNightTheme
-	call hUGE_init
+	call hUGE_init_game_song
 	jp .endLevelSetup
 .level3:
 	cp a, LEVEL_3
@@ -155,7 +149,7 @@ SetupNextLevel::
 	call SetLevelDesertInterrupts
 	call LoadLevelDesertGraphics
 	ld hl, desertTheme
-	call hUGE_init
+	call hUGE_init_game_song
 	jr .endLevelSetup
 .level4:
 	cp a, LEVEL_4
@@ -163,7 +157,7 @@ SetupNextLevel::
 	call SetLevelNightDesertInterrupts
 	call LoadLevelNightDesertGraphics
 	ld hl, desertNightTheme
-	call hUGE_init
+	call hUGE_init_game_song
 	call InitializeNightSpritePalettes
 	jr .endLevelSetup
 .level5:
@@ -172,7 +166,7 @@ SetupNextLevel::
 	call SetLevelShowdownInterrupts
 	call LoadLevelShowdownGraphics
 	ld hl, showdownTheme
-	call hUGE_init
+	call hUGE_init_game_song
 	jr .endLevelSetup
 .level6:
 	cp a, LEVEL_BOSS
@@ -180,7 +174,7 @@ SetupNextLevel::
 	call SetLevelShowdownInterrupts
 	call LoadLevelShowdownGraphics
 	ld hl, bossTheme
-	call hUGE_init
+	call hUGE_init_game_song
 	call InitializeBoss
 	call InitializeBossMiscellaneous
 	call SpawnBoss
@@ -192,7 +186,7 @@ SetupNextLevel::
 	call SetEndlessInterrupts
 	call LoadEndlessGraphics
 	ld hl, angryTheme
-	call hUGE_init
+	call hUGE_init_game_song
 	; clean this
 	ld a, [hEndlessLevelSwitchSkip]
 	cp a, 0
@@ -210,10 +204,10 @@ SetupNextLevel::
 	; Comment out GameCountdownLoop and SpawnCountdown to skip countdown
 	call SpawnCountdown
 GameCountdownLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateGameCountdown
-	jp GameCountdownLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateGameCountdown
+	; jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA
