@@ -31,6 +31,8 @@ SECTION "level data", ROM0
 
 ; Level 1
 Level1:
+    LVL__BALLOON_CARRIER_PROJECTILE_LEFT_ SPAWN_Y_C + 8
+    LVL__WAIT 10
 .intro:
     LVL__POINT_BALLOON_EASY______________ SPAWN_X_C
     LVL__WAIT 8

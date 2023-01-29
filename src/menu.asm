@@ -258,8 +258,8 @@ UpdateMenu::
 .start:
 	ld a, 1 
 	ld [wTriggerFadeOut], a
-	ld b, 0
-	ld c, 1
+	ld b, 0 ; Channel 1
+	ld c, 1 ; Mute
 	call hUGE_mute_channel
 	jp CollectSound
 .fadeOut:

@@ -326,6 +326,15 @@ _load_note_data:
 
     ret
 
+hUGE_init_game_song::
+    call hUGE_init
+    ld b, 0 ; Channel 1
+	ld c, 1 ; Mute
+	jp hUGE_mute_channel
+    ld b, 3 ; Channel 4
+	ld c, 1 ; Mute
+	jp hUGE_mute_channel
+
 _lookup_note:
     ;; Call with:
     ;; Pattern pointer in BC

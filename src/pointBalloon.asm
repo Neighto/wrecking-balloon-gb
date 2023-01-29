@@ -174,7 +174,7 @@ PointBalloonUpdate::
     ldh a, [hPlayerFlags]
     and PLAYER_FLAG_ALIVE_MASK
     jr z, .checkHitByBullet
-.checkHit:
+    ; Check hit player cactus
     ld bc, wOAM
     ldh a, [hEnemyOAM]
     ADD_A_TO_BC
@@ -183,13 +183,11 @@ PointBalloonUpdate::
     ld e, PLAYER_CACTUS_HEIGHT
     call CollisionCheck
     jr nz, .deathOfPointBalloon
+    ; Check hit bullet
 .checkHitByBullet:
     call EnemyHitBullet
     jr z, .endCollision
 .deathOfPointBalloon:
-    ldh a, [hEnemyFlags]
-    res ENEMY_FLAG_ALIVE_BIT, a
-    ldh [hEnemyFlags], a
     ; Points
 .variantPoints:
     ldh a, [hEnemyVariant]
@@ -204,14 +202,16 @@ PointBalloonUpdate::
     ld a, POINT_BALLOON_MEDIUM_POINTS
     jr .updatePoints
 .hardPoints:
-    cp a, BALLOON_HARD_VARIANT
-    jr nz, .endVariantPoints
+    ; cp a, BALLOON_HARD_VARIANT
+    ; jr nz, .endVariantPoints
     ld a, POINT_BALLOON_HARD_POINTS
+    ; jr .updatePoints
 .updatePoints:
     call AddPoints
 .endVariantPoints:
-    ; Animation trigger
+    ; Flags
     ldh a, [hEnemyFlags]
+    res ENEMY_FLAG_ALIVE_BIT, a
     set ENEMY_FLAG_DYING_BIT, a
     ldh [hEnemyFlags], a
     ; Sound

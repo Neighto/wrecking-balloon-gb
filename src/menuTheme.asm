@@ -216,9 +216,11 @@ P3:
 menuThemeShort::
     db 9
     dw order_cntShort
-    dw order3, order2, order1, outOfOrder
+    dw order1Short, order2Short, outOfOrder, outOfOrder
     dw duty_instruments, wave_instruments, noise_instruments
     dw routines
     dw waves 
-    
-    order_cntShort: db 4
+
+    order_cntShort: db 2
+    order1Short: dw P1
+    order2Short: dw P2

@@ -35,7 +35,7 @@ SpawnProjectile::
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_ACTIVE_BIT, a
     ldh [hEnemyFlags], a
-.setupY2:
+    ; Setup Y2
     ldh a, [hPlayerY]
     ld d, a
     ldh a, [hEnemyY]
@@ -55,8 +55,7 @@ SpawnProjectile::
     ld a, PROJECTILE_VERTICAL_SPEED
 .endY:
     ldh [hEnemyParam1], a
-.endSetupY2:
-.setupX2:
+    ; Setup X2
     ldh a, [hPlayerX]
     ld d, a
     ldh a, [hEnemyX]
@@ -69,13 +68,12 @@ SpawnProjectile::
     ld a, PROJECTILE_HORIZONTAL_SPEED
 .endX:
     ldh [hEnemyParam2], a
-.endSetupX2:
     ; Get hl pointing to OAM address
     LD_BC_HL ; bc now contains RAM address
     ld hl, wOAM
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
-.projectileOAM:
+    ; Projectile OAM
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -83,9 +81,9 @@ SpawnProjectile::
     ld a, PROJECTILE_TILE
     ld [hli], a
     ld [hl], OAMF_PAL0
-.projectileSound:
+    ; Projectile sound
     call ProjectileSound
-.setStruct:
+    ; Set Struct
     LD_HL_BC
     jp SetEnemyStruct
 
@@ -112,7 +110,6 @@ ProjectileUpdate::
 .endFlicker:
 
 .checkMove:
-.projectileOAM:
     ld hl, wOAM
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
