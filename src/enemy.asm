@@ -347,7 +347,7 @@ HandleEnemyOffscreenVertical::
     ld a, SCRN_VY - OFF_SCREEN_ENEMY_BUFFER
     cp a, h
     ret c
-.offscreen:
+    ; Offscreen
     jp ClearEnemy
 
 HandleEnemyOffscreenHorizontal::
@@ -360,7 +360,7 @@ HandleEnemyOffscreenHorizontal::
     ld a, SCRN_VX - OFF_SCREEN_ENEMY_BUFFER
     cp a, h
     ret c
-.offscreen:
+    ; Offscreen
     jp ClearEnemy
 
 SECTION "enemy animations", ROM0

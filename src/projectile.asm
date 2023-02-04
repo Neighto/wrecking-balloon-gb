@@ -14,66 +14,137 @@ PROJECTILE_WAIT_TO_KILL_DURATION EQU 7
 PROJECTILE_WIDTH EQU 8
 PROJECTILE_HEIGHT EQU 8
 
-PROJECTILE_VERTICAL_SPEED EQU 1
-PROJECTILE_HORIZONTAL_SPEED EQU 2
+PROJECTILE_Y_X_SIMILARITY_BUFFER EQU 25
+; Y~=X
+PROJECTILE_Y_EQUALS_X_Y_TIME EQU %00000001
+PROJECTILE_Y_EQUALS_X_X_TIME EQU %00000000
+; Y>X
+PROJECTILE_Y_GREATER_THAN_X_Y_TIME EQU %00000000
+PROJECTILE_Y_GREATER_THAN_X_X_TIME EQU %00000001
+; Y<X
+PROJECTILE_Y_LESS_THAN_X_Y_TIME EQU %00000111
+PROJECTILE_Y_LESS_THAN_X_X_TIME EQU %00000000
 
-; hEnemyParam1 = Add to Y
-; hEnemyParam2 = Add to X
+; 0: Up, 1: Down
+PROJECTILE_FLAG_Y_DIRECTION_MASK EQU ENEMY_FLAG_PARAM1_MASK
+PROJECTILE_FLAG_Y_DIRECTION_BIT EQU ENEMY_FLAG_PARAM1_BIT
+; 0: Left, 1: Right
+PROJECTILE_FLAG_X_DIRECTION_MASK EQU ENEMY_FLAG_PARAM2_MASK
+PROJECTILE_FLAG_X_DIRECTION_BIT EQU ENEMY_FLAG_PARAM2_BIT
+
+; hEnemyParam1 = Update Y frequency
+; hEnemyParam2 = Update X frequency
 ; hEnemyParam3 = Can Kill Timer
 
 SECTION "enemy projectile", ROMX
 
+; *************************************************************
 ; SPAWN
+; *************************************************************
 SpawnProjectile::
     ld b, PROJECTILE_OAM_SPRITES
     call FindRAMAndOAMForEnemy ; hl = RAM space, b = OAM offset
     ret z
+    ;
     ; Initialize
+    ;
     call InitializeEnemyStructVars
     ld a, b
     ldh [hEnemyOAM], a
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_ACTIVE_BIT, a
     ldh [hEnemyFlags], a
-    ; Setup Y2
-    ldh a, [hPlayerY]
-    ld d, a
+    ;
+    ; Setup movement direction
+    ;
+    ; Handle Y
     ldh a, [hEnemyY]
-    sub a, 8
-    cp a, d
-    jr nc, .up
-    add a, 16
-    cp a, d
-    jr c, .down
-.middleY:
-    xor a ; ld a, 0
-    jr .endY
-.up:
-    ld a, -PROJECTILE_VERTICAL_SPEED
-    jr .endY
-.down:
-    ld a, PROJECTILE_VERTICAL_SPEED
-.endY:
-    ldh [hEnemyParam1], a
-    ; Setup X2
-    ldh a, [hPlayerX]
     ld d, a
+    ldh a, [hPlayerY]
+    sub a, d
+    jr c, .negY
+.posY:
+    ; Set the direction flag
+    ld d, a
+    ldh a, [hEnemyFlags]
+    set PROJECTILE_FLAG_Y_DIRECTION_BIT, a
+    ldh [hEnemyFlags], a
+    ld a, d
+    jr .yUpdate
+.negY:
+    ; Get the absolute value
+    cpl
+    inc a
+    ; jr .yUpdate
+.yUpdate:
+    ldh [hEnemyParam1], a ; Absolute value of Y2 - Y1
+    ; Handle X
     ldh a, [hEnemyX]
+    ld d, a
+    ldh a, [hPlayerX]
+    sub a, d
+    jr c, .negX
+.posX:
+    ; Set the direction flag
+    ld d, a
+    ldh a, [hEnemyFlags]
+    set PROJECTILE_FLAG_X_DIRECTION_BIT, a
+    ldh [hEnemyFlags], a
+    ld a, d
+    jr .xUpdate
+.negX:
+    ; Get the absolute value
+    cpl
+    inc a
+    ; jr .xUpdate
+.xUpdate:
+    ldh [hEnemyParam2], a ; Absolute value of X2 - X1
+    ; Now compare
+    ld d, a
+    ldh a, [hEnemyParam1]
+    ld e, a
+    ; Check for similar
+.checkSimilar1:
+    sub a, PROJECTILE_Y_X_SIMILARITY_BUFFER
+    jr c, .checkSimilar2
     cp a, d
-    jr c, .right
-.left:
-    ld a, -PROJECTILE_HORIZONTAL_SPEED
-    jr .endX
-.right:
-    ld a, PROJECTILE_HORIZONTAL_SPEED
-.endX:
+    jr nc, .checkForExtremes
+.checkSimilar2:
+    add a, PROJECTILE_Y_X_SIMILARITY_BUFFER * 2
+    ; jr c, .ySimilarToX ; Should never need to be checked
+    cp a, d
+    jr c, .checkForExtremes
+.ySimilarToX:
+    ld a, PROJECTILE_Y_EQUALS_X_Y_TIME
+    ld d, PROJECTILE_Y_EQUALS_X_X_TIME
+    jr .updateDirectionDimmers
+    ; Check for extremes
+.checkForExtremes:
+    ld a, e
+    cp a, d
+    jr c, .yLessThanX
+.yGreaterThanX:
+    ld a, PROJECTILE_Y_GREATER_THAN_X_Y_TIME
+    ld d, PROJECTILE_Y_GREATER_THAN_X_X_TIME
+    jr .updateDirectionDimmers
+.yLessThanX:
+    ld a, PROJECTILE_Y_LESS_THAN_X_Y_TIME
+    ld d, PROJECTILE_Y_LESS_THAN_X_X_TIME
+    ; jr .updateDirectionDimmers
+.updateDirectionDimmers:
+    ldh [hEnemyParam1], a
+    ld a, d
     ldh [hEnemyParam2], a
+    ;
     ; Get hl pointing to OAM address
+    ;
     LD_BC_HL ; bc now contains RAM address
     ld hl, wOAM
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
+    ;
     ; Projectile OAM
+    ;
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -81,16 +152,24 @@ SpawnProjectile::
     ld a, PROJECTILE_TILE
     ld [hli], a
     ld [hl], OAMF_PAL0
+    ;
     ; Projectile sound
+    ;
     call ProjectileSound
+    ;
     ; Set Struct
+    ;
     LD_HL_BC
     jp SetEnemyStruct
 
+; *************************************************************
 ; UPDATE
+; *************************************************************
 ProjectileUpdate::
 
-.checkFlicker:
+    ;
+    ; Check flicker
+    ;
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and	PROJECTILE_FLICKER_TIME
@@ -109,25 +188,66 @@ ProjectileUpdate::
     ld [hl], OAMF_PAL1
 .endFlicker:
 
-.checkMove:
+    ;
+    ; Check move
+    ;
+    ; Get OAM
     ld hl, wOAM
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
-    ldh a, [hEnemyY]
+    ; Get timer
+    ldh a, [hGlobalTimer]
+    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     ld b, a
+    ; Check move Y
     ldh a, [hEnemyParam1]
-    add a, b
+    ld c, a
+    ld a, b
+    and a, c
+    jr nz, .dontMoveY
+    ; MOVE Y
+    ldh a, [hEnemyFlags]
+    and PROJECTILE_FLAG_Y_DIRECTION_MASK
+    ldh a, [hEnemyY]
+    jr nz, .moveYDown
+.moveYUp:
+    dec a
+    dec a
+    jr .moveY
+.moveYDown:
+    inc a
+    inc a
+.moveY:
     ldh [hEnemyY], a
-    ld [hli], a
-    ldh a, [hEnemyX]
-    ld b, a
+    ld [hl], a
+.dontMoveY:
+    inc l
+    ; Check move X
     ldh a, [hEnemyParam2]
-    add a, b
+    ld c, a
+    ld a, b
+    and a, c
+    jr nz, .dontMoveX
+    ; MOVE X
+    ldh a, [hEnemyFlags]
+    and PROJECTILE_FLAG_X_DIRECTION_MASK
+    ldh a, [hEnemyX]
+    jr nz, .moveXRight
+.moveXLeft:
+    dec a
+    dec a
+    jr .moveX
+.moveXRight:
+    inc a
+    inc a
+.moveX:
     ldh [hEnemyX], a
     ld [hl], a
-.endMove:
+.dontMoveX:
 
-.checkCollision:
+    ;
+    ; Check collision
+    ;
     ; Has been alive long enough (prevent some cheap kills / stuns)
     ldh a, [hEnemyParam3]
     cp a, PROJECTILE_WAIT_TO_KILL_DURATION
@@ -136,15 +256,18 @@ ProjectileUpdate::
     ldh [hEnemyParam3], a
     jr .endCollision
 .checkCollisionContinue:
+
     ; Is time to check collision
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and	PROJECTILE_COLLISION_TIME
     jr nz, .endCollision
+
     ; Is player alive
     ldh a, [hPlayerFlags]
     and PLAYER_FLAG_ALIVE_MASK
     jr z, .endCollision
+
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     ld hl, wOAM
@@ -156,6 +279,7 @@ ProjectileUpdate::
     jr z, .checkHitCactus
     call CollisionWithPlayer
     jr .deathOfProjectile
+
 .checkHitCactus:
     ld bc, wPlayerCactusOAM
     ld hl, wOAM
@@ -166,18 +290,31 @@ ProjectileUpdate::
     call CollisionCheck
     jr z, .endCollision
     call CollisionWithPlayerCactus
+
 .deathOfProjectile:
     ld bc, PROJECTILE_OAM_BYTES
     call ClearEnemy
     jr .setStruct
 .endCollision:
 
-.checkOffscreenX:
+    ;
+    ; Check offscreen X
+    ;
+    ldh a, [hGlobalTimer]
+    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
+    and %00000001
+    jr z, .checkVertical
+.checkHorizontal:
     ld bc, PROJECTILE_OAM_BYTES
     call HandleEnemyOffscreenHorizontal
-    ; Enemy may be cleared, must do setStruct next
-.endOffscreenX:
-
+    jr .setStruct
+.checkVertical:
+    ld bc, PROJECTILE_OAM_BYTES
+    call HandleEnemyOffscreenVertical
+    ; jr .setStruct
+    ;
+    ; Set struct
+    ;
 .setStruct:
     ld hl, wEnemies
     ldh a, [hEnemyOffset]
