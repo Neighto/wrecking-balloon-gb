@@ -76,7 +76,7 @@ LevelCityTiles::
 LevelCityTilesEnd::
 
 LevelDesertTiles::
-    INCBIN "incbin/background/Desert.2bpp"
+    ; INCBIN "incbin/background/Desert.2bpp"
 LevelDesertTilesEnd::
 
 LevelShowdownTiles::
