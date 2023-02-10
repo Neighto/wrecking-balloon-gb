@@ -168,7 +168,7 @@ LoadLevelShowdownGraphics::
     ; Fill in dark clouds space
     ld hl, _SCRN0
     ld bc, $60
-    ld d, $85
+    ld d, DARK_GREY_BKG_TILE
     call SetInRange
     ; Add scrolling rain clouds
     ld bc, CloudsMap + $04 * 2

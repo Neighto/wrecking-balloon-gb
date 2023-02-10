@@ -121,7 +121,7 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; === testing ===
-	ld a, 5
+	ld a, 3
 	ldh [hLevel], a
 	; ===============
 
@@ -204,10 +204,10 @@ SetupNextLevel::
 	; Comment out GameCountdownLoop and SpawnCountdown to skip countdown
 	call SpawnCountdown
 GameCountdownLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateGameCountdown
-	; jp GameCountdownLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateGameCountdown
+	jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA
