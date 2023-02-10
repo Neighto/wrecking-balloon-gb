@@ -80,7 +80,7 @@ LoadMenuGraphics::
 	; Fill in dark clouds space
 	ld hl, $9A00
     ld bc, $40
-    ld d, $85
+    ld d, DARK_GREY_BKG_TILE
     call SetInRange
 	; Add texts
 	ld bc, ModesMap
