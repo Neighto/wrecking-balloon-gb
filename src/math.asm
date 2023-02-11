@@ -51,12 +51,11 @@ ToBCD::
     ret
 
 MULTIPLY::
-    ; simple multiply formula
-    ; argument 'b'
-    ; argument 'c'
-    ; returns 'a' as solution
-    xor a ; ld a, 0
-    ld d, a
+;     simple multiply formula
+;     argument 'b'
+;     argument 'c'
+;     returns 'a' as solution
+    ld d, 0
 .loop:
     ld a, c
     cp a, 0

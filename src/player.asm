@@ -68,8 +68,8 @@ InitializePlayer::
 
   ; TILES
   ld a, [wSecret]
-  cp a, SECRET_AMOUNT
-  jr c, .normalLook
+  cp a, 0
+  jr z, .normalLook
 .secretLook:
   ld a, PLAYER_SECRET_CACTUS_TILE
   ld b, PLAYER_SECRET_BALLOON_TILE

@@ -85,6 +85,7 @@ LCDInterruptEnd:
 WindowLCDInterrupt:
     ld a, MAIN_PAL0
     ldh [rBGP], a
+.skipPaletteSetting:
     ld a, INTERRUPT_END_OF_SCREEN
 	ldh [rLYC], a
     xor a ; ld a, 0
@@ -473,7 +474,7 @@ LevelShowdownLCDInterrupt:
     jp LCDInterruptEnd
 .bottom:
     cp a, INTERRUPT_END_OF_SCREEN
-    jp nz, WindowLCDInterrupt
+    jp nz, WindowLCDInterrupt.skipPaletteSetting
     ld a, GAME_SHOWDOWN_LCD_SCROLL_FAR
     ldh [rLYC], a
     ldh a, [hParallaxMiddle]
@@ -519,7 +520,7 @@ EndlessLCDInterrupt:
     jp LCDInterruptEnd
 .bottom:
     cp a, INTERRUPT_END_OF_SCREEN
-    jp nz, WindowLCDInterrupt
+    jp nz, WindowLCDInterrupt.skipPaletteSetting
     ld a, ENDLESS_LCD_SCROLL_FAR
 	ldh [rLYC], a
     jp LCDInterruptEnd
