@@ -45,23 +45,10 @@ LoadGameSpriteAndMiscellaneousTiles::
 	ld de, MiscellaneousTilesEnd - MiscellaneousTiles
 	jp MEMCPY
 
-LoadLevelCityGraphicsCommon:
-.tiles:
-	ld bc, LevelCityTiles
-	ld hl, _VRAM9000 + CITY_TILES_OFFSET * TILE_BYTES
-	ld de, LevelCityTilesEnd - LevelCityTiles
-	call MEMCPY
-.tilemap:
-	ld bc, LevelCityMap
-	ld hl, _SCRN0 + $C0
-	ld de, LevelCityMapEnd - LevelCityMap
-    ld a, CITY_TILES_OFFSET
-    ld [wMemcpyTileOffset], a
-	call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
-    ; Add scrolling water clouds
+LoadLevelClouds:
+    ; hl = Address
     ld a, CLOUDS_TILE_OFFSET
     ld [wMemcpyTileOffset], a
-    ld hl, $99C0
     ld bc, CloudsMap + $04 * 9
     ld d, $20
     ld e, 4
@@ -70,6 +57,24 @@ LoadLevelCityGraphicsCommon:
     ld d, $20
     ld e, 4
     jp MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+
+LoadLevelCityGraphicsCommon:
+.tiles:
+	ld bc, LevelCityTiles
+	ld hl, _VRAM9000 + CITY_TILES_OFFSET * TILE_BYTES
+	ld de, LevelCityTilesEnd - LevelCityTiles
+	call MEMCPY
+.tilemap:
+    ; Add city
+	ld bc, LevelCityMap
+	ld hl, _SCRN0 + $C0
+	ld de, LevelCityMapEnd - LevelCityMap
+    ld a, CITY_TILES_OFFSET
+    ld [wMemcpyTileOffset], a
+	call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
+    ; Add scrolling clouds
+    ld hl, $99C0
+    jp LoadLevelClouds
     
 LoadLevelCityGraphics::
     call LoadLevelCityGraphicsCommon
@@ -128,7 +133,10 @@ LoadLevelDesertGraphicsCommon:
 	ld de, LevelDesertMapEnd - LevelDesertMap
 	call MEMCPY
     ; Add in sun
-    jp SpawnSun
+    call SpawnSun
+    ; Add scrolling clouds
+    ld hl, $99C0
+    jp LoadLevelClouds
 
 LoadLevelDesertGraphics::
     jp LoadLevelDesertGraphicsCommon
@@ -191,7 +199,9 @@ LoadLevelShowdownGraphics::
 	ld de, ShowdownWaterMapEnd - ShowdownWaterMap
 	ld a, SHOWDOWN_MOUTAINS_OFFSET
     call MEMCPY_WITH_OFFSET
-    ; Add scrolling water
+    ; Add scrolling clouds
+    jp LoadLevelClouds
+
     ld bc, CloudsMap + $04 * 9
 	ld d, $20
 	ld e, 4
