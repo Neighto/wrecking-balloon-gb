@@ -69,7 +69,17 @@ LoadLevelCityGraphics::
     ld hl, $987B ; City Plane address
     ld de, 5
     ld a, PLANE_TILE_OFFSET
-	jp MEMCPY_WITH_OFFSET
+	call MEMCPY_WITH_OFFSET
+    ; Add scrolling water clouds
+    ld hl, $99C0
+    ld bc, CloudsMap + $04 * 9
+	ld d, $20
+	ld e, 4
+	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+    ld bc, CloudsMap + $04 * 10
+	ld d, $20
+	ld e, 4
+	jp MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
 
 LoadLevelNightCityGraphics::
 .tiles:
@@ -103,7 +113,17 @@ LoadLevelNightCityGraphics::
     ld hl, $9897
     ld de, 2
     ld a, UFO_TILE_OFFSET
-	jp MEMCPY_WITH_OFFSET
+	call MEMCPY_WITH_OFFSET
+    ; Add scrolling water clouds
+    ld hl, $99C0
+    ld bc, CloudsMap + $04 * 9
+    ld d, $20
+    ld e, 4
+    call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+    ld bc, CloudsMap + $04 * 10
+    ld d, $20
+    ld e, 4
+    jp MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
 
 LoadLevelDesertGraphics::
 .tiles:
