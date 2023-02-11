@@ -19,6 +19,8 @@ COUNTDOWN_FRAME_4 EQU 4 ; Becomes balloon pop instead
 COUNTDOWN_FRAME_5 EQU 5
 COUNTDOWN_FRAME_6 EQU 6 ; Clear
 
+CITY_TILES_OFFSET EQU 1 ; So first tile is empty
+
 SUN_ADDRESS EQU $9848
 
 SECTION "game vars", WRAM0
@@ -42,18 +44,35 @@ LoadGameSpriteAndMiscellaneousTiles::
 	ld hl, _VRAM8800
 	ld de, MiscellaneousTilesEnd - MiscellaneousTiles
 	jp MEMCPY
-    
-LoadLevelCityGraphics::
+
+LoadLevelCityGraphicsCommon:
 .tiles:
 	ld bc, LevelCityTiles
-	ld hl, _VRAM9000
+	ld hl, _VRAM9000 + CITY_TILES_OFFSET * TILE_BYTES
 	ld de, LevelCityTilesEnd - LevelCityTiles
 	call MEMCPY
 .tilemap:
 	ld bc, LevelCityMap
 	ld hl, _SCRN0 + $C0
 	ld de, LevelCityMapEnd - LevelCityMap
-	call MEMCPY
+    ld a, CITY_TILES_OFFSET
+    ld [wMemcpyTileOffset], a
+	call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
+    ; Add scrolling water clouds
+    ld a, CLOUDS_TILE_OFFSET
+    ld [wMemcpyTileOffset], a
+    ld hl, $99C0
+    ld bc, CloudsMap + $04 * 9
+    ld d, $20
+    ld e, 4
+    call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+    ld bc, CloudsMap + $04 * 10
+    ld d, $20
+    ld e, 4
+    jp MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+    
+LoadLevelCityGraphics::
+    call LoadLevelCityGraphicsCommon
     ; City Planes
     ld bc, CityPlaneMap
 	ld hl, $9831 ; City Plane address
@@ -69,29 +88,10 @@ LoadLevelCityGraphics::
     ld hl, $987B ; City Plane address
     ld de, 5
     ld a, PLANE_TILE_OFFSET
-	call MEMCPY_WITH_OFFSET
-    ; Add scrolling water clouds
-    ld hl, $99C0
-    ld bc, CloudsMap + $04 * 9
-	ld d, $20
-	ld e, 4
-	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
-    ld bc, CloudsMap + $04 * 10
-	ld d, $20
-	ld e, 4
-	jp MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+	jp MEMCPY_WITH_OFFSET
 
 LoadLevelNightCityGraphics::
-.tiles:
-	ld bc, LevelCityTiles
-	ld hl, _VRAM9000
-	ld de, LevelCityTilesEnd - LevelCityTiles
-	call MEMCPY
-.tilemap:
-	ld bc, LevelCityMap
-	ld hl, _SCRN0 + $C0
-	ld de, LevelCityMapEnd - LevelCityMap
-	call MEMCPY
+    call LoadLevelCityGraphicsCommon
     ; Stars
     ld a, STAR_TILE_OFFSET
     ld hl, $9821
@@ -113,19 +113,9 @@ LoadLevelNightCityGraphics::
     ld hl, $9897
     ld de, 2
     ld a, UFO_TILE_OFFSET
-	call MEMCPY_WITH_OFFSET
-    ; Add scrolling water clouds
-    ld hl, $99C0
-    ld bc, CloudsMap + $04 * 9
-    ld d, $20
-    ld e, 4
-    call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
-    ld bc, CloudsMap + $04 * 10
-    ld d, $20
-    ld e, 4
-    jp MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+	jp MEMCPY_WITH_OFFSET
 
-LoadLevelDesertGraphics::
+LoadLevelDesertGraphicsCommon:
 .tiles:
 	ld bc, LevelDesertTiles
 	ld hl, _VRAM9000
@@ -140,17 +130,12 @@ LoadLevelDesertGraphics::
     ; Add in sun
     jp SpawnSun
 
+LoadLevelDesertGraphics::
+    jp LoadLevelDesertGraphicsCommon
+
 LoadLevelNightDesertGraphics::
-.tiles:
-	ld bc, LevelDesertTiles
-	ld hl, _VRAM9000
-	ld de, LevelDesertTilesEnd - LevelDesertTiles
-	call MEMCPY
-.tilemap:
-    ld bc, LevelDesertMap
-	ld hl, $98E0
-	ld de, LevelDesertMapEnd - LevelDesertMap
-	call MEMCPY
+    call LoadLevelDesertGraphicsCommon
+    ; Add stars
     ld a, STAR_TILE_OFFSET
     ld hl, $9826
     ld [hl], a
@@ -164,8 +149,7 @@ LoadLevelNightDesertGraphics::
     ld [hl], a
     ld hl, $9871
     ld [hl], a
-    ; Add in sun
-    jp SpawnSun
+    ret
 
 LoadLevelShowdownGraphics::
 .tiles:
