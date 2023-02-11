@@ -43,7 +43,6 @@ GameSpriteTiles::
     INCBIN "incbin/sprite/BossScared.2bpp"
     INCBIN "incbin/sprite/BossFeet.2bpp"
     INCBIN "incbin/sprite/BossNeedle.2bpp"
-    INCBIN "incbin/sprite/MenuSprite.2bpp"
 GameSpriteTilesEnd::
 
 MiscellaneousTiles::
@@ -54,6 +53,8 @@ MiscellaneousTiles::
     INCBIN "incbin/background/CityPlane.2bpp"
     INCBIN "incbin/background/Black.2bpp"
     INCBIN "incbin/background/UFO.2bpp"
+    INCBIN "incbin/sprite/MenuSprite.2bpp"
+    INCBIN "incbin/sprite/Sunglasses.2bpp"
 MiscellaneousTilesEnd::
 
 WindowTiles::

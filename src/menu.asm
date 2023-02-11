@@ -18,6 +18,8 @@ MODES_OFFSET EQU $4D
 YEAR_NAME_DISTANCE_FROM_TOP_IN_TILES EQU 4
 YEAR_NAME_ADDRESS EQU $9A00
 
+SUNGLASSES_ADDRESS EQU $9811
+
 SECTION "menu vars", WRAM0
 	wMenuFrame:: DB
 	wSelectedMode:: DB
@@ -194,7 +196,7 @@ UpdateMenu::
 	call IncrementScrollOffset
 	ld a, [wTriggerFadeOut]
 	cp a, 0
-	jr nz, .fadeOut
+	jp nz, .fadeOut
 
 .blinkMenuCursor:
 	ld a, [wMenuCursorTimer]
@@ -219,17 +221,38 @@ UpdateMenu::
 
 .menuInput:
 	call ReadController
+
+.checkSunglasses:
+	ldh a, [hControllerPressed]
+	and PADF_SELECT
+	jr z, .checkSelect
+	; SUNGLASSES
+	ld hl, SUNGLASSES_ADDRESS
+	ld a, [wSecret]
+	cp a, 0 
+	jr nz, .sunglassesModeOff
+.sunglassesModeOn:
+	ld a, 1 
+	ld [wSecret], a
+	ld a, SUNGLASSES_TILE
+	jr .updateSunglassesMode
+.sunglassesModeOff:
+	xor a ; ld a, 0
+	ld [wSecret], a
+	ld a, WHITE_BKG_TILE
+	; jr .updateSunglassesMode
+.updateSunglassesMode:
+	ld [hli], a
+	ld [hl], a
+	ret
 .checkSelect:
 	ldh a, [hControllerPressed]
-	and PADF_SELECT | PADF_UP | PADF_DOWN
+	and PADF_UP | PADF_DOWN
 	jr z, .checkStart
-.select:
+	; SELECT
 	; Reset cursor blink
 	xor a ; ld a, 0
 	ld [wMenuCursorTimer], a
-	; Increase secret count
-	ld hl, wSecret
-	inc [hl]
 	; Move cursor and select mode
 	ld hl, wOAM+2
 	ADD_TO_HL [wMenuCursorOAM]
@@ -255,7 +278,7 @@ UpdateMenu::
 	ldh a, [hControllerDown]
 	and PADF_START | PADF_A
 	ret z
-.start:
+	; START
 	ld a, 1 
 	ld [wTriggerFadeOut], a
 	ld b, 0 ; Channel 1
