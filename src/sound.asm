@@ -33,11 +33,6 @@ InitializeSound::
   ldh [hStopMusic], a
   ret
 
-StopSweepSound::
-  xor a ; ld a, 0
-  ldh [rNR12], a
-  ret
-
 ClearSound::
   ; Silence channel
   ld a, $08
@@ -62,8 +57,8 @@ ClearSound::
   ret
 
 SetWaveRAMToSquareWave::
-  ld a, $08
-  ldh [rNR32], a
+  ld a, %00000000
+  ldh [rNR30], a
   ld hl, _AUD3WAVERAM
   ld bc, $2
   ld d, 0
@@ -71,12 +66,14 @@ SetWaveRAMToSquareWave::
   ld bc, $D
   ld d, $FF
   call SetInRange
-  ld a, $80
-  ldh [rNR34], a
+  ld a, %10000000
+  ldh [rNR30], a
   ret
 
+; *************************************************************
 ; Gameplay Sound Effects (CH1)
 ; Channel 1 is only used for this during a level
+; *************************************************************
 
 FallingSound::
   ; Sweep register
@@ -96,7 +93,14 @@ FallingSound::
   ldh [rNR14], a
   ret
 
+StopSweepSound::
+  xor a ; ld a, 0
+  ldh [rNR12], a
+  ret
+
+; *************************************************************
 ; Level Sound Effects (CH4)
+; *************************************************************
 
 PopSound::
   ; Volume envelope
@@ -215,7 +219,9 @@ CountdownSound::
   ldh [rNR44], a
   ret
 
+; *************************************************************
 ; Menu Sound Effects
+; *************************************************************
 
 TitleSplashSound::
   ; Volume envelope
@@ -265,7 +271,9 @@ CollectSound::
   ldh [rNR14], a
   ret
 
+; *************************************************************
 ; Stage Clear Sound Effects
+; *************************************************************
 
 BassSoundA::
   ; Sound on/off

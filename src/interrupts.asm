@@ -388,8 +388,13 @@ LevelNightShowdownLCDInterrupt:
     ld a, GAME_SHOWDOWN_LCD_SCROLL_FAR2
     ldh [rLYC], a
     xor a ; ld a, 0
-    ldh [rSCX], a ; must be before rSCY otherwise it shifts rain
-    ldh a, [hRain]    
+    ldh [rSCX], a
+    nop ; pad out time so setting rSCY happens on next line
+    nop 
+    nop 
+    nop 
+    nop 
+    ldh a, [hRain]  
     ldh [rSCY], a
     jp LCDInterruptEnd
 .far2:
@@ -450,7 +455,12 @@ LevelShowdownLCDInterrupt:
     ld a, GAME_SHOWDOWN_LCD_SCROLL_FAR2
     ldh [rLYC], a
     xor a ; ld a, 0
-    ldh [rSCX], a ; must be before rSCY otherwise it shifts rain
+    ldh [rSCX], a
+    nop ; pad out time so setting rSCY happens on next line
+    nop 
+    nop 
+    nop 
+    nop 
     ldh a, [hRain]    
     ldh [rSCY], a
     jp LCDInterruptEnd

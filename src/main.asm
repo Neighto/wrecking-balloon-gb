@@ -30,7 +30,6 @@ Start::
 	call LoadWindow
 	call LoadGameSpriteAndMiscellaneousTiles
 	call SetupWindow
-	call InitializeParallaxScrolling
 	call InitializeController
 	call InitializeMenu
 	call InitializeSound
@@ -121,7 +120,7 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; === testing ===
-	ld a, 2
+	ld a, 5
 	ldh [hLevel], a
 	; ===============
 

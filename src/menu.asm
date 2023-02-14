@@ -227,6 +227,7 @@ UpdateMenu::
 	and PADF_SELECT
 	jr z, .checkSelect
 	; SUNGLASSES
+	call BoostSound
 	ld hl, SUNGLASSES_ADDRESS
 	ld a, [wSecret]
 	cp a, 0 
@@ -250,6 +251,7 @@ UpdateMenu::
 	and PADF_UP | PADF_DOWN
 	jr z, .checkStart
 	; SELECT
+	call BulletSound
 	; Reset cursor blink
 	xor a ; ld a, 0
 	ld [wMenuCursorTimer], a
