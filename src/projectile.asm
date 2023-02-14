@@ -221,7 +221,7 @@ ProjectileUpdate::
     ldh [hEnemyY], a
     ld [hl], a
 .dontMoveY:
-    inc l
+    inc hl
     ; Check move X
     ldh a, [hEnemyParam2]
     ld c, a

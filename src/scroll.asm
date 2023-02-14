@@ -14,14 +14,6 @@ SECTION "scroll vars", HRAM
 
 SECTION "scroll", ROM0
 
-InitializeParallaxScrolling::
-	xor a ; ld a, 0
-	ldh [hParallaxClose], a
-	ldh [hParallaxMiddle], a
-	ldh [hParallaxFar], a
-    ldh [hRain], a
-    ret
-
 IncrementScrollOffset::
     ; Parallax
     ldh a, [hGlobalTimer] ; 3
@@ -65,4 +57,8 @@ ResetScroll::
     xor a ; ld a, 0
     ldh [rSCX], a
     ldh [rSCY], a
+	ldh [hParallaxClose], a
+	ldh [hParallaxMiddle], a
+	ldh [hParallaxFar], a
+    ldh [hRain], a
     ret
