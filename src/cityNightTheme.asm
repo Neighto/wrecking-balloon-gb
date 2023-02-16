@@ -15,21 +15,21 @@ order2: dw P1,P3,P2,P4
 order3: dw P2,P4,P1,P3
 
 P1:
- dn D_5,2,$C0A
- dn E_5,2,$C0A
- dn D_5,2,$C0A
- dn A_5,2,$C0A
+ dn D_5,2,$C0C
+ dn E_5,2,$C0C
+ dn D_5,2,$C0C
+ dn A_5,2,$C0C
  dn ___,0,$A02
  dn ___,0,$A02
- dn G_5,2,$C0A
+ dn G_5,2,$C0C
  dn ___,0,$E00
- dn G_5,2,$C08
+ dn G_5,2,$C0C
  dn ___,0,$E00
- dn A_5,2,$C0A
+ dn A_5,2,$C0C
  dn ___,0,$E00
- dn D_5,2,$C08
+ dn D_5,2,$C0C
  dn ___,0,$E00
- dn D_5,2,$C0A
+ dn D_5,2,$C0C
  dn ___,0,$A02
  dn ___,0,$A02
  dn ___,0,$000
@@ -51,19 +51,19 @@ P1:
  dn ___,0,$000
  dn ___,0,$A02
  dn ___,0,$A02
- dn B_5,2,$C0A
+ dn B_5,2,$C0C
  dn ___,0,$E00
- dn B_5,2,$C0A
+ dn B_5,2,$C0C
  dn ___,0,$E00
  dn ___,0,$000
- dn D_5,2,$C0A
- dn E_5,2,$C0A
- dn D_5,2,$C0A
- dn E_5,2,$C0A
+ dn D_5,2,$C0C
+ dn E_5,2,$C0C
+ dn D_5,2,$C0C
+ dn E_5,2,$C0C
  dn ___,0,$A02
  dn ___,0,$A02
  dn ___,0,$A02
- dn D_5,2,$C0A
+ dn D_5,2,$C0C
  dn ___,0,$E00
  dn ___,0,$000
  dn ___,0,$000
@@ -75,9 +75,9 @@ P1:
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
- dn D_5,2,$C0A
+ dn D_5,2,$C0C
  dn ___,0,$E00
- dn D_5,2,$C0A
+ dn D_5,2,$C0C
  dn ___,0,$E00
 
 P2:
@@ -155,44 +155,44 @@ P3:
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
- dn E_5,2,$C0A
+ dn E_5,2,$C0C
  dn ___,0,$E00
- dn D_5,2,$C0A
+ dn D_5,2,$C0C
  dn ___,0,$E00
- dn B_4,2,$C0A
- dn D_5,2,$C0A
+ dn B_4,2,$C0C
+ dn D_5,2,$C0C
  dn ___,0,$E00
- dn D_5,2,$C0A
+ dn D_5,2,$C0C
  dn ___,0,$A02
  dn ___,0,$A02
  dn ___,0,$E00
  dn ___,0,$000
- dn A_5,2,$C0A
+ dn A_5,2,$C0C
  dn ___,0,$E00
- dn D_5,2,$C0A
+ dn D_5,2,$C0C
  dn ___,0,$E00
- dn B_4,2,$C0A
- dn E_5,2,$C0A
+ dn B_4,2,$C0C
+ dn E_5,2,$C0C
  dn ___,0,$E00
- dn E_5,2,$C0A
+ dn E_5,2,$C0C
  dn ___,0,$A02
  dn ___,0,$A02
  dn ___,0,$E00
  dn ___,0,$000
- dn E_5,2,$C0A
+ dn E_5,2,$C0C
  dn ___,0,$E00
- dn G_5,2,$C0A
+ dn G_5,2,$C0C
  dn ___,0,$E00
- dn A_5,2,$C0A
+ dn A_5,2,$C0C
  dn ___,0,$E00
- dn E_5,2,$C0A
- dn G_5,2,$C0A
+ dn E_5,2,$C0C
+ dn G_5,2,$C0C
  dn ___,0,$E00
  dn ___,0,$000
- dn G_5,2,$C0A
+ dn G_5,2,$C0C
  dn ___,0,$E00
- dn D_6,2,$C0A
- dn A_5,2,$C0A
+ dn D_6,2,$C0C
+ dn A_5,2,$C0C
  dn ___,0,$A02
  dn ___,0,$A02
  dn ___,0,$A02
@@ -203,7 +203,7 @@ P3:
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
- dn D_5,2,$C0A
+ dn D_5,2,$C0C
  dn D_5,2,$C09
  dn D_5,2,$C08
  dn D_5,2,$C07
