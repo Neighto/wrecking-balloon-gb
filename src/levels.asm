@@ -746,35 +746,37 @@ Level5:
     LVL__POINT_BALLOON_EASY______________ SPAWN_X_D + 8
     LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_C + 8
     LVL__WAIT 6
-    ; LVL__REPT 1, .lotsOfHardBirds
 .trick5:
     LVL__BALLOON_CARRIER_PROJECTILE_LEFT_ SPAWN_Y_C + 8
     LVL__BALLOON_CARRIER_NORMAL_LEFT_____ SPAWN_Y_A
     LVL__BALLOON_CARRIER_BOMB_RIGHT______ SPAWN_Y_A
     LVL__BALLOON_CARRIER_FOLLOW_RIGHT____ SPAWN_Y_D
-    LVL__WAIT 16
+    LVL__WAIT 15
 .twister:
-    LVL__WAIT 2
+    LVL__WAIT 4
     LVL__BALLOON_CARRIER_BOMB_LEFT_______ SPAWN_Y_A + 8
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_A
     LVL__POINT_BALLOON_EASY______________ SPAWN_X_B
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_C
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_D
+    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_C
+    LVL__BOMB_DIRECT_____________________ SPAWN_X_D
     LVL__WAIT 5
     LVL__POINT_BALLOON_EASY______________ SPAWN_X_D
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_C
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_B
-    LVL__POINT_BALLOON_EASY______________ SPAWN_X_A
+    LVL__BOMB_DIRECT_____________________ SPAWN_X_C
+    LVL__POINT_BALLOON_MEDIUM____________ SPAWN_X_A
     LVL__BIRD_HARD_LEFT__________________ SPAWN_Y_D - 8
-    LVL__REPT 2, .twister
-; .hardestPart:
-;     LVL__BIRD_HARD_LEFT__________________ SPAWN_Y_D - 8
-;     LVL__BIRD_EASY_RIGHT_________________ SPAWN_Y_D - 8
-;     LVL__BOMB_FOLLOW_____________________ SPAWN_X_A - 4
-;     LVL__BOMB_DIRECT_____________________ SPAWN_X_C - 4
-;     LVL__BALLOON_CARRIER_BOMB_RIGHT______ SPAWN_Y_A
-;     LVL__WAIT 16
-
+    LVL__BIRD_HARD_RIGHT_________________ SPAWN_Y_B + 8
+    LVL__REPT 1, .twister
+.everyEnemyOnce:
+    LVL__WAIT 4
+    LVL__BIRD_HARD_LEFT__________________ SPAWN_Y_A
+    LVL__BALLOON_CARRIER_PROJECTILE_LEFT_ SPAWN_Y_C - 8
+    LVL__BALLOON_CARRIER_NORMAL_RIGHT____ SPAWN_Y_B
+    LVL__BOMB_DIRECT_____________________ SPAWN_X_C
+    LVL__WAIT 9
+    LVL__BALLOON_CARRIER_BOMB_LEFT_______ SPAWN_Y_C + 8
+    LVL__BALLOON_CARRIER_FOLLOW_RIGHT____ SPAWN_Y_B - 8
+    LVL__WAIT 2
+    LVL__BIRD_EASY_RIGHT_________________ SPAWN_Y_D
+    LVL__BOMB_FOLLOW_____________________ SPAWN_X_B
     LVL__WAIT 8
     LVL__POINT_BALLOON_MEDIUM____________ MIDDLE_SCREEN
     LVL__WAIT 6
