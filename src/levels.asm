@@ -1119,6 +1119,18 @@ LevelDataHandler::
     ldh a, [hLevel] 
     inc a
     ldh [hLevel], a 
+
+;     ld b, 23
+; .doMore:
+;     push bc
+;     ld a, 90
+;     call AddPoints
+;     pop bc
+;     dec b 
+;     ld a, b 
+;     cp a, 0 
+;     jr nz, .doMore
+
     jp StageClear
 .won:
     ; cp a, GAME_WON_KEY

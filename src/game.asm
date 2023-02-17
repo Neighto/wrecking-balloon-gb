@@ -385,18 +385,20 @@ UpdateGame::
 
 .tryToUnpause:
     ldh a, [hPaused]
-	cp a, 0
+	cp a, PAUSE_OFF
 	jr z, .isNotPaused
-    ldh a, [rBGP]
-    cp a, 0
-    jr z, .isNotPaused
-.isPaused:
+    cp a, PAUSE_ON
+    jr z, .isPaused
+.pauseToggled:
     call ClearSound
+    ld a, PAUSE_ON
+    ldh [hPaused], a
+.isPaused:
 	call ReadController
 	ldh a, [hControllerPressed]
     and PADF_START
     ret z
-	xor a ; ld a, 0
+	ld a, PAUSE_OFF
 	ldh [hPaused], a
     ret
 .isNotPaused:
