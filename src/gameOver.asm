@@ -12,5 +12,5 @@ UpdateGameOver::
     call ReadController
     ldh a, [hControllerDown]
     and PADF_START | PADF_A
-    jp nz, Start
+    jp nz, Restart
     ret

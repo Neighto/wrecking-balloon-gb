@@ -8,7 +8,7 @@ SECTION "bullet vars", HRAM
     hPlayerBulletY:: DB
     hPlayerBulletX:: DB
 
-SECTION "bullet", ROMX
+SECTION "bullet", ROM0
 
 InitializeBullet::
     xor a ; ld a, 0

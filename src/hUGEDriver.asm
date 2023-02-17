@@ -331,6 +331,13 @@ get_current_note:
     call get_current_row
     ld hl, 0
 
+    ;; If the note we found is STOP_SONG, then we update stop music
+    cp STOP_SONG
+    jr nz, .normalNote
+    ld a, 1
+    ldh [hStopMusic], a
+.normalNote:
+
     ;; If the note we found is greater than LAST_NOTE, then it's not a valid note
     ;; and nothing needs to be updated.
     cp LAST_NOTE
@@ -889,17 +896,17 @@ fx_note_cut:
     ;; the `adc` will pick the carry up, and "separate" 0 / 1 from 2 / 3 by an extra 1.
     ;; Luckily, this yields correct results for 0 ($01), 1 ($02), and 2 ($03 + 1 = $04).
     ;; We'll see about fixing 3 afterwards.
-    add -2
-    adc 3
+    ; add -2
+    ; adc 3
     ;; After being shifted left, the inputs are $02, $04, $08 and $0A; all are valid BCD,
     ;; except for $0A. Since we just performed `add a`, DAA will correct the latter to $10.
     ;; (This should be correctly emulated everywhere, since the inputs are identical to
     ;; "regular" BCD.)
     ;; When shifting the results back, we'll thus get $01, $02, $04 and $08!
-    add a
-    daa
-    rra
-    ld d, a
+    ; add a
+    ; daa
+    ; rra
+    ; ld d, a
     ld a, [mute_channels]
     and d
     ret nz
@@ -1275,20 +1282,20 @@ fx_vol_slide:
     ;; the `adc` will pick the carry up, and "separate" 0 / 1 from 2 / 3 by an extra 1.
     ;; Luckily, this yields correct results for 0 ($01), 1 ($02), and 2 ($03 + 1 = $04).
     ;; We'll see about fixing 3 afterwards.
-    add -2
-    adc 3
+    ; add -2
+    ; adc 3
     ;; After being shifted left, the inputs are $02, $04, $08 and $0A; all are valid BCD,
     ;; except for $0A. Since we just performed `add a`, DAA will correct the latter to $10.
     ;; (This should be correctly emulated everywhere, since the inputs are identical to
     ;; "regular" BCD.)
     ;; When shifting the results back, we'll thus get $01, $02, $04 and $08!
-    add a
-    daa
-    rra
-    ld d, a
+    ; add a
+    ; daa
+    ; rra
+    ; ld d, a
     ld a, [mute_channels]
     and d
-    ; ret nz
+    ret nz
 
     ;; setup the up and down params
     ld a, c

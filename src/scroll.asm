@@ -53,7 +53,7 @@ IncrementScrollOffset::
     ldh [hRain], a
     ret
 
-ResetScroll::
+InitializeScroll::
     xor a ; ld a, 0
     ldh [rSCX], a
     ldh [rSCY], a
