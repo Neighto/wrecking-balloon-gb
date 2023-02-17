@@ -10,14 +10,15 @@ Common::
 	call ClearOAM
 	call ClearVRAM9000
 	call ClearSound
-	call ResetScroll
+	call InitializeScroll
 	RESET_GLOBAL_TIMER
 	jp ResetFading
 
 Start::
 	di
-	ld sp, $E000 ; Stack pointer to WRAM ; OLD: $FFFE
+	ld sp, $E000 ; Stack pointer to WRAM ; Default: $FFFE
 	call InitializeInterrupts
+Restart::
 	call WaitVBlank
 	call LCD_OFF
 	call Common
@@ -30,6 +31,7 @@ Start::
 	call LoadWindow
 	call LoadGameSpriteAndMiscellaneousTiles
 	call SetupWindow
+	call InitializeInterrupts ; Initialize a 2nd time for when we jump to Restart
 	call InitializeController
 	call InitializeMenu
 	call InitializeSound
@@ -47,7 +49,7 @@ MenuLoopOpening:
 StartMenu::
 	call LCD_OFF
 	call TitleSplashSound
-	call ResetScroll
+	call InitializeScroll
 	call StopSweepSound
 	call SetMenuInterrupts
 	call ResetFading
