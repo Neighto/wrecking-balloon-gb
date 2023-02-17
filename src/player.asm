@@ -491,7 +491,11 @@ PlayerControls:
   ld a, e
   and PADF_START
   jr z, .endStart
-  ld a, 1
+  ; No pausing if screen is white
+  ldh a, [rBGP]
+  cp a, 0
+  jr z, .endStart
+  ld a, PAUSE_TOGGLED
   ldh [hPaused], a
   call ShowPlayerBalloon
   call ShowPlayerCactus

@@ -10,7 +10,7 @@ SECTION "controller", ROM0
 
 InitializeController::
 	xor a ; ld a, 0
-	ldh [hPaused], a
+	ldh [hPaused], a ; can do because 0 = PAUSE_OFF
 	ldh [hControllerDown], a
 	ldh [hControllerPressed], a
 	ret

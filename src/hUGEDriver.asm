@@ -889,24 +889,15 @@ fx_note_cut:
     ret nz
 
     ;; check channel mute
-
-    ;; 0 → $01, 1 → $02, 2 → $04, 3 → $05
-    ;; Overall, these two instructions add 1 to the number.
-    ;; However, the first instruction will generate a carry for inputs of $02 and $03;
-    ;; the `adc` will pick the carry up, and "separate" 0 / 1 from 2 / 3 by an extra 1.
-    ;; Luckily, this yields correct results for 0 ($01), 1 ($02), and 2 ($03 + 1 = $04).
-    ;; We'll see about fixing 3 afterwards.
-    ; add -2
-    ; adc 3
-    ;; After being shifted left, the inputs are $02, $04, $08 and $0A; all are valid BCD,
-    ;; except for $0A. Since we just performed `add a`, DAA will correct the latter to $10.
-    ;; (This should be correctly emulated everywhere, since the inputs are identical to
-    ;; "regular" BCD.)
-    ;; When shifting the results back, we'll thus get $01, $02, $04 and $08!
-    ; add a
-    ; daa
-    ; rra
-    ; ld d, a
+    ld d, 1
+    ld a, b
+    or a
+    jr z, .cont
+.loop:
+    sla d
+    dec a
+    jr nz, .loop
+.cont:
     ld a, [mute_channels]
     and d
     ret nz
@@ -1275,24 +1266,15 @@ fx_vol_slide:
     ;; ever needed.
 
     ;; check channel mute
-
-    ;; 0 → $01, 1 → $02, 2 → $04, 3 → $05
-    ;; Overall, these two instructions add 1 to the number.
-    ;; However, the first instruction will generate a carry for inputs of $02 and $03;
-    ;; the `adc` will pick the carry up, and "separate" 0 / 1 from 2 / 3 by an extra 1.
-    ;; Luckily, this yields correct results for 0 ($01), 1 ($02), and 2 ($03 + 1 = $04).
-    ;; We'll see about fixing 3 afterwards.
-    ; add -2
-    ; adc 3
-    ;; After being shifted left, the inputs are $02, $04, $08 and $0A; all are valid BCD,
-    ;; except for $0A. Since we just performed `add a`, DAA will correct the latter to $10.
-    ;; (This should be correctly emulated everywhere, since the inputs are identical to
-    ;; "regular" BCD.)
-    ;; When shifting the results back, we'll thus get $01, $02, $04 and $08!
-    ; add a
-    ; daa
-    ; rra
-    ; ld d, a
+    ld d, 1
+    ld a, b
+    or a
+    jr z, .cont
+.loop:
+    sla d
+    dec a
+    jr nz, .loop
+.cont:
     ld a, [mute_channels]
     and d
     ret nz

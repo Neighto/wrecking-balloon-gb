@@ -34,6 +34,12 @@ InitializeSound::
   ret
 
 ClearSound::
+  ; Handle obscure case toggling C3 DAC
+  ; C3
+  xor a ; ld a, 0
+  ldh [rNR30], a
+  cpl
+  ldh [rNR30], a
   ; Silence channel
   ld a, $08
   ; C1
@@ -57,7 +63,7 @@ ClearSound::
   ret
 
 SetWaveRAMToSquareWave::
-  ld a, %00000000
+  xor a
   ldh [rNR30], a
   ld hl, _AUD3WAVERAM
   ld bc, $2
@@ -277,7 +283,9 @@ CollectSound::
 
 BassSoundA::
   ; Sound on/off
-  ld a, %10000000
+  xor a
+  ldh [rNR30], a
+  cpl
   ldh [rNR30], a
   ; Sound length
   ld a, %11110010
@@ -295,7 +303,9 @@ BassSoundA::
 
 BassSoundB::
   ; Sound on/off
-  ld a, %10000000
+  xor a
+  ldh [rNR30], a
+  cpl
   ldh [rNR30], a
   ; Sound length
   ld a, %11110010
