@@ -50,7 +50,7 @@ LoadOpeningCutsceneGraphics::
     ld hl, $98B2
     call LoadLamp
     ; Hydrant
-    ld hl, 9943
+    ld hl, $9943
     call LoadHydrant
     ; Flowers
     ld a, $2C ; FLOWER_OFFSET
