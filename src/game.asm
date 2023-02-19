@@ -71,7 +71,27 @@ LoadLevelCityGraphicsCommon:
     ld hl, $99C0
     jp LoadLevelClouds
     
+LoadLamp::
+    ; Arg: HL = Destination address
+    ld a, $20 ; LAMP_OFFSET
+    ld [wMemcpyTileOffset], a
+    ld bc, LampMap
+    ld d, 6
+    ld e, 1
+    jp MEMCPY_SINGLE_SCREEN_WITH_OFFSET
+
+LoadHydrant::
+    ; Arg: HL = Destination address
+    ld a, $26 ; HYDRANT_OFFSET
+    ld [wMemcpyTileOffset], a
+    ld bc, HydrantMap
+    ld d, 3
+    ld e, 2
+    jp MEMCPY_SINGLE_SCREEN_WITH_OFFSET
+
 LoadRoadCommon::
+    ; Arg: HL = Destination address
+    push hl
 .tiles:
     ld bc, CutsceneTiles
     ld hl, _VRAM9000 + ROAD_TILES_OFFSET * TILE_BYTES
@@ -79,7 +99,7 @@ LoadRoadCommon::
     call MEMCPY
 .tilemap:
     ; Add Road
-    ld hl, $9900
+    pop hl
     ld bc, CloudsMap + CLOUDS_CUTSCENE_1_OFFSET
 	call MEMCPY_PATTERN_CLOUDS
     ld bc, CloudsMap + CLOUDS_CUTSCENE_2_OFFSET
@@ -93,42 +113,7 @@ LoadRoadCommon::
     ld bc, CloudsMap + CLOUDS_CUTSCENE_6_OFFSET
 	call MEMCPY_PATTERN_CLOUDS
     ld bc, CloudsMap + CLOUDS_CUTSCENE_7_OFFSET
-	call MEMCPY_PATTERN_CLOUDS
-    ; Lamps
-    ld a, $20 ; LAMP_OFFSET
-    ld [wMemcpyTileOffset], a
-    ld bc, LampMap
-    ld hl, $98A2
-    ld d, 6
-    ld e, 1
-    call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
-    ld bc, LampMap
-    ld hl, $98B2
-    ld d, 6
-    ld e, 1
-    call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
-    ; Hydrants
-    ld a, $26 ; HYDRANT_OFFSET
-    ld [wMemcpyTileOffset], a
-    ld bc, HydrantMap
-    ld hl, $9943
-    ld d, 3
-    ld e, 2
-    call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
-    ; ld bc, HydrantMap
-    ; ld hl, $9957
-    ; ld d, 3
-    ; ld e, 2
-    ; call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
-    ; Flowers
-    ld a, $2C ; FLOWER_OFFSET
-    ld [$99C5], a
-    ld [$99CD], a
-    ld [$99D3], a
-    ; Add scrolling thin clouds
-    ld bc, CloudsMap + CLOUDS_THIN_OFFSET
-    ld hl, $9880
-    jp MEMCPY_PATTERN_CLOUDS
+	jp MEMCPY_PATTERN_CLOUDS
 
 ; *************************************************************
 ; LoadLevelCityGraphics
