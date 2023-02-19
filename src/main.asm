@@ -14,6 +14,9 @@ Common::
 	RESET_GLOBAL_TIMER
 	jp ResetFading
 
+; *************************************************************
+; START
+; *************************************************************
 Start::
 	di
 	ld sp, $E000 ; Stack pointer to WRAM ; Default: $FFFE
@@ -43,9 +46,9 @@ Restart::
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	call WaitVBlank
-	call UpdateMenuOpening
-	jp MenuLoopOpening
+	; call WaitVBlank
+	; call UpdateMenuOpening
+	; jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
 	call TitleSplashSound
@@ -58,15 +61,18 @@ StartMenu::
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateMenu
-	jp MenuLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateMenu
+	; jp MenuLoop
 
+; *************************************************************
+; STARTGAME
+; *************************************************************
 StartGame::
 	; === testing ===
-	; ld a, ENDLESS_MODE
-	; ld [wSelectedMode], a
+	ld a, ENDLESS_MODE
+	ld [wSelectedMode], a
 	; ===============
 	ld a, [wSelectedMode]
 	cp a, CLASSIC_MODE
@@ -77,6 +83,9 @@ StartGame::
 .enteringClassic:
 	call InitializeLivesClassic
 
+; *************************************************************
+; OPENINGCUTSCENE
+; *************************************************************
 OpeningCutscene:
 	call WaitVBlank
 	call LCD_OFF
@@ -107,7 +116,9 @@ OpeningCutsceneLoop:
 	call UpdateOpeningCutscene
 	jp OpeningCutsceneLoop
 
-	; SetupNextLevel
+; *************************************************************
+; SETUPNEXTLEVEL
+; *************************************************************
 SetupNextLevel::
 	call WaitVBlank
 	call LCD_OFF
@@ -188,7 +199,7 @@ SetupNextLevel::
 	call LoadEndlessGraphics
 	ld hl, angryTheme
 	call hUGE_init_game_song
-	; clean this
+	; Clean this
 	ld a, [hEndlessLevelSwitchSkip]
 	cp a, 0
 	jr nz, .endLevelSetup
@@ -215,7 +226,6 @@ GameLoop::
 	call UpdateGame
 	jp GameLoop
 
-	; SetupNextLevelEndless
 SetupNextLevelEndless::
 	call ClearSound
 	call WaitVBlank
@@ -225,6 +235,9 @@ SetupNextLevelEndless::
 	call InitializeSound
 	jp SetupNextLevel.levelSelect
 
+; *************************************************************
+; STAGECLEAR
+; *************************************************************
 StageClear::
 	call WaitVBlank
 	call LCD_OFF
@@ -244,6 +257,9 @@ StageClearLoop:
 	call UpdateStageClear
 	jp StageClearLoop
 
+; *************************************************************
+; GAMEOVER
+; *************************************************************
 GameOver::
 	call WaitVBlank
 	call LCD_OFF
@@ -259,6 +275,9 @@ GameOverLoop:
 	call UpdateGameOver
 	jp GameOverLoop
 
+; *************************************************************
+; GAMEWON
+; *************************************************************
 GameWon::
 	call WaitVBlank
 	call LCD_OFF
