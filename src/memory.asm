@@ -1,6 +1,7 @@
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 INCLUDE "constants.inc"
+INCLUDE "tileConstants.inc"
 
 SECTION "memory vars", WRAM0 
     wMemcpyTileOffset:: DB
@@ -87,6 +88,15 @@ MEMCPY_SIMPLE_PATTERN_WITH_OFFSET::
 .end:
     pop af
     ret
+
+MEMCPY_PATTERN_CLOUDS::
+    ; Arg: HL = Destination address
+    ; Arg: BC = Source address
+	ld d, SCRN_VX_B
+	ld e, CLOUDS_TILE_AMOUNT
+	ld a, CLOUDS_TILE_OFFSET
+	ld [wMemcpyTileOffset], a
+	jp MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
 
 MEMCPY_SINGLE_SCREEN::
     xor a ; ld a, 0

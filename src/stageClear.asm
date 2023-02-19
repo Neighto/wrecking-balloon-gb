@@ -115,28 +115,18 @@ LoadStageClearGraphics::
 	call MEMCPY
 	; Draw footer
 	; Row 1
-	ld bc, CloudsMap + $04 * 5
+	ld bc, CloudsMap + CLOUDS_STAGE_CLEAR_1_OFFSET
 	ld hl, $99C0
-	ld d, $20
-	ld e, 4
-	ld a, CLOUDS_TILE_OFFSET
-	ld [wMemcpyTileOffset], a
-	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+	call MEMCPY_PATTERN_CLOUDS
 	; Row 2
-	ld bc, CloudsMap + $04 * 6
-	ld d, $20
-	ld e, 4
-	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+	ld bc, CloudsMap + CLOUDS_STAGE_CLEAR_2_OFFSET
+	call MEMCPY_PATTERN_CLOUDS
 	; Row 3
-	ld bc, CloudsMap + $04 * 7
-	ld d, $20
-	ld e, 4
-	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+	ld bc, CloudsMap + CLOUDS_STAGE_CLEAR_3_OFFSET
+	call MEMCPY_PATTERN_CLOUDS
 	; Row 4
-	ld bc, CloudsMap + $04 * 8
-	ld d, $20
-	ld e, 4
-	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+	ld bc, CloudsMap + CLOUDS_STAGE_CLEAR_4_OFFSET
+	call MEMCPY_PATTERN_CLOUDS
 	; Draw meter
 	ld hl, METER_SC_INDEX_ONE_ADDRESS - 1
 	ld a, BAR_LEFT_EDGE

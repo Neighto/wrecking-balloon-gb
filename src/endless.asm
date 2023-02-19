@@ -143,35 +143,22 @@ InitializeEndless::
     ret
 
 LoadEndlessGraphics::
-    ; Add scrolling thin clouds
-    ld bc, CloudsMap + $04 * 4
-	ld hl, $9900
-	ld d, $20
-	ld e, 4
-	ld a, CLOUDS_TILE_OFFSET
-	ld [wMemcpyTileOffset], a
-	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
-    ; Add scrolling light clouds
-    ld bc, CloudsMap
-	ld hl, $9980
-	ld d, $20
-	ld e, 4
-	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
-    ; Fill in light clouds space
-    ld bc, $20
-    ld d, LIGHT_GREY_BKG_TILE
-    call SetInRange
+    ; Add Road
+    call LoadRoadCommon
+    ; Add plane for fun
+    ld bc, CityPlaneMap
+	ld hl, $983A ; City Plane address
+    ld de, 5
+    ld a, PLANE_TILE_OFFSET
+	call MEMCPY_WITH_OFFSET
     ; Add scrolling dark clouds
-    ld bc, CloudsMap + $04 * 1
-	ld d, $20
-	ld e, 4
-	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+    ld hl, $99C0
+    ld bc, CloudsMap + CLOUDS_DARK_OFFSET
+	call MEMCPY_PATTERN_CLOUDS
     ; Fill in dark clouds space
-    ld bc, $20
+    ld bc, SCRN_VX_B
     ld d, DARK_GREY_BKG_TILE
-    call SetInRange
-    ; Add sun
-    jp SpawnSun
+    jp SetInRange
 
 ; UPDATE
 EndlessUpdate::

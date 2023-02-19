@@ -67,18 +67,12 @@ LoadMenuGraphics::
 	ld e, SCRN_X_B
 	call MEMCPY_SINGLE_SCREEN
 	; Add scrolling light clouds
-	ld bc, CloudsMap
+	ld bc, CloudsMap + CLOUDS_LIGHT_OFFSET
 	ld hl, $99C0
-	ld d, $20
-	ld e, 4
-	ld a, CLOUDS_TILE_OFFSET
-	ld [wMemcpyTileOffset], a
-	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+	call MEMCPY_PATTERN_CLOUDS
 	; Add scrolling dark clouds
-	ld bc, CloudsMap + $04
-	ld d, $20
-	ld e, 4
-	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+	ld bc, CloudsMap + CLOUDS_DARK_OFFSET
+	call MEMCPY_PATTERN_CLOUDS
 	; Fill in dark clouds space
 	ld hl, $9A00
     ld bc, $40

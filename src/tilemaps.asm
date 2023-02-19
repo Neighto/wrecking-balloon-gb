@@ -1,16 +1,30 @@
 SECTION "tilemaps", ROM0
 
-CutsceneMap::
-    INCBIN "incbin/background/Cutscene.tilemap"
-CutsceneMapEnd::
+; CUTSCENES
 
-ScoreboardsMap::
-    INCBIN "incbin/background/Scoreboards.tilemap"
-ScoreboardsMapEnd::
+ManMap::
+    INCBIN "incbin/background/Man.tilemap"
+ManMapEnd::
 
 ManForEndingMap::
     INCBIN "incbin/background/ManForEnding.tilemap"
 ManForEndingMapEnd::
+
+CartMap::
+    INCBIN "incbin/background/Cart.tilemap"
+CartMapEnd::
+
+LampMap::
+    INCBIN "incbin/background/Lamp.tilemap"
+LampMapEnd::
+
+HydrantMap::
+    INCBIN "incbin/background/Hydrant.tilemap"
+HydrantMapEnd::
+
+ScoreboardsMap::
+    INCBIN "incbin/background/Scoreboards.tilemap"
+ScoreboardsMapEnd::
 
 StageClearFooterMap::
     INCBIN "incbin/background/StageClearFooter.tilemap"

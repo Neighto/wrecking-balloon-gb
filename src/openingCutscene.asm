@@ -5,9 +5,9 @@ INCLUDE "enemyConstants.inc"
 INCLUDE "tileConstants.inc"
 
 HAND_DOWN_START_X EQU 51
-HAND_DOWN_START_Y EQU 105
+HAND_DOWN_START_Y EQU 104
 HAND_WAVE_START_X EQU HAND_DOWN_START_X - 2
-HAND_WAVE_START_Y EQU 97
+HAND_WAVE_START_Y EQU 96
 
 SECTION "opening cutscene vars", WRAM0
     wHandWavingFrame:: DB
@@ -41,32 +41,29 @@ SkipOpeningSequence:
     SEQUENCE_END SetupNextLevel
 
 LoadOpeningCutsceneGraphics::
-.loadTiles:
-	ld bc, CutsceneTiles
-	ld hl, _VRAM9000
-	ld de, CutsceneTilesEnd - CutsceneTiles
-	call MEMCPY
-.drawMap:
-	ld bc, CutsceneMap
-	ld hl, $98A0
-    ld d, 13
-    ld e, SCRN_X_B
-	call MEMCPY_SINGLE_SCREEN
-    ; Add thin clouds
-    ld bc, CloudsMap + $04 * 4
-	ld hl, $9880
-	ld d, $20
-	ld e, 4
-	ld a, CLOUDS_TILE_OFFSET
-	ld [wMemcpyTileOffset], a
-	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
-.addBorders:
-    ; Top
+    call LoadRoadCommon
+    ; Man
+    ld a, $01 ; MAN_OFFSET
+    ld [wMemcpyTileOffset], a
+    ld bc, ManMap
+    ld hl, $9926
+    ld d, 5
+    ld e, 2
+    call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
+    ; Cart
+    ld a, $11 ; CART_OFFSET
+    ld [wMemcpyTileOffset], a
+    ld bc, CartMap
+    ld hl, $996C
+    ld d, 3
+    ld e, 5
+    call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
+    ; Top banner
     ld hl, _SCRN0
     ld bc, $60
     ld d, BLACK_BKG_TILE
     call SetInRange
-    ; Bottom
+    ; Bottom banner
     ld hl, $99E0
     ld bc, $60
     ld d, BLACK_BKG_TILE
@@ -96,9 +93,9 @@ SpawnCartBalloons::
     ldh [hEnemyNumber], a
     ld a, BALLOON_MEDIUM_VARIANT
     ldh [hEnemyVariant], a
-    ld a, 86
+    ld a, 85
     ldh [hEnemyY], a
-    ld a, 24 + 96
+    ld a, 23 + 96
     ldh [hEnemyX], a
     call SpawnPointBalloon
     ; EASY
@@ -106,7 +103,7 @@ SpawnCartBalloons::
     ldh [hEnemyNumber], a
     ld a, BALLOON_EASY_VARIANT
     ldh [hEnemyVariant], a
-    ld a, 85
+    ld a, 84
     ldh [hEnemyY], a
     ld a, 8 + 96
     ldh [hEnemyX], a
@@ -116,9 +113,9 @@ SpawnCartBalloons::
     ldh [hEnemyNumber], a
     ld a, BALLOON_HARD_VARIANT
     ldh [hEnemyVariant], a
-    ld a, 85
+    ld a, 83
     ldh [hEnemyY], a
-    ld a, 32 + 96
+    ld a, 34 + 96
     ldh [hEnemyX], a
     jp SpawnPointBalloon
 

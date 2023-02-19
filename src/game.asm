@@ -20,6 +20,7 @@ COUNTDOWN_FRAME_5 EQU 5
 COUNTDOWN_FRAME_6 EQU 6 ; Clear
 
 CITY_TILES_OFFSET EQU 1 ; So first tile is empty
+ROAD_TILES_OFFSET EQU 1 ; So first tile is empty
 
 SUN_ADDRESS EQU $9848
 
@@ -47,16 +48,10 @@ LoadGameSpriteAndMiscellaneousTiles::
 
 LoadLevelClouds:
     ; Arg: HL = Address
-    ld a, CLOUDS_TILE_OFFSET
-    ld [wMemcpyTileOffset], a
-    ld bc, CloudsMap + $04 * 9
-    ld d, $20
-    ld e, 4
-    call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
-    ld bc, CloudsMap + $04 * 10
-    ld d, $20
-    ld e, 4
-    jp MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+    ld bc, CloudsMap + CLOUDS_WHITE_1_OFFSET
+    call MEMCPY_PATTERN_CLOUDS
+    ld bc, CloudsMap + CLOUDS_WHITE_2_OFFSET
+    jp MEMCPY_PATTERN_CLOUDS
 
 LoadLevelCityGraphicsCommon:
 .tiles:
@@ -76,6 +71,65 @@ LoadLevelCityGraphicsCommon:
     ld hl, $99C0
     jp LoadLevelClouds
     
+LoadRoadCommon::
+.tiles:
+    ld bc, CutsceneTiles
+    ld hl, _VRAM9000 + ROAD_TILES_OFFSET * TILE_BYTES
+    ld de, CutsceneTilesEnd - CutsceneTiles
+    call MEMCPY
+.tilemap:
+    ; Add Road
+    ld hl, $9900
+    ld bc, CloudsMap + CLOUDS_CUTSCENE_1_OFFSET
+	call MEMCPY_PATTERN_CLOUDS
+    ld bc, CloudsMap + CLOUDS_CUTSCENE_2_OFFSET
+	call MEMCPY_PATTERN_CLOUDS
+    ld bc, CloudsMap + CLOUDS_CUTSCENE_3_OFFSET
+	call MEMCPY_PATTERN_CLOUDS
+    ld bc, CloudsMap + CLOUDS_CUTSCENE_4_OFFSET
+	call MEMCPY_PATTERN_CLOUDS
+    ld bc, CloudsMap + CLOUDS_CUTSCENE_5_OFFSET
+	call MEMCPY_PATTERN_CLOUDS
+    ld bc, CloudsMap + CLOUDS_CUTSCENE_6_OFFSET
+	call MEMCPY_PATTERN_CLOUDS
+    ld bc, CloudsMap + CLOUDS_CUTSCENE_7_OFFSET
+	call MEMCPY_PATTERN_CLOUDS
+    ; Lamps
+    ld a, $20 ; LAMP_OFFSET
+    ld [wMemcpyTileOffset], a
+    ld bc, LampMap
+    ld hl, $98A2
+    ld d, 6
+    ld e, 1
+    call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
+    ld bc, LampMap
+    ld hl, $98B2
+    ld d, 6
+    ld e, 1
+    call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
+    ; Hydrants
+    ld a, $26 ; HYDRANT_OFFSET
+    ld [wMemcpyTileOffset], a
+    ld bc, HydrantMap
+    ld hl, $9943
+    ld d, 3
+    ld e, 2
+    call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
+    ; ld bc, HydrantMap
+    ; ld hl, $9957
+    ; ld d, 3
+    ; ld e, 2
+    ; call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
+    ; Flowers
+    ld a, $2C ; FLOWER_OFFSET
+    ld [$99C5], a
+    ld [$99CD], a
+    ld [$99D3], a
+    ; Add scrolling thin clouds
+    ld bc, CloudsMap + CLOUDS_THIN_OFFSET
+    ld hl, $9880
+    jp MEMCPY_PATTERN_CLOUDS
+
 ; *************************************************************
 ; LoadLevelCityGraphics
 ; *************************************************************
@@ -201,16 +255,10 @@ LoadLevelShowdownGraphics::
     ld d, DARK_GREY_BKG_TILE
     call SetInRange
     ; Add scrolling rain clouds
-    ld bc, CloudsMap + $04 * 2
-	ld d, $20
-	ld e, 4
-	ld a, CLOUDS_TILE_OFFSET
-	ld [wMemcpyTileOffset], a
-	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
-    ld bc, CloudsMap + $04 * 3
-	ld d, $20
-	ld e, 4
-	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+    ld bc, CloudsMap + CLOUDS_DARK_INV_OFFSET
+	call MEMCPY_PATTERN_CLOUDS
+    ld bc, CloudsMap + CLOUDS_LIGHT_INV_OFFSET
+	call MEMCPY_PATTERN_CLOUDS
     ; Add scrolling mountains
 	ld bc, ShowdownWaterMap
 	ld hl, $9BA0
@@ -224,6 +272,7 @@ LoadLevelShowdownGraphics::
 ; SPAWNSUN
 ; *************************************************************
 SpawnSun::
+    ; TODO should be cheaper to replace with copy signel screen
     ld bc, SunMap
 	ld hl, SUN_ADDRESS
     ld de, 4
