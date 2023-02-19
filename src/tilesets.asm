@@ -55,6 +55,7 @@ MiscellaneousTiles::
     INCBIN "incbin/background/UFO.2bpp"
     INCBIN "incbin/sprite/MenuSprite.2bpp"
     INCBIN "incbin/sprite/Sunglasses.2bpp"
+
 MiscellaneousTilesEnd::
 
 WindowTiles::
@@ -68,8 +69,12 @@ ScoreboardsTilesEnd::
 SECTION "tilesets 2", ROMX
 
 CutsceneTiles::
-    INCBIN "incbin/background/Cutscene.2bpp"
+    INCBIN "incbin/background/Man.2bpp"
     INCBIN "incbin/background/ManForEnding.2bpp"
+    INCBIN "incbin/background/Cart.2bpp"
+    INCBIN "incbin/background/Lamp.2bpp"
+    INCBIN "incbin/background/Hydrant.2bpp"
+    INCBIN "incbin/background/Flower.2bpp"
 CutsceneTilesEnd::
 
 LevelCityTiles::

@@ -71,8 +71,8 @@ MenuLoop:
 ; *************************************************************
 StartGame::
 	; === testing ===
-	ld a, ENDLESS_MODE
-	ld [wSelectedMode], a
+	; ld a, ENDLESS_MODE
+	; ld [wSelectedMode], a
 	; ===============
 	ld a, [wSelectedMode]
 	cp a, CLASSIC_MODE
@@ -111,10 +111,10 @@ OpeningCutscene:
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateOpeningCutscene
-	jp OpeningCutsceneLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateOpeningCutscene
+	; jp OpeningCutsceneLoop
 
 ; *************************************************************
 ; SETUPNEXTLEVEL
@@ -133,7 +133,7 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; === testing ===
-	; ld a, 5
+	; ld a, 6
 	; ldh [hLevel], a
 	; ===============
 

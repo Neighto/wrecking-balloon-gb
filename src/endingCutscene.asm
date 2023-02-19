@@ -16,8 +16,8 @@ VICTORY_TEXT_ADDRESS EQU $9886
 VICTORY_TEXT_TILES EQU 8
 TOTAL_TEXT_ADDRESS EQU $98C4
 
-SCOREBOARD_OFFSET EQU $3A
-MAN_FOR_ENDING_OFFSET EQU $34
+SCOREBOARD_OFFSET EQU $2D
+MAN_FOR_ENDING_OFFSET EQU $0B
 
 SECTION "ending cutscene vars", WRAM0
     wHandClappingFrame:: DB
@@ -63,7 +63,7 @@ LoadEndingCutsceneGraphics::
 .loadTiles:
     ; Scoreboard tiles
     ld bc, ScoreboardsTiles
-	ld hl, _VRAM9000 + CutsceneTilesEnd - CutsceneTiles
+	ld hl, _VRAM9000 + CutsceneTilesEnd - CutsceneTiles + 1 * TILE_BYTES
 	ld de, ScoreboardsTilesEnd - ScoreboardsTiles
 	call MEMCPY
 .drawMap:
