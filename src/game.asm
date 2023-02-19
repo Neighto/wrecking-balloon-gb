@@ -46,7 +46,7 @@ LoadGameSpriteAndMiscellaneousTiles::
 	jp MEMCPY
 
 LoadLevelClouds:
-    ; hl = Address
+    ; Arg: HL = Address
     ld a, CLOUDS_TILE_OFFSET
     ld [wMemcpyTileOffset], a
     ld bc, CloudsMap + $04 * 9
@@ -60,22 +60,25 @@ LoadLevelClouds:
 
 LoadLevelCityGraphicsCommon:
 .tiles:
-	ld bc, LevelCityTiles
-	ld hl, _VRAM9000 + CITY_TILES_OFFSET * TILE_BYTES
-	ld de, LevelCityTilesEnd - LevelCityTiles
-	call MEMCPY
+    ld bc, LevelCityTiles
+    ld hl, _VRAM9000 + CITY_TILES_OFFSET * TILE_BYTES
+    ld de, LevelCityTilesEnd - LevelCityTiles
+    call MEMCPY
 .tilemap:
     ; Add city
-	ld bc, LevelCityMap
-	ld hl, _SCRN0 + $C0
-	ld de, LevelCityMapEnd - LevelCityMap
+    ld bc, LevelCityMap
+    ld hl, _SCRN0 + $C0
+    ld de, LevelCityMapEnd - LevelCityMap
     ld a, CITY_TILES_OFFSET
     ld [wMemcpyTileOffset], a
-	call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
+    call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
     ; Add scrolling clouds
     ld hl, $99C0
     jp LoadLevelClouds
     
+; *************************************************************
+; LoadLevelCityGraphics
+; *************************************************************
 LoadLevelCityGraphics::
     call LoadLevelCityGraphicsCommon
     ; City Planes
@@ -95,6 +98,9 @@ LoadLevelCityGraphics::
     ld a, PLANE_TILE_OFFSET
 	jp MEMCPY_WITH_OFFSET
 
+; *************************************************************
+; LoadLevelNightCityGraphics
+; *************************************************************
 LoadLevelNightCityGraphics::
     call LoadLevelCityGraphicsCommon
     ; Stars
@@ -120,6 +126,9 @@ LoadLevelNightCityGraphics::
     ld a, UFO_TILE_OFFSET
 	jp MEMCPY_WITH_OFFSET
 
+; *************************************************************
+; LoadLevelDesertGraphicsCommon
+; *************************************************************
 LoadLevelDesertGraphicsCommon:
 .tiles:
 	ld bc, LevelDesertTiles
@@ -138,9 +147,15 @@ LoadLevelDesertGraphicsCommon:
     ld hl, $99C0
     jp LoadLevelClouds
 
+; *************************************************************
+; LoadLevelDesertGraphics
+; *************************************************************
 LoadLevelDesertGraphics::
     jp LoadLevelDesertGraphicsCommon
 
+; *************************************************************
+; LoadLevelNightDesertGraphics
+; *************************************************************
 LoadLevelNightDesertGraphics::
     call LoadLevelDesertGraphicsCommon
     ; Add stars
@@ -159,6 +174,9 @@ LoadLevelNightDesertGraphics::
     ld [hl], a
     ret
 
+; *************************************************************
+; LoadLevelShowdownGraphics
+; *************************************************************
 LoadLevelShowdownGraphics::
 .tiles:
 	ld bc, LevelShowdownTiles
@@ -202,15 +220,9 @@ LoadLevelShowdownGraphics::
     ; Add scrolling clouds
     jp LoadLevelClouds
 
-    ld bc, CloudsMap + $04 * 9
-	ld d, $20
-	ld e, 4
-	call MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
-    ld bc, CloudsMap + $04 * 10
-	ld d, $20
-	ld e, 4
-	jp MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
-
+; *************************************************************
+; SPAWNSUN
+; *************************************************************
 SpawnSun::
     ld bc, SunMap
 	ld hl, SUN_ADDRESS
@@ -227,6 +239,10 @@ SpawnSun::
     ld de, 4
 	jp MEMCPY_WITH_OFFSET
 
+
+; *************************************************************
+; SPAWNCOUNTDOWN
+; *************************************************************
 SpawnCountdown::
 	ld b, 2
 	call RequestOAMSpace
@@ -235,29 +251,24 @@ SpawnCountdown::
     ld a, b
 	ld [wCountdownOAM], a
     ld hl, wOAM
-    ; ld a, [wCountdownOAM]
     ADD_A_TO_HL
-    ld a, COUNTDOWN_START_Y
+    ld b, COUNTDOWN_START_Y
+    ld c, COUNTDOWN_START_X
+    ld a, b
     ld [hli], a
-    ld a, COUNTDOWN_START_X
+    ld a, c
     ld [hli], a
     ld a, WHITE_SPR_TILE
     ld [hli], a
     inc l
-    ld a, COUNTDOWN_START_Y
+    ld a, b
     ld [hli], a
-    ld a, COUNTDOWN_START_X + 8
+    ld a, c
+    add a, 8
     ld [hli], a
     ld a, WHITE_SPR_TILE
     ld [hl], a
 	ret
-
-ClearCountdown::
-    ld hl, wOAM
-    ld a, [wCountdownOAM]
-    ADD_TO_HL [wCountdownOAM]
-    ld bc, COUNTDOWN_OAM_BYTES
-    jp ResetHLInRange
 
 IsCountdownAtBalloonPop::
     ; Returns z flag as yes / nz flag as no
@@ -265,23 +276,24 @@ IsCountdownAtBalloonPop::
     cp a, COUNTDOWN_FRAME_4
     ret
 
+; *************************************************************
+; COUNTDOWN
+; Returns z flag as still running / nz flag as finished
+; *************************************************************
 Countdown::
-    ; Returns z flag as still running / nz flag as finished
+    
     ; Frame speed
-.frameSpeed:
     ld a, [wCountdownFrame]
     cp a, COUNTDOWN_FRAME_4
+    ldh a, [hGlobalTimer]
     jr nc, .countdownBalloonPopSpeed
 .countdownSpeed:
-    ldh a, [hGlobalTimer]
     and COUNTDOWN_SPEED
     jp nz, .hasNotFinished
-    jr .endFrameSpeed
+    jr .frames
 .countdownBalloonPopSpeed:
-    ldh a, [hGlobalTimer]
     and COUNTDOWN_BALLOON_POP_SPEED
     jp nz, .hasNotFinished
-.endFrameSpeed:
 
     ; Update frame
 .frames:
@@ -333,7 +345,12 @@ Countdown::
 .frame6:
     cp a, COUNTDOWN_FRAME_6
     jr nz, .hasFinished
-    call ClearCountdown
+    ; Clear
+    ld hl, wOAM
+    ld a, [wCountdownOAM]
+    ADD_TO_HL [wCountdownOAM]
+    ld bc, COUNTDOWN_OAM_BYTES
+    call ResetHLInRange
     jr .nextFrame
 .updateFrame:
     ld hl, wOAM+2
@@ -356,34 +373,35 @@ Countdown::
     or a, 1
     ret
 
-; UPDATE GAME COUNTDOWN ======================================
-
+; *************************************************************
+; UPDATEGAMECOUNTDOWN
+; *************************************************************
 UpdateGameCountdown::
 
+    ; Timer
     UPDATE_GLOBAL_TIMER
+
     call IncrementScrollOffset
 
-.checkFadeIn:
-    ; Only in endless
+    ; Check fade in (only endless)
     ldh a, [hLevel]
     cp a, LEVEL_ENDLESS
-    jr nz, .endCheckFadeIn
+    jr nz, .isFadedIn
     call FadeInPalettes
     ret z
-.hasFadedIn:
-.endCheckFadeIn:
+.isFadedIn:
 
-.checkCountdownAnimation:
+    ; Check countdown animation and jump to main game loop when done
     call Countdown
     jp nz, GameLoop
-.endCheckCountdownAnimation:
     ret
 
-; UPDATE GAME ======================================
-
+; *************************************************************
+; UPDATEGAME
+; *************************************************************
 UpdateGame::
 
-.tryToUnpause:
+    ; Check paused
     ldh a, [hPaused]
 	cp a, PAUSE_OFF
 	jr z, .isNotPaused
@@ -403,14 +421,15 @@ UpdateGame::
     ret
 .isNotPaused:
 
-.updateSprites:
+    ; Update sprites
     call PlayerUpdate
     call BulletUpdate
     call EnemyUpdate
-.rest:
+
+    ; Timer
     UPDATE_GLOBAL_TIMER
 
-.modeSpecific:
+    ; Handle mode specific
     ld a, [wSelectedMode]
     cp a, CLASSIC_MODE
     jr nz, .endlessMode
@@ -423,6 +442,8 @@ UpdateGame::
 .endlessMode:
     call EndlessUpdate
 .endModeSpecific:
+
+    ; Handle common
     call RefreshWindow
     call IncrementScrollOffset
     jp _hUGE_dosound
