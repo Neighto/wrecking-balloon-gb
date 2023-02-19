@@ -144,13 +144,26 @@ InitializeEndless::
 
 LoadEndlessGraphics::
     ; Add Road
-    call LoadRoadCommon
+    ld hl, $9920
+    call LoadRoadCommon ; Loads in tiles too important for other calls
+    ; Lamps
+    ld hl, $98C2
+    call LoadLamp
+    ld hl, $98D2
+    call LoadLamp
+    ; Hydrant
+    ld hl, $9963
+    call LoadHydrant
     ; Add plane for fun
     ld bc, CityPlaneMap
-	ld hl, $983A ; City Plane address
+	ld hl, $985A ; City Plane address
     ld de, 5
     ld a, PLANE_TILE_OFFSET
 	call MEMCPY_WITH_OFFSET
+    ; Add scrolling thin clouds
+    ld bc, CloudsMap + CLOUDS_THIN_OFFSET
+    ld hl, $9880
+    call MEMCPY_PATTERN_CLOUDS
     ; Add scrolling dark clouds
     ld hl, $99C0
     ld bc, CloudsMap + CLOUDS_DARK_OFFSET

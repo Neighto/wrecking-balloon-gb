@@ -41,7 +41,22 @@ SkipOpeningSequence:
     SEQUENCE_END SetupNextLevel
 
 LoadOpeningCutsceneGraphics::
-    call LoadRoadCommon
+    ; Road
+    ld hl, $9900
+    call LoadRoadCommon ; Loads in tiles too important for other calls
+    ; Lamps
+    ld hl, $98A2
+    call LoadLamp
+    ld hl, $98B2
+    call LoadLamp
+    ; Hydrant
+    ld hl, 9943
+    call LoadHydrant
+    ; Flowers
+    ld a, $2C ; FLOWER_OFFSET
+    ld [$99C5], a
+    ld [$99CD], a
+    ld [$99D3], a
     ; Man
     ld a, $01 ; MAN_OFFSET
     ld [wMemcpyTileOffset], a
@@ -58,6 +73,10 @@ LoadOpeningCutsceneGraphics::
     ld d, 3
     ld e, 5
     call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
+    ; Add scrolling thin clouds
+    ld bc, CloudsMap + CLOUDS_THIN_OFFSET
+    ld hl, $9880
+    call MEMCPY_PATTERN_CLOUDS
     ; Top banner
     ld hl, _SCRN0
     ld bc, $60
