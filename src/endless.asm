@@ -26,7 +26,7 @@ ENDLESS_HORIZONTAL_COOLDOWN_TIMER EQU %00000011 ; Wait time before decrementing 
 
 ENDLESS_LEVEL_SWITCH_OFF EQU 0
 ENDLESS_LEVEL_SWITCH_ON EQU 1
-ENDLESS_LEVEL_DURATION EQU 20
+ENDLESS_LEVEL_DURATION EQU 22
 ENDLESS_LEVEL_STOP_SPAWN_DURATION EQU 1
 ENDLESS_LEVEL_DURATION_TIMER EQU %01111111
 
@@ -102,6 +102,7 @@ SECTION "endless vars", HRAM
     hEndlessLevelSwitch:: DB
     hEndlessLevelSwitchSkip:: DB
     hEndlessLevelSwitchTimer:: DB
+    hEndlessLevelOrder:: DS ENDLESS_LEVEL_SWITCH_TOTAL
 
 SECTION "endless", ROM0
 
@@ -134,13 +135,52 @@ InitializeEndless::
     ld a, ENDLESS_TIMER_RESET_TIME_EASY
     ldh [hEndlessResetTime], a
 
-    ; Set level to endless if endless mode
-    ld a, [wSelectedMode]
-    cp a, CLASSIC_MODE
-    ret z
+    ; Reset the array
+    ld hl, hEndlessLevelOrder
+    ld bc, ENDLESS_LEVEL_SWITCH_TOTAL
+    ld d, NOT_LEVEL
+    call SetInRange
+    ; Always start with endless level
+    ld hl, hEndlessLevelOrder
     ld a, LEVEL_ENDLESS
-    ldh [hLevel], a
+    ld [hl], a
+    ; Choose random following order
+    ld b, LEVEL_1
+.setLevelOrderLoop:
+    ; Get random level index (levels 1-5)
+    RANDOM ENDLESS_LEVEL_SWITCH_TOTAL - 1
+    inc a
+    ld d, a ; D = index
+.findSpaceFreeLoop:
+    ld hl, hEndlessLevelOrder
+    ADD_A_TO_HL ; HL = address
+    ld a, NOT_LEVEL
+    cp a, [hl]
+    jr nz, .spaceNotFree
+    ; Space is free
+.spaceFree:
+    ld a, b
+    ld [hl], a
+    ; Check if end of loop
+    inc b
+    ld a, b
+    cp a, ENDLESS_LEVEL_SWITCH_TOTAL
+    jr nz, .setLevelOrderLoop
     ret
+    ; Space is not free
+.spaceNotFree:
+    inc d
+    ld a, d
+    ld d, ENDLESS_LEVEL_SWITCH_TOTAL - 1
+    call MODULO
+    inc a
+    ld d, a
+    jr .findSpaceFreeLoop
+
+.updateLevelOrder:
+    ; Update level order
+    ld [hli], a
+    jr .setLevelOrderLoop
 
 LoadEndlessGraphics::
     ; Add Road
@@ -212,19 +252,28 @@ EndlessUpdate::
     ; Reset level switch timer
     xor a ; ld a, 0
     ld [hEndlessLevelSwitchTimer], a
-    ; Get random level
-    RANDOM ENDLESS_LEVEL_SWITCH_TOTAL
-    ; Compare with current
-    ld hl, hLevel
+    ; Find current level
+    ld hl, hEndlessLevelOrder
+    ldh a, [hLevel]
+    ld b, 0
+.findCurrentLevelLoop:
     cp a, [hl]
+    jr z, .getNextLevel
+    inc hl
+    inc b
+    jr .findCurrentLevelLoop
+    ; Get next level
+.getNextLevel:
+    inc hl 
+    ld a, b 
+    cp a, ENDLESS_LEVEL_SWITCH_TOTAL - 1
+    ld a, [hl]
     jr nz, .updateLevel
-    ; Same so offset
-    inc a
-    ld d, ENDLESS_LEVEL_SWITCH_TOTAL
-    call MODULO
-.updateLevel:
+    ; Handle end of level array
+    ldh a, [hEndlessLevelOrder] ; Back to start
     ; Update level
-    ld [hl], a
+.updateLevel:
+    ldh [hLevel], a
     ; Reset level switch
     ld a, ENDLESS_LEVEL_SWITCH_OFF
     ldh [hEndlessLevelSwitch], a

@@ -46,9 +46,9 @@ Restart::
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	; call WaitVBlank
-	; call UpdateMenuOpening
-	; jp MenuLoopOpening
+	call WaitVBlank
+	call UpdateMenuOpening
+	jp MenuLoopOpening
 StartMenu::
 	call LCD_OFF
 	call TitleSplashSound
@@ -78,9 +78,11 @@ StartGame::
 	cp a, CLASSIC_MODE
 	jr z, .enteringClassic
 .enteringEndless:
+	call InitializeLevelEndless
 	call InitializeLivesEndless
 	jr SetupNextLevel
 .enteringClassic:
+	call InitializeLevelClassic
 	call InitializeLivesClassic
 
 ; *************************************************************
@@ -95,7 +97,6 @@ OpeningCutscene:
 	call LoadOpeningCutsceneGraphics
 	call InitializeSequence
 	call InitializeOpeningCutscene
-	call InitializeLevelVars
 	call InitializeEnemyStructVars
 	call InitializePlayer
 	call InitializeBullet
