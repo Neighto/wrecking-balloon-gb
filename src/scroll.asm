@@ -12,7 +12,7 @@ SECTION "scroll vars", HRAM
     hParallaxFar:: DB
     hRain:: DB
 
-SECTION "scroll", ROM0
+SECTION "scroll", ROMX
 
 IncrementScrollOffset::
     ; Parallax

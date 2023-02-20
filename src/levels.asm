@@ -870,8 +870,13 @@ InitializeNewLevel::
     ld [hl], a
     ret
 
-InitializeLevelVars::
+InitializeLevelClassic::
     ld a, 1
+    ldh [hLevel], a
+    jp InitializeNewLevel
+
+InitializeLevelEndless::
+    ld a, LEVEL_ENDLESS
     ldh [hLevel], a
     jp InitializeNewLevel
 
