@@ -264,3 +264,20 @@ RequestRAMSpace::
 .noFreeSpace:
     xor a ; ld a, 0
     ret
+
+RequestOAMAndSetOAMOffset::
+    ; Arg: B = sprites needed
+    ; Arg: HL = OAM offset var
+    ; Ret: HL = address of free space
+    ; Ret: z flag as failed / nz flag as succeeded
+    push hl
+	call RequestOAMSpace
+    pop hl
+	ret z
+	; Has available space
+	ld a, b
+	ld [hl], a
+	ld hl, wOAM
+	ADD_A_TO_HL
+    or a, 1 ; Force return nz
+    ret

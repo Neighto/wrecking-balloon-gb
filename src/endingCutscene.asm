@@ -9,6 +9,7 @@ LEFT_HAND_CLAP_START_X EQU 58
 LEFT_HAND_CLAP_START_Y EQU 110
 RIGHT_HAND_CLAP_START_X EQU LEFT_HAND_CLAP_START_X + 5
 RIGHT_HAND_CLAP_START_Y EQU LEFT_HAND_CLAP_START_Y
+HAND_CLAP_SPRITES EQU 2
 TOTAL_SC_INDEX_ONE_ADDRESS EQU $98CF
 
 VICTORY_DISTANCE_FROM_TOP_IN_TILES EQU 5
@@ -96,14 +97,12 @@ LoadEndingCutsceneGraphics::
 	jp MEMCPY_SINGLE_SCREEN_WITH_OFFSET
 
 SpawnHandClap::
-	ld b, 2
-	call RequestOAMSpace
+	ld b, HAND_CLAP_SPRITES
+    ld hl, wHandClapOAM
+	call RequestOAMAndSetOAMOffset
     ret z
-    ld a, b
-	ld [wHandClapOAM], a
-    ld hl, wOAM
-    ADD_A_TO_HL 
-.leftHandClap:
+    ; Has available space
+    ; Left hand clap
     ld a, LEFT_HAND_CLAP_START_Y
     ld [hli], a
     ld a, LEFT_HAND_CLAP_START_X
@@ -112,7 +111,7 @@ SpawnHandClap::
     ld [hli], a
     ld a, OAMF_PAL0
     ld [hli], a
-.rightHandClap:
+    ; Right hand clap
     ld a, RIGHT_HAND_CLAP_START_Y
     ld [hli], a
     ld a, RIGHT_HAND_CLAP_START_X

@@ -50,6 +50,7 @@ MenuLoopOpening:
 	call UpdateMenuOpening
 	jp MenuLoopOpening
 StartMenu::
+	call WaitVBlank
 	call LCD_OFF
 	call TitleSplashSound
 	call InitializeScroll
