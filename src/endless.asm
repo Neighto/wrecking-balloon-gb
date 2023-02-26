@@ -204,13 +204,13 @@ LoadEndlessGraphics::
     ld bc, CloudsMap + CLOUDS_THIN_OFFSET
     ld hl, $9880
     call MEMCPY_PATTERN_CLOUDS
-    ; Add scrolling dark clouds
+    ; Add scrolling white clouds
     ld hl, $99C0
-    ld bc, CloudsMap + CLOUDS_DARK_OFFSET
+    ld bc, CloudsMap + CLOUDS_CUTSCENE_8_OFFSET
 	call MEMCPY_PATTERN_CLOUDS
-    ; Fill in dark clouds space
+    ; Fill in while clouds space
     ld bc, SCRN_VX_B
-    ld d, DARK_GREY_BKG_TILE
+    ld d, WHITE_BKG_TILE
     jp SetInRange
 
 ; UPDATE

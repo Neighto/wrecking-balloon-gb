@@ -278,14 +278,11 @@ SpawnSun::
 ; SPAWNCOUNTDOWN
 ; *************************************************************
 SpawnCountdown::
-	ld b, 2
-	call RequestOAMSpace
+	ld b, COUNTDOWN_OAM_SPRITES
+    ld hl, wCountdownOAM
+	call RequestOAMAndSetOAMOffset
     ret z
-.availableSpace:
-    ld a, b
-	ld [wCountdownOAM], a
-    ld hl, wOAM
-    ADD_A_TO_HL
+    ; Has available space
     ld b, COUNTDOWN_START_Y
     ld c, COUNTDOWN_START_X
     ld a, b
@@ -294,7 +291,7 @@ SpawnCountdown::
     ld [hli], a
     ld a, WHITE_SPR_TILE
     ld [hli], a
-    inc l
+    inc hl
     ld a, b
     ld [hli], a
     ld a, c

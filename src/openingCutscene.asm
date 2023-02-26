@@ -8,6 +8,7 @@ HAND_DOWN_START_X EQU 51
 HAND_DOWN_START_Y EQU 104
 HAND_WAVE_START_X EQU HAND_DOWN_START_X - 2
 HAND_WAVE_START_Y EQU 96
+HAND_WAVE_SPRITES EQU 1
 
 SECTION "opening cutscene vars", WRAM0
     wHandWavingFrame:: DB
@@ -89,14 +90,11 @@ LoadOpeningCutsceneGraphics::
     jp SetInRange
 
 SpawnHandWave::
-	ld b, 1
-	call RequestOAMSpace
+	ld b, HAND_WAVE_SPRITES
+    ld hl, wHandWaveOAM
+	call RequestOAMAndSetOAMOffset
     ret z
-    ld a, b
-	ld [wHandWaveOAM], a
-    ld hl, wOAM
-    ; ld a, [wHandWaveOAM]
-    ADD_A_TO_HL
+    ; Has available space
     ld a, HAND_DOWN_START_Y
     ld [hli], a
     ld a, HAND_DOWN_START_X

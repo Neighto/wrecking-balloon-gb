@@ -13,7 +13,7 @@ SECTION "lcd", ROM0
 ; Some naming convention exceptions for function clarity
 
 LCD_OFF::
-    ld a, 0
+    xor a ; ld a, 0
     ldh [rLCDC], a
     ret
 
@@ -55,4 +55,16 @@ SetupWindow::
 	ldh [rWY], a
 	ld a, 7
 	ldh [rWX], a
+    ret
+
+WaitVRAMAccessible::
+    ; Waits for VRAM to be in
+    ; Mode 0 = H-Blank
+    ; Mode 1 = V-Blank
+    ; Mode 2 ; Searching OAM
+    ; If there is an untimely LCD interrupt, it is possible to enter Mode 3 before VRAM is accessed
+    ld hl, rSTAT
+.wait:
+    bit 1, [hl]
+    jr nz, .wait
     ret

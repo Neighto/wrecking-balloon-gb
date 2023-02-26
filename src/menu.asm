@@ -8,6 +8,7 @@ MENU_SPRITE_CLASSIC_Y EQU 88
 MENU_SPRITE_ENDLESS_Y EQU 104
 MENU_SPRITE_X EQU 48
 MENU_SPRITE_BLINK_TIMER EQU %00011111
+MENU_SPRITE_SPRITES EQU 1
 
 TITLE_ADDRESS EQU $9860
 TITLE_ADDRESS_OFFSET EQU TITLE_ADDRESS - _SCRN0
@@ -19,12 +20,14 @@ YEAR_NAME_DISTANCE_FROM_TOP_IN_TILES EQU 4
 YEAR_NAME_ADDRESS EQU $9A00
 
 SUNGLASSES_ADDRESS EQU $9811
+SUNGLASSES_SPRITES EQU 2
 
 SECTION "menu vars", WRAM0
 	wMenuFrame:: DB
 	wSelectedMode:: DB
 	wMenuCursorOAM:: DB
 	wMenuCursorTimer:: DB
+	wSunglassesOAM:: DB
 	wSecret:: DB
 
 SECTION "menu", ROMX
@@ -95,15 +98,11 @@ LoadMenuGraphics::
 	jp MEMCPY_WITH_OFFSET
 
 SpawnMenuCursor::
-	ld b, 1 ; need 1 sprite for cursor
-	call RequestOAMSpace
+	ld b, MENU_SPRITE_SPRITES
+	ld hl, wMenuCursorOAM
+	call RequestOAMAndSetOAMOffset
 	ret z
-.availableSpace:
-	ld a, b
-	ld [wMenuCursorOAM], a
-	ld hl, wOAM
-	; ld a, [wMenuCursorOAM]
-	ADD_A_TO_HL
+	; Has available space
 	ld a, MENU_SPRITE_CLASSIC_Y
 	ld [hli], a
 	ld a, MENU_SPRITE_X
@@ -234,9 +233,12 @@ UpdateMenu::
 .sunglassesModeOff:
 	xor a ; ld a, 0
 	ld [wSecret], a
-	ld a, WHITE_BKG_TILE
+	ld a, WHITE_SPR_TILE
 	; jr .updateSunglassesMode
 .updateSunglassesMode:
+	LD_BC_HL
+	call WaitVRAMAccessible
+	LD_HL_BC
 	ld [hli], a
 	ld [hl], a
 	ret
