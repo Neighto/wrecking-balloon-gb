@@ -218,10 +218,10 @@ SetupNextLevel::
 	; Comment out GameCountdownLoop and SpawnCountdown to skip countdown
 	call SpawnCountdown
 GameCountdownLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateGameCountdown
-	jp GameCountdownLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateGameCountdown
+	; jp GameCountdownLoop
 GameLoop::
 	call WaitVBlank
 	call OAMDMA
@@ -252,6 +252,7 @@ StageClear::
 	call InitializeSequence
 	call InitializeStageClear
 	call SpawnStageNumber
+	call SpawnExtraLife
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 StageClearLoop:
 	call WaitVBlank

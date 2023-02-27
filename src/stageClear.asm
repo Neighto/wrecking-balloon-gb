@@ -11,12 +11,14 @@ LIVES_TO_ADD_SC_ADDRESS EQU $9948
 
 STAGE_TEXT_ADDRESS EQU $9884
 STAGE_TEXT_TILES EQU 5
-STAGE_NUMBER_ADDRESS EQU $9889
 CLEAR_TEXT_TILES EQU 5
 CLEAR_TEXT_ADDRESS EQU $988B
 STAGE_CLEAR_DISTANCE_FROM_TOP_IN_TILES EQU 5
 SCORE_TEXT_ADDRESS EQU $98C4
 TOTAL_TEXT_ADDRESS EQU $9904
+
+STAGE_NUMBER_SPRITES EQU 1
+EXTRA_LIFE_SPRITES EQU 1
 
 METER_SC_INDEX_ONE_ADDRESS EQU $9944
 METER_BLOCKS EQU 10
@@ -36,6 +38,7 @@ EXTRA_LIFE_BLINK_SPEED EQU %00000011
 SECTION "stage clear vars", WRAM0
     wPointSound:: DB
     wStageNumberOAM:: DB
+	wExtraLifeOAM:: DB
 	wExtraLife:: DB
 	wExtraLifeScoreMeter:: DB
 	wExtraLifeScorePhase:: DB
@@ -47,6 +50,7 @@ InitializeStageClear::
     xor a ; ld a, 0
     ld [wPointSound], a
     ld [wStageNumberOAM], a
+	ld [wExtraLifeOAM], a
 	ld [wExtraLife], a
 	ld [wExtraLifeScoreMeter], a
 	ld [wExtraLifeScorePhase], a
@@ -136,19 +140,14 @@ LoadStageClearGraphics::
 	call SetInRange
 	ld a, BAR_RIGHT_EDGE_AND_PLUS
 	ld [hli], a
-	ld a, LIVES_CACTUS
-	ld [hl], a
 	ret
 
 SpawnStageNumber::
-	ld b, 1
-	call RequestOAMSpace
+	ld b, STAGE_NUMBER_SPRITES
+	ld hl, wStageNumberOAM
+	call RequestOAMAndSetOAMOffset
 	ret z
-.availableSpace:
-	ld a, b
-	ld [wStageNumberOAM], a
-	ld hl, wOAM
-	ADD_A_TO_HL
+	; Has available space
 	ld a, 48 ; y
 	ld [hli], a
 	ld a, 84 ; x
@@ -156,6 +155,21 @@ SpawnStageNumber::
     ldh a, [hLevel]
     dec a
     add NUMBERS_TILE_OFFSET
+	ld [hli], a
+	ld [hl], OAMF_PAL0
+	ret
+
+SpawnExtraLife::
+	ld b, EXTRA_LIFE_SPRITES
+	ld hl, wExtraLifeOAM
+	call RequestOAMAndSetOAMOffset
+	ret z
+	; Has available space
+	ld a, 96 ; y
+	ld [hli], a
+	ld a, 128 ; x
+	ld [hli], a
+    ld a, MENU_CURSOR_TILE
 	ld [hli], a
 	ld [hl], OAMF_PAL0
 	ret
@@ -307,7 +321,8 @@ UpdateStageClear::
 .phase3:
 	; cp a, 3
     ; jr nz, .phase4
-	ld hl, METER_SC_INDEX_ONE_ADDRESS + METER_BLOCKS
+	ld hl, wOAM+2
+	ADD_TO_HL [wExtraLifeOAM]
 	; If meter is full, blink
 	ld a, [wExtraLifeScorePhase]
 	cp a, METER_TOTAL_PHASES
@@ -321,21 +336,16 @@ UpdateStageClear::
 	and EXTRA_LIFE_BLINK_SPEED
 	jr nz, .endCheckPhase
 	; Can blink
-	ld a, BAR_RIGHT_EDGE_AND_PLUS
-	cp a, [hl]
+	ld a, [hl]
+	cp a, MENU_CURSOR_TILE
 	jr z, .showNothing
 .showExtraLife:
-	ld a, BAR_RIGHT_EDGE_AND_PLUS
-	ld [hli], a
-	ld a, LIVES_CACTUS
+	ld a, MENU_CURSOR_TILE
 	ld [hl], a
 	jr .endCheckPhase
 .showNothing:
-	ld a, BAR_RIGHT_EDGE
-	ld [hli], a
 	ld a, DARK_GREY_BKG_TILE
 	ld [hl], a
-	; jr .endCheckPhase
 .endCheckPhase:
 
     call RefreshStageClear
