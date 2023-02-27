@@ -1,7 +1,7 @@
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 
-SECTION "OAM vars", WRAM0[$C100]
+SECTION "OAM vars", WRAM0[OAM_VAR_ADDRESS]
 	; Player OAM is separate because we should not have to request it in case there's not enough space to spawn
 	wPlayerCactusOAM:: DS 2 * OAM_ATTRIBUTES_COUNT
 	wPlayerBalloonOAM:: DS 2 * OAM_ATTRIBUTES_COUNT
@@ -14,18 +14,13 @@ SECTION "OAM DMA routine", ROM0
 
 ; Move DMA routine to HRAM
 CopyDMARoutine::
-	ld hl, DMARoutine
-	ld b, DMARoutineEnd - DMARoutine ; Number of bytes to copy
-	ld c, LOW(hOAMDMA) ; Low byte of the destination address
-.copy
-	ld a, [hli]
-	ldh [c], a
-	inc c
-	dec b
-	jr nz, .copy
-	ret
+	ld hl, hOAMDMA
+	ld bc, DMARoutine
+	ld de, DMARoutineEnd - DMARoutine
+	jp MEMCPY
 	
 DMARoutine:
+	; Arg: A = Address for DMA transfer source
 	ldh [rDMA], a
 	ld a, 40
 .wait
@@ -36,7 +31,7 @@ DMARoutineEnd:
 
 OAMDMA::
   	; Call DMA subroutine to copy the bytes to OAM for sprites begin to draw
-	ld a, HIGH($C100)
+	ld a, HIGH(OAM_VAR_ADDRESS)
 	jp hOAMDMA
 
 SECTION "OAM DMA", HRAM

@@ -454,8 +454,8 @@ UpdateGame::
 
     ; Update sprites
     call PlayerUpdate
-    call BulletUpdate
     call EnemyUpdate
+    call BulletUpdate
 
     ; Timer
     UPDATE_GLOBAL_TIMER

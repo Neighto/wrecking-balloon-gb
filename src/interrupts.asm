@@ -525,7 +525,8 @@ EndlessLCDInterrupt:
 .bottom:
     cp a, INTERRUPT_END_OF_SCREEN
     jp nz, WindowLCDInterrupt.skipPaletteSetting
-    ldh a, [hParallaxClose]
+    ldh a, [hParallaxFar]
+    cpl
 	ldh [rSCX], a
     ld a, ENDLESS_LCD_SCROLL_FAR
 	ldh [rLYC], a

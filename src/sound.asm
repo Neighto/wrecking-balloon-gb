@@ -134,7 +134,7 @@ HitSound::
 
 ExplosionSound::
   ; Volume envelope
-  ld a, %11100110
+  ld a, %11110110
   ldh [rNR42], a
   ; Polynomial counter
   ld a, %01111100

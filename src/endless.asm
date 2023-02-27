@@ -194,12 +194,15 @@ LoadEndlessGraphics::
     ; Hydrant
     ld hl, $9963
     call LoadHydrant
-    ; Add plane for fun
-    ld bc, CityPlaneMap
-	ld hl, $985A ; City Plane address
-    ld de, 5
-    ld a, PLANE_TILE_OFFSET
-	call MEMCPY_WITH_OFFSET
+    ; Add hot air balloons
+    ld a, HOT_AIR_BALLOON_TILE_OFFSET ; Top
+    ld [$9848], a
+    ld [$9821], a
+    ld [$9838], a
+    ld a, HOT_AIR_BALLOON_TILE_OFFSET + 1 ; Bottom
+    ld [$9868], a
+    ld [$9841], a
+    ld [$9858], a
     ; Add scrolling thin clouds
     ld bc, CloudsMap + CLOUDS_THIN_OFFSET
     ld hl, $9880

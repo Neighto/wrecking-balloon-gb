@@ -61,10 +61,24 @@ WaitVRAMAccessible::
     ; Waits for VRAM to be in
     ; Mode 0 = H-Blank
     ; Mode 1 = V-Blank
-    ; Mode 2 ; Searching OAM
+    ; Mode 2 = Searching OAM
     ; If there is an untimely LCD interrupt, it is possible to enter Mode 3 before VRAM is accessed
     ld hl, rSTAT
 .wait:
     bit 1, [hl]
     jr nz, .wait
     ret
+
+; WaitOAMAccessible::
+;     ; Waits for OAM to be in
+;     ; Mode 0 = H-Blank
+;     ; Mode 1 = V-Blank
+;     ; OAM can also be accessed any time with DMA function
+;     ld hl, rSTAT
+; .wait1:
+;     bit 1, [hl]
+;     jr nz, .wait1
+; .wait2:
+;     bit 1, [hl]
+;     jr nz, .wait2
+;     ret
