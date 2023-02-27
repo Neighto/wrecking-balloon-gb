@@ -44,23 +44,24 @@ SpawnBalloonCarrier::
     ld a, PROJECTILE_RESPAWN_TIME_SPAWN
     ldh [hEnemyParam3], a
 
-.updateDirection:
+    ; Update direction
     ldh a, [hEnemyX]
     cp a, SCRN_X / 2
-    jr c, .endUpdateDirection
+    jr c, .finishedUpdatingDirection
     cp a, SPAWN_ENEMY_LEFT_BUFFER
-    jr nc, .endUpdateDirection
+    jr nc, .finishedUpdatingDirection
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_DIRECTION_BIT, a
     ldh [hEnemyFlags], a
-.endUpdateDirection:
+.finishedUpdatingDirection:
 
     ; Get hl pointing to OAM address
     LD_BC_HL ; bc now contains RAM address
     ld hl, wOAM
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
-.variantVisualBalloon:
+
+    ; Get balloon visual by variant
     ldh a, [hEnemyVariant]
 .followVisualBalloon:
     cp a, CARRIER_FOLLOW_VARIANT
@@ -94,7 +95,8 @@ SpawnBalloonCarrier::
     ld e, OAMF_PAL0
 .endVariantVisualBalloon:
 
-.balloonLeftOAM:
+    ; Set balloon visual
+    ; Balloon left OAM
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -103,7 +105,7 @@ SpawnBalloonCarrier::
     ld [hli], a
     ld a, e
     ld [hli], a
-.balloonRightOAM:
+    ; Balloon right OAM
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -115,7 +117,7 @@ SpawnBalloonCarrier::
     or a, OAMF_XFLIP
     ld [hli], a
 
-.variantVisualCarryLeft:
+    ; Get cactus visual by variant (left)
     ldh a, [hEnemyVariant]
     cp a, CARRIER_ANVIL_VARIANT
     jr nz, .cactusVisualCarryLeft
@@ -128,7 +130,7 @@ SpawnBalloonCarrier::
     ld e, OAMF_PAL0
 .endVariantVisualCarryLeft:
 
-.cactusLeftOAM:
+    ; Set cactus visual left
     ldh a, [hEnemyY]
     add 16
     ld [hli], a
@@ -139,7 +141,7 @@ SpawnBalloonCarrier::
     ld a, e
     ld [hli], a
 
-.variantVisualCarryRight:
+    ; Get cactus visual by variant (right)
     ldh a, [hEnemyVariant]
     cp a, CARRIER_ANVIL_VARIANT
     jr nz, .cactusVisualCarryRight
@@ -152,7 +154,7 @@ SpawnBalloonCarrier::
     ld e, OAMF_PAL0 | OAMF_XFLIP
 .endVariantVisualCarryRight:
 
-.cactusRightOAM:
+    ; Set cactus visual right
     ldh a, [hEnemyY]
     add 16
     ld [hli], a

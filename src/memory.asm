@@ -162,7 +162,7 @@ ClearOAM::
     ld hl, _OAMRAM
     ld bc, OAM_COUNT * OAM_ATTRIBUTES_COUNT
     call ResetHLInRange
-    ld hl, $C100
+    ld hl, OAM_VAR_ADDRESS
     ld bc, OAM_COUNT * OAM_ATTRIBUTES_COUNT
     jp ResetHLInRange
 

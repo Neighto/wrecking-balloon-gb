@@ -14,24 +14,32 @@ EXPLOSION_DURATION EQU 15
 
 SECTION "explosion", ROMX
 
+; *************************************************************
 ; SPAWN
+; *************************************************************
 SpawnExplosion::
     ld b, EXPLOSION_OAM_SPRITES
     call FindRAMAndOAMForEnemy ; hl = RAM space, b = OAM offset
     ret z
+    ;
     ; Initialize
+    ;
     call InitializeEnemyStructVars
     ld a, b
     ldh [hEnemyOAM], a
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_ACTIVE_BIT, a
     ldh [hEnemyFlags], a
+    ;
     ; Get hl pointing to OAM address
+    ;
     LD_BC_HL ; bc now contains RAM address
     ld hl, wOAM
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
-.variantVisual:
+    ;
+    ; Get variant visual
+    ;
     ldh a, [hEnemyVariant]
 .bombVisual:
     cp a, EXPLOSION_BOMB_VARIANT
@@ -45,8 +53,10 @@ SpawnExplosion::
     ld d, EXPLOSION_CONGRATULATIONS_TILE_1
     ld e, EXPLOSION_CONGRATULATIONS_TILE_2
 .endVariantVisual:
-
-.explosionLeftOAM:
+    ;
+    ; Explosion OAM
+    ;
+    ; Left
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -55,7 +65,7 @@ SpawnExplosion::
     ld [hli], a
     ld a, OAMF_PAL0
     ld [hli], a
-.explosionMiddleOAM:
+    ; Middle
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -65,7 +75,7 @@ SpawnExplosion::
     ld [hli], a
     ld a, OAMF_PAL0
     ld [hli], a
-.explosionRightOAM:
+    ; Right
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -73,9 +83,11 @@ SpawnExplosion::
     ld [hli], a
     ld a, d
     ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
+    ld a, OAMF_PAL0 | OAMF_XFLIP | OAMF_YFLIP
     ld [hl], a
-.setStruct:
+    ;
+    ; Set struct
+    ;
     LD_HL_BC
     call SetEnemyStruct
 .variantSound:
@@ -84,29 +96,35 @@ SpawnExplosion::
     jp nz, FireworkSound
     jp ExplosionSound
 
+; *************************************************************
 ; UPDATE
+; *************************************************************
 ExplosionUpdate::
 
-.animateExplosion:
+    ;
+    ; Animate explosion
+    ;
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and EXPLOSION_WAIT_TIME
     jr nz, .endAnimateExplosion
-.updateExplosion:
+    ; Can update explosion
     ldh a, [hEnemyParam1]
     inc a
     ldh [hEnemyParam1], a
     cp a, EXPLOSION_DURATION
     jr nc, .clear
-.stillExploding:
+    ; Still exploding
     ld hl, wOAM+2
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
     ldh a, [hEnemyParam1]
     and EXPLOSION_BLINK_TIME
     jr z, .hideExplosion
+
+    ; Show explosion
 .showExplosion:
-.updatePalette:
+    ; Update palette
     LD_DE_HL
     inc l
     ld a, [hl]
@@ -128,7 +146,7 @@ ExplosionUpdate::
     or OAMF_XFLIP
     ld [hl], a
     LD_HL_DE
-.variantVisual:
+    ; Update visual
     ldh a, [hEnemyVariant]
 .bombVisual:
     cp a, EXPLOSION_BOMB_VARIANT
@@ -142,11 +160,15 @@ ExplosionUpdate::
     ld b, EXPLOSION_CONGRATULATIONS_TILE_1
     ld c, EXPLOSION_CONGRATULATIONS_TILE_2
 .endVariantVisual:
-    jr .explosionCommon
+    jr .updateExplosion
+
+    ; Hide explosion
 .hideExplosion:
     ld b, WHITE_SPR_TILE
-    ld c, WHITE_SPR_TILE
-.explosionCommon:
+    ld c, b
+
+    ; Update explosion
+.updateExplosion:
     ld a, b
     ld [hli], a
     inc l
@@ -163,8 +185,12 @@ ExplosionUpdate::
 .clear:
     ld bc, EXPLOSION_OAM_BYTES
     call ClearEnemy
+    ; jr .setStruct
 .endAnimateExplosion:
 
+    ;
+    ; Set struct
+    ;
 .setStruct:
     ld hl, wEnemies
     ldh a, [hEnemyOffset]
