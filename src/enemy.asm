@@ -277,6 +277,11 @@ EnemyInterCollision::
     or a, 1
     ret
 
+SetEnemyHitForEnemy1::
+    ld hl, wEnemies
+    set ENEMY_FLAG_HIT_ENEMY_BIT, [hl]
+    ret
+
 EnemyHitBullet::
     ; Call from enemy script
     ; Returns z flag as failed / nz flag as succeeded

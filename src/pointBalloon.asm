@@ -126,10 +126,11 @@ PointBalloonUpdate::
     jr .setOAM
 .moveHard:
     cp a, BALLOON_HARD_VARIANT
-    jr nz, .setOAM
+    jr nz, .endMove
     dec [hl]
     dec [hl]
     dec [hl]
+    ; jr .setOAM
 .setOAM:
     ld hl, wOAM
     ldh a, [hEnemyOAM]
@@ -202,8 +203,8 @@ PointBalloonUpdate::
     ld a, POINT_BALLOON_MEDIUM_POINTS
     jr .updatePoints
 .hardPoints:
-    ; cp a, BALLOON_HARD_VARIANT
-    ; jr nz, .endVariantPoints
+    cp a, BALLOON_HARD_VARIANT
+    jr nz, .endVariantPoints
     ld a, POINT_BALLOON_HARD_POINTS
     ; jr .updatePoints
 .updatePoints:

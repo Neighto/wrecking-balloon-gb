@@ -252,8 +252,8 @@ StageClear::
 	call InitializeSequence
 	call InitializeStageClear
 	call SpawnStageNumber
-	call SpawnExtraLife
-	call LCD_ON_NO_WINDOW_8_SPR_MODE
+	call SpawnExtraLifeBalloon
+	call LCD_ON_NO_WINDOW
 StageClearLoop:
 	call WaitVBlank
 	call OAMDMA
