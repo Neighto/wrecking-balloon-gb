@@ -3,11 +3,11 @@ INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 INCLUDE "macro.inc"
 INCLUDE "tileConstants.inc"
+INCLUDE "enemyConstants.inc"
 
 SCORE_SC_INDEX_ONE_ADDRESS EQU $98CF
 TOTAL_SC_INDEX_ONE_ADDRESS EQU $990F
 LIVES_SC_ADDRESS EQU $994F
-LIVES_TO_ADD_SC_ADDRESS EQU $9948
 
 STAGE_TEXT_ADDRESS EQU $9884
 STAGE_TEXT_TILES EQU 5
@@ -18,7 +18,8 @@ SCORE_TEXT_ADDRESS EQU $98C4
 TOTAL_TEXT_ADDRESS EQU $9904
 
 STAGE_NUMBER_SPRITES EQU 1
-EXTRA_LIFE_SPRITES EQU 1
+STAGE_NUMBER_ADDRESS EQU _VRAM8000 + STAGE_CLEAR_NUMBER_TILE * TILE_BYTES
+NUMBERS_TILE_ADDRESS EQU _VRAM8000 + NUMBERS_TILE_OFFSET * TILE_BYTES
 
 METER_SC_INDEX_ONE_ADDRESS EQU $9944
 METER_BLOCKS EQU 10
@@ -38,7 +39,6 @@ EXTRA_LIFE_BLINK_SPEED EQU %00000011
 SECTION "stage clear vars", WRAM0
     wPointSound:: DB
     wStageNumberOAM:: DB
-	wExtraLifeOAM:: DB
 	wExtraLife:: DB
 	wExtraLifeScoreMeter:: DB
 	wExtraLifeScorePhase:: DB
@@ -50,7 +50,6 @@ InitializeStageClear::
     xor a ; ld a, 0
     ld [wPointSound], a
     ld [wStageNumberOAM], a
-	ld [wExtraLifeOAM], a
 	ld [wExtraLife], a
 	ld [wExtraLifeScoreMeter], a
 	ld [wExtraLifeScorePhase], a
@@ -84,6 +83,17 @@ LoadStageClearGraphics::
 	ld bc, ScoreboardsTiles
 	ld hl, _VRAM9000
 	ld de, ScoreboardsTilesEnd - ScoreboardsTiles
+	call MEMCPY
+	; Number tile (for stage number sprite)
+	ldh a, [hLevel]
+    dec a
+	ld b, a
+	ld c, TILE_BYTES
+	call MULTIPLY
+	ld bc, NUMBERS_TILE_ADDRESS
+	ADD_A_TO_BC ; Source address of stage number in VRAM
+	ld hl, STAGE_NUMBER_ADDRESS ; Destination
+	ld de, TILE_BYTES ; 1
 	call MEMCPY
 .drawMap:
 	; Fill light grey
@@ -140,6 +150,8 @@ LoadStageClearGraphics::
 	call SetInRange
 	ld a, BAR_RIGHT_EDGE_AND_PLUS
 	ld [hli], a
+	ld a, LIVES_CACTUS
+	ld [hl], a
 	ret
 
 SpawnStageNumber::
@@ -152,27 +164,21 @@ SpawnStageNumber::
 	ld [hli], a
 	ld a, 84 ; x
 	ld [hli], a
-    ldh a, [hLevel]
-    dec a
-    add NUMBERS_TILE_OFFSET
+	ld a, STAGE_CLEAR_NUMBER_TILE
 	ld [hli], a
 	ld [hl], OAMF_PAL0
 	ret
 
-SpawnExtraLife::
-	ld b, EXTRA_LIFE_SPRITES
-	ld hl, wExtraLifeOAM
-	call RequestOAMAndSetOAMOffset
-	ret z
-	; Has available space
-	ld a, 96 ; y
-	ld [hli], a
-	ld a, 128 ; x
-	ld [hli], a
-    ld a, MENU_CURSOR_TILE
-	ld [hli], a
-	ld [hl], OAMF_PAL0
-	ret
+SpawnExtraLifeBalloon::
+    ld a, POINT_BALLOON
+    ldh [hEnemyNumber], a
+    ld a, BALLOON_STAGE_CLEAR_VARIANT
+    ldh [hEnemyVariant], a
+    ld a, 94
+    ldh [hEnemyY], a
+    ld a, 123
+    ldh [hEnemyX], a
+    jp SpawnPointBalloon
 
 RefreshStageClear:
 	; Score
@@ -241,7 +247,8 @@ FillMeter:
 	ld a, [wExtraLife]
 	inc a
 	ld [wExtraLife], a
-    jp PopSound
+	; Pop balloon
+	jp SetEnemyHitForEnemy1
 
 UpdateStageClear::
     UPDATE_GLOBAL_TIMER
@@ -321,8 +328,7 @@ UpdateStageClear::
 .phase3:
 	; cp a, 3
     ; jr nz, .phase4
-	ld hl, wOAM+2
-	ADD_TO_HL [wExtraLifeOAM]
+	ld hl, LIVES_SC_ADDRESS - 1
 	; If meter is full, blink
 	ld a, [wExtraLifeScorePhase]
 	cp a, METER_TOTAL_PHASES
@@ -337,16 +343,25 @@ UpdateStageClear::
 	jr nz, .endCheckPhase
 	; Can blink
 	ld a, [hl]
-	cp a, MENU_CURSOR_TILE
+	cp a, BAR_RIGHT_EDGE_AND_PLUS
 	jr z, .showNothing
 .showExtraLife:
-	ld a, MENU_CURSOR_TILE
-	ld [hl], a
-	jr .endCheckPhase
+	ld a, BAR_RIGHT_EDGE_AND_PLUS
+	ld b, LIVES_CACTUS
+	jr .updateBlink
 .showNothing:
-	ld a, DARK_GREY_BKG_TILE
+	ld a, BAR_RIGHT_EDGE
+	ld b, DARK_GREY_BKG_TILE
+	; jr .updateBlink
+.updateBlink:
+	LD_DE_HL
+	call WaitVRAMAccessible
+	LD_HL_DE
+	ld [hli], a
+	ld a, b
 	ld [hl], a
 .endCheckPhase:
 
     call RefreshStageClear
+	call EnemyUpdate
     jp SequenceDataUpdate
