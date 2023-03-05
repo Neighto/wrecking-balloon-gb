@@ -38,7 +38,7 @@ InitializeGame::
 
 LoadGameSpriteAndMiscellaneousTiles::
 	ld bc, GameSpriteTiles
-	ld hl, _VRAM8000+$20 ; Offset first 2 tiles as empty
+	ld hl, _VRAM8000 + TILE_BYTES * 2 ; Offset first 2 tiles as empty
 	ld de, GameSpriteTilesEnd - GameSpriteTiles
     call MEMCPY
     ld bc, MiscellaneousTiles

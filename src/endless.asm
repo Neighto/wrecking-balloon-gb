@@ -197,12 +197,12 @@ LoadEndlessGraphics::
     ; Add hot air balloons
     ld a, HOT_AIR_BALLOON_TILE_OFFSET ; Top
     ld [$9848], a
-    ld [$9821], a
-    ld [$9838], a
+    ld [$982D], a
+    ld [$983E], a
     ld a, HOT_AIR_BALLOON_TILE_OFFSET + 1 ; Bottom
     ld [$9868], a
-    ld [$9841], a
-    ld [$9858], a
+    ld [$984D], a
+    ld [$985E], a
     ; Add scrolling thin clouds
     ld bc, CloudsMap + CLOUDS_THIN_OFFSET
     ld hl, $9880

@@ -49,9 +49,15 @@ SpawnPointBalloon::
     ld e, OAMF_PAL1
     jr .endVariantVisual
 .hardVisual:
-    ; cp a, BALLOON_HARD_VARIANT
-    ; jr nz, .endVariantVisual
+    cp a, BALLOON_HARD_VARIANT
+    jr nz, .extraLifeVisual
     ld d, POINT_BALLOON_HARD_TILE
+    ld e, OAMF_PAL1
+    jr .endVariantVisual
+.extraLifeVisual:
+    ; cp a, BALLOON_STAGE_CLEAR_VARIANT
+    ; jr nz, .endVariantVisual
+    ld d, EXTRA_LIFE_BALLOON_TILE
     ld e, OAMF_PAL1
     ; jr .endVariantVisual
 .endVariantVisual:
