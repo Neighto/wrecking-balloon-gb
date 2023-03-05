@@ -48,6 +48,8 @@ SequenceDataUpdate::
     jr z, .hidePalette
     cp a, SEQUENCE_SHOW_PALETTE_KEY
     jr z, .showPalette
+    cp a, SEQUENCE_SHOW_PALETTE_2_KEY
+    jr z, .showPalette2
     cp a, SEQUENCE_INCREASE_PHASE_KEY
     jr z, .increasePhase
     cp a, SEQUENCE_PLAY_SONG_KEY
@@ -81,6 +83,9 @@ SequenceDataUpdate::
     jr .updateSequenceDataCounter
 .showPalette:
     call InitializePalettes
+    jr .updateSequenceDataCounter
+.showPalette2:
+    call InitializeStageClearPalettes
     jr .updateSequenceDataCounter
 .fadeInPalette:
     call FadeInPalettes

@@ -248,15 +248,6 @@ ProjectileUpdate::
     ;
     ; Check collision
     ;
-;     ; Has been alive long enough (prevent some cheap kills / stuns)
-;     ldh a, [hEnemyParam3]
-;     cp a, PROJECTILE_WAIT_TO_KILL_DURATION
-;     jr nc, .checkCollisionContinue
-;     inc a
-;     ldh [hEnemyParam3], a
-;     jr .endCollision
-; .checkCollisionContinue:
-
     ; Is time to check collision
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate

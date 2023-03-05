@@ -155,7 +155,7 @@ BirdUpdate::
 .checkOffscreenY:
     ld bc, BIRD_OAM_BYTES
     call HandleEnemyOffscreenVertical
-    jp .setStruct
+    jp .checkCollision
 .isAlive:
 
 .checkMove:
@@ -250,42 +250,11 @@ BirdUpdate::
     call UpdateBirdPosition
 .endMove:
 
-.checkCollision:
-    ; Is time to check collision
-    ldh a, [hGlobalTimer]
-    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
-    and	BIRD_COLLISION_TIME
-    jr nz, .endCollision
+.checkHitByEnemy:
     ; Hit by enemy
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_HIT_ENEMY_MASK
-    jr nz, .deathOfBird
-    ; Is player alive
-    ldh a, [hPlayerFlags]
-    and PLAYER_FLAG_ALIVE_MASK
-    jr z, .endCollision
-.checkHitPlayer:
-    ld bc, wPlayerBalloonOAM
-    ld hl, wOAM
-    ldh a, [hEnemyOAM]
-    ADD_A_TO_HL
-    ld d, BIRD_WIDTH
-    ld e, BIRD_HEIGHT
-    call CollisionCheck
-    jr z, .checkHitCactus
-    call CollisionWithPlayer
-    jr .endCollision
-.checkHitCactus:
-    ld bc, wPlayerCactusOAM
-    ld hl, wOAM
-    ldh a, [hEnemyOAM]
-    ADD_A_TO_HL
-    ld d, BIRD_WIDTH
-    ld e, BIRD_HEIGHT
-    call CollisionCheck
-    jr z, .endCollision
-    call CollisionWithPlayerCactus
-    jr .endCollision
+    jr z, .endHitByEnemy
 .deathOfBird:
     ldh a, [hEnemyFlags]
     res ENEMY_FLAG_ALIVE_BIT, a
@@ -324,6 +293,40 @@ BirdUpdate::
     inc l
     ld a, d
     ld [hl], a
+.endHitByEnemy:
+
+.checkCollision:
+    ; Is time to check collision
+    ldh a, [hGlobalTimer]
+    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
+    and	BIRD_COLLISION_TIME
+    jr nz, .endCollision
+    ; Is player alive
+    ldh a, [hPlayerFlags]
+    and PLAYER_FLAG_ALIVE_MASK
+    jr z, .endCollision
+.checkHitPlayer:
+    ld bc, wPlayerBalloonOAM
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
+    ld d, BIRD_WIDTH
+    ld e, BIRD_HEIGHT
+    call CollisionCheck
+    jr z, .checkHitCactus
+    call CollisionWithPlayer
+    jr .endCollision
+.checkHitCactus:
+    ld bc, wPlayerCactusOAM
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
+    ld d, BIRD_WIDTH
+    ld e, BIRD_HEIGHT
+    call CollisionCheck
+    jr z, .endCollision
+    call CollisionWithPlayerCactus
+    ; jr .endCollision
 .endCollision:
 
 .checkOffscreen:

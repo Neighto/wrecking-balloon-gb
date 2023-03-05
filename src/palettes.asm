@@ -40,6 +40,12 @@ InitializePalettes::
 	ldh [rOBP1], a
 	jp ResetFading
 
+InitializeStageClearPalettes::
+	call InitializePalettes
+	ld a, MAIN_PAL1_2
+	ldh [rOBP1], a
+	ret
+
 InitializeNightSpritePalettes::
 	ld a, NIGHT_SPRITE_PAL0
     ldh [rOBP0], a
