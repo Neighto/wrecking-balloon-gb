@@ -31,7 +31,6 @@ SECTION "level data", ROM0
 
 ; Level 1
 Level1:
-    LVL__END
 .intro:
     LVL__POINT_BALLOON_EASY______________ SPAWN_X_C
     LVL__WAIT 8
@@ -1125,16 +1124,16 @@ LevelDataHandler::
     ldh a, [hLevel] 
     inc a
     ldh [hLevel], a 
-    ld b, 23
-.doMore:
-    push bc
-    ld a, 90
-    call AddPoints
-    pop bc
-    dec b 
-    ld a, b 
-    cp a, 0 
-    jr nz, .doMore
+;     ld b, 33
+; .doMore:
+;     push bc
+;     ld a, 80
+;     call AddPoints
+;     pop bc
+;     dec b 
+;     ld a, b 
+;     cp a, 0 
+;     jr nz, .doMore
     jp StageClear
 .won:
     ; cp a, GAME_WON_KEY

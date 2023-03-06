@@ -17,9 +17,10 @@ InitializeBullet::
     ldh [hPlayerBulletX], a
     ret
 
+; *************************************************************
 ; SPAWN
+; *************************************************************
 SpawnBullet::
-    call BulletSound
     ldh a, [hPlayerY2]
     add 5
     ldh [hPlayerBulletY], a
@@ -35,68 +36,64 @@ SpawnBullet::
     ldh [hPlayerBulletFlags], a
     ; Add to OAM
     ld hl, wPlayerBulletOAM
+    ldh a, [hPlayerX2]
     jr z, .spawnFromRight
 .spawnFromLeft:
-    ldh a, [hPlayerX2]
     sub 3
     ldh [hPlayerBulletX], a
-.leftOAM:
-    ldh a, [hPlayerBulletY]
-    ld [hli], a
-    ldh a, [hPlayerBulletX]
-    ld [hli], a
-    ld a, PLAYER_BULLET_TILE
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hl], a
-    ret
+    ld b, OAMF_PAL0 | OAMF_XFLIP
+    jr .updateOAM
 .spawnFromRight:
-    ldh a, [hPlayerX2]
     add 12
     ldh [hPlayerBulletX], a
-.rightOAM:
+    ld b, OAMF_PAL0
+    ; jr .updateOAM
+.updateOAM:
     ldh a, [hPlayerBulletY]
     ld [hli], a
     ldh a, [hPlayerBulletX]
     ld [hli], a
     ld a, PLAYER_BULLET_TILE
     ld [hli], a
-    ld a, OAMF_PAL0
+    ld a, b
     ld [hl], a
-    ret
+    ; Sound
+    jp BulletSound
   
 ClearBullet::
     xor a ; ld a, 0
     ldh [hPlayerBulletFlags], a
     ld hl, wPlayerBulletOAM
-    ld [hli], a
-    ld [hli], a
-    ld [hli], a
-    ld [hl], a
-    ret
+    ld bc, 4
+    jp ResetHLInRange
   
+; *************************************************************
 ; UPDATE
+; *************************************************************
 BulletUpdate::
 
-.checkAlive:
+    ;
+    ; Check alive
+    ;
     ldh a, [hPlayerBulletFlags]
     and PLAYER_BULLET_FLAG_ACTIVE_MASK
     ret z
 .isAlive:
 
-.checkOffscreen:
+    ;
+    ; Check offscreen
+    ;
     ldh a, [hPlayerBulletX]
     cp a, SCRN_X + OFF_SCREEN_ENEMY_BUFFER
-    jr c, .endOffscreen
-.offscreen:
-    jp ClearBullet
-.endOffscreen:
+    jp nc, ClearBullet
 
-.checkMove:
+    ;
+    ; Check move
+    ;
     ldh a, [hGlobalTimer]
     and PLAYER_BULLET_TIME
     ret nz
-.move:
+    ; Can move
     ldh a, [hPlayerBulletFlags]
     and PLAYER_BULLET_FLAG_DIRECTION_MASK
     ldh a, [hPlayerBulletX]
@@ -111,5 +108,4 @@ BulletUpdate::
 .updateMove:
     ldh [hPlayerBulletX], a
     ld [wPlayerBulletOAM+1], a
-.endMove:
     ret

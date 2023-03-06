@@ -92,35 +92,43 @@ InitializePlayer::
   ret
 
 UpdateBalloonPosition:
-.balloonLeft:
   ld hl, wPlayerBalloonOAM
-  ldh a, [hPlayerY]
-  ld [hli], a
   ldh a, [hPlayerX]
+  ld c, a
+  ldh a, [hPlayerY]
+  ld b, a
+  ; Balloon Left
+  ; ld a, b
+  ld [hli], a
+  ld a, c
   ld [hli], a
   inc l
   inc l
-.balloonRight:
-  ldh a, [hPlayerY]
+  ; Balloon Right
+  ld a, b
   ld [hli], a
-  ldh a, [hPlayerX]
+  ld a, c
   add 8
   ld [hl], a
   ret
 
 UpdateCactusPosition:
-.cactusLeft:
   ld hl, wPlayerCactusOAM
-  ldh a, [hPlayerY2]
-  ld [hli], a
   ldh a, [hPlayerX2]
+  ld c, a
+  ldh a, [hPlayerY2]
+  ld b, a
+  ; Cactus Left
+  ; ld a, b
+  ld [hli], a
+  ld a, c
   ld [hli], a
   inc l
   inc l
-.cactusRight:
-  ldh a, [hPlayerY2]
+  ; Cactus right
+  ld a, b
   ld [hli], a
-  ldh a, [hPlayerX2]
+  ld a, c
   add 8
   ld [hl], a
   ret
@@ -212,13 +220,15 @@ MovePlayerAuto::
   call UpdateBalloonPosition
   jp UpdateCactusPosition
 
+; *************************************************************
 ; SPAWN
+; *************************************************************
 SpawnPlayer::
   ldh a, [hPlayerBalloonTile]
   ld b, a
   ldh a, [hPlayerCactusTile]
   ld c, a
-.cactusLeftOAM:
+  ; Cactus left OAM
   ld hl, wPlayerCactusOAM
   ldh a, [hPlayerY2]
   ld [hli], a
@@ -228,7 +238,7 @@ SpawnPlayer::
   ld [hli], a
   ld a, OAMF_PAL0
   ld [hli], a
-.cactusRightOAM:
+  ; Cactus right OAM
   ldh a, [hPlayerY2]
   ld [hli], a
   ldh a, [hPlayerX2]
@@ -238,7 +248,7 @@ SpawnPlayer::
   ld [hli], a
   ld a, OAMF_PAL0 | OAMF_XFLIP
   ld [hl], a
-.balloonLeftOAM:
+  ; Balloon left OAM
   ld hl, wPlayerBalloonOAM
   ldh a, [hPlayerY]
   ld [hli], a
@@ -248,7 +258,7 @@ SpawnPlayer::
   ld [hli], a
   ld a, OAMF_PAL1
   ld [hli], a
-.balloonRightOAM:
+  ; Balloon right OAM
   ldh a, [hPlayerY]
   ld [hli], a
   ldh a, [hPlayerX]
@@ -534,58 +544,50 @@ PlayerControls:
   ; ret ; never reaches here
 
 PopPlayerBalloonAnimation:
-  ldh a, [hPlayerPoppingFrame]
-  cp a, 0
-  jr z, .frame0
   ldh a, [hPlayerPoppingTimer]
   inc	a
   ldh [hPlayerPoppingTimer], a
+  dec a
   and PLAYER_POPPING_BALLOON_ANIMATION_TIME
   ret nz
-.canSwitchFrames:
+  ; Find our frame
   ldh a, [hPlayerPoppingFrame]
-  cp a, 1
-  jr z, .frame1
-  cp a, 2
-  jr z, .clear
-  ret
 .frame0:
-  ; Popped left - frame 0
-  ld hl, wPlayerBalloonOAM+2
-  ld [hl], POP_BALLOON_FRAME_0_TILE
-  inc l
-  ld [hl], %00000000
-  ; Popped right - frame 0
-  ld hl, wPlayerBalloonOAM+6
-  ld [hl], POP_BALLOON_FRAME_0_TILE
-  inc l
-  ld [hl], OAMF_XFLIP
-  jr .endFrame
+  cp a, 0
+  jr nz, .frame1
+  ld b, POP_BALLOON_FRAME_0_TILE
+  jr .updateFrame
 .frame1:
-  ; Popped left - frame 1
-  ld hl, wPlayerBalloonOAM+2
-  ld [hl], POP_BALLOON_FRAME_1_TILE
-  inc l
-  ld [hl], %00000000
-  ; Popped right - frame 1
-  ld hl, wPlayerBalloonOAM+6
-  ld [hl], POP_BALLOON_FRAME_1_TILE
-  inc l
-  ld [hl], OAMF_XFLIP
-  jr .endFrame
-.clear:
-  ; Remove sprites
-.clearPlayerBalloon
-  xor a ; ld a, 0
-  ld hl, wPlayerBalloonOAM
-  ld bc, PLAYER_BALLOON_OAM_BYTES
-  call ResetHLInRange
+  cp a, 1
+  jr nz, .frame2
+  ld b, POP_BALLOON_FRAME_1_TILE
+  jr .updateFrame
+.frame2:
   ; Reset variables
   ldh a, [hPlayerFlags]
   res PLAYER_FLAG_DYING_BIT, a
   ldh [hPlayerFlags], a
-  ret
-.endFrame:
+  ; Clear player balloon
+  xor a ; ld a, 0
+  ld hl, wPlayerBalloonOAM
+  ld bc, PLAYER_BALLOON_OAM_BYTES
+  jp ResetHLInRange
+.updateFrame:
+  ; Point hl to enemy oam
+  ld hl, wPlayerBalloonOAM + 2
+  ; Left sprite
+  ld a, b
+  ld [hli], a
+  ld a, OAMF_PAL0
+  ld [hli], a
+  inc l
+  inc l
+  ; Right sprite
+  ld a, b
+  ld [hli], a
+  ld a, OAMF_PAL0 | OAMF_XFLIP
+  ld [hl], a
+  ; Next frame
   ldh a, [hPlayerPoppingFrame]
   inc a 
   ldh [hPlayerPoppingFrame], a
@@ -600,7 +602,7 @@ CollisionWithPlayer::
   ldh a, [hPlayerFlags]
   and PLAYER_FLAG_ALIVE_MASK
   ret z
-.deathOfPlayer:
+  ; Death of player
   ldh a, [hPlayerFlags]
   res PLAYER_FLAG_ALIVE_BIT, a
   set PLAYER_FLAG_DYING_BIT, a
@@ -628,7 +630,7 @@ CollisionWithPlayerCactus::
   ldh a, [hPlayerFlags]
   and PLAYER_FLAG_ALIVE_MASK
   ret z
-.stunPlayer:
+  ; Stun player
   ldh a, [hPlayerStunnedTimer]
   cp a, 0
   ret nz
@@ -668,31 +670,37 @@ HidePlayerBalloon:
   ld [hl], a
   ret
 
+; *************************************************************
 ; UPDATE
+; *************************************************************
 PlayerUpdate::
 
-.checkAlive:
+  ;
+  ; Check alive
+  ;
   ldh a, [hPlayerFlags]
   and PLAYER_FLAG_ALIVE_MASK
   jr nz, .isAlive
-.popped:
-.checkRespawn:
+  ; Is popped
+  ;
+  ; Check respawn
+  ;
   ldh a, [hPlayerRespawnTimer]
   inc a
   ldh [hPlayerRespawnTimer], a
   cp a, PLAYER_RESPAWN_TIME
   jr z, .respawning
-.popping:
+  ; Is popping (animating still)
+  ; -- Balloon
   ldh a, [hPlayerFlags]
   and PLAYER_FLAG_DYING_MASK
   call nz, PopPlayerBalloonAnimation
-  ; FALLING CACTUS
-.checkFallingOffscreen:
+  ; -- Cactus
   ld a, SCRN_X
   ld hl, hPlayerY2
   cp a, [hl]
   ret c
-.continueFalling:
+  ; -- Cactus continue falling
   ldh a, [hGlobalTimer]
   and %00000001
   ret nz
@@ -710,7 +718,7 @@ PlayerUpdate::
   ldh a, [hPlayerLives]
   cp a, 0
   jr nz, .respawn
-.noMoreLives:
+  ; No more lives => Game Over
   jp GameOver
 .respawn:
   call StopSweepSound
@@ -722,17 +730,19 @@ PlayerUpdate::
   ret
 .isAlive:
 
-.checkStunned:
+  ;
+  ; Check stunned
+  ;
   ldh a, [hPlayerStunnedTimer]
   cp a, 0
   jr z, .endCheckStunned
-.isStunned:
+  ; Is stunned
   dec a
   ldh [hPlayerStunnedTimer], a
   and PLAYER_STUNNED_SLOW_TIME
   jr nz, .endCheckStunned
 .blinking:
-  ld hl, wPlayerCactusOAM+2
+  ld hl, wPlayerCactusOAM + 2
   ld a, [hl]
   cp a, WHITE_SPR_TILE
   jr z, .blinkOn
@@ -743,11 +753,13 @@ PlayerUpdate::
   call ShowPlayerCactus
 .endCheckStunned:
 
-.checkInvincible:
+  ;
+  ; Check invincible
+  ;
   ldh a, [hPlayerInvincible]
   cp a, 0
   jr z, .endInvincible
-.isInvincible:
+  ; Is invincible
   dec a
   ldh [hPlayerInvincible], a  
   ; If at the end make sure we stop on default tileset
@@ -772,14 +784,16 @@ PlayerUpdate::
   call ShowPlayerCactus
 .endInvincible:
 
-.checkMove:
+  ;
+  ; Check move
+  ;
   ldh a, [hGlobalTimer]
 	and	PLAYER_MOVE_TIME
   jr nz, .endMove
   ldh a, [hPlayerStunnedTimer]
   cp a, 0
   jr nz, .endMove
-.canMove:
+  ; Can move
   call ReadController
   ldh a, [hControllerDown]
   ld d, a
@@ -791,25 +805,29 @@ PlayerUpdate::
   call UpdateCactusPosition
 .endMove:
 
-.checkBoost:
+  ;
+  ; Check boost
+  ;
   ldh a, [hPlayerBoost]
   cp a, PLAYER_SPECIAL_FULL
   jr z, .endBoost
-.isChargingBoost:
+  ; Is charging
   dec a
   ldh [hPlayerBoost], a
   cp a, PLAYER_BOOST_EFFECT_ENDS
   jr nz, .endBoost
-.resetBoost:
+  ; Reset boost
   ld a, PLAYER_DEFAULT_SPEED
   ldh [hPlayerSpeed], a
 .endBoost:
 
-.checkAttack:
+  ;
+  ; Check attack
+  ;
   ldh a, [hPlayerAttack]
   cp a, PLAYER_SPECIAL_FULL
   jr z, .endAttack
-.isChargingAttack:
+  ; Is charging
   dec a
   ldh [hPlayerAttack], a
 .endAttack:
