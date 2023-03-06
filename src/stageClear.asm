@@ -24,7 +24,6 @@ METER_MULTIPLIER EQU 46
 METER_FULL_SCORE EQU METER_MULTIPLIER * METER_TOTAL_PHASES
 METER_PROGRESS_SCORE EQU METER_FULL_SCORE / METER_TOTAL_PHASES
 METER_INITIAL_OFFSET EQU 24 ; Sometimes not 0 so points needed is a nicer number
-LIVES_SC_ADDRESS EQU METER_SC_INDEX_ONE_ADDRESS + METER_BLOCKS
 STAGE_CLEAR_MOVE_POINTS EQU 10
 
 STAGE_NUMBER_SPRITES EQU 1
@@ -34,16 +33,12 @@ NUMBERS_TILE_ADDRESS EQU _VRAM8000 + NUMBERS_TILE_OFFSET * TILE_BYTES
 POINT_SOUND_PLAY_A EQU 0
 POINT_SOUND_PLAY_B EQU 1
 
-EXTRA_LIFE_BLINK_TIME EQU %00011111
-EXTRA_LIFE_BLINK_SPEED EQU %00000011
-
 SECTION "stage clear vars", WRAM0
     wPointSound:: DB
     wStageNumberOAM:: DB
 	wExtraLife:: DB
 	wExtraLifeScoreMeter:: DB
 	wExtraLifeScorePhase:: DB
-	wExtraLifeBlinkTimer:: DB
 
 SECTION "stage clear", ROMX
 
@@ -55,8 +50,6 @@ InitializeStageClear::
 	ld [wExtraLifeScorePhase], a
 	ld a, METER_INITIAL_OFFSET
 	ld [wExtraLifeScoreMeter], a
-	ld a, EXTRA_LIFE_BLINK_TIME
-	ld [wExtraLifeBlinkTimer], a
     ld hl, hSequenceDataAddress
     ld bc, StageClearSequenceData
     ld a, LOW(bc)
@@ -72,11 +65,12 @@ StageClearSequenceData:
 	SEQUENCE_INCREASE_PHASE ;SEQUENCE_COPY_SCORE_TO_TOTAL
 	SEQUENCE_WAIT_UNTIL IsScoreZero
     SEQUENCE_WAIT 40
+	SEQUENCE_INCREASE_PHASE ;SEQUENCE_REPLACE_BAR_WITH_LIVES
+	SEQUENCE_WAIT 8
 	SEQUENCE_INCREASE_PHASE ;SEQUENCE_ADD_SCORE_LIVES
-	SEQUENCE_INCREASE_PHASE ;SEQUENCE_BLINK_LIVES
-    SEQUENCE_WAIT 80
+    SEQUENCE_WAIT 72
     SEQUENCE_HIDE_PALETTE
-    SEQUENCE_WAIT 5
+    SEQUENCE_WAIT 6
     SEQUENCE_END SetupNextLevel
 
 LoadStageClearGraphics::
@@ -150,7 +144,7 @@ LoadStageClearGraphics::
 	ld d, BAR_0
 	ld bc, METER_BLOCKS
 	call SetInRange
-	ld a, BAR_CHECK
+	ld a, BAR_100
 	ld [hli], a
 	ld a, BAR_RIGHT_EDGE
 	ld [hl], a
@@ -172,7 +166,6 @@ SpawnStageNumber::
 	ret
 
 SpawnExtraLifeBalloon::
-	; Balloon
     ld a, POINT_BALLOON
     ldh [hEnemyNumber], a
     ld a, BALLOON_STAGE_CLEAR_VARIANT
@@ -190,6 +183,17 @@ RefreshStageClear:
 	; Total
 	ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
 	jp RefreshTotal
+
+RefreshLives:
+	ld hl, METER_SC_INDEX_ONE_ADDRESS
+	ld a, LIVES_CACTUS
+	ld [hli], a
+	ld a, X_AMOUNT
+	ld [hli], a
+	ldh a, [hPlayerLives]
+	add NUMBERS_TILE_OFFSET
+	ld [hl], a
+	ret
 
 FillMeter:
 	; a = Points to fill
@@ -253,6 +257,7 @@ FillMeter:
 	; Pop balloon
 	jp SetEnemyHitForEnemy1
 
+; UPDATE
 UpdateStageClear::
     UPDATE_GLOBAL_TIMER
 
@@ -311,7 +316,25 @@ UpdateStageClear::
 .phase2:
 	cp a, 2
     jr nz, .phase3
-	; Skip if added or no extra life
+	; If meter is full, continue
+	ld a, [wExtraLifeScorePhase]
+	cp a, METER_TOTAL_PHASES
+	jr nz, .endCheckPhase
+	; Clear bar
+	ld bc, METER_BLOCKS + 3 ; Add two for the edges and one for the block hidden by the balloon
+	ld d, DARK_GREY_BKG_TILE
+	call WaitVRAMAccessible
+	ld hl, METER_SC_INDEX_ONE_ADDRESS - 1 ; Back one for the left edge
+	call SetInRange
+	; Add lives
+	call WaitVRAMAccessible
+	call RefreshLives
+	jr .endCheckPhase
+; PHASE 3
+.phase3:
+	; cp a, 3
+	; jr nz, .phase4
+	; Skip if no extra life
 	ld a, [wExtraLife]
 	cp a, 0
 	jr z, .endCheckPhase
@@ -326,39 +349,8 @@ UpdateStageClear::
 	; Add life
 	inc a
 	ldh [hPlayerLives], a
-	jr .endCheckPhase
-; PHASE 3
-.phase3:
-	; cp a, 3
-    ; jr nz, .phase4
-	ld hl, LIVES_SC_ADDRESS
-	; If meter is full, blink
-	ld a, [wExtraLifeScorePhase]
-	cp a, METER_TOTAL_PHASES
-	jr nz, .endCheckPhase
-	; Time
-	ld a, [wExtraLifeBlinkTimer]
-	cp a, 0
-	jr z, .showExtraLife
-	dec a
-	ld [wExtraLifeBlinkTimer], a
-	and EXTRA_LIFE_BLINK_SPEED
-	jr nz, .endCheckPhase
-	; Can blink
-	ld a, [hl]
-	cp a, BAR_CHECK
-	jr z, .showNothing
-.showExtraLife:
-	ld a, BAR_CHECK
-	jr .updateBlink
-.showNothing:
-	ld a, BAR_100
-	; jr .updateBlink
-.updateBlink:
-	LD_DE_HL
-	call WaitVRAMAccessible
-	LD_HL_DE
-	ld [hl], a
+	call RefreshLives
+	; jr .endCheckPhase
 .endCheckPhase:
 
     call RefreshStageClear
