@@ -59,7 +59,7 @@ ScoreTextMap::
 ScoreTextMapEnd::
 
 TotalTextMap::
-    DB $F6, $DB, $F6, $F2, $F7, $DE
+    DB $F5, $DB, $F5, $F1, $F6, $DE
 TotalTextMapEnd::
 
 CloudsMap::

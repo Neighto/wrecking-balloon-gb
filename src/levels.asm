@@ -1127,14 +1127,14 @@ LevelDataHandler::
 ;     ld b, 33
 ; .doMore:
 ;     push bc
-;     ld a, 80
+;     ld a, 62
 ;     call AddPoints
 ;     pop bc
 ;     dec b 
 ;     ld a, b 
 ;     cp a, 0 
 ;     jr nz, .doMore
-    jp StageClear
+;     jp StageClear
 .won:
     ; cp a, GAME_WON_KEY
     ; jr nz, .next
