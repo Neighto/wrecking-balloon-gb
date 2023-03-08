@@ -21,21 +21,25 @@ ANVIL_WAIT_TO_KILL_DURATION EQU 6
 
 SECTION "anvil", ROMX
 
+; *************************************************************
 ; SPAWN
+; *************************************************************
 SpawnAnvil::
     ld b, ANVIL_OAM_SPRITES
     call FindRAMAndOAMForEnemy ; hl = RAM space, b = OAM offset
     ret z
+    ;
     ; Initialize
+    ;
     call InitializeEnemyStructVars
     ld a, b
     ldh [hEnemyOAM], a
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_ACTIVE_BIT, a
     ldh [hEnemyFlags], a
-
+    ;
     ; Variant speed
-.variantSpeed:
+    ;
     ldh a, [hEnemyVariant]
 .cactusSpeed:
     cp a, ANVIL_CACTUS_VARIANT
@@ -50,15 +54,16 @@ SpawnAnvil::
 .updateVariantSpeed:
     ldh [hEnemyParam1], a
 .endVariantSpeed:
-
+    ;
     ; Get hl pointing to OAM address
+    ;
     LD_BC_HL ; bc now contains RAM address
     ld hl, wOAM
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
-
-    ; Variant visual
-.variantVisualLeft:
+    ;
+    ; Variant visual left
+    ;
     ldh a, [hEnemyVariant]
 .cactusVisual:
     cp a, ANVIL_CACTUS_VARIANT
@@ -73,8 +78,9 @@ SpawnAnvil::
     ld e, OAMF_PAL0
     ; jr .endVariantVisualLeft
 .endVariantVisualLeft:
-
-.anvilLeftOAM:
+    ;
+    ; Anvil left OAM
+    ;
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -83,9 +89,9 @@ SpawnAnvil::
     ld [hli], a
     ld a, e
     ld [hli], a
-
-    ; Variant visual
-.variantVisualRight:
+    ;
+    ; Variant visual right
+    ;
     ldh a, [hEnemyVariant]
 .cactusVisualRight:
     cp a, ANVIL_CACTUS_VARIANT
@@ -100,8 +106,9 @@ SpawnAnvil::
     ld e, OAMF_PAL0
     ; jr .endVariantVisualRight
 .endVariantVisualRight:
-
-.anvilRightOAM:
+    ;
+    ; Anvil right OAM
+    ;
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -111,19 +118,24 @@ SpawnAnvil::
     ld [hli], a
     ld a, e
     ld [hl], a
-
-.setStruct:
+    ;
+    ; Set struct
+    ;
     LD_HL_BC
     jp SetEnemyStruct
 
+; *************************************************************
 ; UPDATE
+; *************************************************************
 AnvilUpdate::
 
-.checkWarningVariant:
+    ;
+    ; Check warning variant
+    ;
     ldh a, [hEnemyVariant]
     cp a, ANVIL_WARNING_VARIANT
     jr nz, .endCheckWarningVariant
-.waitBeforeFallingToWarnPlayer:
+    ; Wait before falling to warn player
     ldh a, [hEnemyParam3]
     cp a, ANVIL_WARNING_DURATION
     jr nc, .endCheckWarningVariant
@@ -132,7 +144,9 @@ AnvilUpdate::
     jp .setStruct
 .endCheckWarningVariant:
 
-.checkDying:
+    ;
+    ; Check dying
+    ;
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_DYING_MASK
     jr z, .endCheckDying
@@ -188,7 +202,9 @@ AnvilUpdate::
     jp .setStruct
 .endCheckDying:
 
-.checkMove:
+    ;
+    ; Check move
+    ;
     ; Fall faster
     ldh a, [hEnemyParam1]
     inc a 
@@ -199,14 +215,16 @@ AnvilUpdate::
     ldh a, [hEnemyY]
     add a, b
     ldh [hEnemyY], a
-.setOAM:
+    ; Set OAM
     ld hl, wOAM
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
     UPDATE_OAM_POSITION_ENEMY 2, 1
 .endMove:
 
-.checkCollision:
+    ;
+    ; Check collision
+    ;
     ; Has been alive long enough (prevent hit immediately after spawning)
     ldh a, [hEnemyParam2]
     cp a, ANVIL_WAIT_TO_KILL_DURATION
@@ -263,12 +281,14 @@ AnvilUpdate::
     ldh [hEnemyParam2], a
 .endCollision:
 
-.checkOffscreen:
+    ; Check offscreen
     ld bc, ANVIL_OAM_BYTES
     call HandleEnemyOffscreenVertical
-    ; Enemy may be cleared, must do setStruct next
-.endOffscreen:
+    ; jr .setStruct ; Enemy may be cleared, must do setStruct next
 
+    ;
+    ; Set struct
+    ;
 .setStruct:
     ld hl, wEnemies
     ldh a, [hEnemyOffset]

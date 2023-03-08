@@ -40,7 +40,7 @@ Restart::
 	call InitializeSound
 	call InitializePalettes
 	call InitializeTotal
-	call AUDIO_ON ; Not actually required
+	; call AUDIO_ON ; Not actually required
 	ld hl, menuTheme
 	call hUGE_init
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
@@ -135,7 +135,7 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; === testing ===
-	; ld a, 2
+	; ld a, 5
 	; ldh [hLevel], a
 	; ===============
 

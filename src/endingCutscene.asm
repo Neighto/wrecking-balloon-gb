@@ -21,8 +21,8 @@ SCOREBOARD_OFFSET EQU $2D
 MAN_FOR_ENDING_OFFSET EQU $0B
 
 SECTION "ending cutscene vars", WRAM0
-    wHandClappingFrame:: DB
-    wHandClapOAM:: DB
+wHandClappingFrame:: DB
+wHandClapOAM:: DB
 
 SECTION "ending cutscene", ROMX
 

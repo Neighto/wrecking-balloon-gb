@@ -4,9 +4,9 @@ INCLUDE "constants.inc"
 INCLUDE "tileConstants.inc"
 
 SECTION "bullet vars", HRAM
-    hPlayerBulletFlags:: DB ; BIT #: [0=active] [1=direction]
-    hPlayerBulletY:: DB
-    hPlayerBulletX:: DB
+hPlayerBulletFlags:: DB ; BIT #: [0=active] [1=direction]
+hPlayerBulletY:: DB
+hPlayerBulletX:: DB
 
 SECTION "bullet", ROM0
 

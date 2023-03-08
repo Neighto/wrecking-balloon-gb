@@ -10,15 +10,15 @@ SECTION "enemy struct vars", HRAM
     ; TODO: Can I define a public constant here that is EndStruct - StartStruct instead?
 
     ; These must be in this order in each enemy
-    hEnemyFlags:: DB ; BIT #: [0=active] [1=alive] [2=dying] [3=direction] [4=hit enemy] [5-7=generic]
-    hEnemyNumber:: DB
-    hEnemyY:: DB
-    hEnemyX:: DB
-    hEnemyOAM:: DB
-    hEnemyVariant:: DB
-    hEnemyParam1:: DB
-    hEnemyParam2:: DB
-    hEnemyParam3:: DB
+hEnemyFlags:: DB ; BIT #: [0=active] [1=alive] [2=dying] [3=direction] [4=hit enemy] [5-7=generic]
+hEnemyNumber:: DB
+hEnemyY:: DB
+hEnemyX:: DB
+hEnemyOAM:: DB
+hEnemyVariant:: DB
+hEnemyParam1:: DB
+hEnemyParam2:: DB
+hEnemyParam3:: DB
 
 SECTION "enemy struct", ROM0
 
@@ -58,17 +58,15 @@ SetEnemyStruct::
     ret
 
 SECTION "enemy data vars (wram)", WRAM0
-
-    wEnemies:: DS ENEMY_DATA_SIZE
+wEnemies:: DS ENEMY_DATA_SIZE
 
 SECTION "enemy data vars (hram)", HRAM
-
-    hEnemyOffset:: DB ; Offset for looping through enemy data
-    hEnemyOffset2:: DB ; Offset for looping through enemy data within enemy
-    hEnemyOffset3:: DB ; Offset for looping through enemy data for balloon carrier
-    hEnemyLoopIndex:: DB
-    hEnemyLoopIndex2:: DB
-    hEnemyLoopIndex3:: DB
+hEnemyOffset:: DB ; Offset for looping through enemy data
+hEnemyOffset2:: DB ; Offset for looping through enemy data within enemy
+hEnemyOffset3:: DB ; Offset for looping through enemy data for balloon carrier
+hEnemyLoopIndex:: DB
+hEnemyLoopIndex2:: DB
+hEnemyLoopIndex3:: DB
 
 SECTION "enemy", ROM0
 

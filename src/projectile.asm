@@ -157,7 +157,7 @@ SpawnProjectile::
     ;
     call ProjectileSound
     ;
-    ; Set Struct
+    ; Set struct
     ;
     LD_HL_BC
     jp SetEnemyStruct
@@ -303,6 +303,7 @@ ProjectileUpdate::
     ld bc, PROJECTILE_OAM_BYTES
     call HandleEnemyOffscreenVertical
     ; jr .setStruct
+    
     ;
     ; Set struct
     ;

@@ -72,37 +72,37 @@ ENDLESS_SPAWN_BIRD_VARIANT_EASY_RATE EQU 1
 ENDLESS_SPAWN_BIRD_VARIANT_HARD_RATE EQU 1
 
 SECTION "endless vars", HRAM
-    hEndlessTimer:: DB
-    hEndlessResetTime:: DB ; Changes based on difficulty
+hEndlessTimer:: DB
+hEndlessResetTime:: DB ; Changes based on difficulty
 
-    ; Vertical Lanes
-    hEndlessVerticalLane:: DB
-    hEndlessVertical_A_Cooldown:: DB
-    hEndlessVertical_B_Cooldown:: DB
-    hEndlessVertical_C_Cooldown:: DB
-    hEndlessVertical_D_Cooldown:: DB
+; Vertical Lanes
+hEndlessVerticalLane:: DB
+hEndlessVertical_A_Cooldown:: DB
+hEndlessVertical_B_Cooldown:: DB
+hEndlessVertical_C_Cooldown:: DB
+hEndlessVertical_D_Cooldown:: DB
 
-    ; Vertical Enemy Info
-    hEndlessVerticalEnemyNumber:: DB
-    hEndlessVerticalEnemyVariant:: DB
+; Vertical Enemy Info
+hEndlessVerticalEnemyNumber:: DB
+hEndlessVerticalEnemyVariant:: DB
 
-    ; Horizontal Lanes
-    hEndlessHorizontalLane:: DB
-    hEndlessHorizontal_A_Cooldown:: DB
-    hEndlessHorizontal_B_Cooldown:: DB
-    hEndlessHorizontal_C_Cooldown:: DB
-    hEndlessHorizontal_D_Cooldown:: DB
+; Horizontal Lanes
+hEndlessHorizontalLane:: DB
+hEndlessHorizontal_A_Cooldown:: DB
+hEndlessHorizontal_B_Cooldown:: DB
+hEndlessHorizontal_C_Cooldown:: DB
+hEndlessHorizontal_D_Cooldown:: DB
 
-    ; Horizontal Enemy Info
-    hEndlessHorizontalEnemyNumber:: DB
-    hEndlessHorizontalEnemyVariant:: DB
-    hEndlessHorizontalEnemyDirection:: DB
-    
-    ; Level Switch
-    hEndlessLevelSwitch:: DB
-    hEndlessLevelSwitchSkip:: DB
-    hEndlessLevelSwitchTimer:: DB
-    hEndlessLevelOrder:: DS ENDLESS_LEVEL_SWITCH_TOTAL
+; Horizontal Enemy Info
+hEndlessHorizontalEnemyNumber:: DB
+hEndlessHorizontalEnemyVariant:: DB
+hEndlessHorizontalEnemyDirection:: DB
+
+; Level Switch
+hEndlessLevelSwitch:: DB
+hEndlessLevelSwitchSkip:: DB
+hEndlessLevelSwitchTimer:: DB
+hEndlessLevelOrder:: DS ENDLESS_LEVEL_SWITCH_TOTAL
 
 SECTION "endless", ROM0
 

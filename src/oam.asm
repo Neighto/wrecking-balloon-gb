@@ -3,11 +3,11 @@ INCLUDE "constants.inc"
 
 SECTION "OAM vars", WRAM0[OAM_VAR_ADDRESS]
 	; Player OAM is separate because we should not have to request it in case there's not enough space to spawn
-	wPlayerCactusOAM:: DS 2 * OAM_ATTRIBUTES_COUNT
-	wPlayerBalloonOAM:: DS 2 * OAM_ATTRIBUTES_COUNT
-	wPlayerBulletOAM:: DS 1 * OAM_ATTRIBUTES_COUNT
+wPlayerCactusOAM:: DS 2 * OAM_ATTRIBUTES_COUNT
+wPlayerBalloonOAM:: DS 2 * OAM_ATTRIBUTES_COUNT
+wPlayerBulletOAM:: DS 1 * OAM_ATTRIBUTES_COUNT
 OAMVars::
-	wOAM:: DS 35 * OAM_ATTRIBUTES_COUNT ; 35 sprites with 4 bytes each of attributes
+wOAM:: DS 35 * OAM_ATTRIBUTES_COUNT ; 35 sprites with 4 bytes each of attributes
 OAMVarsEnd::
 
 SECTION "OAM DMA routine", ROM0

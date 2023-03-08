@@ -34,11 +34,11 @@ POINT_SOUND_PLAY_A EQU 0
 POINT_SOUND_PLAY_B EQU 1
 
 SECTION "stage clear vars", WRAM0
-    wPointSound:: DB
-    wStageNumberOAM:: DB
-	wExtraLife:: DB
-	wExtraLifeScoreMeter:: DB
-	wExtraLifeScorePhase:: DB
+wPointSound:: DB
+wStageNumberOAM:: DB
+wExtraLife:: DB
+wExtraLifeScoreMeter:: DB
+wExtraLifeScorePhase:: DB
 
 SECTION "stage clear", ROMX
 

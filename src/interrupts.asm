@@ -31,8 +31,8 @@ ENDLESS_LCD_SCROLL_MIDDLE EQU 39
 ENDLESS_LCD_SCROLL_CLOSE EQU 111
 
 SECTION "interrupts vars", WRAM0
-    wVBlankFlag:: DB
-    wLCDInterrupt:: DS 2
+wVBlankFlag:: DB
+wLCDInterrupt:: DS 2
 
 SECTION "interrupts", ROM0
 

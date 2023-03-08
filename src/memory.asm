@@ -4,14 +4,14 @@ INCLUDE "constants.inc"
 INCLUDE "tileConstants.inc"
 
 SECTION "memory vars", WRAM0 
-    wMemcpyTileOffset:: DB
+wMemcpyTileOffset:: DB
 
 SECTION "memory", ROM0
 
+; Arg: DE = Block size
+; Arg: BC = Source address
+; Arg: HL = Destination address
 MEMCPY::
-    ; de = block size
-    ; bc = source address
-    ; hl = destination address
 .loop:
     ld a, [bc]
     ld [hli], a
@@ -23,11 +23,11 @@ MEMCPY::
 	jr nz, .loop
     ret
 
+; Arg: DE = Block size
+; Arg: BC = Source address
+; Arg: HL = Destination address
+; Arg: A = Offset
 MEMCPY_WITH_OFFSET::
-    ; de = block size
-    ; bc = source address
-    ; hl = destination address
-    ; a = offset
     push af
 .loop:
     pop af
@@ -48,14 +48,15 @@ MEMCPY_WITH_OFFSET::
     pop af
     ret
 
+; Arg: D = Block size (byte)
+; Arg: E = Pattern size (byte)
+; Arg: BC = Source address
+; Arg: HL = Destination address
+; Set wMemcpyTileOffset too if tile offset used
 MEMCPY_SIMPLE_PATTERN::
     xor a ; ld a, 0
     ld [wMemcpyTileOffset], a
 MEMCPY_SIMPLE_PATTERN_WITH_OFFSET::
-    ; d = block size (byte)
-    ; e = pattern size (byte)
-    ; bc = source address
-    ; hl = destination address
     ld a, e
     push af
 .loop:
@@ -89,23 +90,23 @@ MEMCPY_SIMPLE_PATTERN_WITH_OFFSET::
     pop af
     ret
 
+; Arg: HL = Destination address
+; Arg: BC = Source address
 MEMCPY_PATTERN_CLOUDS::
-    ; Arg: HL = Destination address
-    ; Arg: BC = Source address
 	ld d, SCRN_VX_B
 	ld e, CLOUDS_TILE_AMOUNT
 	ld a, CLOUDS_TILE_OFFSET
 	ld [wMemcpyTileOffset], a
 	jp MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
 
+; Arg: BC = Source address
+; Arg: HL = Destination address
+; Arg: D = Y counter (set to SCRN_Y_B if you want the entire screen height 144)
+; Arg: E = X counter (set to SCRN_X_B if you want the entire screen width 160)
 MEMCPY_SINGLE_SCREEN::
     xor a ; ld a, 0
     ld [wMemcpyTileOffset], a
 MEMCPY_SINGLE_SCREEN_WITH_OFFSET::
-    ; bc = source address
-    ; hl = destination address
-    ; d = Y counter (set to SCRN_Y_B if you want the entire screen height 144)
-    ; e = X counter (set to SCRN_X_B if you want the entire screen width 166)
     ld a, e
     push af
 .loop:
@@ -134,8 +135,8 @@ MEMCPY_SINGLE_SCREEN_WITH_OFFSET::
     pop af
     ret
 
+; Arg: BC = Distance
 ResetHLInRange::
-    ; bc = distance
 .loop:
     xor a ; ld a, 0
     ld [hli], a
@@ -145,10 +146,10 @@ ResetHLInRange::
     jr nz, .loop
     ret
 
+; Arg: HL = Starting address
+; Arg: BC = Distance
+; Arg: D = Value
 SetInRange::
-    ; hl = starting address
-    ; bc = distance
-    ; d = value
 .loop:
     ld a, d
     ld [hli], a
@@ -166,21 +167,20 @@ ClearOAM::
     ld bc, OAM_COUNT * OAM_ATTRIBUTES_COUNT
     jp ResetHLInRange
 
-ClearRAM::
-    ld hl, _RAM
-    ld bc, _OAMRAM - _RAM
-    jp ResetHLInRange
+; ClearRAM::
+;     ld hl, _RAM
+;     ld bc, _OAMRAM - _RAM
+;     jp ResetHLInRange
 
 ClearHRAM::
     ld hl, _HRAM
     ld bc, $FFFC - _HRAM
     jp ResetHLInRange
 
+; Arg: B = Sprite space needed (4 bytes each)
+; Ret: Z/NZ = Failed / succeeded respectively
+; Ret: B = Start sprite # in wOAM
 RequestOAMSpace::
-    ; Argument b = sprite space needed (4 bytes each)
-    ; Returns z flag as failed / nz flag as succeeded
-    ; Returns b as start sprite # in wOAM
-
     ld c, 0 ; c = how many sprites we've found free so far
     ld hl, wOAM
     ld d, OAMVarsEnd - OAMVars
@@ -242,12 +242,12 @@ RequestOAMSpace::
     ; z already set
     ret
 
+; Arg: HL = Data address
+; Arg: D = Struct amount
+; Arg: E = Struct size
+; Ret: Z/NZ = Failed / succeeded respectively
+; Ret: HL = Address of free space
 RequestRAMSpace::
-    ; Argument hl as data address
-    ; Argument d as struct amount
-    ; Argument e as struct size
-    ; Returns z flag as failed / nz flag as succeeded
-    ; Returns hl as address of free space
 .loop:
     ld a, [hl] ; Active
     cp a, 0
@@ -265,11 +265,11 @@ RequestRAMSpace::
     xor a ; ld a, 0
     ret
 
+; Arg: B = Sprites needed
+; Arg: HL = OAM offset var
+; Ret: HL = Address of free space
+; Ret: Z/NZ = Failed / succeeded respectively
 RequestOAMAndSetOAMOffset::
-    ; Arg: B = sprites needed
-    ; Arg: HL = OAM offset var
-    ; Ret: HL = address of free space
-    ; Ret: z flag as failed / nz flag as succeeded
     push hl
 	call RequestOAMSpace
     pop hl

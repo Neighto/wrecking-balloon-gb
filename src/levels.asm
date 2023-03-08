@@ -17,11 +17,11 @@ SPAWN_X_C EQU 96
 SPAWN_X_D EQU 128
 
 SECTION "level vars", HRAM
-    hLevel:: DB
-    hLevelDataAddress:: DS 2
-    hLevelWaitCounter:: DB
-    hLevelWaitBoss:: DB
-    hLevelRepeatCounter:: DB
+hLevel:: DB
+hLevelDataAddress:: DS 2
+hLevelWaitCounter:: DB
+hLevelWaitBoss:: DB
+hLevelRepeatCounter:: DB
 
 SECTION "level data", ROM0
 
@@ -1134,7 +1134,7 @@ LevelDataHandler::
 ;     ld a, b 
 ;     cp a, 0 
 ;     jr nz, .doMore
-;     jp StageClear
+    jp StageClear
 .won:
     ; cp a, GAME_WON_KEY
     ; jr nz, .next

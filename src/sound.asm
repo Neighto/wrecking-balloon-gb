@@ -8,21 +8,21 @@ BOOST_SOUND_TIMER EQU 40
 HIT_SOUND_TIMER EQU 40
 
 SECTION "sound vars", HRAM
-  hStopMusic:: DB
+hStopMusic:: DB
 
 SECTION "sound", ROM0
 
-AUDIO_OFF::
-  ldh a, [rNR52]
-	res 7, a
-	ldh [rNR52], a
-	ret
+; AUDIO_OFF::
+;   ldh a, [rNR52]
+; 	res 7, a
+; 	ldh [rNR52], a
+; 	ret
 
-AUDIO_ON::
-  ldh a, [rNR52]
-  set 7, a
-	ldh [rNR52], a
-	ret
+; AUDIO_ON::
+;   ldh a, [rNR52]
+;   set 7, a
+; 	ldh [rNR52], a
+; 	ret
 
 InitializeSound::
   ; Master volume
@@ -281,7 +281,9 @@ CollectSound::
 ; Stage Clear Sound Effects
 ; *************************************************************
 
-BassSoundA::
+; Arg: B = Frequency lower data
+; Arg: C = Frequency higher data
+BassSoundCommon:
   ; Sound on/off
   xor a
   ldh [rNR30], a
@@ -294,29 +296,19 @@ BassSoundA::
   ld a, %00100000
   ldh [rNR32], a
   ; Frequency's lower data
-  ld a, %11111100
+  ld a, b
   ldh [rNR33], a
   ; Frequency's higher data
-  ld a, %11000101
+  ld a, c
   ldh [rNR34], a
   ret
 
+BassSoundA::
+  ld b, %11111100
+  ld c, %11000101
+  jp BassSoundCommon
+
 BassSoundB::
-  ; Sound on/off
-  xor a
-  ldh [rNR30], a
-  cpl
-  ldh [rNR30], a
-  ; Sound length
-  ld a, %11110010
-  ldh [rNR31], a
-  ; Select output level
-  ld a, %00100000
-  ldh [rNR32], a
-  ; Frequency's lower data
-  ld a, %00000000
-  ldh [rNR33], a
-  ; Frequency's higher data
-  ld a, %11000011
-  ldh [rNR34], a
-  ret
+  ld b, %00000000
+  ld c, %11000011
+  jp BassSoundCommon

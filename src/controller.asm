@@ -2,9 +2,9 @@ INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 
 SECTION "controller vars", HRAM
-	hControllerDown:: DB
-	hControllerPressed:: DB
-	hPaused:: DB
+hControllerDown:: DB
+hControllerPressed:: DB
+hPaused:: DB
 
 SECTION "controller", ROM0
 

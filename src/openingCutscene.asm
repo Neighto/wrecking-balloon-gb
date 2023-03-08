@@ -11,8 +11,8 @@ HAND_WAVE_START_Y EQU 96
 HAND_WAVE_SPRITES EQU 1
 
 SECTION "opening cutscene vars", WRAM0
-    wHandWavingFrame:: DB
-    wHandWaveOAM:: DB
+wHandWavingFrame:: DB
+wHandWaveOAM:: DB
 
 SECTION "opening cutscene", ROMX
 
