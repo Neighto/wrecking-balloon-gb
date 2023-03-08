@@ -5,24 +5,24 @@ INCLUDE "macro.inc"
 INCLUDE "tileConstants.inc"
 
 SECTION "player vars", HRAM
-  hPlayerFlags:: DB ; BIT #: [0=active] [1=alive] [2=dying] [3=direction] [4=bobbed] [5-7=generic]
-  hPlayerY:: DB
-  hPlayerX:: DB
-  hPlayerY2:: DB
-  hPlayerX2:: DB
-  hPlayerPoppingFrame:: DB
-  hPlayerPoppingTimer:: DB
-  hPlayerRespawnTimer:: DB
-  hPlayerSpeed:: DB
-  hPlayerLives:: DB
-  hPlayerInvincible:: DB ; Timer
-  hPlayerBoost:: DB ; Timer
-  hPlayerAttack:: DB ; Timer
-  hPlayerStunnedTimer:: DB
-  hPlayerCactusTile:: DB
-  hPlayerBalloonTile:: DB
-  hPlayerBalloonTurningTile:: DB
-  hPlayerBalloonTurningTile2:: DB
+hPlayerFlags:: DB ; BIT #: [0=active] [1=alive] [2=dying] [3=direction] [4=bobbed] [5-7=generic]
+hPlayerY:: DB
+hPlayerX:: DB
+hPlayerY2:: DB
+hPlayerX2:: DB
+hPlayerPoppingFrame:: DB
+hPlayerPoppingTimer:: DB
+hPlayerRespawnTimer:: DB
+hPlayerSpeed:: DB
+hPlayerLives:: DB
+hPlayerInvincible:: DB ; Timer
+hPlayerBoost:: DB ; Timer
+hPlayerAttack:: DB ; Timer
+hPlayerStunnedTimer:: DB
+hPlayerCactusTile:: DB
+hPlayerBalloonTile:: DB
+hPlayerBalloonTurningTile:: DB
+hPlayerBalloonTurningTile2:: DB
 
 SECTION "player", ROM0
 
@@ -270,10 +270,13 @@ SpawnPlayer::
   ld [hl], a
   ret
 
+; *************************************************************
+; CONTROLS
+; *************************************************************
 PlayerControls:
-  ; argument d = input directions down
-  ; argument e = input directions pressed
-  ; argument c = check vertical boundaries (0 = no)
+  ; Arg: D = Input directions down
+  ; Arg: E = Input directions pressed
+  ; Arg: C = Check vertical boundaries (0 = no)
 
 .checkHorizontal:
 

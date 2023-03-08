@@ -1,2 +1,2 @@
 SECTION "timer vars", HRAM
-	hGlobalTimer:: DB
+hGlobalTimer:: DB

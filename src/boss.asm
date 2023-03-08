@@ -50,17 +50,17 @@ BOSS_KILLER_START_TIME EQU %00111100
 BOSS_KILLER_WAIT_TIME EQU %00111111
 
 SECTION "boss vars", HRAM
-    hBossFlags:: DB
-    hBossY:: DB
-    hBossX:: DB
-    hBossOAM:: DB
-    hBossAnimationFrame:: DB
-    hBossAnimationTimer:: DB
-    hBossSpeed:: DB
-    hBossToY:: DB
-    hBossKnockedOutTimer:: DB
-    hBossDirectionChangeTimer:: DB
-    hBossAttackCooldownTimer:: DB
+hBossFlags:: DB
+hBossY:: DB
+hBossX:: DB
+hBossOAM:: DB
+hBossAnimationFrame:: DB
+hBossAnimationTimer:: DB
+hBossSpeed:: DB
+hBossToY:: DB
+hBossKnockedOutTimer:: DB
+hBossDirectionChangeTimer:: DB
+hBossAttackCooldownTimer:: DB
 
 SECTION "boss", ROMX
 
@@ -720,7 +720,7 @@ BossUpdate::
     ret
 
 SECTION "boss miscellaneous vars", WRAM0
-    wWaitBossTimer:: DB
+wWaitBossTimer:: DB
 
 SECTION "boss miscellaneous", ROMX
 

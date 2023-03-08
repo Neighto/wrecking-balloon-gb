@@ -16,11 +16,11 @@ FADE_PALETTE2_3 EQU %01000000
 FADE_PALETTE2_4 EQU %00000000
 
 SECTION "palettes vars", WRAM0
-	wFadeInFrame:: DB
-	wFadeOutFrame:: DB
-	wTriggerFadeIn:: DB
-	wTriggerFadeOut:: DB
-	wFlickerTimer:: DB
+wFadeInFrame:: DB
+wFadeOutFrame:: DB
+wTriggerFadeIn:: DB
+wTriggerFadeOut:: DB
+wFlickerTimer:: DB
 
 SECTION "palettes", ROM0
 
@@ -60,8 +60,8 @@ InitializeEmptyPalettes::
 	ldh [rOBP1], a
 	ret
 
+; Ret: Z/NZ = Not faded / faded respectively
 FadeOutPalettes::
-	; Returns z flag as faded / nz flag as not faded
 	ld a, [wFadeOutFrame]
 	cp a, 5
 	jr c, .fadeOut
@@ -110,8 +110,8 @@ FadeOutPalettes::
 	xor a ; ld a, 0
 	ret
 
+; Ret: Z/NZ = Not faded / faded respectively
 FadeInPalettes::
-	; Returns z flag as faded / nz flag as not faded
 	ld a, [wFadeInFrame]
 	cp a, 5
 	jr c, .fadeIn

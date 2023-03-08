@@ -23,12 +23,12 @@ SUNGLASSES_ADDRESS EQU $9811
 SUNGLASSES_SPRITES EQU 2
 
 SECTION "menu vars", WRAM0
-	wMenuFrame:: DB
-	wSelectedMode:: DB
-	wMenuCursorOAM:: DB
-	wMenuCursorTimer:: DB
-	wSunglassesOAM:: DB
-	wSecret:: DB
+wMenuFrame:: DB
+wSelectedMode:: DB
+wMenuCursorOAM:: DB
+wMenuCursorTimer:: DB
+wSunglassesOAM:: DB
+wSecret:: DB
 
 SECTION "menu", ROMX
 

@@ -5,11 +5,11 @@ INCLUDE "constants.inc"
 SEQUENCE_UPDATE_REFRESH_TIME EQU %00000001
 
 SECTION "sequence vars", HRAM
-    hSequenceWaitCounter:: DB
-    hSequenceDataAddress:: DS 2
-    hSequencePhase:: DB
-    hSequencePlaySong:: DB
-    hSequenceWaitUntilCheck:: DB
+hSequenceWaitCounter:: DB
+hSequenceDataAddress:: DS 2
+hSequencePhase:: DB
+hSequencePlaySong:: DB
+hSequenceWaitUntilCheck:: DB
 
 SECTION "sequence", ROMX
 
@@ -22,6 +22,9 @@ InitializeSequence::
     ; Must initialize hSequenceDataAddress elsewhere
     ret
 
+; *************************************************************
+; UPDATE
+; *************************************************************
 SequenceDataUpdate::
     ; Frequency we read 
     ldh a, [hGlobalTimer]

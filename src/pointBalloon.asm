@@ -16,12 +16,16 @@ POINT_BALLOON_STRING_Y_OFFSET EQU 14
 
 SECTION "point balloon", ROMX
 
+; *************************************************************
 ; SPAWN
+; *************************************************************
 SpawnPointBalloon::
     ld b, POINT_BALLOON_OAM_SPRITES
     call FindRAMAndOAMForEnemy ; hl = RAM space, b = OAM offset
     ret z
+    ;
     ; Initialize
+    ;
     call InitializeEnemyStructVars
     ld a, b
     ldh [hEnemyOAM], a
@@ -29,7 +33,9 @@ SpawnPointBalloon::
     set ENEMY_FLAG_ACTIVE_BIT, a
     set ENEMY_FLAG_ALIVE_BIT, a
     ldh [hEnemyFlags], a
+    ;
     ; Get hl pointing to OAM address
+    ;
     LD_BC_HL ; bc now contains RAM address
     ld hl, wOAM
     ldh a, [hEnemyOAM]
@@ -61,8 +67,9 @@ SpawnPointBalloon::
     ld e, OAMF_PAL1
     ; jr .endVariantVisual
 .endVariantVisual:
-
-.balloonLeftOAM:
+    ;
+    ; Balloon left OAM
+    ;
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -71,7 +78,9 @@ SpawnPointBalloon::
     ld [hli], a
     ld a, e
     ld [hli], a
-.balloonRightOAM:
+    ;
+    ; Balloon right OAM
+    ;
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -82,7 +91,9 @@ SpawnPointBalloon::
     ld a, e
     or a, OAMF_XFLIP
     ld [hli], a
-.stringOAM:
+    ;
+    ; String OAM
+    ;
     ldh a, [hEnemyY]
     add POINT_BALLOON_STRING_Y_OFFSET
     ld [hli], a
@@ -92,14 +103,20 @@ SpawnPointBalloon::
     ld a, STRING_TILE
     ld [hli], a
     ld [hl], OAMF_PAL0
-.setStruct:
+    ;
+    ; Set struct
+    ;
     LD_HL_BC
     jp SetEnemyStruct
 
+; *************************************************************
 ; UPDATE
+; *************************************************************
 PointBalloonUpdate::
 
-.checkAlive:
+    ;
+    ; Check alive
+    ;
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_ALIVE_MASK
     jr nz, .isAlive
@@ -116,7 +133,9 @@ PointBalloonUpdate::
     jp .setStruct
 .isAlive:
 
-.checkMove:
+    ;
+    ; Check move
+    ;
     ld hl, hEnemyY
     ldh a, [hEnemyVariant]
 .moveEasy:
@@ -148,7 +167,9 @@ PointBalloonUpdate::
     ld [hli], a
 .endMove:
 
-.checkString:
+    ;
+    ; Check string
+    ;
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and STRING_MOVE_TIME
@@ -167,7 +188,9 @@ PointBalloonUpdate::
     ld [hl], a
 .endString:
 
-.checkCollision:
+    ;
+    ; Check collision
+    ;
     ; Is time to check collision
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
@@ -225,12 +248,16 @@ PointBalloonUpdate::
     call PopSound
 .endCollision:
 
-.checkOffscreen:
+    ;
+    ; Check offscreen
+    ;
     ld bc, POINT_BALLOON_OAM_BYTES
     call HandleEnemyOffscreenVertical
-    ; Enemy may be cleared, must do setStruct next
-.endOffscreen:
+    ; jr .setStruct ; Enemy may be cleared, must do setStruct next
 
+    ;
+    ; Set struct
+    ;
 .setStruct:
     ld hl, wEnemies
     ldh a, [hEnemyOffset]

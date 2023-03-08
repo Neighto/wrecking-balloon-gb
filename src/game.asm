@@ -21,12 +21,13 @@ COUNTDOWN_FRAME_6 EQU 6 ; Clear
 
 CITY_TILES_OFFSET EQU 1 ; So first tile is empty
 ROAD_TILES_OFFSET EQU 1 ; So first tile is empty
+HYDRANT_TILE_OFFSET EQU $26
 
 SUN_ADDRESS EQU $9848
 
 SECTION "game vars", WRAM0
-    wCountdownFrame:: DB
-    wCountdownOAM:: DB
+wCountdownFrame:: DB
+wCountdownOAM:: DB
 
 SECTION "game", ROM0
 
@@ -46,20 +47,20 @@ LoadGameSpriteAndMiscellaneousTiles::
 	ld de, MiscellaneousTilesEnd - MiscellaneousTiles
 	jp MEMCPY
 
+; Arg: HL = Destination address
 LoadLevelClouds:
-    ; Arg: HL = Address
     ld bc, CloudsMap + CLOUDS_WHITE_1_OFFSET
     call MEMCPY_PATTERN_CLOUDS
     ld bc, CloudsMap + CLOUDS_WHITE_2_OFFSET
     jp MEMCPY_PATTERN_CLOUDS
 
 LoadLevelCityGraphicsCommon:
-.tiles:
+    ; TILES
     ld bc, LevelCityTiles
     ld hl, _VRAM9000 + CITY_TILES_OFFSET * TILE_BYTES
     ld de, LevelCityTilesEnd - LevelCityTiles
     call MEMCPY
-.tilemap:
+    ; TILEMAP
     ; Add city
     ld bc, LevelCityMap
     ld hl, _SCRN0 + $C0
@@ -71,8 +72,8 @@ LoadLevelCityGraphicsCommon:
     ld hl, $99C0
     jp LoadLevelClouds
     
+; Arg: HL = Destination address
 LoadLamp::
-    ; Arg: HL = Destination address
     ld a, $20 ; LAMP_OFFSET
     ld [wMemcpyTileOffset], a
     ld bc, LampMap
@@ -80,25 +81,25 @@ LoadLamp::
     ld e, 1
     jp MEMCPY_SINGLE_SCREEN_WITH_OFFSET
 
+; Arg: HL = Destination address
 LoadHydrant::
-    ; Arg: HL = Destination address
-    ld a, $26 ; HYDRANT_OFFSET
+    ld a, HYDRANT_TILE_OFFSET
     ld [wMemcpyTileOffset], a
     ld bc, HydrantMap
     ld d, 3
     ld e, 2
     jp MEMCPY_SINGLE_SCREEN_WITH_OFFSET
 
+; Arg: HL = Destination address
 LoadRoadCommon::
-    ; Arg: HL = Destination address
     push hl
-.tiles:
+    ; TILES
     ld bc, CutsceneTiles
     ld hl, _VRAM9000 + ROAD_TILES_OFFSET * TILE_BYTES
     ld de, CutsceneTilesEnd - CutsceneTiles
     call MEMCPY
-.tilemap:
-    ; Add Road
+    ; TILEMAP
+    ; Add road
     pop hl
     ld bc, CloudsMap + CLOUDS_CUTSCENE_1_OFFSET
 	call MEMCPY_PATTERN_CLOUDS
@@ -166,37 +167,36 @@ LoadLevelNightCityGraphics::
 	jp MEMCPY_WITH_OFFSET
 
 ; *************************************************************
-; LoadLevelDesertGraphicsCommon
+; LoadLevelDesertGraphics
 ; *************************************************************
-LoadLevelDesertGraphicsCommon:
-.tiles:
-	ld bc, LevelDesertTiles
-	ld hl, _VRAM9000
-	ld de, LevelDesertTilesEnd - LevelDesertTiles
-	call MEMCPY
-.tilemap:
+LoadLevelDesertGraphics::
+    ; TILES
+    ld bc, LevelDesertTiles
+    ld hl, _VRAM9000
+    ld de, LevelDesertTilesEnd - LevelDesertTiles
+    call MEMCPY
+    ; TILEMAP
     ; Add in desert
-	ld bc, LevelDesertMap
-	ld hl, $98E0
-	ld de, LevelDesertMapEnd - LevelDesertMap
-	call MEMCPY
+    ld bc, LevelDesertMap
+    ld hl, $98E0
+    ld de, LevelDesertMapEnd - LevelDesertMap
+    call MEMCPY
     ; Add in sun
-    call SpawnSun
+    ld hl, SUN_ADDRESS
+    ld a, SUN_TILE_OFFSET
+    ld [wMemcpyTileOffset], a
+    ld bc, SunMap
+    ld d, 4
+    ld e, d
+    call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
     ; Add scrolling clouds
     ld hl, $99C0
     jp LoadLevelClouds
 
 ; *************************************************************
-; LoadLevelDesertGraphics
-; *************************************************************
-LoadLevelDesertGraphics::
-    jp LoadLevelDesertGraphicsCommon
-
-; *************************************************************
 ; LoadLevelNightDesertGraphics
 ; *************************************************************
 LoadLevelNightDesertGraphics::
-    call LoadLevelDesertGraphicsCommon
     ; Add stars
     ld a, STAR_TILE_OFFSET
     ld hl, $9826
@@ -211,18 +211,19 @@ LoadLevelNightDesertGraphics::
     ld [hl], a
     ld hl, $9871
     ld [hl], a
-    ret
+    ; Add desert
+    jp LoadLevelDesertGraphics
 
 ; *************************************************************
 ; LoadLevelShowdownGraphics
 ; *************************************************************
 LoadLevelShowdownGraphics::
-.tiles:
+    ; TILES
 	ld bc, LevelShowdownTiles
 	ld hl, _VRAM9000
 	ld de, LevelShowdownTilesEnd - LevelShowdownTiles
 	call MEMCPY
-.tilemap:
+    ; TILEMAP
     ; Add in rain layer 1
 	ld bc, LevelShowdownMap
 	ld hl, _SCRN0
@@ -254,27 +255,6 @@ LoadLevelShowdownGraphics::
     jp LoadLevelClouds
 
 ; *************************************************************
-; SPAWNSUN
-; *************************************************************
-SpawnSun::
-    ; TODO should be cheaper to replace with copy signel screen
-    ld bc, SunMap
-	ld hl, SUN_ADDRESS
-    ld de, 4
-    ld a, SUN_TILE_OFFSET
-	call MEMCPY_WITH_OFFSET
-	ld hl, SUN_ADDRESS + $20
-    ld de, 4
-	call MEMCPY_WITH_OFFSET
-	ld hl, SUN_ADDRESS + $40
-    ld de, 4
-	call MEMCPY_WITH_OFFSET
-	ld hl, SUN_ADDRESS + $60
-    ld de, 4
-	jp MEMCPY_WITH_OFFSET
-
-
-; *************************************************************
 ; SPAWNCOUNTDOWN
 ; *************************************************************
 SpawnCountdown::
@@ -301,18 +281,17 @@ SpawnCountdown::
     ld [hl], a
 	ret
 
+; Ret: Z/NZ = Failed / succeeded respectively
 IsCountdownAtBalloonPop::
-    ; Returns z flag as yes / nz flag as no
     ld a, [wCountdownFrame]
     cp a, COUNTDOWN_FRAME_4
     ret
 
 ; *************************************************************
 ; COUNTDOWN
-; Returns z flag as still running / nz flag as finished
+; Ret: Z/NZ = Still running / finished respectively
 ; *************************************************************
 Countdown::
-    
     ; Frame speed
     ld a, [wCountdownFrame]
     cp a, COUNTDOWN_FRAME_4
@@ -325,7 +304,6 @@ Countdown::
 .countdownBalloonPopSpeed:
     and COUNTDOWN_BALLOON_POP_SPEED
     jp nz, .hasNotFinished
-
     ; Update frame
 .frames:
     ld a, [wCountdownFrame]
@@ -408,7 +386,6 @@ Countdown::
 ; UPDATEGAMECOUNTDOWN
 ; *************************************************************
 UpdateGameCountdown::
-
     ; Timer
     UPDATE_GLOBAL_TIMER
 
@@ -431,7 +408,6 @@ UpdateGameCountdown::
 ; UPDATEGAME
 ; *************************************************************
 UpdateGame::
-
     ; Check paused
     ldh a, [hPaused]
 	cp a, PAUSE_OFF

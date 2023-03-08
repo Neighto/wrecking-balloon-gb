@@ -3,11 +3,10 @@ INCLUDE "macro.inc"
 
 SECTION "math", ROM0
 
+; Arg: A = Number being modded
+; Arg: D = Mod number
+; Ret: A = Remainder
 MODULO::
-    ; simple modulo formula
-    ; takes 'a' argument as number being modded
-    ; takes 'd' argument as mod number
-    ; returns 'a' as remainder
     cp a, d
     ret c
 .loop:
@@ -16,11 +15,10 @@ MODULO::
     jr nc, .loop
     ret
 
+; Arg: A = Number being divided
+; Arg: B = Divider
+; Ret: A = Solution
 DIVISION::
-    ; simple division formula
-    ; takes 'a' argument as number being divided
-    ; takes 'b' argument as divider
-    ; returns 'a' as solution
     ld c, 0
     cp a, b
     jr c, .end
@@ -33,10 +31,10 @@ DIVISION::
     ld a, c
     ret
 
+; Arg: A = Non-BCD number
+; Ret: A = BCD number
+; Example: a = 32, 32 % 10 = 2, (32 % 100) / 10 = 3 => % 0011 0010 
 ToBCD::
-    ; takes 'a' argument as non-BCD number
-    ; returns 'a' as BCD number
-    ; Example: a = 32, 32 % 10 = 2, (32 % 100) / 10 = 3 => % 0011 0010 
     ld h, a ; save a
     ld d, 10
     call MODULO
@@ -50,11 +48,10 @@ ToBCD::
     or l
     ret
 
+; Arg: B = Operand 1
+; Arg: C = Operand 2
+; Ret: A = Result
 MULTIPLY::
-;     simple multiply formula
-;     argument 'b'
-;     argument 'c'
-;     returns 'a' as solution
     ld d, 0
 .loop:
     ld a, c
