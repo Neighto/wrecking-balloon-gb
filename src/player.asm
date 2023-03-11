@@ -39,8 +39,6 @@ InitializeLivesEndless::
 InitializePlayer::
   ; FLAGS
   xor a ; ld a, 0
-  ldh [hPlayerFlags], a
-  ldh a, [hPlayerFlags]
   set PLAYER_FLAG_ACTIVE_BIT, a
   set PLAYER_FLAG_ALIVE_BIT, a
   ldh [hPlayerFlags], a
@@ -133,9 +131,9 @@ UpdateCactusPosition:
   ld [hl], a
   ret
 
+; Arg: B = Start X
+; Arg: C = Start Y
 SetPlayerPosition:
-  ; b = start x
-  ; c = start y
   ld a, b
   ldh [hPlayerX], a
   ldh [hPlayerX2], a
@@ -171,39 +169,40 @@ SetPlayerPositionAndSpeedEndingCutscene::
   jp SetPlayerPosition
 
 SetPlayerCactusHappy::
-  ld hl, wPlayerCactusOAM+2
-  ld [hl], PLAYER_CACTUS_HAPPY_TILE
-  ld hl, wPlayerCactusOAM+6
-  ld [hl], PLAYER_CACTUS_HAPPY_TILE
+  ld a, PLAYER_CACTUS_HAPPY_TILE
+  ld hl, wPlayerCactusOAM + 2
+  ld [hl], a
+  ld hl, wPlayerCactusOAM + 6
+  ld [hl], a
   ret
 
 BobPlayer::
   ldh a, [hGlobalTimer]
-  and %00011111
+  and PLAYER_BOB_TIME
   ld d, %00000000
   jr nz, .endWreckingBalloonCheck
   ldh a, [hPlayerFlags]
+  ld b, a
   and PLAYER_FLAG_BOBBED_MASK
-  ldh a, [hPlayerFlags]
+  ld a, b
   jr z, .bobUp
 .bobDown:
   res PLAYER_FLAG_BOBBED_BIT, a
   ldh [hPlayerFlags], a
-  ld d, %10000000
+  ld d, PADF_DOWN
   jr .endWreckingBalloonCheck
 .bobUp:
   set PLAYER_FLAG_BOBBED_BIT, a
   ldh [hPlayerFlags], a
-  ld d, %01000000
+  ld d, PADF_UP
 .endWreckingBalloonCheck:
   ld e, 0
-  ld c, 0
+  ld c, e
   call PlayerControls
   call UpdateBalloonPosition
   jp UpdateCactusPosition
 
 MovePlayerAuto::
-  ; d = input
 .autoDown::
   ld d, %10000000
   jr .auto
@@ -212,10 +211,10 @@ MovePlayerAuto::
   ; jr .auto
 .auto:
   ldh a, [hGlobalTimer]
-  and %00000011
+  and PLAYER_AUTO_MOVE_TIME
   ret nz
   ld e, 0
-  ld c, 0
+  ld c, e
   call PlayerControls
   call UpdateBalloonPosition
   jp UpdateCactusPosition
@@ -273,30 +272,32 @@ SpawnPlayer::
 ; *************************************************************
 ; CONTROLS
 ; *************************************************************
+; Arg: D = Input directions down
+; Arg: E = Input directions pressed
+; Arg: C = Check vertical boundaries (0 = no)
 PlayerControls:
-  ; Arg: D = Input directions down
-  ; Arg: E = Input directions pressed
-  ; Arg: C = Check vertical boundaries (0 = no)
 
-.checkHorizontal:
-
-.right:
+  ;
+  ; Check horizontal
+  ;
+  ; RIGHT
 	ld a, d
   and PADF_RIGHT
 	jr z, .endRight
-.setFacingRight:
+  ; Set facing
   ldh a, [hPlayerFlags]
   res PLAYER_FLAG_DIRECTION_BIT, a
   ldh [hPlayerFlags], a
-.checkOffscreenRight:
+  ; Check offscreen
   ldh a, [hPlayerX]
   ld b, SCRN_X - 8
   cp a, b
   jr c, .moveRight
-.offscreenRight:
+  ; Is offscreen
   ld a, b
   ldh [hPlayerX], a
   jr .canCactusDriftCenterX
+  ; Can move
 .moveRight:
   ldh a, [hPlayerSpeed]
   ld b, a
@@ -306,7 +307,7 @@ PlayerControls:
   ldh a, [hPlayerX2]
   add a, b
   ldh [hPlayerX2], a
-.canCactusDriftLeft:
+  ; Cactus drift
   ld hl, hPlayerX
   ld a, PLAYER_MAX_DRIFT_X
   cpl
@@ -314,37 +315,39 @@ PlayerControls:
   ld hl, hPlayerX2
   cp a, [hl]
   jr c, .cactusDriftLeft
-.cactusMaxDriftLeft:
+  ; Cactus at max drift
   ; Update balloon turning tiles right
   ldh a, [hPlayerBalloonTurningTile]
-  ld [wPlayerBalloonOAM+2], a
+  ld [wPlayerBalloonOAM + 2], a
   ldh a, [hPlayerBalloonTurningTile2]
-  ld [wPlayerBalloonOAM+6], a
+  ld [wPlayerBalloonOAM + 6], a
   jr .endCheckHorizontal
+  ; Drift cactus more
 .cactusDriftLeft:
   dec [hl]
   jr .checkBalloonString
 .endRight:
 
-.left:
+  ; LEFT
   ld a, d
   and PADF_LEFT
 	jr z, .endLeft
-.setFacingLeft:
+  ; Set facing
   ldh a, [hPlayerFlags]
   set PLAYER_FLAG_DIRECTION_BIT, a
   ldh [hPlayerFlags], a
-.checkOffscreenLeft:
+  ; Check offscreen
   ldh a, [hPlayerX]
   ld b, 8 ; x = 8 when player is at leftmost part of screen
   sub a, b
   dec a ; sub 1 more so if we are at leftmost part of screen value is past 0
   cp a, SCRN_X
   jr c, .moveLeft
-.offscreenLeft:
+  ; Is offscreen
   ld a, b
   ldh [hPlayerX], a
   jr .canCactusDriftCenterX
+  ; Can move
 .moveLeft:
   ldh a, [hPlayerSpeed]
   ld b, a
@@ -354,20 +357,21 @@ PlayerControls:
   ldh a, [hPlayerX2]
   sub a, b
   ldh [hPlayerX2], a
-.canCactusDriftRight:
+  ; Cactus drift
   ld hl, hPlayerX
   ld a, PLAYER_MAX_DRIFT_X
   add [hl]
   ld hl, hPlayerX2
   cp a, [hl]
   jr nc, .cactusDriftRight
-.cactusMaxDriftRight:
+  ; Cactus at max drift
   ; Update balloon turning tiles left
   ldh a, [hPlayerBalloonTurningTile2]
-  ld [wPlayerBalloonOAM+2], a
+  ld [wPlayerBalloonOAM + 2], a
   ldh a, [hPlayerBalloonTurningTile]
-  ld [wPlayerBalloonOAM+6], a
+  ld [wPlayerBalloonOAM + 6], a
   jr .endCheckHorizontal
+  ; Drift cactus more
 .cactusDriftRight:
   inc [hl]
   jr .checkBalloonString
@@ -391,35 +395,35 @@ PlayerControls:
 
 .checkBalloonString:
   ldh a, [hPlayerBalloonTile]
-  ld hl, wPlayerBalloonOAM+2
-  ld [hl], a
-  ld hl, wPlayerBalloonOAM+6
-  ld [hl], a
+  ld [wPlayerBalloonOAM + 2], a
+  ld [wPlayerBalloonOAM + 6], a
 .endCheckBalloonString:
 
 .endCheckHorizontal:
 
-.checkVertical:
-
-.up:
+  ;
+  ; Check vertical
+  ;
+  ; UP
   ld a, d
   and PADF_UP
 	jr z, .endUp
-.checkOffscreenUp:
+  ; Check vertical boundaries flag
   ld a, c
   cp a, 0
   jr z, .moveUp
-.canCheckOffscreenUp:
+  ; Check offscreen
   ldh a, [hPlayerY]
   ld b, 16
   sub a, b
   dec a
   cp a, SCRN_Y - WINDOW_LAYER_HEIGHT
   jr c, .moveUp
-.offscreenUp:
+  ; Is offscreen
   ld a, b
   ldh [hPlayerY], a
   jr .canCactusDriftCenterY
+  ; Can move
 .moveUp:
   ldh a, [hPlayerSpeed]
   ld b, a
@@ -429,35 +433,37 @@ PlayerControls:
   ldh a, [hPlayerY2]
   sub a, b
   ldh [hPlayerY2], a
-.canCactusDriftDown:
+  ; Cactus drift
   ld hl, hPlayerY
   ld a, 15 ; player balloon height - 1
   add [hl]
   ld hl, hPlayerY2
   cp a, [hl]
   jr c, .endCheckVertical
+  ; Drift cactus more
 .cactusDriftDown:
   inc [hl]
   jr .endCheckVertical
 .endUp:
 
-.down:
+  ; DOWN
   ld a, d
   and PADF_DOWN
 	jr z, .endDown
-.checkOffscreenDown:
+  ; Check vertical boundaries flag
   ld a, c
   cp a, 0
   jr z, .moveDown
-.canCheckOffscreenDown:
+  ; Check offscreen
   ldh a, [hPlayerY]
   ld b, SCRN_Y - 16 + 2 - WINDOW_LAYER_HEIGHT ; 16 = height of 2 sprites, 2 = free space bottom of cactus
   cp a, b
   jr c, .moveDown
-.offscreenDown:
+  ; Is offscreen
   ld a, b
   ldh [hPlayerY], a
   jr .canCactusDriftCenterY
+  ; Can move
 .moveDown:
   ldh a, [hPlayerSpeed]
   ld b, a
@@ -467,7 +473,7 @@ PlayerControls:
   ldh a, [hPlayerY2]
   add a, b
   ldh [hPlayerY2], a
-.canCactusDriftUp:
+  ; Cactus drift
   ld hl, hPlayerY  
   ld a, PLAYER_MAX_DRIFT_Y - 16
   cpl
@@ -475,6 +481,7 @@ PlayerControls:
   ld hl, hPlayerY2
   cp a, [hl]
   jr nc, .endCheckVertical
+  ; Drift cactus more
 .cactusDriftUp:
   dec [hl]
   jr .endCheckVertical
@@ -617,10 +624,9 @@ CollisionWithPlayer::
   ld a, 1
   ldh [hPlayerSpeed], a
   ; Screaming cactus
-  ld hl, wPlayerCactusOAM+2
-  ld [hl], PLAYER_CACTUS_SCREAMING_TILE
-  ld hl, wPlayerCactusOAM+6
-  ld [hl], PLAYER_CACTUS_SCREAMING_TILE
+  ld a, PLAYER_CACTUS_SCREAMING_TILE
+  ld [wPlayerCactusOAM + 2], a
+  ld [wPlayerCactusOAM + 6], a
   ; Sound
   call PopSound
   jp FallingSound
@@ -643,34 +649,26 @@ CollisionWithPlayerCactus::
 
 ShowPlayerCactus:
   ldh a, [hPlayerCactusTile]
-  ld hl, wPlayerCactusOAM+2
-  ld [hl], a
-  ld hl, wPlayerCactusOAM+6
-  ld [hl], a
+  ld [wPlayerCactusOAM + 2], a
+  ld [wPlayerCactusOAM + 6], a
   ret
 
 ShowPlayerBalloon:
   ldh a, [hPlayerBalloonTile]
-  ld hl, wPlayerBalloonOAM+2
-  ld [hl], a
-  ld hl, wPlayerBalloonOAM+6
-  ld [hl], a
+  ld [wPlayerBalloonOAM + 2], a
+  ld [wPlayerBalloonOAM + 6], a
   ret
 
 HidePlayerCactus:
   ld a, WHITE_SPR_TILE
-  ld hl, wPlayerCactusOAM+2
-  ld [hl], a
-  ld hl, wPlayerCactusOAM+6
-  ld [hl], a
+  ld [wPlayerCactusOAM + 2], a
+  ld [wPlayerCactusOAM + 6], a
   ret
 
 HidePlayerBalloon:
   ld a, WHITE_SPR_TILE
-  ld hl, wPlayerBalloonOAM+2
-  ld [hl], a
-  ld hl, wPlayerBalloonOAM+6
-  ld [hl], a
+  ld [wPlayerBalloonOAM + 2], a
+  ld [wPlayerBalloonOAM + 6], a
   ret
 
 ; *************************************************************
