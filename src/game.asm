@@ -289,8 +289,8 @@ IsCountdownAtBalloonPop::
 
 ; *************************************************************
 ; COUNTDOWN
-; Ret: Z/NZ = Still running / finished respectively
 ; *************************************************************
+; Ret: Z/NZ = Still running / finished respectively
 Countdown::
     ; Frame speed
     ld a, [wCountdownFrame]
