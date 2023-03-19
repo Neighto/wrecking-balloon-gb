@@ -92,14 +92,32 @@ FastBulletSound::
   ld a, %11110010
   ldh [rNR12], a
   ; Frequency lo
-  ld a,%11111111
+  ld a, %11101111
   ldh [rNR13], a
   ; Frequency hi
-  ld a,%11000101
+  ld a, %11000101
   ldh [rNR14], a
   ret
 
-VoiceSound::
+OwVoiceSound::
+  ; Sweep register
+  ld a, %00011101
+  ldh [rNR10], a
+  ; Sound length / wave pattern duty
+  ld a, %00000000
+  ldh [rNR11], a
+  ; Volume envelope
+  ld a, %11110110
+  ldh [rNR12], a
+  ; Frequency lo
+  ld a, %00111111
+  ldh [rNR13], a
+  ; Frequency hi
+  ld a, %11000101
+  ldh [rNR14], a
+  ret
+
+HelpVoiceSound::
   ; Sweep register
   ld a, %00010101
   ldh [rNR10], a
@@ -110,10 +128,10 @@ VoiceSound::
   ld a, %11110010
   ldh [rNR12], a
   ; Frequency lo
-  ld a,%00111111
+  ld a, %11111111
   ldh [rNR13], a
   ; Frequency hi
-  ld a,%11000010
+  ld a, %11000001
   ldh [rNR14], a
   ret
 
@@ -128,10 +146,10 @@ LifeUpSound::
   ld a, %11110010
   ldh [rNR12], a
   ; Frequency lo
-  ld a,%00111111
+  ld a, %00111111
   ldh [rNR13], a
   ; Frequency hi
-  ld a,%11000101
+  ld a, %11000101
   ldh [rNR14], a
   ret
 

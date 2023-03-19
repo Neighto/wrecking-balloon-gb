@@ -10,6 +10,7 @@ MENU_LCD_SCROLL_RESET EQU 128
 
 OPENING_CUTSCENE_HIDE EQU SCRN_Y
 OPENING_CUTSCENE_SHOW EQU 23
+OPENING_CUTSCENE_TOP EQU 39
 
 GAME_CITY_LCD_SCROLL_FAR EQU 47
 GAME_CITY_LCD_SCROLL_CLOSE EQU 102
@@ -151,18 +152,28 @@ CutsceneLCDInterrupt:
 .hide:
     cp a, OPENING_CUTSCENE_HIDE
     jr nz, .show
-    ld a, OPENING_CUTSCENE_SHOW
-	ldh [rLYC], a
     ld hl, rLCDC
     res 1, [hl]
+    ld a, OPENING_CUTSCENE_SHOW
+	ldh [rLYC], a
     jr .end
 .show:
-	; cp a, OPENING_CUTSCENE_SHOW
-    ; jr nz, .end
-    ld a, OPENING_CUTSCENE_HIDE
-    ldh [rLYC], a
+	cp a, OPENING_CUTSCENE_SHOW
+    jr nz, .top
     ld hl, rLCDC
     set 1, [hl]
+    ldh a, [hParallaxFar]
+	ldh [rSCX], a
+    ld a, OPENING_CUTSCENE_TOP
+    ldh [rLYC], a
+    jr .end
+.top:
+    ; cp a, OPENING_CUTSCENE_TOP
+    ; jr nz, .end
+    xor a ; ld a, 0
+	ldh [rSCX], a
+    ld a, OPENING_CUTSCENE_HIDE
+	ldh [rLYC], a
     ; jr .end
 .end:
     jp LCDInterruptEnd

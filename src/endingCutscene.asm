@@ -46,7 +46,7 @@ EndingCutsceneSequenceData:
     SEQUENCE_WAIT 5
     SEQUENCE_PLAY_SONG
     SEQUENCE_FADE_IN_PALETTE
-    SEQUENCE_WAIT 65
+    SEQUENCE_WAIT 63
     SEQUENCE_INCREASE_PHASE ; Man look down
     SEQUENCE_INCREASE_PHASE ; Continue moving down
     SEQUENCE_WAIT 25
@@ -59,15 +59,13 @@ SkipEndingSequence:
     SEQUENCE_END Start
 
 LoadEndingCutsceneGraphics::
-    ; Reuse the opening cutscene
-    call LoadOpeningCutsceneGraphics
-.loadTiles:
+    ; TILES
     ; Scoreboard tiles
     ld bc, ScoreboardsTiles
 	ld hl, _VRAM9000 + CutsceneTilesEnd - CutsceneTiles + 1 * TILE_BYTES
 	ld de, ScoreboardsTilesEnd - ScoreboardsTiles
 	call MEMCPY
-.drawMap:
+    ; TILEMAP
     ; Draw scoreboard
     ld bc, ScoreboardsMap
     ld hl, $9862
@@ -87,6 +85,8 @@ LoadEndingCutsceneGraphics::
 	ld hl, TOTAL_TEXT_ADDRESS
 	ld de, TotalTextMapEnd - TotalTextMap
 	call MEMCPY
+    ; Reuse the opening cutscene
+    call LoadOpeningCutsceneGraphics.cloudless
     ; Draw over man for ending cutscene
     ld bc, ManForEndingMap + 2
 	ld hl, $9966

@@ -213,14 +213,20 @@ P3:
  dn ___,0,$000
  dn ___,0,$000
 
+P4:
+ dn G_4,3,$C0A
+ dn ___,0,$E04
+ dn STOP_SONG,0,0
+
 menuThemeShort::
     db 9
     dw order_cntShort
-    dw order1Short, order2Short, outOfOrder, outOfOrder
+    dw order1Short, order2Short, order3Short, outOfOrder
     dw duty_instruments, wave_instruments, noise_instruments
     dw routines
     dw waves 
 
-    order_cntShort: db 2
-    order1Short: dw P1
-    order2Short: dw P2
+    order_cntShort: db 4
+    order1Short: dw P1,P4
+    order2Short: dw P3,PE
+    order3Short: dw P2,P4
