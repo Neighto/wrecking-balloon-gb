@@ -169,7 +169,7 @@ EnemyUpdate::
     cp a, EXPLOSION
     jr nz, .checkLoop
     call ExplosionUpdate
-    jr .checkLoop
+    ; jr .checkLoop
 .checkLoop:
     ldh a, [hEnemyOffset]
     add a, ENEMY_STRUCT_SIZE
@@ -181,13 +181,11 @@ EnemyUpdate::
     jp nz, .loop
     ret
 
+; Arg: B = Sprite space needed
+; Ret: HL = Free RAM space address
+; Ret: B = Free OAM space address offset
+; Ret: Z/NZ = Failed / succeeded respectively
 FindRAMAndOAMForEnemy::
-    ; b = sprite space needed
-    ; Call from enemy script
-    ; Returns z flag as failed / nz flag as succeeded
-    ; Returns hl as free RAM space address
-    ; Returns b as free OAM space address offset
-
     ; Check Enemy RAM
     ld hl, wEnemies
     ld d, NUMBER_OF_ENEMIES
@@ -200,9 +198,8 @@ FindRAMAndOAMForEnemy::
     pop hl
     ret
 
+; Ret: Z/NZ = Failed / succeeded respectively
 EnemyInterCollision::
-    ; Call from enemy script
-    ; Returns z flag as failed / nz flag as succeeded
     ld a, NUMBER_OF_ENEMIES
     ldh [hEnemyLoopIndex2], a
     xor a ; ld a, 0
@@ -213,8 +210,8 @@ EnemyInterCollision::
     ldh a, [hEnemyOffset2]
     ADD_A_TO_HL
     ld a, [hli]
-    and ENEMY_FLAG_ACTIVE_MASK
-    ; Check active
+    and ENEMY_FLAG_ALIVE_MASK
+    ; Check alive
     jr z, .checkLoop
     ; Get enemy number
     ld a, [hli]
@@ -223,7 +220,7 @@ EnemyInterCollision::
     cp a, POINT_BALLOON
     jr nz, .bird
     ld d, 16
-    ld e, 16
+    ld e, d
     jr .checkCollision
 .bird:
     cp a, BIRD
@@ -235,13 +232,13 @@ EnemyInterCollision::
     cp a, BOMB
     jr nz, .carrier
     ld d, 16
-    ld e, 16
+    ld e, d
     jr .checkCollision
 .carrier:
     cp a, BALLOON_CARRIER
     jr nz, .checkLoop
     ld d, 16
-    ld e, 16
+    ld e, d
 .checkCollision:
     ; Get collision OAM addresses
     inc hl
@@ -280,9 +277,8 @@ SetEnemyHitForEnemy1::
     set ENEMY_FLAG_HIT_ENEMY_BIT, [hl]
     ret
 
+; Ret: Z/NZ = Failed / succeeded respectively
 EnemyHitBullet::
-    ; Call from enemy script
-    ; Returns z flag as failed / nz flag as succeeded
     ldh a, [hPlayerBulletFlags]
     and PLAYER_BULLET_FLAG_ACTIVE_MASK
     jr z, .notHitByBullet
@@ -303,8 +299,8 @@ EnemyHitBullet::
     or a, 1
     ret
 
+; Ret: Z/NZ = Failed / succeeded respectively
 FindBalloonCarrier::
-    ; Returns z flag as failed / nz flag as succeeded
     ld a, NUMBER_OF_ENEMIES
     ldh [hEnemyLoopIndex3], a
     xor a ; ld a, 0
@@ -332,16 +328,16 @@ FindBalloonCarrier::
     ; z flag set
     ret
 
+; Arg: BC = Enemy OAM Bytes
 ClearEnemy::
-    ; bc = Enemy OAM Bytes
     ld hl, wOAM
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
     call ResetHLInRange
     jp InitializeEnemyStructVars
 
+; Arg: BC = Enemy OAM Bytes
 HandleEnemyOffscreenVertical::
-    ; bc = Enemy OAM Bytes
     ldh a, [hEnemyY]
     ld h, a
     ld a, SCRN_Y + OFF_SCREEN_ENEMY_BUFFER
@@ -353,8 +349,8 @@ HandleEnemyOffscreenVertical::
     ; Offscreen
     jp ClearEnemy
 
+; Arg: BC = Enemy OAM Bytes
 HandleEnemyOffscreenHorizontal::
-    ; bc = Enemy OAM Bytes
     ldh a, [hEnemyX]
     ld h, a
     ld a, SCRN_X + OFF_SCREEN_ENEMY_BUFFER
