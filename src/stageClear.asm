@@ -25,6 +25,8 @@ METER_FULL_SCORE EQU METER_MULTIPLIER * METER_TOTAL_PHASES
 METER_PROGRESS_SCORE EQU METER_FULL_SCORE / METER_TOTAL_PHASES
 METER_INITIAL_OFFSET EQU 24 ; Sometimes not 0 so points needed is a nicer number
 STAGE_CLEAR_MOVE_POINTS EQU 10
+EXTRA_LIFE_ADDRESS EQU $9948
+
 
 STAGE_NUMBER_SPRITES EQU 1
 STAGE_NUMBER_ADDRESS EQU _VRAM8000 + STAGE_CLEAR_NUMBER_TILE * TILE_BYTES
@@ -66,7 +68,7 @@ StageClearSequenceData:
 	SEQUENCE_WAIT_UNTIL IsScoreZero
     SEQUENCE_WAIT 40
 	SEQUENCE_INCREASE_PHASE ;SEQUENCE_REPLACE_BAR_WITH_LIVES
-	SEQUENCE_WAIT 8
+	SEQUENCE_WAIT 12
 	SEQUENCE_INCREASE_PHASE ;SEQUENCE_ADD_SCORE_LIVES
     SEQUENCE_WAIT 72
     SEQUENCE_HIDE_PALETTE
@@ -185,7 +187,7 @@ RefreshStageClear:
 	jp RefreshTotal
 
 RefreshLives:
-	ld hl, METER_SC_INDEX_ONE_ADDRESS
+	ld hl, EXTRA_LIFE_ADDRESS
 	ld a, LIVES_CACTUS
 	ld [hli], a
 	ld a, X_AMOUNT
@@ -320,14 +322,36 @@ UpdateStageClear::
 	ld a, [wExtraLifeScorePhase]
 	cp a, METER_TOTAL_PHASES
 	jr nz, .endCheckPhase
-	; Clear bar
-	ld bc, METER_BLOCKS + 3 ; Add two for the edges and one for the block hidden by the balloon
+	; Animate emptying bar then refresh lives
+	ld hl, METER_SC_INDEX_ONE_ADDRESS
+	ld a, [hl]
 	ld d, DARK_GREY_BKG_TILE
+	cp a, d
+	jr z, .endCheckPhase
+	; Empty bar
+	ld e, BAR_RIGHT_EDGE
+.emptyBarLoop:
+	ld a, [hli]
+	cp a, e
+	jr nz, .emptyBarLoop
+	dec hl
+	ld a, d
+	LD_BC_HL
 	call WaitVRAMAccessible
-	ld hl, METER_SC_INDEX_ONE_ADDRESS - 1 ; Back one for the left edge
-	call SetInRange
-	; Add lives
+	LD_HL_BC
+	ld [hld], a
+	ld a, e
+	ld [hl], a
+	; Check if we are done removing bar
+	ld hl, METER_SC_INDEX_ONE_ADDRESS - 1
+	ld a, [hl]
+	cp a, e
+	jr nz, .endCheckPhase
+	; Finish removing bar and refresh lives
+	ld a, d
 	call WaitVRAMAccessible
+	ld hl, METER_SC_INDEX_ONE_ADDRESS - 1
+	ld [hl], a
 	call RefreshLives
 	jr .endCheckPhase
 ; PHASE 3

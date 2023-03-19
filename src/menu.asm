@@ -185,7 +185,7 @@ UpdateMenu::
 	call FadeInPalettes
 	ret z
 .hasFadedIn:
-	; call _hUGE_dosound
+	call _hUGE_dosound
 	call IncrementScrollOffset
 	ld a, [wTriggerFadeOut]
 	cp a, 0
