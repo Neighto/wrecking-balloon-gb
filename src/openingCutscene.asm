@@ -42,6 +42,11 @@ SkipOpeningSequence:
     SEQUENCE_END SetupNextLevel
 
 LoadOpeningCutsceneGraphics::
+    ; Add scrolling thin clouds
+    ld bc, CloudsMap + CLOUDS_THIN_OFFSET
+    ld hl, $9880
+    call MEMCPY_PATTERN_CLOUDS
+.cloudless::
     ; Road
     ld hl, $9900
     call LoadRoadCommon ; Loads in tiles too important for other calls
@@ -74,10 +79,6 @@ LoadOpeningCutsceneGraphics::
     ld d, 3
     ld e, 5
     call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
-    ; Add scrolling thin clouds
-    ld bc, CloudsMap + CLOUDS_THIN_OFFSET
-    ld hl, $9880
-    call MEMCPY_PATTERN_CLOUDS
     ; Top banner
     ld hl, _SCRN0
     ld bc, $60
@@ -137,7 +138,10 @@ SpawnCartBalloons::
     jp SpawnPointBalloon
 
 UpdateOpeningCutscene::
+    ; Timer
     UPDATE_GLOBAL_TIMER
+
+    call IncrementScrollOffset
 
     ; Play song
     ldh a, [hSequencePlaySong]

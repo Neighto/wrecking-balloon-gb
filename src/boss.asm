@@ -415,6 +415,12 @@ BossUpdate::
 .isAtZeroHealth:
 
 .dying:
+
+    ; Dying sounds
+    ldh a, [hGlobalTimer]
+    and %00010111
+    call z, HelpVoiceSound
+
 .dyingOffscreen:
     ld a, SCRN_Y + 16 ; buffer
     ld hl, hBossY
@@ -680,6 +686,7 @@ BossUpdate::
     ld a, PORCUPINE_POINTS
     call AddPoints
     ; Sound
+    call OwVoiceSound
     call HitSound
     ; Stop speed
     xor a ; ld a, 0
