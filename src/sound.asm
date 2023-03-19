@@ -81,6 +81,60 @@ SetWaveRAMToSquareWave::
 ; Channel 1 is only used for this during a level
 ; *************************************************************
 
+FastBulletSound::
+  ; Sweep register
+  ld a, %01011100
+  ldh [rNR10], a
+  ; Sound length / wave pattern duty
+  ld a, %01000000
+  ldh [rNR11], a
+  ; Volume envelope
+  ld a, %11110010
+  ldh [rNR12], a
+  ; Frequency lo
+  ld a,%11111111
+  ldh [rNR13], a
+  ; Frequency hi
+  ld a,%11000101
+  ldh [rNR14], a
+  ret
+
+VoiceSound::
+  ; Sweep register
+  ld a, %00010101
+  ldh [rNR10], a
+  ; Sound length / wave pattern duty
+  ld a, %00000000
+  ldh [rNR11], a
+  ; Volume envelope
+  ld a, %11110010
+  ldh [rNR12], a
+  ; Frequency lo
+  ld a,%00111111
+  ldh [rNR13], a
+  ; Frequency hi
+  ld a,%11000010
+  ldh [rNR14], a
+  ret
+
+LifeUpSound::
+  ; Sweep register
+  ld a, %00010101
+  ldh [rNR10], a
+  ; Sound length / wave pattern duty
+  ld a, %10000000
+  ldh [rNR11], a
+  ; Volume envelope
+  ld a, %11110010
+  ldh [rNR12], a
+  ; Frequency lo
+  ld a,%00111111
+  ldh [rNR13], a
+  ; Frequency hi
+  ld a,%11000101
+  ldh [rNR14], a
+  ret
+
 FallingSound::
   ; Sweep register
   ld a, %01111111
@@ -256,24 +310,6 @@ RisingSound::
   ldh [rNR13], a
   ; Frequency hi
   ld a,%10000100
-  ldh [rNR14], a
-  ret
-
-CollectSound::
-  ; Sweep register
-  ld a, %11110110
-  ldh [rNR10], a
-  ; Sound length / wave pattern duty
-  ld a, %11000000
-  ldh [rNR11], a
-  ; Volume envelope
-  ld a, %11110010
-  ldh [rNR12], a
-  ; Frequency lo
-  ld a, %11111111
-  ldh [rNR13], a
-  ; Frequency hi
-  ld a, %10000110
   ldh [rNR14], a
   ret
 

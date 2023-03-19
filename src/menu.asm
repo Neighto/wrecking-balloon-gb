@@ -185,7 +185,7 @@ UpdateMenu::
 	call FadeInPalettes
 	ret z
 .hasFadedIn:
-	call _hUGE_dosound
+	; call _hUGE_dosound
 	call IncrementScrollOffset
 	ld a, [wTriggerFadeOut]
 	cp a, 0
@@ -282,7 +282,7 @@ UpdateMenu::
 	ld b, 0 ; Channel 1
 	ld c, 1 ; Mute
 	call hUGE_mute_channel
-	jp CollectSound
+	jp LifeUpSound
 .fadeOut:
 	call FadeOutPalettes
 	jp nz, StartGame

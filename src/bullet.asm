@@ -7,6 +7,7 @@ SECTION "bullet vars", HRAM
 hPlayerBulletFlags:: DB ; BIT #: [0=active] [1=direction]
 hPlayerBulletY:: DB
 hPlayerBulletX:: DB
+hPlayerBulletSpeed:: DB
 
 SECTION "bullet", ROM0
 
@@ -15,15 +16,32 @@ InitializeBullet::
     ldh [hPlayerBulletFlags], a
     ldh [hPlayerBulletY], a
     ldh [hPlayerBulletX], a
+    ldh [hPlayerBulletSpeed], a
     ret
 
 ; *************************************************************
 ; SPAWN
 ; *************************************************************
 SpawnBullet::
+    ; Get Y pos
     ldh a, [hPlayerY2]
     add 5
     ldh [hPlayerBulletY], a
+    ; Get speed (Fire super bullet if player is boosting)
+    ldh a, [hPlayerSpeed]
+    cp a, PLAYER_DEFAULT_SPEED
+    jr z, .normalBullet
+.superBullet:
+    call FastBulletSound ; Out of place but call special sound here
+    ld a, PLAYER_BULLET_BOOST_SPEED
+    ld b, OAMF_PAL1
+    jr .updateSpeed
+.normalBullet:
+    ld a, PLAYER_BULLET_SPEED
+    ld b, OAMF_PAL0
+    ; jr .updateSpeed
+.updateSpeed:
+    ldh [hPlayerBulletSpeed], a
     ; Update flags
     ldh a, [hPlayerFlags]
     bit PLAYER_FLAG_DIRECTION_BIT, a
@@ -41,12 +59,13 @@ SpawnBullet::
 .spawnFromLeft:
     sub 3
     ldh [hPlayerBulletX], a
-    ld b, OAMF_PAL0 | OAMF_XFLIP
+    ld a, b
+    or OAMF_XFLIP
+    ld b, a
     jr .updateOAM
 .spawnFromRight:
     add 12
     ldh [hPlayerBulletX], a
-    ld b, OAMF_PAL0
     ; jr .updateOAM
 .updateOAM:
     ldh a, [hPlayerBulletY]
@@ -96,8 +115,9 @@ BulletUpdate::
     ; Can move
     ldh a, [hPlayerBulletFlags]
     and PLAYER_BULLET_FLAG_DIRECTION_MASK
+    ldh a, [hPlayerBulletSpeed]
+    ld b, a
     ldh a, [hPlayerBulletX]
-    ld b, PLAYER_BULLET_SPEED
     jr z, .moveRight
 .moveLeft:
     sub b
