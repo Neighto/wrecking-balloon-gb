@@ -341,7 +341,7 @@ UpdateStageClear::
 	; Flag off extra life
 	xor a ; ld a, 0
 	ld [wExtraLife], a
-	call CollectSound
+	call LifeUpSound
 	; Confirm we are not at max lives
 	ldh a, [hPlayerLives]
 	cp a, PLAYER_MAX_LIVES
