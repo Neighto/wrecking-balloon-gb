@@ -30,6 +30,11 @@ PORCUPINE_EXPRESSION_RIGHT EQU 1
 PORCUPINE_EXPRESSION_CONFIDENT EQU 2
 PORCUPINE_EXPRESSION_SCARED EQU 3
 
+PORCUPINE_EXPRESSION_LEFT_TIMER EQU 255
+PORCUPINE_EXPRESSION_RIGHT_TIMER EQU 255
+PORCUPINE_EXPRESSION_CONFIDENT_TIMER EQU 35
+PORCUPINE_EXPRESSION_SCARED_TIMER EQU 255
+
 PORCUPINE_KNOCKED_OUT_TIME EQU 40
 
 PORCUPINE_POINT_Y1 EQU 46
@@ -45,6 +50,10 @@ PORCUPINE_FLAG_TRIGGER_SPAWN_BIT EQU ENEMY_FLAG_PARAM1_BIT
 PORCUPINE_FLAG_HEALTH_MASK EQU ENEMY_FLAG_PARAM2_MASK | ENEMY_FLAG_PARAM3_MASK
 PORCUPINE_FLAG_HEALTH_BIT1 EQU ENEMY_FLAG_PARAM2_BIT
 PORCUPINE_FLAG_HEALTH_BIT2 EQU ENEMY_FLAG_PARAM3_BIT
+
+PORCUPINE_OAM_OFFSET EQU 26 * OAM_ATTRIBUTES_COUNT 
+
+PORCUPINE_DYING_VOICE_TIME EQU %00010111
 
 BOSS_KILLER_START_TIME EQU %00111100
 BOSS_KILLER_WAIT_TIME EQU %00111111
@@ -93,106 +102,64 @@ UpdateBossPosition:
     ret
 
 CollisionWithBoss::
-    ldh a, [hBossFlags]
-    set ENEMY_FLAG_HIT_ENEMY_BIT, a
-    ldh [hBossFlags], a
+    ld hl, hBossFlags
+    set ENEMY_FLAG_HIT_ENEMY_BIT, [hl]
     ret
 
+
+; *************************************************************
+; SPAWN
+; *************************************************************
 SpawnBoss::
-    ld a, 26 * OAM_ATTRIBUTES_COUNT
+    ;
+    ; Initialize
+    ;
+    ; OAM offset
+    ld a, PORCUPINE_OAM_OFFSET
     ldh [hBossOAM], a
+    ; Flags
     ldh a, [hBossFlags]
     set ENEMY_FLAG_ACTIVE_BIT, a
     set ENEMY_FLAG_ALIVE_BIT, a
     set PORCUPINE_FLAG_HEALTH_BIT1, a ; Boss health + 1
     set PORCUPINE_FLAG_HEALTH_BIT2, a ; Boss health + 2
     ldh [hBossFlags], a
+    ; Position
 	ld a, PORCUPINE_SPAWN_Y
 	ldh [hBossY], a 
 	ld a, PORCUPINE_SPAWN_X
 	ldh [hBossX], a
-
     ld a, PORCUPINE_POINT_Y3
     ldh [hBossToY], a
     call UpdateBossPosition
-    ld hl, wOAM+2
+    ;
+    ; Get hl pointing to OAM address
+    ;
+    ld hl, wOAM + 2
     ldh a, [hBossOAM]
     ADD_A_TO_HL
-    ld b, OAMF_PAL0
-    ld c, OAMF_PAL0 | OAMF_XFLIP
-.bossTopLeftOAM:
-    ld a, PORCUPINE_TILE_1
-    ld [hli], a
-    ld a, b
-    ld [hli], a
-.bossTopMiddleOAM:
-    inc l
-    inc l
-    ld a, PORCUPINE_FACE_LEFT_TILE_1
-    ld [hli], a
-    ld a, b
-    ld [hli], a
-.bossTopMiddle2OAM:
-    inc l
-    inc l
-    ld a, PORCUPINE_FACE_LEFT_TILE_2
-    ld [hli], a
-    ld a, b
-    ld [hli], a
-.bossTopRightOAM:
-    inc l
-    inc l
-    ld a, PORCUPINE_TILE_1
-    ld [hli], a
-    ld a, c
-    ld [hli], a
-.bossBottomLeftOAM:
-    inc l
-    inc l
-    ld a, PORCUPINE_TILE_2
-    ld [hli], a
-    ld a, b
-    ld [hli], a
-.bossBottomMiddleOAM:
-    inc l
-    inc l
-    ld a, PORCUPINE_TILE_3
-    ld [hli], a
-    ld a, b
-    ld [hli], a
-.bossBottomMiddle2OAM:
-    inc l
-    inc l
-    ld a, PORCUPINE_TILE_3
-    ld [hli], a
-    ld a, c
-    ld [hli], a
-.bossBottomRightOAM:
-    inc l
-    inc l
-    ld a, PORCUPINE_TILE_2
-    ld [hli], a
-    ld a, c
-    ld [hli], a
-.stringOAM:
-    inc l
-    inc l
-    ld a, STRING_TILE
-    ld [hli], a
-    ld a, b
-    ld [hl], a
-    ret
+    ;
+    ; Porcupine OAM
+    ;
+    ld bc, PorcupineMap
+    ld de, PorcupineMapEnd - PorcupineMap
+    jp MEMCPY_OAM_TILE_AND_ATTRIBUTES_DATA
 
+; *************************************************************
+; UPDATE
+; *************************************************************
 BossUpdate::
 
+    ;
     ; Check is active
+    ;
     ldh a, [hBossFlags]
     and ENEMY_FLAG_ACTIVE_MASK
     ret z
 
-    ; ==============================================================
-
-.checkSpawn:
+    ;
+    ; Check spawn (boss needle attack or balloon when dead)
+    ;
     ldh a, [hBossFlags]
     ld b, a
     and PORCUPINE_FLAG_TRIGGER_SPAWN_MASK
@@ -210,8 +177,7 @@ BossUpdate::
     ld a, b
     and ENEMY_FLAG_ALIVE_MASK
     jr z, .spawnPointBalloon
-
-    ; SPAWN BOSS NEEDLE
+    ; -- SPAWN BOSS NEEDLE
 .spawnBossNeedle:
     ld a, BOSS_NEEDLE
     ldh [hEnemyNumber], a
@@ -233,7 +199,7 @@ BossUpdate::
     add a, 16
     ldh [hEnemyY], a
     call SpawnBossNeedle
-    jr .endSpawnBossNeedle
+    jp BossNeedleSound
 .spawnBossNeedlesRight:
     ; Up right needle
     ld a, NEEDLE_UP_MOVE_RIGHT_VARIANT
@@ -251,8 +217,7 @@ BossUpdate::
     call SpawnBossNeedle
 .endSpawnBossNeedle:
     jp BossNeedleSound
-
-    ; SPAWN POINT BALLOON
+    ; -- SPAWN POINT BALLOON
 .spawnPointBalloon:
     ld a, POINT_BALLOON
     ldh [hEnemyNumber], a
@@ -267,9 +232,9 @@ BossUpdate::
     jp SpawnPointBalloon
 .endCheckSpawn:
 
-    ; ==============================================================
-
-.faceExpression:
+    ;
+    ; Face expression
+    ;
     ; Check cooldown for animation has expired
     ldh a, [hBossAnimationTimer]
     cp a, 0
@@ -280,7 +245,7 @@ BossUpdate::
     jr .endFaceExpression
 .canUpdateFaceExpression:
     ; Point hl to enemy oam
-    ld hl, wOAM+6
+    ld hl, wOAM + 6
     ldh a, [hBossOAM]
     ADD_A_TO_HL
     ; Update frame
@@ -288,62 +253,34 @@ BossUpdate::
 .faceExpressionLeft:
     cp a, PORCUPINE_EXPRESSION_LEFT
     jr nz, .faceExpressionRight
-    ld a, PORCUPINE_FACE_LEFT_TILE_1
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-    inc l
-    inc l
-    ld a, PORCUPINE_FACE_LEFT_TILE_2
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-    ld a, 255
+    ld bc, PorcupineExpressionLeftMap
+    ld de, PorcupineExpressionLeftMapEnd - PorcupineExpressionLeftMap
+    call MEMCPY_OAM_TILE_AND_ATTRIBUTES_DATA
+    ld a, PORCUPINE_EXPRESSION_LEFT_TIMER
     jr .updateFaceExpressionCommon
 .faceExpressionRight:
     cp a, PORCUPINE_EXPRESSION_RIGHT
     jr nz, .faceExpressionConfident
-    ld a, PORCUPINE_FACE_LEFT_TILE_2
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hli], a
-    inc l
-    inc l
-    ld a, PORCUPINE_FACE_LEFT_TILE_1
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hli], a
-    ld a, 255
+    ld bc, PorcupineExpressionRightMap
+    ld de, PorcupineExpressionRightMapEnd - PorcupineExpressionRightMap
+    call MEMCPY_OAM_TILE_AND_ATTRIBUTES_DATA
+    ld a, PORCUPINE_EXPRESSION_RIGHT_TIMER
     jr .updateFaceExpressionCommon
 .faceExpressionConfident:
     cp a, PORCUPINE_EXPRESSION_CONFIDENT
     jr nz, .faceExpressionScared
-    ld a, PORCUPINE_CONFIDENT_FACE_TILE
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-    inc l
-    inc l
-    ld a, PORCUPINE_CONFIDENT_FACE_TILE
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hli], a
-    ld a, 35
+    ld bc, PorcupineExpressionConfidentMap
+    ld de, PorcupineExpressionConfidentMapEnd - PorcupineExpressionConfidentMap
+    call MEMCPY_OAM_TILE_AND_ATTRIBUTES_DATA
+    ld a, PORCUPINE_EXPRESSION_CONFIDENT_TIMER
     jr .updateFaceExpressionCommon
 .faceExpressionScared:
     ; cp a, PORCUPINE_EXPRESSION_SCARED
     ; jr nz, .updateFaceExpressionCommon
-    ld a, PORCUPINE_SCARED_FACE_TILE
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-    inc l
-    inc l
-    ld a, PORCUPINE_SCARED_FACE_TILE
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hli], a
-    ld a, 255
+    ld bc, PorcupineExpressionScaredMap
+    ld de, PorcupineExpressionScaredMapEnd - PorcupineExpressionScaredMap
+    call MEMCPY_OAM_TILE_AND_ATTRIBUTES_DATA
+    ld a, PORCUPINE_EXPRESSION_SCARED_TIMER
     ; jr .updateFaceExpressionCommon
 .updateFaceExpressionCommon:
     ; Set expression timer
@@ -361,9 +298,9 @@ BossUpdate::
     ldh [hBossAnimationFrame], a
 .endFaceExpression:
 
-    ; ==============================================================
-
-.checkKnockedOut:
+    ;
+    ; Check knocked out
+    ;
     ldh a, [hBossKnockedOutTimer]
     cp a, 0
     jr z, .endKnockedOut
@@ -371,62 +308,53 @@ BossUpdate::
     ldh [hBossKnockedOutTimer], a
     cp a, 0
     ret nz
-.knockedOutDone:
+    ; Knocked out done
     ldh a, [hBossFlags]
     and ENEMY_FLAG_DYING_MASK
     jr z, .knockedOutAndAlive
-.knockedOutAndDead:
+    ; Knocked out and dead
     ldh a, [hBossFlags]
     set PORCUPINE_FLAG_TRIGGER_SPAWN_BIT, a
     ldh [hBossFlags], a
-.knockedOutAndDeadShowBossFeetAndRemoveBalloon:
-    ld hl, wOAM+22
+    ; Knocked out and dead, show boss feet and remove balloon
+    ld hl, wOAM + 22
     ldh a, [hBossOAM]
-    ld b, a
-    ld c, PORCUPINE_TILE_3_FEET_ALT
     ADD_A_TO_HL
-    ld a, c
-    ld [hli], a
-    ld a, OAMF_PAL0
-    ld [hli], a
-    inc l
-    inc l
-    ld a, c
-    ld [hli], a
-    ld a, OAMF_PAL0 | OAMF_XFLIP
-    ld [hli], a
-    ld hl, wOAM+34
-    ld a, b
+    ld bc, PorcupineFeetMap
+    ld de, PorcupineFeetMapEnd - PorcupineFeetMap
+    call MEMCPY_OAM_TILE_AND_ATTRIBUTES_DATA
+    ld hl, wOAM + 34
+    ldh a, [hBossOAM]
     ADD_A_TO_HL
     ld a, WHITE_SPR_TILE
     ld [hl], a
     ret
+    ; Knocked out and alive
 .knockedOutAndAlive:
     xor a ; ld a, 0
     ldh [hBossAnimationTimer], a
 .endKnockedOut:
 
-    ; ==============================================================
-
-.checkAlive:
+    ;
+    ; Check alive
+    ;
     ldh a, [hBossFlags]
     and ENEMY_FLAG_ALIVE_MASK
     jr nz, .isAlive
-.isAtZeroHealth:
 
-.dying:
-
+    ;
+    ; Is dying (at zero health)
+    ;
     ; Dying sounds
     ldh a, [hGlobalTimer]
-    and %00010111
+    and PORCUPINE_DYING_VOICE_TIME
     call z, HelpVoiceSound
-
-.dyingOffscreen:
+    ; Dying offscreen
     ld a, SCRN_Y + 16 ; buffer
     ld hl, hBossY
     cp a, [hl]
     jr nc, .checkFalling
-.isOffScreen:
+    ; Is offscreen
     ldh a, [hBossFlags]
     res ENEMY_FLAG_ACTIVE_BIT, a
     ldh [hBossFlags], a
@@ -437,7 +365,7 @@ BossUpdate::
     ldh a, [hGlobalTimer]
     and %00000001
     ret nz
-.canFall:
+    ; Can fall
     ldh a, [hBossSpeed]
     inc a 
     ldh [hBossSpeed], a
@@ -448,11 +376,15 @@ BossUpdate::
     add a, b
     ldh [hBossY], a
     jp UpdateBossPosition
+
+    ;
+    ; Is alive
+    ;
 .isAlive:
 
-    ; ==============================================================
-
-.checkDirection:
+    ;
+    ; Check direction
+    ;
     ldh a, [hGlobalTimer]
     and %00000001
     jr nz, .endCheckDirection
@@ -460,13 +392,13 @@ BossUpdate::
     inc a 
     ldh [hBossDirectionChangeTimer], a
     ld b, a
-.checkDirectionX:
+    ; -- Check direction X
     and PORCUPINE_CHANGE_DIRECTION_X_TIME
     jr nz, .endCheckDirectionX
-.aimLowWhenChangingDirection:
+    ; Aim low when changing direction
     ld a, PORCUPINE_POINT_Y3
     ldh [hBossToY], a
-.changeDirection:
+    ; Change direction
     ldh a, [hBossFlags]
     ld c, a
     and ENEMY_FLAG_DIRECTION_MASK
@@ -482,7 +414,7 @@ BossUpdate::
     jr .endCheckDirection
 .endCheckDirectionX:
 
-.checkDirectionY:
+    ; -- Check direction Y
     ld a, b
     and PORCUPINE_CHANGE_DIRECTION_Y_TIME
     jr nz, .endCheckDirectionY
@@ -507,9 +439,9 @@ BossUpdate::
 .endCheckDirectionY:
 .endCheckDirection:
 
-    ; ==============================================================
-
-.checkAttackCooldown:
+    ;
+    ; Check attack cooldown
+    ;
     ldh a, [hBossAttackCooldownTimer]
     cp a, 0
     jr z, .endCheckAttackCooldown
@@ -517,15 +449,17 @@ BossUpdate::
     ldh [hBossAttackCooldownTimer], a
 .endCheckAttackCooldown:
 
-    ; ==============================================================
-
-.checkMove:
+    ;
+    ; Check move
+    ;
     ldh a, [hGlobalTimer]
     and	PORCUPINE_MOVE_TIME
     jp nz, .endMove
-.canMove: 
 
-.moveX:
+    ;
+    ; Can move
+    ;
+    ; -- Move X
     ; TODO skip moveX if we can
     ld hl, hBossSpeed
     ldh a, [hBossFlags]
@@ -585,7 +519,7 @@ BossUpdate::
     ld [hl], a
 .endMoveX:
 
-.moveY:
+    ; -- Move Y
     ldh a, [hBossToY]
     ld b, a
     ld hl, hBossY
@@ -628,36 +562,38 @@ BossUpdate::
     call UpdateBossPosition
 .endMove:
 
-    ; ==============================================================
-
-.checkString:
+    ;
+    ; Check string
+    ;
     ldh a, [hGlobalTimer]
     and STRING_MOVE_TIME
     jr nz, .endString
-    ld hl, wOAM+35
+    ld hl, wOAM + 35
     ldh a, [hBossOAM]
     ADD_A_TO_HL
     ld a, [hl]
-    cp a, OAMF_PAL0
-    jr z, .flipX
+    ld b, a
     ld a, OAMF_PAL0
+    cp a, b
+    jr z, .flipX
     ld [hl], a
     jr .endString
 .flipX:
-    ld a, OAMF_XFLIP | OAMF_PAL0
+    or OAMF_XFLIP
     ld [hl], a
 .endString:
 
-    ; ==============================================================
-
-.checkCollision:
+    ;
+    ; Check collision
+    ;
     ldh a, [hGlobalTimer]
     and	PORCUPINE_COLLISION_TIME
-    jp nz, .endCollision
+    ret nz ; jp nz, .endCollision ; Just return because end of update
     ldh a, [hBossFlags]
     and ENEMY_FLAG_HIT_ENEMY_MASK
     jr nz, .bossDamaged
-; .checkHitBullet: ; FOR DEBUGGING *****
+    ; === testing ===
+; .checkHitBullet:
     ; ld bc, wPlayerBulletOAM
     ; ld hl, wOAM
     ; ldh a, [hBossOAM]
@@ -666,17 +602,17 @@ BossUpdate::
     ; ld e, 32
     ; call CollisionCheck
     ; jr nz, .bossDamaged
-;     ; ***********
+	; ===============
 .checkHitPlayer:
     ld bc, wPlayerBalloonOAM
     ld hl, wOAM
     ldh a, [hBossOAM]
     ADD_A_TO_HL
     ld d, 32
-    ld e, 32
+    ld e, d
     call CollisionCheck
     call nz, CollisionWithPlayer
-    jr .endCollision
+    ret ; jr .endCollision ; Just return because end of update
 .bossDamaged:
     ; Points
     ld a, PORCUPINE_POINTS
@@ -722,8 +658,6 @@ BossUpdate::
     xor a ; ld a, 0
     ldh [hBossAnimationTimer], a
 .endCollision:
-
-    ; ==============================================================
     ret
 
 SECTION "boss miscellaneous vars", WRAM0
@@ -736,7 +670,13 @@ InitializeBossMiscellaneous::
     ld [wWaitBossTimer], a
     ret
 
+; *************************************************************
+; UPDATE
+; *************************************************************
 WaitBossUpdate::
+    ;
+    ; Check if we can spawn balloon carrier
+    ;
     ld a, [wWaitBossTimer]
     inc a
     ld [wWaitBossTimer], a
@@ -745,7 +685,9 @@ WaitBossUpdate::
     call FindBalloonCarrier
     ret nz
     
-.spawnBalloonCarrier:
+    ;
+    ; Spawn balloon carrier
+    ;
     ld a, BALLOON_CARRIER
     ldh [hEnemyNumber], a
     ld a, CARRIER_ANVIL_VARIANT

@@ -507,19 +507,20 @@ PlayerControls:
 
 .endCheckVertical:
 
-.start:
-  ld a, e
-  and PADF_START
-  jr z, .endStart
-  ; No pausing if screen is white
-  ldh a, [rBGP]
-  cp a, 0
-  jr z, .endStart
-  ld a, PAUSE_TOGGLED
-  ldh [hPaused], a
-  call ShowPlayerBalloon
-  call ShowPlayerCactus
-.endStart:
+.BButton:
+  ld a, d
+  and PADF_B
+	jr z, .endB
+  ldh a, [hPlayerBoost]
+  cp a, PLAYER_SPECIAL_FULL
+  jr nz, .endB
+.activateBoost:
+  ld a, PLAYER_SPECIAL_EMPTY
+  ldh [hPlayerBoost], a
+  ld hl, hPlayerSpeed
+  ld [hl], PLAYER_DEFAULT_SPEED * 2
+  call BoostSound
+.endB:
 
 .AButton:
   ld a, d
@@ -534,24 +535,20 @@ PlayerControls:
   call SpawnBullet
 .endA:
 
-.BButton:
-  ld a, d
-  and PADF_B
-	; jr z, .endB ; last button in controls, just ret
-  ret z
-  ldh a, [hPlayerBoost]
-  cp a, PLAYER_SPECIAL_FULL
-  ; jr nz, .endB ; last button in controls, just ret
-  ret nz
-.activateBoost:
-  ld a, PLAYER_SPECIAL_EMPTY
-  ldh [hPlayerBoost], a
-  ld hl, hPlayerSpeed
-  ld [hl], PLAYER_DEFAULT_SPEED * 2
-  ; call BoostSound ; last button in controls, just jp
-  jp BoostSound
-.endB:
-  ; ret ; never reaches here
+.start:
+  ld a, e
+  and PADF_START
+  ret z ; jr z, .endStart ; Last button in controls, just ret
+  ; No pausing if screen is white
+  ldh a, [rBGP]
+  cp a, 0
+  ret z ; jr z, .endStart ; Last button in controls, just ret
+  ld a, PAUSE_TOGGLED
+  ldh [hPaused], a
+  call ShowPlayerBalloon
+  jp ShowPlayerCactus ; Last button in controls, just jp
+.endStart:
+  ; ret ; Never reaches here
 
 PopPlayerBalloonAnimation:
   ldh a, [hPlayerPoppingTimer]
