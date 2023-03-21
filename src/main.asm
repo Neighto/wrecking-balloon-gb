@@ -135,7 +135,7 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; === testing ===
-	; ld a, 3
+	; ld a, 6
 	; ldh [hLevel], a
 	; ===============
 

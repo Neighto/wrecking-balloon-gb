@@ -19,8 +19,8 @@ CopyDMARoutine::
 	ld de, DMARoutineEnd - DMARoutine
 	jp MEMCPY
 	
+; Arg: A = Address for DMA transfer source
 DMARoutine:
-	; Arg: A = Address for DMA transfer source
 	ldh [rDMA], a
 	ld a, 40
 .wait

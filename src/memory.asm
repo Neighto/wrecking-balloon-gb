@@ -17,10 +17,32 @@ MEMCPY::
     ld [hli], a
     inc bc
     dec de
-.checkLoop:
+    ; Check
 	ld a, d
 	or a, e
 	jr nz, .loop
+    ret
+
+; Arg: DE = Block size
+; Arg: BC = Source address
+; Arg: HL = Destination address
+; Should be of format: DB TILE, ATTRIBUTES
+MEMCPY_OAM_TILE_AND_ATTRIBUTES_DATA::
+.loop:
+    ld a, [bc]
+    ld [hli], a
+    inc bc
+    dec de
+    ld a, [bc]
+    ld [hli], a
+    inc bc
+    dec de
+    inc l
+    inc l
+    ; Check
+    ld a, d
+    or a, e
+    jr nz, .loop
     ret
 
 ; Arg: DE = Block size

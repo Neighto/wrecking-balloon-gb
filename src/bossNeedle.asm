@@ -19,19 +19,25 @@ BOSS_NEEDLE_SPEED EQU 4
 
 SECTION "boss needle", ROMX
 
+; *************************************************************
 ; SPAWN
+; *************************************************************
 SpawnBossNeedle::
     ld b, BOSS_NEEDLE_OAM_SPRITES
     call FindRAMAndOAMForEnemy ; hl = RAM space, b = OAM offset
     ret z
+    ;
     ; Initialize
+    ;
     call InitializeEnemyStructVars
     ld a, b
     ldh [hEnemyOAM], a
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_ACTIVE_BIT, a
     ldh [hEnemyFlags], a
+    ;
     ; Get hl pointing to OAM address
+    ;
     LD_BC_HL ; bc now contains RAM address
     ld hl, wOAM
     ldh a, [hEnemyOAM]
@@ -54,8 +60,9 @@ SpawnBossNeedle::
 .isRightDirection:
     ld e, OAMF_PAL0 | OAMF_XFLIP
 .endVariantDirection:
-
-.bossNeedleOAM:
+    ;
+    ; Boss needle OAM
+    ;
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -63,19 +70,25 @@ SpawnBossNeedle::
     ld a, BOSS_NEEDLE_TILE
     ld [hli], a
     ld [hl], e
-.setStruct:
+    ;
+    ; Set struct
+    ;
     LD_HL_BC
     jp SetEnemyStruct
 
+; *************************************************************
 ; UPDATE
+; *************************************************************
 BossNeedleUpdate::
 
-.checkMove:
+    ;
+    ; Check move
+    ;
 .bossNeedleOAM:
     ld hl, wOAM
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
-.variantDirection:
+    ; Variant direction
     ldh a, [hEnemyVariant]
 .upLeftDirection:
     cp a, NEEDLE_UP_MOVE_LEFT_VARIANT
@@ -99,21 +112,20 @@ BossNeedleUpdate::
     cp a, NEEDLE_DOWN_MOVE_RIGHT_VARIANT
     jr nz, .endVariantDirection
     ld b, BOSS_NEEDLE_SPEED
-    ld c, BOSS_NEEDLE_SPEED
+    ld c, b
 .endVariantDirection:
-
-.checkVerticalMovement:
+    ; Check vertical movement
     ldh a, [hEnemyParam1]
     cp a, BOSS_NEEDLE_VERTICAL_MOVEMENT_TIME
     jr c, .strayingVerticalMovement
 .noMoreVerticalMovement:
     ld b, 0
-    jr .endCheckVerticalMovement
+    jr .updateMove
 .strayingVerticalMovement:
     inc a
     ldh [hEnemyParam1], a
-.endCheckVerticalMovement:
-
+    ; Update move
+.updateMove:
     ldh a, [hEnemyY]
     add a, b
     ldh [hEnemyY], a
@@ -124,7 +136,9 @@ BossNeedleUpdate::
     ld [hl], a
 .endMove:
 
-.checkCollision:
+    ;
+    ; Check collision
+    ;
     ; Is time to check collision
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
@@ -134,7 +148,7 @@ BossNeedleUpdate::
     ldh a, [hPlayerFlags]
     and PLAYER_FLAG_ALIVE_MASK
     jr z, .endCollision
-.checkHitPlayer:
+    ; Check hit player balloon
     ld bc, wPlayerBalloonOAM
     ld hl, wOAM
     ldh a, [hEnemyOAM]
@@ -145,6 +159,7 @@ BossNeedleUpdate::
     jr z, .checkHitCactus
     call CollisionWithPlayer
     jr .deathOfBossNeedle
+    ; Check hit player cactus
 .checkHitCactus:
     ld bc, wPlayerCactusOAM
     ld hl, wOAM
@@ -162,12 +177,16 @@ BossNeedleUpdate::
     jr .setStruct
 .endCollision:
 
-.checkOffscreenX:
+    ;
+    ; Check offscreen
+    ;
     ld bc, BOSS_NEEDLE_OAM_BYTES
     call HandleEnemyOffscreenHorizontal
-    ; Enemy may be cleared, must do setStruct next
-.endOffscreenX:
+    ; jr .setStruct ; Enemy may be cleared, must do setStruct next
 
+    ;
+    ; Set struct
+    ;
 .setStruct:
     ld hl, wEnemies
     ldh a, [hEnemyOffset]

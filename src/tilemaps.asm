@@ -1,3 +1,6 @@
+INCLUDE "tileConstants.inc"
+INCLUDE "hardware.inc"
+
 SECTION "tilemaps", ROM0
 
 ManMap::
@@ -81,3 +84,43 @@ UFOMapEnd::
 ShowdownWaterMap::
     INCBIN "incbin/background/ShowdownWater.tilemap"
 ShowdownWaterMapEnd::
+
+PorcupineMap::
+    ; Top row
+    DB PORCUPINE_TILE_1, OAMF_PAL0
+    DB PORCUPINE_FACE_LEFT_TILE_1, OAMF_PAL0
+    DB PORCUPINE_FACE_LEFT_TILE_2, OAMF_PAL0
+    DB PORCUPINE_TILE_1, OAMF_PAL0 | OAMF_XFLIP
+    ; Bottom row
+    DB PORCUPINE_TILE_2, OAMF_PAL0
+    DB PORCUPINE_TILE_3, OAMF_PAL0
+    DB PORCUPINE_TILE_3, OAMF_PAL0 | OAMF_XFLIP
+    DB PORCUPINE_TILE_2, OAMF_PAL0 | OAMF_XFLIP
+    ; String
+    DB STRING_TILE, OAMF_PAL0
+PorcupineMapEnd::
+
+PorcupineExpressionLeftMap::
+    DB PORCUPINE_FACE_LEFT_TILE_1, OAMF_PAL0
+    DB PORCUPINE_FACE_LEFT_TILE_2, OAMF_PAL0
+PorcupineExpressionLeftMapEnd::
+
+PorcupineExpressionRightMap::
+    DB PORCUPINE_FACE_LEFT_TILE_2, OAMF_PAL0 | OAMF_XFLIP
+    DB PORCUPINE_FACE_LEFT_TILE_1, OAMF_PAL0 | OAMF_XFLIP
+PorcupineExpressionRightMapEnd::
+
+PorcupineExpressionConfidentMap::
+    DB PORCUPINE_CONFIDENT_FACE_TILE, OAMF_PAL0
+    DB PORCUPINE_CONFIDENT_FACE_TILE, OAMF_PAL0 | OAMF_XFLIP
+PorcupineExpressionConfidentMapEnd::
+
+PorcupineExpressionScaredMap::
+    DB PORCUPINE_SCARED_FACE_TILE, OAMF_PAL0
+    DB PORCUPINE_SCARED_FACE_TILE, OAMF_PAL0 | OAMF_XFLIP
+PorcupineExpressionScaredMapEnd::
+
+PorcupineFeetMap::
+    DB PORCUPINE_TILE_3_FEET_ALT, OAMF_PAL0
+    DB PORCUPINE_TILE_3_FEET_ALT, OAMF_PAL0 | OAMF_XFLIP
+PorcupineFeetMapEnd::

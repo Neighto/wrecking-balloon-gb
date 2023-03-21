@@ -15,12 +15,16 @@ BOMB_DEFAULT_SPEED EQU 2
 
 SECTION "bomb", ROMX
 
+; *************************************************************
 ; SPAWN
+; *************************************************************
 SpawnBomb::
     ld b, BOMB_OAM_SPRITES
     call FindRAMAndOAMForEnemy ; hl = RAM space, b = OAM offset
     ret z
+    ;
     ; Initialize
+    ;
     call InitializeEnemyStructVars
     ld a, b
     ldh [hEnemyOAM], a
@@ -28,7 +32,9 @@ SpawnBomb::
     set ENEMY_FLAG_ACTIVE_BIT, a
     set ENEMY_FLAG_ALIVE_BIT, a
     ldh [hEnemyFlags], a
+    ;
     ; Get hl pointing to OAM address
+    ;
     LD_BC_HL ; bc now contains RAM address
     ld hl, wOAM
     ldh a, [hEnemyOAM]
@@ -45,7 +51,6 @@ SpawnBomb::
     jr nz, .endVariantVisual
     ld d, BOMB_FOLLOW_TILE
 .endVariantVisual:
-
 .checkNightSprite:
     ldh a, [rOBP1]
     cp a, NIGHT_SPRITE_PAL1
@@ -56,8 +61,9 @@ SpawnBomb::
 .isNotNightSprite:
     ld e, OAMF_PAL1
 .endCheckNightSprite:
-
-.balloonLeftOAM:
+    ;
+    ; Balloon left OAM
+    ;
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -66,7 +72,9 @@ SpawnBomb::
     ld [hli], a
     ld a, e
     ld [hli], a
-.balloonRightOAM:
+    ;
+    ; Balloon right OAM
+    ;
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -77,14 +85,20 @@ SpawnBomb::
     ld a, e
     or a, OAMF_XFLIP
     ld [hl], a
-.setStruct:
+    ;
+    ; Set struct
+    ;
     LD_HL_BC
     jp SetEnemyStruct
 
+; *************************************************************
 ; UPDATE
+; *************************************************************
 BombUpdate::
 
-.checkAlive:
+    ;
+    ; Check alive
+    ;
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_ALIVE_MASK
     jr nz, .isAlive
@@ -116,7 +130,9 @@ BombUpdate::
     jp .setStruct
 .isAlive:
 
-.checkMove:
+    ;
+    ; Check move
+    ;
     ; Vertical movement
     ldh a, [hEnemyY]
     sub a, BOMB_DEFAULT_SPEED
@@ -151,7 +167,9 @@ BombUpdate::
     UPDATE_OAM_POSITION_ENEMY 2, 1
 .endMove:
 
-.checkCollision:
+    ;
+    ; Check collision
+    ;
     ; Is time to check collision
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
@@ -165,7 +183,7 @@ BombUpdate::
     ldh a, [hPlayerFlags]
     and PLAYER_FLAG_ALIVE_MASK
     jr z, .checkHitByBullet
-.checkHit:
+    ; Check hit player cactus
     ld bc, wOAM
     ldh a, [hEnemyOAM]
     ADD_A_TO_BC
@@ -176,6 +194,7 @@ BombUpdate::
     jr z, .checkHitByBullet
     call CollisionWithPlayer
     jr .deathOfBomb
+    ; Check hit bullet
 .checkHitByBullet:
     call EnemyHitBullet
     jr z, .endCollision
@@ -201,12 +220,16 @@ BombUpdate::
 .endVariantPoints:
 .endCollision:
 
-.checkOffscreen:
+    ;
+    ; Check offscreen
+    ;
     ld bc, BOMB_OAM_BYTES
     call HandleEnemyOffscreenVertical
-    ; Enemy may be cleared, must do setStruct next
-.endOffscreen:
-    
+    ; jr .setStruct ; Enemy may be cleared, must do setStruct next
+
+    ;
+    ; Set struct
+    ;
 .setStruct:
     ld hl, wEnemies
     ldh a, [hEnemyOffset]
