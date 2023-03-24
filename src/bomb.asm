@@ -89,7 +89,7 @@ SpawnBomb::
     ; Set struct
     ;
     LD_HL_BC
-    jp SetEnemyStruct
+    jp SetEnemyStructWithHL
 
 ; *************************************************************
 ; UPDATE
@@ -100,22 +100,20 @@ BombUpdate::
     ; Check alive
     ;
     ldh a, [hEnemyFlags]
+    ld b, a
     and ENEMY_FLAG_ALIVE_MASK
     jr nz, .isAlive
-.isPopped:
-    ldh a, [hEnemyFlags]
+    ; Is popped
+    ld a, b
     and ENEMY_FLAG_DYING_MASK
     jr z, .clear
-.triggerExplosion:
-    ldh a, [hEnemyFlags]
+    ; Trigger explosion
+    ld a, b
     res ENEMY_FLAG_DYING_BIT, a
     ldh [hEnemyFlags], a
-.setStructSpawn:
-    ld hl, wEnemies
-    ldh a, [hEnemyOffset]
-    ADD_A_TO_HL
+    ; Set struct before spawn
     call SetEnemyStruct
-.spawnExplosion:
+    ; Spawn explosion
     ld a, EXPLOSION
     ldh [hEnemyNumber], a
     ld a, EXPLOSION_BOMB_VARIANT
@@ -124,10 +122,11 @@ BombUpdate::
     add BOMB_EXPLOSION_X_OFFSET
     ldh [hEnemyX], a
     jp SpawnExplosion
+    ; Clear
 .clear:
     ld bc, BOMB_OAM_BYTES
     call ClearEnemy
-    jp .setStruct
+    jp SetEnemyStruct
 .isAlive:
 
     ;
@@ -225,13 +224,9 @@ BombUpdate::
     ;
     ld bc, BOMB_OAM_BYTES
     call HandleEnemyOffscreenVertical
-    ; jr .setStruct ; Enemy may be cleared, must do setStruct next
+    ; Enemy may be cleared, must do setStruct next
 
     ;
     ; Set struct
     ;
-.setStruct:
-    ld hl, wEnemies
-    ldh a, [hEnemyOffset]
-    ADD_A_TO_HL
     jp SetEnemyStruct

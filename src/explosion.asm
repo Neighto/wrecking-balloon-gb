@@ -89,7 +89,7 @@ SpawnExplosion::
     ; Set struct
     ;
     LD_HL_BC
-    call SetEnemyStruct
+    call SetEnemyStructWithHL
 .variantSound:
     ldh a, [hEnemyVariant]
     cp a, EXPLOSION_BOMB_VARIANT
@@ -107,15 +107,20 @@ ExplosionUpdate::
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and EXPLOSION_WAIT_TIME
-    jr nz, .endAnimateExplosion
+    jp nz, SetEnemyStruct
     ; Can update explosion
     ldh a, [hEnemyParam1]
     inc a
     ldh [hEnemyParam1], a
     cp a, EXPLOSION_DURATION
-    jr nc, .clear
+    jr c, .stillExploding
+    ; Clear
+    ld bc, EXPLOSION_OAM_BYTES
+    call ClearEnemy
+    jp SetEnemyStruct
     ; Still exploding
-    ld hl, wOAM+2
+.stillExploding:
+    ld hl, wOAM + 2
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
     ldh a, [hEnemyParam1]
@@ -181,18 +186,9 @@ ExplosionUpdate::
     inc l
     ld a, b
     ld [hl], a
-    jr .endAnimateExplosion
-.clear:
-    ld bc, EXPLOSION_OAM_BYTES
-    call ClearEnemy
-    ; jr .setStruct
 .endAnimateExplosion:
 
     ;
     ; Set struct
     ;
-.setStruct:
-    ld hl, wEnemies
-    ldh a, [hEnemyOffset]
-    ADD_A_TO_HL
     jp SetEnemyStruct

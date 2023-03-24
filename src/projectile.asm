@@ -160,7 +160,7 @@ SpawnProjectile::
     ; Set struct
     ;
     LD_HL_BC
-    jp SetEnemyStruct
+    jp SetEnemyStructWithHL
 
 ; *************************************************************
 ; UPDATE
@@ -285,30 +285,25 @@ ProjectileUpdate::
 .deathOfProjectile:
     ld bc, PROJECTILE_OAM_BYTES
     call ClearEnemy
-    jr .setStruct
+    jp SetEnemyStruct
 .endCollision:
 
     ;
-    ; Check offscreen X
+    ; Check offscreen
     ;
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and %00000001
+    ld bc, PROJECTILE_OAM_BYTES
     jr z, .checkVertical
 .checkHorizontal:
-    ld bc, PROJECTILE_OAM_BYTES
     call HandleEnemyOffscreenHorizontal
-    jr .setStruct
+    jp SetEnemyStruct
 .checkVertical:
-    ld bc, PROJECTILE_OAM_BYTES
     call HandleEnemyOffscreenVertical
-    ; jr .setStruct
+    ; Enemy may be cleared, must do setStruct next
     
     ;
     ; Set struct
     ;
-.setStruct:
-    ld hl, wEnemies
-    ldh a, [hEnemyOffset]
-    ADD_A_TO_HL
     jp SetEnemyStruct

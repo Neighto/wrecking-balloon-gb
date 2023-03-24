@@ -107,7 +107,7 @@ SpawnPointBalloon::
     ; Set struct
     ;
     LD_HL_BC
-    jp SetEnemyStruct
+    jp SetEnemyStructWithHL
 
 ; *************************************************************
 ; UPDATE
@@ -120,17 +120,18 @@ PointBalloonUpdate::
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_ALIVE_MASK
     jr nz, .isAlive
-.isPopped:
+    ; Is popped
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_DYING_MASK
     jr z, .clear
-.animating:
+    ; Animating
     call PopBalloonAnimation
-    jp .setStruct
+    jp SetEnemyStruct
+    ; Clear
 .clear:
     ld bc, POINT_BALLOON_OAM_BYTES
     call ClearEnemy
-    jp .setStruct
+    jp SetEnemyStruct
 .isAlive:
 
     ;
@@ -174,7 +175,7 @@ PointBalloonUpdate::
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and STRING_MOVE_TIME
     jr nz, .endString
-    ld hl, wOAM+11
+    ld hl, wOAM + 11
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
     ld a, [hl]
@@ -253,13 +254,9 @@ PointBalloonUpdate::
     ;
     ld bc, POINT_BALLOON_OAM_BYTES
     call HandleEnemyOffscreenVertical
-    ; jr .setStruct ; Enemy may be cleared, must do setStruct next
+    ; Enemy may be cleared, must do setStruct next
 
     ;
     ; Set struct
     ;
-.setStruct:
-    ld hl, wEnemies
-    ldh a, [hEnemyOffset]
-    ADD_A_TO_HL
     jp SetEnemyStruct
