@@ -23,12 +23,16 @@ BIRD_HEIGHT EQU 8
 
 SECTION "bird", ROMX
 
+; *************************************************************
 ; SPAWN
+; *************************************************************
 SpawnBird::
     ld b, BIRD_OAM_SPRITES
     call FindRAMAndOAMForEnemy ; hl = RAM space, b = OAM offset
     ret z
+    ;
     ; Initialize
+    ;
     call InitializeEnemyStructVars
     ld a, b
     ldh [hEnemyOAM], a
@@ -36,7 +40,9 @@ SpawnBird::
     set ENEMY_FLAG_ACTIVE_BIT, a
     set ENEMY_FLAG_ALIVE_BIT, a
     ldh [hEnemyFlags], a
+    ;
     ; Get hl pointing to OAM address
+    ;
     LD_BC_HL ; bc now contains RAM address
     ld hl, wOAM
     ldh a, [hEnemyOAM]
@@ -53,7 +59,6 @@ SpawnBird::
     jr nz, .endVariantVisual
     ld e, OAMF_PAL1
 .endVariantVisual:
-
 .setupByDirection:
     ldh a, [hEnemyX]
     cp a, SCRN_X / 2
@@ -64,8 +69,9 @@ SpawnBird::
     ldh a, [hEnemyFlags]
     set ENEMY_FLAG_DIRECTION_BIT, a
     ldh [hEnemyFlags], a
-    
-.birdLeft:
+    ;
+    ; Bird left OAM
+    ;
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -74,7 +80,9 @@ SpawnBird::
     inc l
     ld a, e
     ld [hli], a
-.birdMiddle:
+    ;
+    ; Bird middle OAM
+    ;
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -84,7 +92,9 @@ SpawnBird::
     inc l
     ld a, e
     ld [hli], a
-.birdRight:
+    ;
+    ; Bird right OAM
+    ;
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -96,7 +106,9 @@ SpawnBird::
     ld [hl], a
     jr .setStruct
 .isLeftside:
-.leftBirdLeft:
+    ;
+    ; Bird left OAM
+    ;
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -106,7 +118,9 @@ SpawnBird::
     ld a, e
     or a, OAMF_XFLIP
     ld [hli], a
-.leftBirdMiddle:
+    ;
+    ; Bird middle OAM
+    ;
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -117,7 +131,9 @@ SpawnBird::
     ld a, e
     or a, OAMF_XFLIP
     ld [hli], a
-.leftBirdRight:
+    ;
+    ; Bird right OAM
+    ;
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -128,9 +144,12 @@ SpawnBird::
     ld a, e
     or a, OAMF_XFLIP
     ld [hl], a
+    ;
+    ; Set struct
+    ;
 .setStruct:
     LD_HL_BC
-    jp SetEnemyStruct
+    jp SetEnemyStructWithHL
 
 UpdateBirdPosition:
     ld hl, wOAM
@@ -139,31 +158,34 @@ UpdateBirdPosition:
     UPDATE_OAM_POSITION_ENEMY 3, 1
     ret
 
+; *************************************************************
 ; UPDATE
+; *************************************************************
 BirdUpdate::
 
-.checkAlive:
+    ;
+    ; Check alive
+    ;
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_ALIVE_MASK
     jr nz, .isAlive
-.isDead:
+    ; Is dead
     ; Fall
     ldh a, [hEnemyY]
     add a, BIRD_FALLING_SPEED
     ldh [hEnemyY], a
     call UpdateBirdPosition
-.checkOffscreenY:
-    ld bc, BIRD_OAM_BYTES
-    call HandleEnemyOffscreenVertical
     jp .checkCollision
 .isAlive:
 
-.checkMove:
+    ;
+    ; Check move
+    ;
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and	BIRD_MOVE_TIME
     jp nz, .endMove
-.canMove:
+    ; Can move
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_DIRECTION_MASK
     jr z, .isLeftside
@@ -250,7 +272,9 @@ BirdUpdate::
     call UpdateBirdPosition
 .endMove:
 
-.checkHitByEnemy:
+    ;
+    ; Check hit by enemy
+    ;
     ; Hit by enemy
     ldh a, [hEnemyFlags]
     and ENEMY_FLAG_HIT_ENEMY_MASK
@@ -295,6 +319,9 @@ BirdUpdate::
     ld [hl], a
 .endHitByEnemy:
 
+    ;
+    ; Check collision
+    ;
 .checkCollision:
     ; Is time to check collision
     ldh a, [hGlobalTimer]
@@ -305,7 +332,7 @@ BirdUpdate::
     ldh a, [hPlayerFlags]
     and PLAYER_FLAG_ALIVE_MASK
     jr z, .endCollision
-.checkHitPlayer:
+    ; Check hit player balloon
     ld bc, wPlayerBalloonOAM
     ld hl, wOAM
     ldh a, [hEnemyOAM]
@@ -316,6 +343,7 @@ BirdUpdate::
     jr z, .checkHitCactus
     call CollisionWithPlayer
     jr .endCollision
+    ; Check hit player cactus
 .checkHitCactus:
     ld bc, wPlayerCactusOAM
     ld hl, wOAM
@@ -329,14 +357,23 @@ BirdUpdate::
     ; jr .endCollision
 .endCollision:
 
+    ;
+    ; Check offscreen
+    ;
 .checkOffscreen:
+    ldh a, [hGlobalTimer]
+    rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
+    and %00000001
     ld bc, BIRD_OAM_BYTES
+    jr z, .checkVertical
+.checkHorizontal:
     call HandleEnemyOffscreenHorizontal
+    jp SetEnemyStruct
+.checkVertical:
+    call HandleEnemyOffscreenVertical
     ; Enemy may be cleared, must do setStruct next
-.endOffscreen:
 
-.setStruct:
-    ld hl, wEnemies
-    ldh a, [hEnemyOffset]
-    ADD_A_TO_HL
+    ;
+    ; Set struct
+    ;
     jp SetEnemyStruct

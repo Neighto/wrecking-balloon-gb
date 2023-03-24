@@ -53,7 +53,6 @@ SpawnAnvil::
     ; jr .updateVariantSpeed
 .updateVariantSpeed:
     ldh [hEnemyParam1], a
-.endVariantSpeed:
     ;
     ; Get hl pointing to OAM address
     ;
@@ -122,7 +121,7 @@ SpawnAnvil::
     ; Set struct
     ;
     LD_HL_BC
-    jp SetEnemyStruct
+    jp SetEnemyStructWithHL
 
 ; *************************************************************
 ; UPDATE
@@ -141,7 +140,7 @@ AnvilUpdate::
     jr nc, .endCheckWarningVariant
     inc a
     ldh [hEnemyParam3], a
-    jp .setStruct
+    jp SetEnemyStruct
 .endCheckWarningVariant:
 
     ;
@@ -155,14 +154,15 @@ AnvilUpdate::
     ldh [hEnemyParam2], a
     cp a, ANVIL_DEAD_BLINKING_DURATION
     jr c, .animateDying
-.clear:
+    ; Clear
     ld bc, ANVIL_OAM_BYTES
     call ClearEnemy
-    jp .setStruct
+    jp SetEnemyStruct
+    ; Animate dying
 .animateDying:
     and ANVIL_DEAD_BLINKING_TIME
-    jp nz, .setStruct
-    ld hl, wOAM+2
+    jp nz, SetEnemyStruct
+    ld hl, wOAM + 2
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
     ld a, [hl]
@@ -175,7 +175,7 @@ AnvilUpdate::
     inc l
     inc l
     ld [hli], a
-    jp .setStruct
+    jp SetEnemyStruct
 .blinkOn:
 .variantBlinkOn:
     ldh a, [hEnemyVariant]
@@ -183,7 +183,7 @@ AnvilUpdate::
     cp a, ANVIL_CACTUS_VARIANT
     jr nz, .variantAnvil
     ld d, CACTUS_SCREAMING_TILE
-    ld e, CACTUS_SCREAMING_TILE
+    ld e, d
     jr .endVariantBlinkOn
 .variantAnvil:
     ; cp a, ANVIL_NORMAL_VARIANT or ANVIL_WARNING_VARIANT
@@ -199,7 +199,7 @@ AnvilUpdate::
     inc l
     ld a, e
     ld [hli], a
-    jp .setStruct
+    jp SetEnemyStruct
 .endCheckDying:
 
     ;
@@ -220,7 +220,6 @@ AnvilUpdate::
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
     UPDATE_OAM_POSITION_ENEMY 2, 1
-.endMove:
 
     ;
     ; Check collision
@@ -237,7 +236,7 @@ AnvilUpdate::
     ldh a, [hPlayerFlags]
     and PLAYER_FLAG_ALIVE_MASK
     jr z, .checkHitAnotherEnemy
-.checkHitPlayer:
+    ; Check hit player balloon
     ; Get bc pointing to OAM address
     ld bc, wOAM
     ldh a, [hEnemyOAM]
@@ -249,10 +248,11 @@ AnvilUpdate::
     jr z, .checkHitAnotherEnemy
     call CollisionWithPlayer
     jr .hitSomething
+    ; Check hit another enemy
 .checkHitAnotherEnemy:
     call EnemyInterCollision
     jr nz, .hitSomething
-.checkHitBoss:
+    ; Check hit boss
     ; Is boss alive
     ldh a, [hBossFlags]
     and ENEMY_FLAG_ALIVE_MASK
@@ -281,16 +281,14 @@ AnvilUpdate::
     ldh [hEnemyParam2], a
 .endCollision:
 
+    ;
     ; Check offscreen
+    ;
     ld bc, ANVIL_OAM_BYTES
     call HandleEnemyOffscreenVertical
-    ; jr .setStruct ; Enemy may be cleared, must do setStruct next
+    ; Enemy may be cleared, must do setStruct next
 
     ;
     ; Set struct
     ;
-.setStruct:
-    ld hl, wEnemies
-    ldh a, [hEnemyOffset]
-    ADD_A_TO_HL
     jp SetEnemyStruct

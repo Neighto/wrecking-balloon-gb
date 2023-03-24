@@ -74,7 +74,7 @@ SpawnBossNeedle::
     ; Set struct
     ;
     LD_HL_BC
-    jp SetEnemyStruct
+    jp SetEnemyStructWithHL
 
 ; *************************************************************
 ; UPDATE
@@ -174,7 +174,7 @@ BossNeedleUpdate::
 .deathOfBossNeedle:
     ld bc, BOSS_NEEDLE_OAM_BYTES
     call ClearEnemy
-    jr .setStruct
+    jp SetEnemyStruct
 .endCollision:
 
     ;
@@ -182,13 +182,9 @@ BossNeedleUpdate::
     ;
     ld bc, BOSS_NEEDLE_OAM_BYTES
     call HandleEnemyOffscreenHorizontal
-    ; jr .setStruct ; Enemy may be cleared, must do setStruct next
+    ; Enemy may be cleared, must do setStruct next
 
     ;
     ; Set struct
     ;
-.setStruct:
-    ld hl, wEnemies
-    ldh a, [hEnemyOffset]
-    ADD_A_TO_HL
     jp SetEnemyStruct

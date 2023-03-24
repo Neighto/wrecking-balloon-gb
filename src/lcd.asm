@@ -38,7 +38,7 @@ LCD_ON_NO_WINDOW_8_SPR_MODE::
     ret
 
 WaitVBlank::
-    ei
+    ; ei
     ld hl, wVBlankFlag
     xor a ; ld a, 0
 .loop:
@@ -47,7 +47,7 @@ WaitVBlank::
     cp a, [hl]
     jr z, .loop
     ld [hl], a
-    di
+    ; di
     ret
 
 SetupWindow::

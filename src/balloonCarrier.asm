@@ -28,12 +28,16 @@ BALLOON_CARRIER_FLAG_BOBBING_INDEX_BIT EQU ENEMY_FLAG_PARAM2_BIT
 
 SECTION "balloon carrier", ROMX
 
+; *************************************************************
 ; SPAWN
+; *************************************************************
 SpawnBalloonCarrier::
     ld b, BALLOON_CARRIER_OAM_SPRITES
     call FindRAMAndOAMForEnemy ; hl = RAM space, b = OAM offset
     ret z
+    ;
     ; Initialize
+    ;
     call InitializeEnemyStructVars
     ld a, b
     ldh [hEnemyOAM], a
@@ -43,8 +47,9 @@ SpawnBalloonCarrier::
     ldh [hEnemyFlags], a
     ld a, PROJECTILE_RESPAWN_TIME_SPAWN
     ldh [hEnemyParam3], a
-
+    ;
     ; Update direction
+    ;
     ldh a, [hEnemyX]
     cp a, SCRN_X / 2
     jr c, .finishedUpdatingDirection
@@ -54,14 +59,16 @@ SpawnBalloonCarrier::
     set ENEMY_FLAG_DIRECTION_BIT, a
     ldh [hEnemyFlags], a
 .finishedUpdatingDirection:
-
+    ;
     ; Get hl pointing to OAM address
+    ;
     LD_BC_HL ; bc now contains RAM address
     ld hl, wOAM
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
-
+    ;
     ; Get balloon visual by variant
+    ;
     ldh a, [hEnemyVariant]
 .followVisualBalloon:
     cp a, CARRIER_FOLLOW_VARIANT
@@ -94,9 +101,9 @@ SpawnBalloonCarrier::
     ld d, BALLOON_CARRIER_NORMAL_TILE
     ld e, OAMF_PAL0
 .endVariantVisualBalloon:
-
-    ; Set balloon visual
+    ;
     ; Balloon left OAM
+    ;
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -105,7 +112,9 @@ SpawnBalloonCarrier::
     ld [hli], a
     ld a, e
     ld [hli], a
+    ;
     ; Balloon right OAM
+    ;
     ldh a, [hEnemyY]
     ld [hli], a
     ldh a, [hEnemyX]
@@ -114,10 +123,11 @@ SpawnBalloonCarrier::
     ld a, d
     ld [hli], a
     ld a, e
-    or a, OAMF_XFLIP
+    or OAMF_XFLIP
     ld [hli], a
-
+    ;
     ; Get cactus visual by variant (left)
+    ;
     ldh a, [hEnemyVariant]
     cp a, CARRIER_ANVIL_VARIANT
     jr nz, .cactusVisualCarryLeft
@@ -129,8 +139,9 @@ SpawnBalloonCarrier::
     ld d, BALLOON_CACTUS_TILE
     ld e, OAMF_PAL0
 .endVariantVisualCarryLeft:
-
-    ; Set cactus visual left
+    ;
+    ; Cactus left OAM
+    ;
     ldh a, [hEnemyY]
     add 16
     ld [hli], a
@@ -140,8 +151,9 @@ SpawnBalloonCarrier::
     ld [hli], a
     ld a, e
     ld [hli], a
-
+    ;
     ; Get cactus visual by variant (right)
+    ;
     ldh a, [hEnemyVariant]
     cp a, CARRIER_ANVIL_VARIANT
     jr nz, .cactusVisualCarryRight
@@ -153,8 +165,9 @@ SpawnBalloonCarrier::
     ld d, BALLOON_CACTUS_TILE_2
     ld e, OAMF_PAL0 | OAMF_XFLIP
 .endVariantVisualCarryRight:
-
-    ; Set cactus visual right
+    ;
+    ; Cactus right OAM
+    ;
     ldh a, [hEnemyY]
     add 16
     ld [hli], a
@@ -165,21 +178,26 @@ SpawnBalloonCarrier::
     ld [hli], a
     ld a, e
     ld [hl], a
-.setStruct:
+    ;
+    ; Set struct
+    ;
     LD_HL_BC
-    jp SetEnemyStruct
+    jp SetEnemyStructWithHL
 
+; *************************************************************
 ; UPDATE
+; *************************************************************
 BalloonCarrierUpdate::
 
-.checkAlive:
+    ;
+    ; Check alive
+    ;
     ldh a, [hEnemyFlags]
     ld b, a
     and ENEMY_FLAG_ALIVE_MASK
     jr nz, .isAlive
-.isPopping:
-
-.checkSpawnCarry:
+    ; Is popping
+    ; Check spawn carry
     ld a, b
     and BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_MASK
     jr z, .endCheckSpawnCarry
@@ -188,7 +206,7 @@ BalloonCarrierUpdate::
     res BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_BIT, a
     ldh [hEnemyFlags], a
     ; Hide carry visual
-    ld hl, wOAM+10
+    ld hl, wOAM + 10
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
     ld a, WHITE_SPR_TILE
@@ -197,12 +215,8 @@ BalloonCarrierUpdate::
     inc l
     inc l
     ld [hl], a
-.setStructSpawnCarry:
-    ld hl, wEnemies
-    ldh a, [hEnemyOffset]
-    ADD_A_TO_HL
+    ; Set struct before spawn
     call SetEnemyStruct
-
     ; Hold onto enemy variant for checking spawn explosion
     ldh a, [hEnemyVariant]
     push af
@@ -255,14 +269,16 @@ BalloonCarrierUpdate::
     jr z, .clearPopping
 .animatePopping:
     call PopBalloonAnimation
-    jp .setStruct
+    jp SetEnemyStruct
 .clearPopping:
     ld bc, BALLOON_CARRIER_OAM_BYTES
     call ClearEnemy
-    jp .setStruct
+    jp SetEnemyStruct
 .isAlive:
 
-.checkProjectileVariant:
+    ;
+    ; Check projectile variant
+    ;
     ldh a, [hEnemyVariant]
 .projectileVariant:
     cp a, CARRIER_PROJECTILE_VARIANT 
@@ -306,9 +322,6 @@ BalloonCarrierUpdate::
     cp a, PROJECTILE_RESPAWN_TIME
     jr nz, .endSpawnProjectile
 .setStructSpawnProjectile:
-    ld hl, wEnemies
-    ldh a, [hEnemyOffset]
-    ADD_A_TO_HL
     call SetEnemyStruct
 .spawnProjectile:
     ld a, PROJECTILE
@@ -323,14 +336,16 @@ BalloonCarrierUpdate::
 .endSpawnProjectile:
 .endProjectileVariant:
 
-.checkMove:
+    ;
+    ; Check move
+    ;
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
     and	BALLOON_CARRIER_MOVE_TIME
     jp nz, .endMove
-.canMove:
+    ; Can move
 
-.moveHorizontalVariant:
+    ; Move horizontal variant
     ldh a, [hEnemyVariant]
 .anvilMoveHorizontal:
     cp a, CARRIER_ANVIL_VARIANT
@@ -346,7 +361,7 @@ BalloonCarrierUpdate::
     inc [hl]
 .endMoveHorizontalVariant:
 
-.moveVerticalVariant:
+    ; Move vertical variant
     ldh a, [hEnemyVariant]
 .anvilMoveVertical:
     cp a, CARRIER_ANVIL_VARIANT
@@ -474,7 +489,9 @@ BalloonCarrierUpdate::
     ld [hl], a
 .endCheckCactusBob:
 
-.checkCollision:
+    ;
+    ; Check collision
+    ;
     ; Is time to check collision
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
@@ -488,7 +505,7 @@ BalloonCarrierUpdate::
     ldh a, [hPlayerFlags]
     and PLAYER_FLAG_ALIVE_MASK
     jr z, .checkHitByBullet
-.checkHitPlayer:
+    ; Check hit player balloon
     ld bc, wPlayerBalloonOAM
     ld hl, wOAM+8
     ldh a, [hEnemyOAM]
@@ -497,7 +514,7 @@ BalloonCarrierUpdate::
     ld e, 12
     call CollisionCheck
     call nz, CollisionWithPlayer
-.checkHit:
+    ; Check hit player cactus
     ld hl, wOAM
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
@@ -507,16 +524,17 @@ BalloonCarrierUpdate::
     ld e, 12
     call CollisionCheck
     jr z, .checkHitByBullet
-.checkHitBombVariant:
+    ; Check hit bomb variant
     ldh a, [hEnemyVariant]
     cp a, CARRIER_BOMB_VARIANT 
     call z, CollisionWithPlayer
     jr .deathOfBalloonCarrier
+    ; Check hit bullet
 .checkHitByBullet:
     call EnemyHitBullet
     jr z, .endCollision
-
 .deathOfBalloonCarrier:
+    ; Points
 .variantPoints:
     ldh a, [hEnemyVariant]
 .normalPoints:
@@ -562,14 +580,14 @@ BalloonCarrierUpdate::
     call PopSound
 .endCollision:
 
-.checkOffscreen:
+    ;
+    ; Check offscreen
+    ;
     ld bc, BALLOON_CARRIER_OAM_BYTES
     call HandleEnemyOffscreenHorizontal
     ; Enemy may be cleared, must do setStruct next
-.endOffscreen:
 
-.setStruct:
-    ld hl, wEnemies ;; TODO this set of instructions could be a call (though would slow things)
-    ldh a, [hEnemyOffset]
-    ADD_A_TO_HL
+    ;
+    ; Set struct
+    ;
     jp SetEnemyStruct

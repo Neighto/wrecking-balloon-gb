@@ -35,8 +35,14 @@ InitializeEnemyStructVars::
     ldh [hEnemyParam3], a
     ret
 
+
 SetEnemyStruct::
-    ; Argument hl = start of free enemy struct
+    ld hl, wEnemies
+    ldh a, [hEnemyOffset]
+    ADD_A_TO_HL
+
+    ; Arg: HL = Start of free enemy struct
+SetEnemyStructWithHL::
     ldh a, [hEnemyFlags]
     ld [hli], a
     ldh a, [hEnemyNumber]
@@ -329,12 +335,17 @@ FindBalloonCarrier::
     ret
 
 ; Arg: BC = Enemy OAM Bytes
-ClearEnemy::
-    ld hl, wOAM
-    ldh a, [hEnemyOAM]
-    ADD_A_TO_HL
-    call ResetHLInRange
-    jp InitializeEnemyStructVars
+HandleEnemyOffscreenHorizontal::
+    ldh a, [hEnemyX]
+    ld h, a
+    ld a, SCRN_X + OFF_SCREEN_ENEMY_BUFFER
+    cp a, h
+    ret nc
+    ld a, SCRN_VX - OFF_SCREEN_ENEMY_BUFFER
+    cp a, h
+    ret c
+    ; Offscreen
+    jp ClearEnemy
 
 ; Arg: BC = Enemy OAM Bytes
 HandleEnemyOffscreenVertical::
@@ -347,20 +358,15 @@ HandleEnemyOffscreenVertical::
     cp a, h
     ret c
     ; Offscreen
-    jp ClearEnemy
+    ; jp ClearEnemy
 
 ; Arg: BC = Enemy OAM Bytes
-HandleEnemyOffscreenHorizontal::
-    ldh a, [hEnemyX]
-    ld h, a
-    ld a, SCRN_X + OFF_SCREEN_ENEMY_BUFFER
-    cp a, h
-    ret nc
-    ld a, SCRN_VX - OFF_SCREEN_ENEMY_BUFFER
-    cp a, h
-    ret c
-    ; Offscreen
-    jp ClearEnemy
+ClearEnemy::
+    ld hl, wOAM
+    ldh a, [hEnemyOAM]
+    ADD_A_TO_HL
+    call ResetHLInRange
+    jp InitializeEnemyStructVars
 
 SECTION "enemy animations", ROM0
 

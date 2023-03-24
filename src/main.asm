@@ -21,6 +21,7 @@ Start::
 	di
 	ld sp, $E000 ; Stack pointer to WRAM ; Default: $FFFE
 	call InitializeInterrupts
+	ei
 Restart::
 	call WaitVBlank
 	call LCD_OFF
