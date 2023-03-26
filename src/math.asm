@@ -1,7 +1,7 @@
 INCLUDE "hardware.inc"
 INCLUDE "macro.inc"
 
-SECTION "math", ROM0
+SECTION "math", ROMX
 
 ; Arg: A = Number being modded
 ; Arg: D = Mod number

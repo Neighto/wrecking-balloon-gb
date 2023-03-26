@@ -247,7 +247,7 @@ LoadLevelShowdownGraphics::
 	call MEMCPY_PATTERN_CLOUDS
     ; Add scrolling mountains
 	ld bc, ShowdownWaterMap
-	ld hl, $9BA0
+	ld hl, $9B60
 	ld de, ShowdownWaterMapEnd - ShowdownWaterMap
 	ld a, SHOWDOWN_MOUTAINS_OFFSET
     call MEMCPY_WITH_OFFSET
@@ -415,17 +415,21 @@ UpdateGame::
     cp a, PAUSE_ON
     jr z, .isPaused
 .pauseToggled:
-    call ClearSound
     ld a, PAUSE_ON
     ldh [hPaused], a
+    xor a ; ld a, 0
+    ldh [hPausedTimer], a
+    call ClearSound
+    jp RefreshPauseWindow.winoff
 .isPaused:
+    call RefreshPauseWindow
 	call ReadController
 	ldh a, [hControllerPressed]
     and PADF_START
     ret z
 	ld a, PAUSE_OFF
 	ldh [hPaused], a
-    ret
+    jp RefreshPauseWindow.winon
 .isNotPaused:
 
     ; Update sprites

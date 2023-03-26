@@ -5,12 +5,14 @@ SECTION "controller vars", HRAM
 hControllerDown:: DB
 hControllerPressed:: DB
 hPaused:: DB
+hPausedTimer:: DB
 
 SECTION "controller", ROM0
 
 InitializeController::
 	xor a ; ld a, 0
 	ldh [hPaused], a ; can do because 0 = PAUSE_OFF
+	ldh [hPausedTimer], a
 	ldh [hControllerDown], a
 	ldh [hControllerPressed], a
 	ret
