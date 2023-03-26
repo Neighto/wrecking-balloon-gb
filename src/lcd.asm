@@ -48,13 +48,6 @@ WaitVBlank::
     ld [hl], a
     ret
 
-SetupWindow::
-    ld a, WINDOW_START_Y
-	ldh [rWY], a
-	ld a, 7
-	ldh [rWX], a
-    ret
-
 WaitVRAMAccessible::
     ; Waits for VRAM to be in
     ; Mode 0 = H-Blank

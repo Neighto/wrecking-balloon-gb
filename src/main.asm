@@ -21,6 +21,7 @@ Start::
 	di
 	ld sp, $E000 ; Stack pointer to WRAM ; Default: $FFFE
 	call InitializeInterrupts
+	call InitializeTopScores
 	ei
 Restart::
 	call WaitVBlank
@@ -32,9 +33,10 @@ Restart::
 	call ClearVRAM8800
 	call CopyDMARoutine
 	call LoadMenuOpeningGraphics
-	call LoadWindow
+	call LoadWindowTiles
 	call LoadGameSpriteAndMiscellaneousTiles
 	call SetupWindow
+	call LoadTopScoreWindow
 	call InitializeInterrupts ; Initialize a 2nd time for when we jump to Restart
 	call InitializeController
 	call InitializeMenu
@@ -47,9 +49,9 @@ Restart::
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	; call WaitVBlank
-	; call UpdateMenuOpening
-	; jp MenuLoopOpening
+	call WaitVBlank
+	call UpdateMenuOpening
+	jp MenuLoopOpening
 StartMenu::
 	call WaitVBlank
 	call LCD_OFF
@@ -63,10 +65,10 @@ StartMenu::
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateMenu
-	; jp MenuLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateMenu
+	jp MenuLoop
 
 ; *************************************************************
 ; STARTGAME
@@ -114,10 +116,10 @@ OpeningCutscene:
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateOpeningCutscene
-	; jp OpeningCutsceneLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateOpeningCutscene
+	jp OpeningCutsceneLoop
 
 ; *************************************************************
 ; SETUPNEXTLEVEL
@@ -136,7 +138,7 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; === testing ===
-	; ld a, 5
+	; ld a, 6
 	; ldh [hLevel], a
 	; ===============
 
@@ -209,9 +211,9 @@ SetupNextLevel::
 	call InitializeEmptyPalettes
 	; jr .endLevelSetup
 .endLevelSetup:
-	call LoadPausedWindowOn9800
 	call InitializeNewLevel
-	call RefreshWindow
+	call LoadPauseWindow
+	call LoadWindow
 	call LCD_ON
 	; Check flag to skip countdown for endless level switching
 	ld a, [hEndlessLevelSwitchSkip]
@@ -270,7 +272,8 @@ GameOver::
 	call LCD_OFF
 	call ClearSound
 	call ClearOAM
-	call InitializeGameOver
+	call AddScoreToTotal
+	call SetTopScore
 	ld hl, gameOverTheme
 	call hUGE_init
 	call RefreshGameOverWindow
@@ -290,6 +293,8 @@ GameWon::
 	call InitializeEnemies
 	call SetCutsceneInterrupts
 	call LoadEndingCutsceneGraphics
+	call AddScoreToTotal
+	call SetTopScore
 	call InitializeSequence
 	call InitializeEndingCutscene
 	call InitializeSound

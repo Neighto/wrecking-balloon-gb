@@ -30,7 +30,6 @@ InitializeEndingCutscene::
     xor a ; ld a, 0
     ld [wHandClappingFrame], a
 
-    call AddScoreToTotal
     ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
 	call RefreshTotal
 
