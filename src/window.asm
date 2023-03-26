@@ -11,6 +11,7 @@ BAR_TILES EQU 4
 REFRESH_WINDOW_WAIT_TIME EQU %00000011
 
 GAME_OVER_DISTANCE_FROM_TOP_IN_TILES EQU 2
+PAUSE_DISTANCE_FROM_TOP_IN_TILES EQU 6
 TOTAL_GAME_OVER_INDEX_ONE_ADDRESS EQU $9C2F
 
 SECTION "window", ROM0
@@ -74,7 +75,7 @@ LoadWindow::
 	; TILEMAP
 	; Draw first row
     ld bc, WindowMap
-    ld hl, _SCRN1
+	ld hl, _SCRN1
     ld de, SCRN_X_B
     ld a, WINDOW_TILES_8800_OFFSET
     call MEMCPY_WITH_OFFSET
@@ -198,3 +199,38 @@ RefreshGameOverWindow::
 	; Score
 	ld hl, TOTAL_GAME_OVER_INDEX_ONE_ADDRESS
 	jp RefreshTotal
+
+; *************************************************************
+; REFRESHPAUSEWINDOW
+; *************************************************************
+RefreshPauseWindow::
+	ldh a, [hPausedTimer]
+    inc	a
+    ldh [hPausedTimer], a
+    and %00111111
+    ret nz
+	; Toggle between
+	ld hl, rLCDC
+	bit 5, [hl]
+	jr z, .winon
+.winoff::
+	ld hl, rLCDC
+	res 5, [hl]
+	ret
+.winon::
+	ld hl, rLCDC
+	set 5, [hl]
+	ret
+
+LoadPausedWindowOn9800::
+	; Pause row
+	ld hl, $9BC0 ; $9A00
+	ld bc, WindowMap + SCRN_X_B * PAUSE_DISTANCE_FROM_TOP_IN_TILES
+	ld de, SCRN_X_B
+	ld a, WINDOW_TILES_8800_OFFSET
+	call MEMCPY_WITH_OFFSET
+	; Fill in dark grey
+	ld hl, $9BC0 + SCRN_VX_B ; $9A00 + SCRN_VX_B
+	ld bc, SCRN_X_B
+	ld d, DARK_GREY_BKG_TILE
+	jp SetInRange
