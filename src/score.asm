@@ -4,28 +4,31 @@ INCLUDE "constants.inc"
 SCORE_SIZE EQU 3
 SCORE_MOVE_POINTS EQU 10
 
-
 SECTION "score vars", WRAM0
 wScore:: DS SCORE_SIZE
 wTotal:: DS SCORE_SIZE
+wTopClassic:: DS SCORE_SIZE
+wTopEndless:: DS SCORE_SIZE
 
 SECTION "score", ROM0
 
 InitializeScore::
-    xor a ; ld a, 0
+    ld bc, SCORE_SIZE
     ld hl, wScore
-	ld [hli], a
-    ld [hli], a
-    ld [hl], a
-    ret
+    jp ResetHLInRange
 
 InitializeTotal::
-    xor a ; ld a, 0
+    ld bc, SCORE_SIZE
     ld hl, wTotal
-	ld [hli], a
-    ld [hli], a
-    ld [hl], a
-    ret
+    jp ResetHLInRange
+
+InitializeTopScores::
+    ld bc, SCORE_SIZE
+    ld hl, wTopClassic
+    call ResetHLInRange
+    ld bc, SCORE_SIZE
+    ld hl, wTopEndless
+    jp ResetHLInRange
 
 ; Arg: A = Points to receive (must be 1 byte BCD [max 99])
 ; Warning: will loop if we reach max points
@@ -116,9 +119,9 @@ AddScoreToTotal::
     ld a, [hli]
     ld [wTotal], a
     ld a, [hli]
-    ld [wTotal+1], a
+    ld [wTotal + 1], a
     ld a, [hl]
-    ld [wTotal+2], a
+    ld [wTotal + 2], a
     ret
 .isNotZeroTotal:
     ; TODO - this is super inefficient
@@ -136,3 +139,25 @@ AddScoreToTotal::
     ld a, SCORE_MOVE_POINTS
     call DecrementPoints
     jr .loop
+
+SetTopScore::
+    ; TODO only take it if it is better
+    ld a, [wSelectedMode]
+    cp a, CLASSIC_MODE
+	jr z, .setTopClassic
+.setTopEndless:
+    ld bc, wTopEndless
+    jr .setTop
+.setTopClassic:
+    ld bc, wTopClassic
+.setTop:
+    ld hl, wTotal
+    ld a, [hli]
+    ld [bc], a
+    inc bc
+    ld a, [hli]
+    ld [bc], a
+    inc bc
+    ld a, [hl]
+    ld [bc], a   
+    ret

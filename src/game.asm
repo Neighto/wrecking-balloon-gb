@@ -417,19 +417,17 @@ UpdateGame::
 .pauseToggled:
     ld a, PAUSE_ON
     ldh [hPaused], a
-    xor a ; ld a, 0
-    ldh [hPausedTimer], a
     call ClearSound
-    jp RefreshPauseWindow.winoff
+    jp ShowPauseWindow
 .isPaused:
-    call RefreshPauseWindow
+    call ShowPauseWindow.skipResetTimer
 	call ReadController
 	ldh a, [hControllerPressed]
     and PADF_START
     ret z
 	ld a, PAUSE_OFF
 	ldh [hPaused], a
-    jp RefreshPauseWindow.winon
+    jp ShowPauseWindow.winon
 .isNotPaused:
 
     ; Update sprites

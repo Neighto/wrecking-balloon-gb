@@ -10,11 +10,24 @@ ATTACK_BAR_ADDRESS EQU $9C25
 BAR_TILES EQU 4
 REFRESH_WINDOW_WAIT_TIME EQU %00000011
 
+PAUSE_TOGGLE_TIME EQU %00111111
+PAUSE_WINDOW_ADDRESS EQU $9BC0
+
 GAME_OVER_DISTANCE_FROM_TOP_IN_TILES EQU 2
 PAUSE_DISTANCE_FROM_TOP_IN_TILES EQU 6
 TOTAL_GAME_OVER_INDEX_ONE_ADDRESS EQU $9C2F
 
+TOP_TEXT_ADDRESS EQU $9C04
+TOP_SCORE_INDEX_ONE_ADDRESS EQU $9C0F
+
 SECTION "window", ROM0
+
+SetupWindow::
+    ld a, WINDOW_START_Y
+	ldh [rWY], a
+	ld a, 7
+	ldh [rWX], a
+    ret
 
 ; Arg: BC = Score address
 ; Arg: HL = Index one address to update
@@ -66,12 +79,24 @@ RefreshTotal::
 	ld bc, wTotal
 	jp RefreshScoreCommon
 
-LoadWindow::
+; Arg: HL = Index one address to update
+RefreshTopClassic::
+	ld bc, wTopClassic
+	jp RefreshScoreCommon
+
+; Arg: HL = Index one address to update
+RefreshTopEndless::
+	ld bc, wTopEndless
+	jp RefreshScoreCommon
+
+LoadWindowTiles::
 	; TILES
     ld bc, WindowTiles
     ld hl, _VRAM8800 + ((WINDOW_TILES_8800_OFFSET - $80) * $10)
     ld de, WindowTilesEnd - WindowTiles
-    call MEMCPY
+    jp MEMCPY
+
+LoadWindow::
 	; TILEMAP
 	; Draw first row
     ld bc, WindowMap
@@ -91,7 +116,7 @@ LoadWindow::
 	ld a, BAR_RIGHT_EDGE
 	ld [BOOST_BAR_ADDRESS + BAR_TILES - 1], a ; Boost
 	ld [ATTACK_BAR_ADDRESS + BAR_TILES - 1], a ; Attack
-	ret
+	jp RefreshWindow
 
 ; Arg: HL = Bar address
 ; Arg: A = Bar meter
@@ -201,15 +226,43 @@ RefreshGameOverWindow::
 	jp RefreshTotal
 
 ; *************************************************************
-; REFRESHPAUSEWINDOW
+; REFRESHTOPSCOREWINDOW
 ; *************************************************************
-RefreshPauseWindow::
+LoadTopScoreWindow::
+	; Fill in dark grey
+	ld hl, _SCRN1
+	ld bc, SCRN_VX_B * 2
+	ld d, DARK_GREY_BKG_TILE
+	call SetInRange
+	; Top text
+	ld bc, TopTextMap
+	ld hl, TOP_TEXT_ADDRESS
+	ld de, TopTextMapEnd - TopTextMap
+	call MEMCPY
+	; Top score
+.refresh::
+	call WaitVRAMAccessible
+	ld hl, TOP_SCORE_INDEX_ONE_ADDRESS
+	ld a, [wSelectedMode]
+	cp a, CLASSIC_MODE
+	jp z, RefreshTopClassic
+	jp RefreshTopEndless
+
+; *************************************************************
+; PAUSEWINDOW
+; *************************************************************
+
+ShowPauseWindow::
+    ld a, PAUSE_TOGGLE_TIME
+    ldh [hPausedTimer], a
+.skipResetTimer::
+    ; Check if we can toggle
 	ldh a, [hPausedTimer]
     inc	a
     ldh [hPausedTimer], a
-    and %00111111
+    and PAUSE_TOGGLE_TIME
     ret nz
-	; Toggle between
+	; Toggle
 	ld hl, rLCDC
 	bit 5, [hl]
 	jr z, .winon
@@ -222,15 +275,16 @@ RefreshPauseWindow::
 	set 5, [hl]
 	ret
 
-LoadPausedWindowOn9800::
-	; Pause row
-	ld hl, $9BC0 ; $9A00
+LoadPauseWindow::
+	; Except we actually load it on background layer not window
+	; So we can toggle between the two with ease
+	ld hl, PAUSE_WINDOW_ADDRESS
 	ld bc, WindowMap + SCRN_X_B * PAUSE_DISTANCE_FROM_TOP_IN_TILES
 	ld de, SCRN_X_B
 	ld a, WINDOW_TILES_8800_OFFSET
 	call MEMCPY_WITH_OFFSET
 	; Fill in dark grey
-	ld hl, $9BC0 + SCRN_VX_B ; $9A00 + SCRN_VX_B
+	ld hl, PAUSE_WINDOW_ADDRESS + SCRN_VX_B
 	ld bc, SCRN_X_B
 	ld d, DARK_GREY_BKG_TILE
 	jp SetInRange

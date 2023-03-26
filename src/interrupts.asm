@@ -78,12 +78,12 @@ LCDInterruptEnd:
     reti
 
 WindowLCDInterrupt:
-    call WaitVRAMAccessible
     ld a, MAIN_PAL0
     ldh [rBGP], a
 .skipPaletteSetting:
     ld a, INTERRUPT_END_OF_SCREEN
 	ldh [rLYC], a
+    call WaitVRAMAccessible
     xor a ; ld a, 0
     ldh [rSCX], a
     ld a, 112
@@ -421,7 +421,7 @@ LevelShowdownLCDInterrupt:
     jp LCDInterruptEnd
 .close:
     cp a, GAME_SHOWDOWN_LCD_SCROLL_CLOSE
-    jr nz, .bottom
+    jr nz, .window
     ld a, INTERRUPT_WINDOW
     ldh [rLYC], a
     ldh a, [hParallaxClose]
@@ -432,9 +432,14 @@ LevelShowdownLCDInterrupt:
     ld a, MAIN_PAL0 ; Night showdown
 	ldh [rBGP], a ; Night showdown
     jp LCDInterruptEnd
+.window:
+    cp a, INTERRUPT_WINDOW
+    jr nz, .bottom
+    ldh a, [hLevel]
+    cp a, LEVEL_BOSS
+    jp nz, WindowLCDInterrupt ; Night showdown
+    jp WindowLCDInterrupt.skipPaletteSetting
 .bottom:
-    cp a, INTERRUPT_END_OF_SCREEN
-    jp nz, WindowLCDInterrupt
     ld a, GAME_SHOWDOWN_LCD_SCROLL_FAR
     ldh [rLYC], a
     ldh a, [hParallaxMiddle]

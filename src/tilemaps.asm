@@ -55,15 +55,20 @@ WindowMap::
     INCBIN "incbin/window/Window.tilemap"
 WindowMapEnd::
 
-; "S" "C" "O" "R" "E"
+; "S" "C" "O" "R" "E" ":"
 ScoreTextMap::
     DB $D9, $DA, $DB, $DC, $DD, $DE
 ScoreTextMapEnd::
 
-; "T" "O" "T" "A" "L"
+; "T" "O" "T" "A" "L" ":"
 TotalTextMap::
     DB $F5, $DB, $F5, $F1, $F6, $DE
 TotalTextMapEnd::
+
+; "T" "O" "P" ":"
+TopTextMap::
+    DB $F5, $DB, $FB, $DE
+TopTextMapEnd::
 
 CloudsMap::
     INCBIN "incbin/background/Clouds.tilemap"

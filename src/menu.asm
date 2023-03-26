@@ -113,9 +113,14 @@ SpawnMenuCursor::
 	ld [hl], a
 	ret
 
+; *************************************************************
+; UPDATEMENUOPENING
+; *************************************************************
 UpdateMenuOpening::
+	; Timer
 	UPDATE_GLOBAL_TIMER
-.checkSkip:
+
+	; Check skip
 	call ReadController
 	ldh a, [hControllerDown]
     and PADF_START | PADF_A
@@ -123,6 +128,8 @@ UpdateMenuOpening::
 	ld a, 5
 	ld [wMenuFrame], a
 .endSkip:
+
+	; Check frame
 	ld a, [wMenuFrame]
 .startSound:
 	cp a, 0
@@ -135,7 +142,6 @@ UpdateMenuOpening::
 	ldh a, [rSCY]
 	cp a, 0
 	jr z, .endFrame
-	ldh a, [rSCY]
     inc a
     ldh [rSCY], a
 	ret
@@ -150,7 +156,6 @@ UpdateMenuOpening::
 	ldh a, [rSCY]
 	cp a, 252
 	jr z, .endFrame
-	ldh a, [rSCY]
 	dec a
     ldh [rSCY], a
 	ret
@@ -160,45 +165,55 @@ UpdateMenuOpening::
 	ld a, [rSCY]
 	cp a, 0
 	jr z, .endFrame
-	ldh a, [rSCY]
     inc a
     ldh [rSCY], a
 	ret
 .fadeOut:
 	cp a, 5
-	jr nz, .startMenu
+	jp nz, StartMenu
 	call FadeOutPalettes
 	ret z
-	jr .endFrame
-.startMenu:
-	jp StartMenu
+	; jr .endFrame
 .endFrame:
 	ld a, [wMenuFrame]
 	inc a 
 	ld [wMenuFrame], a
 	ret
 
+; *************************************************************
+; UPDATEMENU
+; *************************************************************
 UpdateMenu::
+	; Timer
 	UPDATE_GLOBAL_TIMER
 
-.fadeIn:
+	; Fade in
 	call FadeInPalettes
 	ret z
-.hasFadedIn:
+	; Has faded in
+
+	; Handle common
 	call _hUGE_dosound
 	call IncrementScrollOffset
+
+	; Fade out
 	ld a, [wTriggerFadeOut]
 	cp a, 0
-	jp nz, .fadeOut
+	jr z, .checkFadeOutEnd
+	call FadeOutPalettes
+	ret z
+	jp StartGame
+	; Not fading out yet
+.checkFadeOutEnd:
 
-.blinkMenuCursor:
+	; Blink menu cursor
 	ld a, [wMenuCursorTimer]
 	inc a
 	ld [wMenuCursorTimer], a
 	and MENU_SPRITE_BLINK_TIMER
 	jr nz, .blinkMenuCursorEnd
-.blink:
-	ld hl, wOAM+2
+	; Can blink
+	ld hl, wOAM + 2
 	ADD_A_TO_HL [wMenuCursorOAM]
 	ld a, [hl]
 	cp a, WHITE_SPR_TILE
@@ -212,14 +227,38 @@ UpdateMenu::
 	ld [hl], a
 .blinkMenuCursorEnd:
 
-.menuInput:
-	call ReadController
+	; ****************** TO CLEAN
+	call LoadTopScoreWindow.refresh
+	; Blink top score
+	ld a, [wSelectedMode]
+.skipResetTimer::
+    ; Check if we can toggle
+	ldh a, [hPausedTimer]
+    inc	a
+    ldh [hPausedTimer], a
+    and %11111111
+    jr nz, .blinkTopScoreEnd
+	; Toggle
+	ld hl, rLCDC
+	bit 5, [hl]
+	jr z, .winon
+.winoff::
+	ld hl, rLCDC
+	res 5, [hl]
+	jr .blinkTopScoreEnd
+.winon::
+	ld hl, rLCDC
+	set 5, [hl]
+.blinkTopScoreEnd:
+	; ^^^^^^^^^^^TO CLEAN similar to pause in window
 
-.checkSunglasses:
+	; Menu input
+	call ReadController
 	ldh a, [hControllerPressed]
+	; Select
 	and PADF_SELECT
-	jr z, .checkSelect
-	; SUNGLASSES
+	jr z, .checkMode
+	; SUNGLASSES TOGGLED
 	call BoostSound
 	ld hl, SUNGLASSES_ADDRESS
 	ld a, [wSecret]
@@ -242,17 +281,17 @@ UpdateMenu::
 	ld [hli], a
 	ld [hl], a
 	ret
-.checkSelect:
+.checkMode:
 	ldh a, [hControllerPressed]
 	and PADF_UP | PADF_DOWN
 	jr z, .checkStart
-	; SELECT
+	; MODE
 	call BulletSound
 	; Reset cursor blink
 	xor a ; ld a, 0
 	ld [wMenuCursorTimer], a
 	; Move cursor and select mode
-	ld hl, wOAM+2
+	ld hl, wOAM + 2
 	ADD_TO_HL [wMenuCursorOAM]
 	ld a, MENU_CURSOR_TILE
 	ld [hld], a
@@ -283,7 +322,3 @@ UpdateMenu::
 	ld c, 1 ; Mute
 	call hUGE_mute_channel
 	jp LifeUpSound
-.fadeOut:
-	call FadeOutPalettes
-	jp nz, StartGame
-	ret
