@@ -73,3 +73,16 @@ WaitVRAMAccessible::
 ;     bit 1, [hl]
 ;     jr nz, .wait2
 ;     ret
+
+ToggleWindow::
+	ld hl, rLCDC
+	bit 5, [hl]
+	jr z, .winon
+.winoff::
+	ld hl, rLCDC
+	res 5, [hl]
+	ret
+.winon::
+	ld hl, rLCDC
+	set 5, [hl]
+    ret
