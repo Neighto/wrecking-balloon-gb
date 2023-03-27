@@ -1,5 +1,6 @@
 INCLUDE "playerConstants.inc"
 INCLUDE "constants.inc"
+INCLUDE "macro.inc"
 
 SCORE_SIZE EQU 3
 SCORE_MOVE_POINTS EQU 10
@@ -141,7 +142,6 @@ AddScoreToTotal::
     jr .loop
 
 SetTopScore::
-    ; TODO only take it if it is better
     ld a, [wSelectedMode]
     cp a, CLASSIC_MODE
 	jr z, .setTopClassic
@@ -151,6 +151,15 @@ SetTopScore::
 .setTopClassic:
     ld bc, wTopClassic
 .setTop:
+    ; Check if new score is greater
+    LD_HL_BC
+    push bc
+    LD_BC_HL
+    ld hl, wTotal
+    CP_BC_HL SCORE_SIZE
+    pop bc
+    ret nc
+    ; Update top score
     ld hl, wTotal
     ld a, [hli]
     ld [bc], a

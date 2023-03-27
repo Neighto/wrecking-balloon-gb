@@ -262,18 +262,7 @@ ShowPauseWindow::
     ldh [hPausedTimer], a
     and PAUSE_TOGGLE_TIME
     ret nz
-	; Toggle
-	ld hl, rLCDC
-	bit 5, [hl]
-	jr z, .winon
-.winoff::
-	ld hl, rLCDC
-	res 5, [hl]
-	ret
-.winon::
-	ld hl, rLCDC
-	set 5, [hl]
-	ret
+	jp ToggleWindow
 
 LoadPauseWindow::
 	; Except we actually load it on background layer not window

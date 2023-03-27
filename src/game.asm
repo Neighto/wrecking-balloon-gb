@@ -427,7 +427,7 @@ UpdateGame::
     ret z
 	ld a, PAUSE_OFF
 	ldh [hPaused], a
-    jp ShowPauseWindow.winon
+    jp ToggleWindow.winon
 .isNotPaused:
 
     ; Update sprites

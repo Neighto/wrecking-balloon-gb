@@ -98,6 +98,38 @@ MACRO SUB_FROM_R16
     ld \1, a
 ENDM
 
+; Arg: 1 = Distance
+; Ret: C/NC = Carry / no carry
+; Ret: Z/NZ = Zero / not zero
+MACRO CP_BC_HL
+    xor a ; ld a, 0
+    ld d, a ; Will cause zero
+    ld e, a
+.loop\@:
+    ld a, e
+    cp a, \1
+    jr nz, .compare\@
+    ; End
+    ld a, 2
+    cp a, d
+    jr .done\@
+.compare\@:
+    inc e
+    ld a, [bc]
+    inc bc
+    cp a, [hl]
+    inc hl
+    jr z, .loop\@
+    jr nc, .bigger\@
+    ; Smaller
+    ld d, 3 ; Will cause carry
+    jr .loop\@
+.bigger\@:
+    ld d, 1 ; Will cause no carry
+    jr .loop\@
+.done\@:
+ENDM
+
 ; ENEMY MACROS ****
 
 MACRO UPDATE_OAM_POSITION_HRAM

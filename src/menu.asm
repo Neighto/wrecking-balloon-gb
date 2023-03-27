@@ -227,30 +227,14 @@ UpdateMenu::
 	ld [hl], a
 .blinkMenuCursorEnd:
 
-	; ****************** TO CLEAN
-	call LoadTopScoreWindow.refresh
 	; Blink top score
-	ld a, [wSelectedMode]
-.skipResetTimer::
+	call LoadTopScoreWindow.refresh
     ; Check if we can toggle
 	ldh a, [hPausedTimer]
     inc	a
     ldh [hPausedTimer], a
-    and %11111111
-    jr nz, .blinkTopScoreEnd
-	; Toggle
-	ld hl, rLCDC
-	bit 5, [hl]
-	jr z, .winon
-.winoff::
-	ld hl, rLCDC
-	res 5, [hl]
-	jr .blinkTopScoreEnd
-.winon::
-	ld hl, rLCDC
-	set 5, [hl]
-.blinkTopScoreEnd:
-	; ^^^^^^^^^^^TO CLEAN similar to pause in window
+    and %01111111
+    call z, ToggleWindow
 
 	; Menu input
 	call ReadController

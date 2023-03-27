@@ -78,6 +78,7 @@ LCDInterruptEnd:
     reti
 
 WindowLCDInterrupt:
+    call WaitVRAMAccessible
     ld a, MAIN_PAL0
     ldh [rBGP], a
 .skipPaletteSetting:
