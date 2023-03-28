@@ -68,7 +68,7 @@ PE::
     dn ___,0,$000
     dn ___,0,$000
 
-    ; May need to make larger if a song exceeds this length
+; May need to make larger if a song exceeds this length
 outOfOrder:: dw PE,PE,PE,PE,PE,PE,PE,PE,PE,PE,PE,PE
    
 duty_instruments::

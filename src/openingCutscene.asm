@@ -10,6 +10,10 @@ HAND_WAVE_START_X EQU HAND_DOWN_START_X - 2
 HAND_WAVE_START_Y EQU 96
 HAND_WAVE_SPRITES EQU 1
 
+FLOWER_OFFSET EQU $2C
+MAN_OFFSET EQU $01
+CART_OFFSET EQU $11
+
 SECTION "opening cutscene vars", WRAM0
 wHandWavingFrame:: DB
 wHandWaveOAM:: DB
@@ -59,12 +63,12 @@ LoadOpeningCutsceneGraphics::
     ld hl, $9943
     call LoadHydrant
     ; Flowers
-    ld a, $2C ; FLOWER_OFFSET
+    ld a, FLOWER_OFFSET
     ld [$99C5], a
     ld [$99CD], a
     ld [$99D3], a
     ; Man
-    ld a, $01 ; MAN_OFFSET
+    ld a, MAN_OFFSET
     ld [wMemcpyTileOffset], a
     ld bc, ManMap
     ld hl, $9926
@@ -72,7 +76,7 @@ LoadOpeningCutsceneGraphics::
     ld e, 2
     call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
     ; Cart
-    ld a, $11 ; CART_OFFSET
+    ld a, CART_OFFSET
     ld [wMemcpyTileOffset], a
     ld bc, CartMap
     ld hl, $996C
@@ -137,6 +141,9 @@ SpawnCartBalloons::
     ldh [hEnemyX], a
     jp SpawnPointBalloon
 
+; *************************************************************
+; UPDATEOPENINGCUTSCENE
+; *************************************************************
 UpdateOpeningCutscene::
     ; Timer
     UPDATE_GLOBAL_TIMER
@@ -148,12 +155,12 @@ UpdateOpeningCutscene::
     cp a, 0
     call nz, _hUGE_dosound
 
-.checkSkip:
+    ; Check skip
 	call ReadController
 	ldh a, [hControllerDown]
     and PADF_START | PADF_A
     jr z, .endSkip
-.skip:
+    ; Skip
     xor a ; ld a, 0
     ldh [hSequencePlaySong], a
     call ClearSound
@@ -165,18 +172,17 @@ UpdateOpeningCutscene::
     ld [hl], a
 .endSkip:
 
-.checkPhase:
+    ; Check phase
     ldh a, [hSequencePhase]
 .phase0:
     cp a, 0
     jr nz, .phase1
-    ; bob
     call BobPlayer
     jr .endCheckPhase
 .phase1:
     cp a, 1
     jr nz, .phase2
-    ; move hand up
+    ; Move hand up
     ld hl, wOAM
     ADD_TO_HL [wHandWaveOAM]
     ld a, HAND_WAVE_START_Y
@@ -189,9 +195,9 @@ UpdateOpeningCutscene::
 .phase2:
     ; cp a, 2
     ; jr nz, .endCheckPhase
-    ; wave and fly away
+    ; Wave and fly away
     call MovePlayerAuto.autoUp
-    ; hand wave animation
+    ; Hand wave animation
 .checkAnimateWave:
     ld a, [wHandWavingFrame]
 .frame0:
