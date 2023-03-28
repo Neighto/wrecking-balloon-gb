@@ -221,17 +221,18 @@ RequestOAMSpace::
     ld a, [hl]
     cp a, 0
     jr nz, .isNotZero2
+    ; No longer check Flag, its usually 0 even when active
     ; Check sprite attribute: Flag
     inc l
-    ld a, [hl]
-    cp a, 0
-    jr nz, .isNotZero1
+    ; ld a, [hl]
+    ; cp a, 0
+    ; jr nz, .isNotZero1
 .freeSpriteSpace:
     inc c
     ld a, b
     cp a, c
     jr nz, .notEnoughSprites
-.sufficientSpace:
+    ; Has sufficient space to spawn
     ld a, OAMVarsEnd - OAMVars
     sub a, d
     sub a, c
@@ -240,7 +241,7 @@ RequestOAMSpace::
     ld c, 4
     call MULTIPLY
     ld b, a
-.availableSpace:
+    ; Success
     ; Set the nz
     or a, 1
     ret
@@ -260,7 +261,7 @@ RequestOAMSpace::
     ld a, d
 	cp a, 0
     jr nz, .loop
-.noFreeSpace:
+    ; Fail (no free space)
     ; z already set
     ret
 
@@ -274,7 +275,7 @@ RequestRAMSpace::
     ld a, [hl] ; Active
     cp a, 0
     jr nz, .checkLoop
-.availableSpace:
+    ; SUCCESS (has sufficient space to spawn)
     or a, 1
     ret
 .checkLoop:
@@ -283,7 +284,7 @@ RequestRAMSpace::
     ld a, d 
     cp a, 0
     jr nz, .loop
-.noFreeSpace:
+    ; Fail (no free space)
     xor a ; ld a, 0
     ret
 

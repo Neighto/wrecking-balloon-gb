@@ -1,8 +1,10 @@
-; GENERAL MACROS ****
+; *************************************************************
+; GENERAL MACROS
+; *************************************************************
 
+; Arg: 1 = Range
+; Ret: A = 0 - (range - 1)
 MACRO RANDOM
-    ; argument 1 is range
-    ; returns a as # 0-(range-1)
     ld d, \1
     ldh a, [rDIV]
     call MODULO
@@ -39,31 +41,31 @@ MACRO LD_DE_BC
 ENDM
 
 MACRO ADD_A_TO_HL
-    add a, l ; 1 cycle
-    ld l, a ; 1 cycle
-    ld a, h ; 1 cycle
-    adc a, 0 ; 2 cycles
-    ld h, a ; 1 cycle
+    add a, l
+    ld l, a
+    ld a, h
+    adc a, 0
+    ld h, a
 ENDM
 
+; Arg: 1 = Value to add to HL (8 bit)
 MACRO ADD_TO_HL
-    ; argument 1 is value to add to HL (8 bit)
-    ld a, \1 ; 2 cycles
+    ld a, \1
     ADD_A_TO_HL
 ENDM
 
+; Arg: 1 = Value to add to HL (16 bit)
 MACRO ADD_TO_HL_16
-    ; argument 1 is value to add to HL (16 bit)
-    ld a, l ; 1 cycle
-    add a, LOW(\1) ; 2 cycles
-    ld l, a ; 1 cycle
-    ld a, h ; 1 cycle
-    adc a, HIGH(\1) ; 2 cycles
-    ld h, a ; 1 cycle
+    ld a, l
+    add a, LOW(\1)
+    ld l, a
+    ld a, h
+    adc a, HIGH(\1)
+    ld h, a
 ENDM
 
+; Arg: 1 = Value to sub from HL (16 bit)
 MACRO SUB_FROM_HL_16
-    ; argument 1 is value to sub from HL (16 bit)
     ld a, l
     sub a, LOW(\1)
     ld l, a
@@ -73,23 +75,23 @@ MACRO SUB_FROM_HL_16
 ENDM
 
 MACRO ADD_A_TO_BC
-    add a, c ; 1 cycle
-    ld c, a ; 1 cycle
-    ld a, b ; 1 cycle
-    adc a, 0 ; 2 cycles
-    ld b, a ; 1 cycle
+    add a, c
+    ld c, a
+    ld a, b
+    adc a, 0
+    ld b, a
 ENDM
 
+; Arg: 1 = Value to add to BC (8 bit)
 MACRO ADD_TO_BC
-    ; argument 1 is value to add to BC (8 bit)
-    ld a, \1 ; 2 cycles
+    ld a, \1
     ADD_A_TO_BC
 ENDM
 
+; Arg: 1 = High value r16
+; Arg: 2 = Low value r16
+; Arg: 3 = Value
 MACRO SUB_FROM_R16
-    ; argument 1 is high value r16
-    ; argument 2 is low value r16
-    ; argument 3 is value
     ld a, \2
     sub \3
     ld \2, a
@@ -130,14 +132,16 @@ MACRO CP_BC_HL
 .done\@:
 ENDM
 
-; ENEMY MACROS ****
+; *************************************************************
+; ENEMY MACROS
+; *************************************************************
 
+; Arg: 1 = # sprites horizontal
+; Arg: 2 = # sprites vertical
+; Arg: 3 = X position
+; Arg: 4 = Y position
+; Arg: 5 = Y offset (where 1 = 16 pixels down, 2 = 32 pixels down, etc)
 MACRO UPDATE_OAM_POSITION_HRAM
-    ; argument 1 is # sprites horizontal
-    ; argument 2 is # sprites vertical
-    ; argument 3 is x position
-    ; argument 4 is y position
-    ; argument 5 is y offset (where 1 = 16 pixels down, 2 = 32 pixels down, etc)
 REPT_NUMBER_X SET 0
 REPT_NUMBER_Y SET \5
 REPT \2
@@ -161,20 +165,22 @@ REPT_NUMBER_Y SET REPT_NUMBER_Y + 1
 ENDR
 ENDM
 
+; Arg: 1 = # sprites horizontal
+; Arg: 2 = # sprites vertical
 MACRO UPDATE_OAM_POSITION_ENEMY
-    ; argument 1 is # sprites horizontal
-    ; argument 2 is # sprites vertical
     UPDATE_OAM_POSITION_HRAM \1, \2, [hEnemyX], [hEnemyY], 0
 ENDM
 
+; Arg: 1 = # sprites horizontal
+; Arg: 2 = # sprites vertical
+; Arg: 3 = Y offset
 MACRO UPDATE_OAM_POSITION_ENEMY_WITH_OFFSET
-    ; argument 1 is # sprites horizontal
-    ; argument 2 is # sprites vertical
-    ; argument 3 is y offset
     UPDATE_OAM_POSITION_HRAM \1, \2, [hEnemyX], [hEnemyY], \3
 ENDM
 
-; LEVEL MACROS ****
+; *************************************************************
+; LEVEL MACROS
+; *************************************************************
 
 ; Level Instructions
 LEVEL_SPAWN_BOTTOM_KEY EQU 0
@@ -190,210 +196,211 @@ LEVEL_POINTS_FOR_LIVES_KEY EQU 9
 LEVEL_END_KEY EQU 10
 GAME_WON_KEY EQU 11
 
+; Arg: 1 = Enemy number
+; Arg: 2 = Variant
+; Arg: 3 = X
 MACRO LVL__SPAWN_BOTTOM
-    ; \1 = Enemy Number
-    ; \2 = Variant
-    ; \3 = X
     DB LEVEL_SPAWN_BOTTOM_KEY, \3, (\1 << 4) | \2
 ENDM
 
+; Arg: 1 = Enemy number
+; Arg: 2 = Variant
+; Arg: 3 = Y
 MACRO LVL__SPAWN_RIGHT
-    ; \1 = Enemy Number
-    ; \2 = Variant
-    ; \3 = Y
     DB LEVEL_SPAWN_RIGHT_KEY, \3, (\1 << 4) | \2
 ENDM
 
+; Arg: 1 = Enemy number
+; Arg: 2 = Variant
+; Arg: 3 = Y
 MACRO LVL__SPAWN_LEFT
-    ; \1 = Enemy Number
-    ; \2 = Variant
-    ; \3 = Y
     DB LEVEL_SPAWN_LEFT_KEY, \3, (\1 << 4) | \2
 ENDM
 
+; Arg: 1 = Enemy number
+; Arg: 2 = Variant
+; Arg: 3 = X
 MACRO LVL__SPAWN_TOP
-    ; \1 = Enemy Number
-    ; \2 = Variant
-    ; \3 = X
     DB LEVEL_SPAWN_TOP_KEY, \3, (\1 << 4) | \2
 ENDM
 
-; Y2 and X2 must be larger than Y1 and X1 respectively
+; Arg: 1 = Enemy number
+; Arg: 2 = Variant
+; Arg: 3 = Y1
+; Arg: 4 = X1
+; Arg: 5 = Y2 (Must be > Y1)
+; Arg: 6 = X2 (Must be > X1)
 MACRO LVL__SPAWN_RANDOM
-    ; \1 = Enemy
-    ; \2 = Variant
-    ; \3 = Y1
-    ; \4 = X1
-    ; \5 = Y2
-    ; \6 = X2
     DB LEVEL_SPAWN_RANDOM_KEY, \3, \4, \5, \6, (\1 << 4) | \2
 ENDM
 
 ; Level Point Balloon
 
+; Arg: 1 = X
 MACRO LVL__POINT_BALLOON_EASY______________
-    ; \1 = X
     LVL__SPAWN_BOTTOM POINT_BALLOON, BALLOON_EASY_VARIANT, \1
 ENDM
 
+; Arg: 1 = X
 MACRO LVL__POINT_BALLOON_MEDIUM____________
-    ; \1 = X
     LVL__SPAWN_BOTTOM POINT_BALLOON, BALLOON_MEDIUM_VARIANT, \1
 ENDM
 
+; Arg: 1 = X
 MACRO LVL__POINT_BALLOON_HARD______________
-    ; \1 = X
     LVL__SPAWN_BOTTOM POINT_BALLOON, BALLOON_HARD_VARIANT, \1
 ENDM
 
 ; Level Balloon Carrier
 
+; Arg: 1 = Y
 MACRO LVL__BALLOON_CARRIER_NORMAL_LEFT_____
-    ; \1 = Y
     LVL__SPAWN_LEFT BALLOON_CARRIER, CARRIER_NORMAL_VARIANT, \1
 ENDM
 
+; Arg: 1 = Y
 MACRO LVL__BALLOON_CARRIER_NORMAL_RIGHT____
-    ; \1 = Y
     LVL__SPAWN_RIGHT BALLOON_CARRIER, CARRIER_NORMAL_VARIANT, \1
 ENDM
 
+; Arg: 1 = Y
 MACRO LVL__BALLOON_CARRIER_PROJECTILE_LEFT_
-    ; \1 = Y
     LVL__SPAWN_LEFT BALLOON_CARRIER, CARRIER_PROJECTILE_VARIANT, \1
 ENDM
 
+; Arg: 1 = Y
 MACRO LVL__BALLOON_CARRIER_PROJECTILE_RIGHT
-    ; \1 = Y
     LVL__SPAWN_RIGHT BALLOON_CARRIER, CARRIER_PROJECTILE_VARIANT, \1
 ENDM
 
+; Arg: 1 = Y
 MACRO LVL__BALLOON_CARRIER_FOLLOW_LEFT_____
-    ; \1 = Y
     LVL__SPAWN_LEFT BALLOON_CARRIER, CARRIER_FOLLOW_VARIANT, \1
 ENDM
 
+; Arg: 1 = Y
 MACRO LVL__BALLOON_CARRIER_FOLLOW_RIGHT____
-    ; \1 = Y
     LVL__SPAWN_RIGHT BALLOON_CARRIER, CARRIER_FOLLOW_VARIANT, \1
 ENDM
 
+; Arg: 1 = Y
 MACRO LVL__BALLOON_CARRIER_BOMB_LEFT_______
-    ; \1 = Y
     LVL__SPAWN_LEFT BALLOON_CARRIER, CARRIER_BOMB_VARIANT, \1
 ENDM
 
+; Arg: 1 = Y
 MACRO LVL__BALLOON_CARRIER_BOMB_RIGHT______
-    ; \1 = Y
     LVL__SPAWN_RIGHT BALLOON_CARRIER, CARRIER_BOMB_VARIANT, \1
 ENDM
 
 ; Level Bird
 
+; Arg: 1 = Y
 MACRO LVL__BIRD_EASY_LEFT__________________
-    ; \1 = Y
     LVL__SPAWN_LEFT BIRD, BIRD_EASY_VARIANT, \1
 ENDM
 
+; Arg: 1 = Y
 MACRO LVL__BIRD_EASY_RIGHT_________________
-    ; \1 = Y
     LVL__SPAWN_RIGHT BIRD, BIRD_EASY_VARIANT, \1
 ENDM
 
+; Arg: 1 = Y
 MACRO LVL__BIRD_HARD_LEFT__________________
-    ; \1 = Y
     LVL__SPAWN_LEFT BIRD, BIRD_HARD_VARIANT, \1
 ENDM
 
+; Arg: 1 = Y
 MACRO LVL__BIRD_HARD_RIGHT_________________
-    ; \1 = Y
     LVL__SPAWN_RIGHT BIRD, BIRD_HARD_VARIANT, \1
 ENDM
 
 ; Level Bomb
 
+; Arg: 1 = X
 MACRO LVL__BOMB_DIRECT_____________________
-    ; \1 = X
     LVL__SPAWN_BOTTOM BOMB, BOMB_DIRECT_VARIANT, \1
 ENDM
 
+; Arg: 1 = X
 MACRO LVL__BOMB_FOLLOW_____________________
-    ; \1 = X
     LVL__SPAWN_BOTTOM BOMB, BOMB_FOLLOW_VARIANT, \1
 ENDM
 
 ; Level Anvil
 
+; Arg: 1 = X
 MACRO LVL__ANVIL_NORMAL____________________
-    ; \1 = X
     LVL__SPAWN_TOP ANVIL, ANVIL_NORMAL_VARIANT, \1
 ENDM
 
+; Arg: 1 = X
 MACRO LVL__ANVIL_CACTUS____________________
-    ; \1 = X
     LVL__SPAWN_TOP ANVIL, ANVIL_CACTUS_VARIANT, \1
 ENDM
 
+; Arg: 1 = X
 MACRO LVL__ANVIL_WARNING___________________
-    ; \1 = X
     LVL__SPAWN_TOP ANVIL, ANVIL_WARNING_VARIANT, \1
 ENDM
 
 ; Level Explosion
 
-; MACRO LVL__EXPLOSION_BOMB__________________
-;     ; \1 = Y
-;     ; \2 = X
-;     LVL__SPAWN EXPLOSION, EXPLOSION_BOMB_VARIANT, \1, \2
-; ENDM
+; Arg: 1 = Y
+; Arg: 2 = X
+MACRO LVL__EXPLOSION_BOMB__________________
+    LVL__SPAWN EXPLOSION, EXPLOSION_BOMB_VARIANT, \1, \2
+ENDM
 
-; MACRO LVL__EXPLOSION_CONGRATULATIONS_______
-;     ; \1 = Y
-;     ; \2 = X
-;     LVL__SPAWN EXPLOSION, EXPLOSION_CONGRATULATIONS_VARIANT, \1, \2
-; ENDM
+; Arg: 1 = Y
+; Arg: 2 = X
+MACRO LVL__EXPLOSION_CONGRATULATIONS_______
+    LVL__SPAWN EXPLOSION, EXPLOSION_CONGRATULATIONS_VARIANT, \1, \2
+ENDM
 
 ; Level Other
 
+; Arg: 1 = Amount of iterations to wait
 MACRO LVL__WAIT
-    ; \1 = Amount of iterations to wait
     DB LEVEL_WAIT_KEY, \1
 ENDM
 
+; Waits until boss is defeated
 MACRO LVL__WAIT_BOSS
-    ; Wait until boss is defeated
     DB LEVEL_WAIT_BOSS_KEY
 ENDM
 
 ; Iteration will break if you set address as anywhere other than earlier on in the level data
 ; Iteration will break if you use nested LVL__REPT
+; Arg: 1 = Iterate this many times
+; Arg: 2 = Jump to this address
 MACRO LVL__REPT
-    ; \1 = Iterate this many times
-    ; \2 = Jump to this address
     DB LEVEL_REPEAT_KEY, \1, LOW(\2), HIGH(\2)
 ENDM
 
+; Change level song to victory song
 MACRO LVL__VICTORY_SONG
-    ; Change level song to victory song
     DB LEVEL_VICTORY_SONG_KEY
 ENDM
 
+; Grant some points for remaining player lives
 MACRO LVL__POINTS_FOR_LIVES
-    ; Grant some points for remaining player lives
     DB LEVEL_POINTS_FOR_LIVES_KEY
 ENDM
 
+; Stop reading
 MACRO LVL__END
-    ; Stop reading
     DB LEVEL_END_KEY
 ENDM
 
+; Jump to end cutscene
 MACRO LVL__GAME_WON
-    ; Jump to end cutscene
     DB GAME_WON_KEY
 ENDM
 
-; CUTSCENE MACROS ****
+; *************************************************************
+; CUTSCENE MACROS
+; *************************************************************
 
 ; Sequence Instructions
 SEQUENCE_WAIT_KEY EQU 0 
@@ -407,8 +414,8 @@ SEQUENCE_INCREASE_PHASE_KEY EQU 7
 SEQUENCE_PLAY_SONG_KEY EQU 8
 SEQUENCE_END_KEY EQU 9
 
+; Arg: 1 = Amount of iterations to wait
 MACRO SEQUENCE_WAIT
-    ; \1 = Amount of iterations to wait
     DB SEQUENCE_WAIT_KEY, \1
 ENDM
 
@@ -428,8 +435,8 @@ MACRO SEQUENCE_SHOW_PALETTE_2
     DB SEQUENCE_SHOW_PALETTE_2_KEY
 ENDM
 
+; Arg: 1 = Jump to address
 MACRO SEQUENCE_END
-    ; \1 = Jump to address
     DB SEQUENCE_END_KEY, HIGH(\1), LOW(\1)
 ENDM
 
@@ -449,7 +456,9 @@ MACRO SEQUENCE_PLAY_SONG
     DB SEQUENCE_PLAY_SONG_KEY
 ENDM
 
-; TIMER MACROS ****
+; *************************************************************
+; TIMER MACROS
+; *************************************************************
 
 MACRO UPDATE_GLOBAL_TIMER
     ldh a, [hGlobalTimer]

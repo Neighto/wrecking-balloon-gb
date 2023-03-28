@@ -216,7 +216,9 @@ LoadEndlessGraphics::
     ld d, WHITE_BKG_TILE
     jp SetInRange
 
+; *************************************************************
 ; UPDATE
+; *************************************************************
 EndlessUpdate::
 
 .checkCountdown:

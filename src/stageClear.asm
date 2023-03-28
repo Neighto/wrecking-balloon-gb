@@ -27,7 +27,6 @@ METER_INITIAL_OFFSET EQU 24 ; Sometimes not 0 so points needed is a nicer number
 STAGE_CLEAR_MOVE_POINTS EQU 10
 EXTRA_LIFE_ADDRESS EQU $9948
 
-
 STAGE_NUMBER_SPRITES EQU 1
 STAGE_NUMBER_ADDRESS EQU _VRAM8000 + STAGE_CLEAR_NUMBER_TILE * TILE_BYTES
 NUMBERS_TILE_ADDRESS EQU _VRAM8000 + NUMBERS_TILE_OFFSET * TILE_BYTES
@@ -76,7 +75,7 @@ StageClearSequenceData:
     SEQUENCE_END SetupNextLevel
 
 LoadStageClearGraphics::
-.loadTiles:
+	; TILES
 	; Scoreboard tiles
 	ld bc, ScoreboardsTiles
 	ld hl, _VRAM9000
@@ -93,7 +92,7 @@ LoadStageClearGraphics::
 	ld hl, STAGE_NUMBER_ADDRESS ; Destination
 	ld de, TILE_BYTES ; 1
 	call MEMCPY
-.drawMap:
+	; TILEMAP
 	; Fill light grey
 	ld hl, _SCRN0
 	ld bc, SCRN0_SIZE
@@ -259,11 +258,15 @@ FillMeter:
 	; Pop balloon
 	jp SetEnemyHitForEnemy1
 
+; *************************************************************
 ; UPDATE
+; *************************************************************
 UpdateStageClear::
+
+	; Timer
     UPDATE_GLOBAL_TIMER
 
-.checkPhase:
+	; Check phase
     ldh a, [hSequencePhase]
 ; PHASE 0
 .phase0:
@@ -281,7 +284,7 @@ UpdateStageClear::
 	jp nz, .endCheckPhase
 	call IsScoreZero
     jr nz, .copyingScoreToTotal
-.doneCopyingScoreToTotal::
+	; Done copying score to total
 	ld a, 1
 	ldh [hSequenceWaitUntilCheck], a
 	jp .endCheckPhase
@@ -377,6 +380,8 @@ UpdateStageClear::
 	; jr .endCheckPhase
 .endCheckPhase:
 
+	; Handle common
     call RefreshStageClear
 	call EnemyUpdate
+	
     jp SequenceDataUpdate

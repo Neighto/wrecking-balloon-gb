@@ -82,93 +82,68 @@ SetWaveRAMToSquareWave::
 ; *************************************************************
 
 FastBulletSound::
-  ; Sweep register
   ld a, %01011100
-  ldh [rNR10], a
-  ; Sound length / wave pattern duty
+  ldh [rNR10], a ; Sweep register
   ld a, %01000000
-  ldh [rNR11], a
-  ; Volume envelope
+  ldh [rNR11], a ; Sound length / wave pattern duty
   ld a, %11110010
-  ldh [rNR12], a
-  ; Frequency lo
+  ldh [rNR12], a ; Volume envelope
   ld a, %11101111
-  ldh [rNR13], a
-  ; Frequency hi
+  ldh [rNR13], a ; Frequency lo
   ld a, %11000101
-  ldh [rNR14], a
+  ldh [rNR14], a ; Frequency hi
   ret
 
 OwVoiceSound::
-  ; Sweep register
   ld a, %00011101
-  ldh [rNR10], a
-  ; Sound length / wave pattern duty
+  ldh [rNR10], a ; Sweep register
   ld a, %00000000
-  ldh [rNR11], a
-  ; Volume envelope
+  ldh [rNR11], a ; Sound length / wave pattern duty
   ld a, %11110110
-  ldh [rNR12], a
-  ; Frequency lo
+  ldh [rNR12], a ; Volume envelope
   ld a, %00111111
-  ldh [rNR13], a
-  ; Frequency hi
+  ldh [rNR13], a ; Frequency lo
   ld a, %11000101
-  ldh [rNR14], a
+  ldh [rNR14], a ; Frequency hi
   ret
 
 HelpVoiceSound::
-  ; Sweep register
   ld a, %00010101
-  ldh [rNR10], a
-  ; Sound length / wave pattern duty
+  ldh [rNR10], a ; Sweep register
   ld a, %00000000
-  ldh [rNR11], a
-  ; Volume envelope
+  ldh [rNR11], a ; Sound length / wave pattern duty
   ld a, %11110010
-  ldh [rNR12], a
-  ; Frequency lo
+  ldh [rNR12], a ; Volume envelope
   ld a, %11111111
-  ldh [rNR13], a
-  ; Frequency hi
+  ldh [rNR13], a ; Frequency lo
   ld a, %11000001
-  ldh [rNR14], a
+  ldh [rNR14], a ; Frequency hi
   ret
 
 LifeUpSound::
-  ; Sweep register
   ld a, %00010101
-  ldh [rNR10], a
-  ; Sound length / wave pattern duty
+  ldh [rNR10], a ; Sweep register
   ld a, %10000000
-  ldh [rNR11], a
-  ; Volume envelope
+  ldh [rNR11], a ; Sound length / wave pattern duty
   ld a, %11110010
-  ldh [rNR12], a
-  ; Frequency lo
+  ldh [rNR12], a ; Volume envelope
   ld a, %00111111
-  ldh [rNR13], a
-  ; Frequency hi
+  ldh [rNR13], a ; Frequency lo
   ld a, %11000101
-  ldh [rNR14], a
+  ldh [rNR14], a ; Frequency hi
   ret
 
 FallingSound::
-  ; Sweep register
   ld a, %01111111
-  ldh [rNR10], a
-  ; Sound length / wave pattern duty
+  ldh [rNR10], a ; Sweep register
   ld a, %11000000
-  ldh [rNR11], a
-  ; Volume envelope
+  ldh [rNR11], a ; Sound length / wave pattern duty
   ld a, %11111000
-  ldh [rNR12], a
-  ; Frequency lo
+  ldh [rNR12], a ; Volume envelope
   ld a,%11111111
-  ldh [rNR13], a
-  ; Frequency hi
+  ldh [rNR13], a ; Frequency lo
   ld a,%10000101
-  ldh [rNR14], a
+  ldh [rNR14], a ; Frequency hi
   ret
 
 StopSweepSound::
@@ -181,51 +156,39 @@ StopSweepSound::
 ; *************************************************************
 
 PopSound::
-  ; Volume envelope
   ld a, %11110001
-  ldh [rNR42], a
-  ; Polynomial counter
+  ldh [rNR42], a ; Volume envelope
   ld a, %01101100
-  ldh [rNR43], a
-  ; Counter/consecutive initial
+  ldh [rNR43], a ; Polynomial counter
   ld a, %10000000
-  ldh [rNR44], a
+  ldh [rNR44], a ; Counter/consecutive initial
   ret
 
 HitSound::
-  ; Volume envelope
   ld a, 101110001
-  ldh [rNR42], a
-  ; Polynomial counter
+  ldh [rNR42], a ; Volume envelope
   ld a, %01000100
-  ldh [rNR43], a
-  ; Counter/consecutive initial
+  ldh [rNR43], a ; Polynomial counter
   ld a, %10000000
-  ldh [rNR44], a
+  ldh [rNR44], a ; Counter/consecutive initial
   ret
 
 ExplosionSound::
-  ; Volume envelope
   ld a, %11110110
-  ldh [rNR42], a
-  ; Polynomial counter
+  ldh [rNR42], a ; Volume envelope
   ld a, %01111100
-  ldh [rNR43], a
-  ; Counter/consecutive initial
+  ldh [rNR43], a ; Polynomial counter
   ld a, %10000000
-  ldh [rNR44], a
+  ldh [rNR44], a ; Counter/consecutive initial
   ret
 
 FireworkSound::
-  ; Volume envelope
   ld a, %10110110
-  ldh [rNR42], a
-  ; Polynomial counter
+  ldh [rNR42], a ; Volume envelope
   ld a, %01110001
-  ldh [rNR43], a
-  ; Counter/consecutive initial
+  ldh [rNR43], a ; Polynomial counter
   ld a, %10000000
-  ldh [rNR44], a
+  ldh [rNR44], a ; Counter/consecutive initial
   ret
 
 ProjectileSound::
@@ -244,57 +207,43 @@ ProjectileSound::
   ret
 
 BulletSound::
-  ; Sound length
   ld a, %00000111
-  ldh [rNR41], a
-  ; Volume envelope
+  ldh [rNR41], a ; Sound length
   ld a, %10100001
-  ldh [rNR42], a
-  ; Polynomial counter
+  ldh [rNR42], a ; Volume envelope
   ld a, %01000010
-  ldh [rNR43], a
-  ; Counter/consecutive initial
+  ldh [rNR43], a ; Polynomial counter
   ld a, %11000000
-  ldh [rNR44], a
+  ldh [rNR44], a ; Counter/consecutive initial
   ret
 
 BossNeedleSound::
-  ; Sound length
   ld a, %000001111
-  ldh [rNR41], a
-  ; Volume envelope
+  ldh [rNR41], a ; Sound length
   ld a, %10100001
-  ldh [rNR42], a
-  ; Polynomial counter
+  ldh [rNR42], a ; Volume envelope
   ld a, %01010011
-  ldh [rNR43], a
-  ; Counter/consecutive initial
+  ldh [rNR43], a ; Polynomial counter
   ld a, %11000000
-  ldh [rNR44], a
+  ldh [rNR44], a ; Counter/consecutive initial
   ret
 
 BoostSound::
-  ; Volume envelope
   ld a, %10000011
-  ldh [rNR42], a
-  ; Polynomial counter
+  ldh [rNR42], a ; Volume envelope
   ld a, %01010000
-  ldh [rNR43], a
-  ; Counter/consecutive initial
+  ldh [rNR43], a ; Polynomial counter
   ld a, %10000000
-  ldh [rNR44], a
+  ldh [rNR44], a ; Counter/consecutive initial
   ret
 
 CountdownSound::
-  ; Volume envelope
   ld a, %10000001
-  ldh [rNR42], a
-  ; Polynomial counter
+  ldh [rNR42], a ; Volume envelope
   ld a, %00111111
-  ldh [rNR43], a
-  ; Counter/consecutive initial
+  ldh [rNR43], a ; Polynomial counter
   ld a, %10000000
-  ldh [rNR44], a
+  ldh [rNR44], a ; Counter/consecutive initial
   ret
 
 ; *************************************************************
@@ -302,33 +251,25 @@ CountdownSound::
 ; *************************************************************
 
 TitleSplashSound::
-  ; Volume envelope
   ld a, %10110111
-  ldh [rNR42], a
-  ; Polynomial counter
+  ldh [rNR42], a ; Volume envelope
   ld a, %01110000
-  ldh [rNR43], a
-  ; Counter/consecutive initial
+  ldh [rNR43], a ; Polynomial counter
   ld a, %10000000
-  ldh [rNR44], a
+  ldh [rNR44], a ; Counter/consecutive initial
   ret
 
 RisingSound::
-  ; Sweep register
   ld a, %01110111
-  ldh [rNR10], a
-  ; Sound length / wave pattern duty
+  ldh [rNR10], a ; Sweep register
   ld a, %11000000
-  ldh [rNR11], a
-  ; Volume envelope
+  ldh [rNR11], a ; Sound length / wave pattern duty
   ld a, %11111000
-  ldh [rNR12], a
-  ; Frequency lo
+  ldh [rNR12], a ; Volume envelope
   ld a,%10111111
-  ldh [rNR13], a
-  ; Frequency hi
+  ldh [rNR13], a ; Frequency lo
   ld a,%10000100
-  ldh [rNR14], a
+  ldh [rNR14], a ; Frequency hi
   ret
 
 ; *************************************************************
@@ -338,23 +279,18 @@ RisingSound::
 ; Arg: B = Frequency lower data
 ; Arg: C = Frequency higher data
 BassSoundCommon:
-  ; Sound on/off
   xor a
-  ldh [rNR30], a
+  ldh [rNR30], a ; Sound off
   cpl
-  ldh [rNR30], a
-  ; Sound length
+  ldh [rNR30], a ; Sound on
   ld a, %11110010
-  ldh [rNR31], a
-  ; Select output level
+  ldh [rNR31], a ; Sound length
   ld a, %00100000
-  ldh [rNR32], a
-  ; Frequency's lower data
+  ldh [rNR32], a ; Select output level
   ld a, b
-  ldh [rNR33], a
-  ; Frequency's higher data
+  ldh [rNR33], a ; Frequency lo
   ld a, c
-  ldh [rNR34], a
+  ldh [rNR34], a ; Frequency hi
   ret
 
 BassSoundA::

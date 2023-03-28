@@ -90,7 +90,7 @@ LoadEndingCutsceneGraphics::
     ld bc, ManForEndingMap + 2
 	ld hl, $9966
     ld d, 2
-    ld e, 2
+    ld e, d
     ld a, MAN_FOR_ENDING_OFFSET
     ld [wMemcpyTileOffset], a
 	jp MEMCPY_SINGLE_SCREEN_WITH_OFFSET
@@ -121,7 +121,12 @@ SpawnHandClap::
     ld [hl], a
 	ret
 
+; *************************************************************
+; UPDATEENDINGCUTSCENE
+; *************************************************************
 UpdateEndingCutscene::
+
+    ; Timer
     UPDATE_GLOBAL_TIMER
 
     ; Play song
@@ -129,24 +134,7 @@ UpdateEndingCutscene::
     cp a, 0
     call nz, _hUGE_dosound
 
-.checkSkip:
-	call ReadController
-	ldh a, [hControllerDown]
-    and PADF_START | PADF_A
-    jr z, .endSkip
-.skip:
-    xor a ; ld a, 0
-    ldh [hSequencePlaySong], a
-    call ClearSound
-    ld hl, hSequenceDataAddress
-    ld bc, SkipEndingSequence
-    ld a, LOW(bc)
-    ld [hli], a
-    ld a, HIGH(bc)
-    ld [hl], a
-.endSkip:
-
-.checkPhase:
+    ; Check phase
     ldh a, [hSequencePhase]
 .phase0:
     cp a, 0
@@ -181,10 +169,26 @@ UpdateEndingCutscene::
     ; cp a, 4
     ; jr nz, .endCheckPhase
     call BobPlayer
+    ; Check skip
+	call ReadController
+	ldh a, [hControllerDown]
+    and PADF_START | PADF_A
+    jr z, .endSkip
+    ; Skip
+    xor a ; ld a, 0
+    ldh [hSequencePlaySong], a
+    call ClearSound
+    ld hl, hSequenceDataAddress
+    ld bc, SkipEndingSequence
+    ld a, LOW(bc)
+    ld [hli], a
+    ld a, HIGH(bc)
+    ld [hl], a
+.endSkip:
     ; jr .endCheckPhase
 .endCheckPhase:
 
-.checkAnimateHands:
+    ; Check animate hands
     ldh a, [hGlobalTimer]
     and HAND_CLAP_SPEED
     jr nz, .endCheckAnimateHands
