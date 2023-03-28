@@ -55,7 +55,7 @@ EndingCutsceneSequenceData:
 SkipEndingSequence:
     SEQUENCE_FADE_OUT_PALETTE
     SEQUENCE_WAIT 5
-    SEQUENCE_END Start
+    SEQUENCE_END Restart
 
 LoadEndingCutsceneGraphics::
     ; TILES
