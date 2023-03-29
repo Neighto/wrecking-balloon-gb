@@ -129,6 +129,8 @@ UpdateEndingCutscene::
     ; Timer
     UPDATE_GLOBAL_TIMER
 
+    ; call IncrementScrollOffset
+
     ; Play song
     ldh a, [hSequencePlaySong]
     cp a, 0

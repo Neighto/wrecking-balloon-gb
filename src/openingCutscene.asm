@@ -36,7 +36,7 @@ OpeningCutsceneSequenceData:
     SEQUENCE_WAIT 5
     SEQUENCE_PLAY_SONG
     SEQUENCE_FADE_IN_PALETTE
-    SEQUENCE_WAIT 90
+    SEQUENCE_WAIT 95
     SEQUENCE_INCREASE_PHASE ; Hand up
     SEQUENCE_INCREASE_PHASE ; Wave and fly away
     SEQUENCE_WAIT 120
@@ -148,7 +148,7 @@ UpdateOpeningCutscene::
     ; Timer
     UPDATE_GLOBAL_TIMER
 
-    call IncrementScrollOffset
+    ; call IncrementScrollOffset
 
     ; Play song
     ldh a, [hSequencePlaySong]
