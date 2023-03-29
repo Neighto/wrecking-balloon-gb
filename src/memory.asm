@@ -208,25 +208,19 @@ RequestOAMSpace::
     ld d, OAMVarsEnd - OAMVars
 .loop:
     ; Check sprite attribute: Y
-    ld a, [hl]
-    cp a, 0
-    jr nz, .isNotZero4
-    ; Check sprite attribute: X
-    inc l
-    ld a, [hl]
+    ld a, [hli]
     cp a, 0
     jr nz, .isNotZero3
-    ; Check sprite attribute: Tile
-    inc l
-    ld a, [hl]
+    ; Check sprite attribute: X
+    ld a, [hli]
     cp a, 0
     jr nz, .isNotZero2
-    ; No longer check Flag, its usually 0 even when active
-    ; Check sprite attribute: Flag
-    inc l
-    ; ld a, [hl]
-    ; cp a, 0
-    ; jr nz, .isNotZero1
+    ; Check sprite attribute: Tile
+    ld a, [hli]
+    cp a, 0
+    jr nz, .isNotZero1
+    ; X Check sprite attribute: Flag X
+    ; No longer check Flag *, its usually 0 even when active
 .freeSpriteSpace:
     inc c
     ld a, b
@@ -245,8 +239,6 @@ RequestOAMSpace::
     ; Set the nz
     or a, 1
     ret
-.isNotZero4:
-    inc l
 .isNotZero3:
     inc l
 .isNotZero2:
