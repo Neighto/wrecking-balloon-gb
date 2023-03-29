@@ -777,9 +777,6 @@
 00:3efb SetEnemyStructWithHL
 00:3f17 InitializeController
 00:3f21 ReadController
-00:3f21 ReadController.dPad
-00:3f2f ReadController.buttons
-00:3f3c ReadController.setControllerVars
 00:3f46 CollisionCheck
 00:3f46 CollisionCheck.checkY
 00:3f51 CollisionCheck.tryColliderY

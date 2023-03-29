@@ -801,9 +801,6 @@ ROM0 bank #0:
   SECTION: $3f17-$3f45 ($002f bytes) ["controller"]
            $3f17 = InitializeController
            $3f21 = ReadController
-           $3f21 = ReadController.dPad
-           $3f2f = ReadController.buttons
-           $3f3c = ReadController.setControllerVars
   SECTION: $3f46-$3f70 ($002b bytes) ["collision"]
            $3f46 = CollisionCheck
            $3f46 = CollisionCheck.checkY

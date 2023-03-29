@@ -6,12 +6,12 @@ COLLISION_UPDATE_TIME EQU %00000011
 
 SECTION "collision", ROM0
 
+; Arg: BC = Colliding target (16x16 pixels)
+; Arg: HL = Collider
+; Arg: D = X size check (ex: 8 for 8 pixels long collider)
+; Arg: E = Y size check (ex: 16 for 16 pixels high collider)
+; Ret: Z/NZ = No collision / collision respectively
 CollisionCheck::
-    ; bc = argument for colliding target (16x16 pixels)
-    ; hl = argument for collider
-    ; d = argument for X size check (ex: 8 for 8 pixels long collider)
-    ; e = argument for Y size check (ex: 16 for 16 pixels high collider)
-    ; returns z flag as no collision / nz flag as collision
 
 .checkY:
     ld a, [bc]
@@ -58,8 +58,7 @@ CollisionCheck::
     ; Target x < collider x'
 
 .collision:
-    xor a ; ld a, 0 
-    inc a ; Success
+    or a, 1 ; Success
     ret
 .noCollision:
     xor a ; ld a, 0 ; Fail

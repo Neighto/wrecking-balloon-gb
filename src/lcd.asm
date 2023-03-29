@@ -79,10 +79,10 @@ ToggleWindow::
 	bit 5, [hl]
 	jr z, .winon
 .winoff::
-	ld hl, rLCDC
+	ld hl, rLCDC ; Must be set for .winoff to be called on its own
 	res 5, [hl]
 	ret
 .winon::
-	ld hl, rLCDC
+	ld hl, rLCDC ; Must be set for .winon to be called on its own
 	set 5, [hl]
     ret
