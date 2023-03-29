@@ -9,7 +9,7 @@ ENDLESS_TIMER_RESET_TIME_EASY EQU 200
 ENDLESS_TIMER_RESET_TIME_MEDIUM EQU 150
 ENDLESS_TIMER_RESET_TIME_HARD EQU 100
 ENDLESS_PREPARE_VERTICAL_SPAWN_TIME EQU 50 ; Must be < ENDLESS_TIMER_RESET_TIME_<DIFFICULTY>
-ENDLESS_PREPARE_HORIZONTAL_SPAWN_TIME EQU 55 ; Must be < ENDLESS_TIMER_RESET_TIME_<DIFFICULTY>
+ENDLESS_PREPARE_HORIZONTAL_SPAWN_TIME EQU 60 ; Must be < ENDLESS_TIMER_RESET_TIME_<DIFFICULTY>
 ENDLESS_VERTICAL_SPAWN_TIME EQU 90 ; Must be < ENDLESS_TIMER_RESET_TIME_<DIFFICULTY>
 ENDLESS_HORIZONTAL_SPAWN_TIME EQU 95 ; Must be < ENDLESS_TIMER_RESET_TIME_<DIFFICULTY>
 
@@ -106,6 +106,9 @@ hEndlessLevelOrder:: DS ENDLESS_LEVEL_SWITCH_TOTAL
 
 SECTION "endless", ROM0
 
+; *************************************************************
+; INITIALIZE
+; *************************************************************
 InitializeEndless::
 	xor a ; ld a, 0
     ldh [hEndlessTimer], a
@@ -135,7 +138,7 @@ InitializeEndless::
     ld a, ENDLESS_TIMER_RESET_TIME_EASY
     ldh [hEndlessResetTime], a
 
-    ; Reset the array
+    ; Reset the random level order for endless array
     ld hl, hEndlessLevelOrder
     ld bc, ENDLESS_LEVEL_SWITCH_TOTAL
     ld d, NOT_LEVEL
@@ -176,12 +179,13 @@ InitializeEndless::
     inc a
     ld d, a
     jr .findSpaceFreeLoop
-
-.updateLevelOrder:
     ; Update level order
     ld [hli], a
     jr .setLevelOrderLoop
 
+; *************************************************************
+; GRAPHICS
+; *************************************************************
 LoadEndlessGraphics::
     ; Add Road
     ld hl, $9920
@@ -221,7 +225,10 @@ LoadEndlessGraphics::
 ; *************************************************************
 EndlessUpdate::
 
-.checkCountdown:
+    ;
+    ; Check countdown
+    ; Countdown and call to load new level
+    ;
     ; Run countdown if not ended
     call Countdown
     jr nz, .endCheckCountdown
@@ -231,7 +238,7 @@ EndlessUpdate::
     jr nz, .endCheckCountdown
     call IsCountdownAtBalloonPop
     jr nz, .endCheckCountdown
-.levelSwitch:
+    ; LEVEL SWITCH
     ; Update reset time (difficulty)
     ldh a, [hEndlessResetTime]
 .easyResetTime:
@@ -260,16 +267,16 @@ EndlessUpdate::
     ; Find current level
     ld hl, hEndlessLevelOrder
     ldh a, [hLevel]
+    ld c, a
     ld b, 0
 .findCurrentLevelLoop:
-    cp a, [hl]
+    ld a, [hli]
+    cp a, c
     jr z, .getNextLevel
-    inc hl
     inc b
     jr .findCurrentLevelLoop
     ; Get next level
 .getNextLevel:
-    inc hl 
     ld a, b 
     cp a, ENDLESS_LEVEL_SWITCH_TOTAL - 1
     ld a, [hl]
@@ -286,7 +293,10 @@ EndlessUpdate::
     jp SetupNextLevelEndless
 .endCheckCountdown:
 
-.checkEndlessLevel:
+    ;
+    ; Check endless level
+    ; Assess if enough time has passed and we can stop enemies spawning and begin countdown
+    ;
     ld hl, hEndlessLevelSwitchTimer
     ; Delay increasing level switch timer
     ldh a, [hGlobalTimer]
@@ -320,7 +330,10 @@ EndlessUpdate::
     ret nc
 .endCheckEndlessLevel:
 
-.checkEndlessTimer:
+    ;
+    ; Check endless timer
+    ; Timer for enemy spawnings
+    ;
     ldh a, [hEndlessResetTime]
     ld b, a
     ldh a, [hEndlessTimer]
@@ -332,16 +345,16 @@ EndlessUpdate::
     ldh [hEndlessTimer], a
 .endCheckEndlessTimer:
 
-; VERTICAL ****
-.handleVertical:
+    ;
+    ; HANDLE VERTICAL
+    ;
 
-; 1 - PREPARE TO SPAWN
-.prepareVerticalSpawn:
+    ; 1 - PREPARE TO SPAWN
     ldh a, [hEndlessTimer]
     cp a, ENDLESS_PREPARE_VERTICAL_SPAWN_TIME
     jp nz, .endPrepareVerticalSpawn
-
-    ld b, ENDLESS_VERTICAL_LANES + 1 ; for looping
+    ; Determine which lane is free to spawn at if any
+    ld b, ENDLESS_VERTICAL_LANES + 1 ; For looping
     RANDOM ENDLESS_VERTICAL_LANES ; a = 0-3
 .verticalLaneLoop:
     inc a
@@ -393,16 +406,19 @@ EndlessUpdate::
     ld a, ENDLESS_VERTICAL_COOLDOWN
     ldh [hEndlessVertical_D_Cooldown], a
     jr .canPrepareVerticalSpawn
+    ; No available vertical lanes
 .cannotPrepareVerticalSpawn:
     ld a, -1
     ldh [hEndlessVerticalLane], a
     jr .endPrepareVerticalSpawn
+    ; We have a vertical lane available
 .canPrepareVerticalSpawn:
     ld a, c
     ldh [hEndlessVerticalLane], a
-.chooseVerticalEnemy:
+
+    ; Choose vertical enemy to prepare randomly
     RANDOM ENDLESS_VERTICAL_SPAWN_DENOMINATOR
-; POINT BALLOON
+    ; -- POINT BALLOON
 .pointBalloon:
     cp a, ENDLESS_VERTICAL_SPAWN_POINT_BALLOON_RATE
     jr nc, .bomb
@@ -429,7 +445,7 @@ EndlessUpdate::
     ldh [hEndlessVerticalEnemyVariant], a
 .endPointBalloonVariant:
     jr .endChooseVerticalEnemy
-; BOMB
+    ; -- BOMB
 .bomb:
     cp a, ENDLESS_VERTICAL_SPAWN_POINT_BALLOON_RATE + ENDLESS_VERTICAL_SPAWN_BOMB_RATE
     jr nc, .anvil
@@ -451,7 +467,7 @@ EndlessUpdate::
     ldh [hEndlessVerticalEnemyVariant], a
 .endBombVariant:
     jr .endChooseVerticalEnemy
-; ANVIL
+    ; -- ANVIL
 .anvil:
     ; cp a, ENDLESS_VERTICAL_SPAWN_POINT_BALLOON_RATE + ENDLESS_VERTICAL_SPAWN_BOMB_RATE + ENDLESS_VERTICAL_SPAWN_ANVIL_RATE
     ; jr nc, .endChooseVerticalEnemy
@@ -463,47 +479,46 @@ EndlessUpdate::
 .endChooseVerticalEnemy:
 .endPrepareVerticalSpawn:
 
-; 2 - COOLDOWN LANES
-.cooldownVerticalLanes:
+    ; 2 - COOLDOWN LANES
     ldh a, [hGlobalTimer]
     and ENDLESS_VERTICAL_COOLDOWN_TIMER
     jr nz, .endCooldownVerticalLanes
+    ld b, 0
 .verticalACooldown:
     ldh a, [hEndlessVertical_A_Cooldown]
-    cp a, 0
+    cp a, b
     jr z, .verticalBCooldown
     dec a
     ldh [hEndlessVertical_A_Cooldown], a
 .verticalBCooldown:
     ldh a, [hEndlessVertical_B_Cooldown]
-    cp a, 0
+    cp a, b
     jr z, .verticalCCooldown
     dec a
     ldh [hEndlessVertical_B_Cooldown], a
 .verticalCCooldown:
     ldh a, [hEndlessVertical_C_Cooldown]
-    cp a, 0
+    cp a, b
     jr z, .verticalDCooldown
     dec a
     ldh [hEndlessVertical_C_Cooldown], a
 .verticalDCooldown:
     ldh a, [hEndlessVertical_D_Cooldown]
-    cp a, 0
+    cp a, b
     jr z, .endCooldownVerticalLanes
     dec a
     ldh [hEndlessVertical_D_Cooldown], a
 .endCooldownVerticalLanes: 
 
-; 3 - TRY TO SPAWN
-.tryToVerticalSpawn:
+    ; 3 - TRY TO SPAWN
     ldh a, [hEndlessTimer]
     cp a, ENDLESS_VERTICAL_SPAWN_TIME
     jr nz, .endTryToVerticalSpawn
-
+    ; Is lane available
     ldh a, [hEndlessVerticalLane]
     cp a, -1
     jr z, .endTryToVerticalSpawn
-.canVerticalSpawn:
+    ; Can vertical spawn
     ; hEnemyX
     ld c, a
     RANDOM 35
@@ -542,18 +557,16 @@ EndlessUpdate::
     ; jr .endTryToVerticalSpawn
 .endTryToVerticalSpawn:
 
-.endHandleVertical:
+    ;
+    ; HANDLE HORIZONTAL
+    ;
 
-; HORIZONTAL ****
-.handleHorizontal:
-
-; 1 - PREPARE TO SPAWN
-.prepareHorizontalSpawn:
+    ; 1 - PREPARE TO SPAWN
     ldh a, [hEndlessTimer]
-    cp a, 60
+    cp a, ENDLESS_PREPARE_HORIZONTAL_SPAWN_TIME
     jp nz, .endPrepareHorizontalSpawn
-
-    ld b, ENDLESS_HORIZONTAL_LANES + 1 ; for looping
+    ; Determine which lane is free to spawn at if any
+    ld b, ENDLESS_HORIZONTAL_LANES + 1 ; For looping
     RANDOM ENDLESS_HORIZONTAL_LANES ; a = 0-3
 .horizontalLaneLoop:
     inc a
@@ -605,14 +618,17 @@ EndlessUpdate::
     ld a, ENDLESS_HORIZONTAL_COOLDOWN
     ldh [hEndlessHorizontal_D_Cooldown], a
     jr .canPrepareHorizontalSpawn
+    ; No available horizontal lanes
 .cannotPrepareHorizontalSpawn:
     ld a, -1
     ldh [hEndlessHorizontalLane], a
     jr .endPrepareHorizontalSpawn
+    ; We have a horizontal lane available
 .canPrepareHorizontalSpawn:
     ld a, c
     ldh [hEndlessHorizontalLane], a
-.chooseDirection:
+
+    ; Choose direction
     RANDOM 2
 .left:
     cp a, LEFT
@@ -626,10 +642,11 @@ EndlessUpdate::
     ; jr .directionSet
 .directionSet:
     ldh [hEndlessHorizontalEnemyDirection], a
-.endChooseDirection:
-.chooseHorizontalEnemy:
+; .endChooseDirection:
+
+    ; Choose horizontal enemy to prepare randomly
     RANDOM ENDLESS_HORIZONTAL_SPAWN_DENOMINATOR
-; BALLOON CARRIER
+    ; -- BALLOON CARRIER
 .balloonCarrier:
     cp a, ENDLESS_HORIZONTAL_SPAWN_BALLOON_CARRIER_RATE
     jr nc, .bird
@@ -661,7 +678,7 @@ EndlessUpdate::
     ldh [hEndlessHorizontalEnemyVariant], a
 .endBalloonCarrierVariant:
     jr .endChooseHorizontalEnemy
-; BIRD
+    ; -- BIRD
 .bird:
     ; cp a, ENDLESS_HORIZONTAL_SPAWN_BALLOON_CARRIER_RATE + ENDLESS_HORIZONTAL_SPAWN_BIRD_RATE
     ; jr nc, .endChooseHorizontalEnemy
@@ -686,47 +703,46 @@ EndlessUpdate::
 .endChooseHorizontalEnemy:
 .endPrepareHorizontalSpawn:
 
-; 2 - COOLDOWN LANES
-.cooldownHorizontalLanes:
+    ; 2 - COOLDOWN LANES
     ldh a, [hGlobalTimer]
     and ENDLESS_HORIZONTAL_COOLDOWN_TIMER
     jr nz, .endCooldownHorizontalLanes
+    ld b, 0
 .horizontalACooldown:
     ldh a, [hEndlessHorizontal_A_Cooldown]
-    cp a, 0
+    cp a, b
     jr z, .horizontalBCooldown
     dec a
     ldh [hEndlessHorizontal_A_Cooldown], a
 .horizontalBCooldown:
     ldh a, [hEndlessHorizontal_B_Cooldown]
-    cp a, 0
+    cp a, b
     jr z, .horizontalCCooldown
     dec a
     ldh [hEndlessHorizontal_B_Cooldown], a
 .horizontalCCooldown:
     ldh a, [hEndlessHorizontal_C_Cooldown]
-    cp a, 0
+    cp a, b
     jr z, .horizontalDCooldown
     dec a
     ldh [hEndlessHorizontal_C_Cooldown], a
 .horizontalDCooldown:
     ldh a, [hEndlessHorizontal_D_Cooldown]
-    cp a, 0
+    cp a, b
     jr z, .endCooldownHorizontalLanes
     dec a
     ldh [hEndlessHorizontal_D_Cooldown], a
 .endCooldownHorizontalLanes: 
 
-; 3 - TRY TO SPAWN
-.tryToHorizontalSpawn:
+    ; 3 - TRY TO SPAWN
     ldh a, [hEndlessTimer]
     cp a, ENDLESS_HORIZONTAL_SPAWN_TIME
     jr nz, .endTryToHorizontalSpawn
-
+    ; Is lane available
     ldh a, [hEndlessHorizontalLane]
     cp a, -1
     jr z, .endTryToHorizontalSpawn
-.canHorizontalSpawn:
+    ; Can horizontal spawn
     ; hEnemyY
     ld c, a
     RANDOM 23
@@ -756,6 +772,4 @@ EndlessUpdate::
     call SpawnBird
     ; jr .endTryToHorizontalSpawn
 .endTryToHorizontalSpawn:
-
-.endHandleHorizontal:
     ret

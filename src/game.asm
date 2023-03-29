@@ -336,20 +336,20 @@ Countdown::
     ld a, OAMF_XFLIP
     ld [hl], a
     ld b, COUNTDOWN_NEUTRAL_BALLOON_TILE
-    ld c, COUNTDOWN_NEUTRAL_BALLOON_TILE
+    ld c, b
     jr .updateFrame
 .frame4:
     cp a, COUNTDOWN_FRAME_4
     jr nz, .frame5
     call PopSound
     ld b, POP_BALLOON_FRAME_0_TILE
-    ld c, POP_BALLOON_FRAME_0_TILE
+    ld c, b
     jr .updateFrame
 .frame5:
     cp a, COUNTDOWN_FRAME_5
     jr nz, .frame6
     ld b, POP_BALLOON_FRAME_1_TILE
-    ld c, POP_BALLOON_FRAME_1_TILE
+    ld c, b
     jr .updateFrame
 .frame6:
     cp a, COUNTDOWN_FRAME_6
