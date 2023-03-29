@@ -127,5 +127,5 @@ BulletUpdate::
     ; jr .updateMove
 .updateMove:
     ldh [hPlayerBulletX], a
-    ld [wPlayerBulletOAM+1], a
+    ld [wPlayerBulletOAM + 1], a
     ret

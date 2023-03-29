@@ -18,7 +18,9 @@ InitializeController::
 	ret
 
 ReadController::
-.dPad:
+	;
+	; D-PAD
+	;
 	ld a, P1F_GET_DPAD
 	; Recommended to read multiple times
 	ldh [_IO], a
@@ -28,7 +30,9 @@ ReadController::
 	and LOW_HALF_BYTE_MASK
 	swap a
 	ld b, a ; DPad info stored in b low bits
-.buttons:
+	;
+	; BUTTONS
+	;
 	ld a, P1F_GET_BTN
 	; Recommended to read multiple times
 	ldh [_IO], a  
@@ -38,7 +42,9 @@ ReadController::
 	and LOW_HALF_BYTE_MASK
 	or b 
 	ld b, a ; Button info stored in b high bits
-.setControllerVars:
+	;
+	; Set controller vars
+	;
 	ldh a, [hControllerDown]
 	cpl
 	and b
