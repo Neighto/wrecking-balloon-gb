@@ -296,54 +296,10 @@ SetLevelNightCityInterrupts::
     jp SetInterruptsCommon
 
 ; *************************************************************
-; DESERT (Level 3)
+; DESERT (Level 3) (Level 4)
 ; *************************************************************
 
 LevelDesertLCDInterrupt::
-    ldh a, [rLYC]
-.far:
-    cp a, GAME_DESERT_LCD_SCROLL_FAR
-    jr nz, .middle
-    ld a, GAME_DESERT_LCD_SCROLL_MIDDLE
-    ldh [rLYC], a
-    ldh a, [hParallaxFar]
-	ldh [rSCX], a
-    jp LCDInterruptEnd
-.middle:
-    cp a, GAME_DESERT_LCD_SCROLL_MIDDLE
-    jr nz, .close
-    ld a, GAME_DESERT_LCD_SCROLL_CLOSE
-    ldh [rLYC], a
-    ldh a, [hParallaxMiddle]
-	ldh [rSCX], a
-    jp LCDInterruptEnd
-.close:
-    cp a, GAME_DESERT_LCD_SCROLL_CLOSE
-    jp nz, .bottom
-    ld a, INTERRUPT_WINDOW
-	ldh [rLYC], a
-    ldh a, [hParallaxClose]
-	ldh [rSCX], a
-    jp LCDInterruptEnd
-.bottom:
-    cp a, INTERRUPT_END_OF_SCREEN
-    jp nz, WindowLCDInterrupt
-    ld a, GAME_DESERT_LCD_SCROLL_FAR
-	ldh [rLYC], a
-    xor a ; ld a, 0
-    ldh [rSCY], a
-    jp LCDInterruptEnd
-
-SetLevelDesertInterrupts::
-    ld a, GAME_DESERT_LCD_SCROLL_FAR
-    ld bc, LevelDesertLCDInterrupt
-    jp SetInterruptsCommon
-
-; *************************************************************
-; NIGHT DESERT (Level 4)
-; *************************************************************
-
-LevelNightDesertLCDInterrupt::
     ldh a, [rLYC]
 .far:
     cp a, GAME_DESERT_LCD_SCROLL_FAR
@@ -374,15 +330,18 @@ LevelNightDesertLCDInterrupt::
     jp nz, WindowLCDInterrupt
     ld a, GAME_DESERT_LCD_SCROLL_FAR
 	ldh [rLYC], a
-    ld a, %11100111
-	ldh [rBGP], a
-    xor a
+    xor a ; ld a, 0
     ldh [rSCY], a
+    ldh a, [hLevel]
+    cp a, LEVEL_3
+    jp z, LCDInterruptEnd
+    ld a, %11100111 ; Night desert
+	ldh [rBGP], a ; Night desert
     jp LCDInterruptEnd
 
-SetLevelNightDesertInterrupts::
+SetLevelDesertInterrupts::
     ld a, GAME_DESERT_LCD_SCROLL_FAR
-    ld bc, LevelNightDesertLCDInterrupt
+    ld bc, LevelDesertLCDInterrupt
     jp SetInterruptsCommon
 
 ; *************************************************************
