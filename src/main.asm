@@ -49,9 +49,9 @@ Restart::
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 	; Comment out MenuLoopOpening to skip menu opening
 MenuLoopOpening:
-	; call WaitVBlank
-	; call UpdateMenuOpening
-	; jp MenuLoopOpening
+	call WaitVBlank
+	call UpdateMenuOpening
+	jp MenuLoopOpening
 StartMenu::
 	call WaitVBlank
 	call LCD_OFF
@@ -65,10 +65,10 @@ StartMenu::
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 	; Comment out MenuLoop to skip menu
 MenuLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateMenu
-	; jp MenuLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateMenu
+	jp MenuLoop
 
 ; *************************************************************
 ; STARTGAME
@@ -116,10 +116,10 @@ OpeningCutscene:
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	; call WaitVBlank
-	; call OAMDMA
-	; call UpdateOpeningCutscene
-	; jp OpeningCutsceneLoop
+	call WaitVBlank
+	call OAMDMA
+	call UpdateOpeningCutscene
+	jp OpeningCutsceneLoop
 
 ; *************************************************************
 ; SETUPNEXTLEVEL
@@ -138,7 +138,7 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; === testing ===
-	; ld a, 4
+	; ld a, 6
 	; ldh [hLevel], a
 	; ===============
 
