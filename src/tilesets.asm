@@ -57,7 +57,6 @@ MiscellaneousTiles::
     INCBIN "incbin/background/HotAirBalloon.2bpp"
     INCBIN "incbin/sprite/Sunglasses.2bpp"
     INCBIN "incbin/sprite/MenuSprite.2bpp"
-
 MiscellaneousTilesEnd::
 
 WindowTiles::
