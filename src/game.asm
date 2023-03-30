@@ -246,11 +246,11 @@ LoadLevelShowdownGraphics::
     ld bc, CloudsMap + CLOUDS_LIGHT_INV_OFFSET
 	call MEMCPY_PATTERN_CLOUDS
     ; Add scrolling mountains
-	ld bc, ShowdownWaterMap
+    ld bc, ShowdownMountainsMap
 	ld hl, $9B60
-	ld de, ShowdownWaterMapEnd - ShowdownWaterMap
-	ld a, SHOWDOWN_MOUTAINS_OFFSET
-    call MEMCPY_WITH_OFFSET
+    ld de, ShowdownMountainsMapEnd - ShowdownMountainsMap
+    ld a, SHOWDOWN_MOUTAINS_OFFSET
+	call MEMCPY_WITH_OFFSET
     ; Add scrolling clouds
     jp LoadLevelClouds
 

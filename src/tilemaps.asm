@@ -27,10 +27,6 @@ ScoreboardsMap::
     INCBIN "incbin/background/Scoreboards.tilemap"
 ScoreboardsMapEnd::
 
-StageClearFooterMap::
-    INCBIN "incbin/background/StageClearFooter.tilemap"
-StageClearFooterMapEnd::
-
 LevelCityMap:: 
     INCBIN "incbin/background/City.tilemap"
 LevelCityMapEnd::
@@ -86,9 +82,9 @@ UFOMap::
     INCBIN "incbin/background/UFO.tilemap"
 UFOMapEnd::
 
-ShowdownWaterMap::
-    INCBIN "incbin/background/ShowdownWater.tilemap"
-ShowdownWaterMapEnd::
+ShowdownMountainsMap::
+    INCBIN "incbin/background/ShowdownMountains.tilemap"
+ShowdownMountainsMapEnd::
 
 PorcupineMap::
     ; Top row
