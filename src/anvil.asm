@@ -15,6 +15,9 @@ ANVIL_INITIAL_SPEED EQU 4
 CACTUS_INITIAL_SPEED EQU 1
 ANVIL_WAIT_TO_KILL_DURATION EQU 6
 
+ANVIL_WIDTH EQU 16
+ANVIL_HEIGHT EQU 16
+
 ; hEnemyParam1 = Speed
 ; hEnemyParam2 = Can Kill Timer / Animation Timer
 ; hEnemyParam3 = Warning Timer
@@ -237,14 +240,9 @@ AnvilUpdate::
     and PLAYER_FLAG_ALIVE_MASK
     jr z, .checkHitAnotherEnemy
     ; Check hit player balloon
-    ; Get bc pointing to OAM address
-    ld bc, wOAM
-    ldh a, [hEnemyOAM]
-    ADD_A_TO_BC
-    ld hl, wPlayerBalloonOAM
-    ld d, PLAYER_BALLOON_WIDTH
-    ld e, PLAYER_BALLOON_HEIGHT
-    call CollisionCheck
+    ld d, ANVIL_WIDTH
+    ld e, ANVIL_HEIGHT
+    call CheckEnemyCollisionWithPlayerBalloon
     jr z, .checkHitAnotherEnemy
     call CollisionWithPlayer
     jr .hitSomething

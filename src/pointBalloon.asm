@@ -11,6 +11,9 @@ POINT_BALLOON_COLLISION_TIME EQU %00000011
 POINT_BALLOON_STRING_X_OFFSET EQU 4
 POINT_BALLOON_STRING_Y_OFFSET EQU 14
 
+POINT_BALLOON_WIDTH EQU 16
+POINT_BALLOON_HEIGHT EQU 16
+
 ; hEnemyParam1 = Animation Frame
 ; hEnemyParam2 = Animation Timer
 
@@ -206,13 +209,9 @@ PointBalloonUpdate::
     and PLAYER_FLAG_ALIVE_MASK
     jr z, .checkHitByBullet
     ; Check hit player cactus
-    ld bc, wOAM
-    ldh a, [hEnemyOAM]
-    ADD_A_TO_BC
-    ld hl, wPlayerCactusOAM
-    ld d, PLAYER_CACTUS_WIDTH
-    ld e, PLAYER_CACTUS_HEIGHT
-    call CollisionCheck
+    ld d, POINT_BALLOON_WIDTH
+    ld e, POINT_BALLOON_HEIGHT
+    call CheckEnemyCollisionWithPlayerCactus
     jr nz, .deathOfPointBalloon
     ; Check hit bullet
 .checkHitByBullet:

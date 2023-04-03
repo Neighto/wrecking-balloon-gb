@@ -600,6 +600,16 @@ PopPlayerBalloonAnimation:
   ldh [hPlayerPoppingFrame], a
   ret
 
+; Arg: D = Width collider
+; Arg: E = Height collider
+; Ret: Z/NZ = No collision / collision respectively
+CheckEnemyCollisionWithPlayerBalloon::
+  ld bc, wPlayerBalloonOAM
+  ld hl, wOAM
+  ldh a, [hEnemyOAM]
+  ADD_A_TO_HL
+  jp CollisionCheck
+
 CollisionWithPlayer::
   ; Check if player is invincible
   ldh a, [hPlayerInvincible]
@@ -628,7 +638,17 @@ CollisionWithPlayer::
   call PopSound
   jp FallingSound
 
-CollisionWithPlayerCactus::
+; Arg: D = Width collider
+; Arg: E = Height collider
+; Ret: Z/NZ = No collision / collision respectively
+CheckEnemyCollisionWithPlayerCactus::
+  ld bc, wPlayerCactusOAM
+  ld hl, wOAM
+  ldh a, [hEnemyOAM]
+  ADD_A_TO_HL
+  jp CollisionCheck ; TODO we also want player cactus to be a bit shorter...
+
+StunPlayer::
   ; Check if player is invincible
   ldh a, [hPlayerInvincible]
   cp a, 0

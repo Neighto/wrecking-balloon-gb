@@ -25,9 +25,9 @@ hLevelRepeatCounter:: DB
 
 SECTION "level data", ROM0
 
-; LEVEL INSTRUCTIONS *************************************
-
-; City Levels
+; *************************************************************
+; LEVEL INSTRUCTIONS
+; *************************************************************
 
 ; Level 1
 Level1:
@@ -310,8 +310,6 @@ Level2:
     LVL__POINT_BALLOON_MEDIUM____________ MIDDLE_SCREEN + 24
 .outro:
     LVL__REPT 1, LevelOutro
-
-; Desert Levels
 
 ; Level 3
 Level3:
@@ -639,8 +637,6 @@ Level4:
 .outro:
     LVL__REPT 1, LevelOutro
 
-; Showdown Levels
-
 ; Level 5
 Level5:
 .intro:
@@ -823,7 +819,9 @@ LevelOutro:
     LVL__WAIT 4
     LVL__END
 
+; *************************************************************
 ; Handler and Initializer
+; *************************************************************
 
 InitializeNewLevel::
     xor a ; ld a, 0
@@ -871,7 +869,7 @@ InitializeNewLevel::
     ret
 
 InitializeLevelClassic::
-    ld a, 1
+    ld a, LEVEL_1
     ldh [hLevel], a
     jp InitializeNewLevel
 

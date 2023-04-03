@@ -260,28 +260,18 @@ ProjectileUpdate::
     jr z, .endCollision
 
 .checkHitPlayer:
-    ld bc, wPlayerBalloonOAM
-    ld hl, wOAM
-    ldh a, [hEnemyOAM]
-    ADD_A_TO_HL
     ld d, PROJECTILE_WIDTH
     ld e, PROJECTILE_HEIGHT
-    call CollisionCheck
+    call CheckEnemyCollisionWithPlayerBalloon
     jr z, .checkHitCactus
     call CollisionWithPlayer
     jr .deathOfProjectile
-
 .checkHitCactus:
-    ld bc, wPlayerCactusOAM
-    ld hl, wOAM
-    ldh a, [hEnemyOAM]
-    ADD_A_TO_HL
     ld d, PROJECTILE_WIDTH
     ld e, PROJECTILE_HEIGHT
-    call CollisionCheck
+    call CheckEnemyCollisionWithPlayerCactus
     jr z, .endCollision
-    call CollisionWithPlayerCactus
-
+    call StunPlayer
 .deathOfProjectile:
     ld bc, PROJECTILE_OAM_BYTES
     call ClearEnemy
