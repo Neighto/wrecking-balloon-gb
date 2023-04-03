@@ -13,6 +13,9 @@ BOMB_EXPLOSION_X_OFFSET EQU -4
 
 BOMB_DEFAULT_SPEED EQU 2
 
+BOMB_WIDTH EQU 16
+BOMB_HEIGHT EQU 16
+
 SECTION "bomb", ROMX
 
 ; *************************************************************
@@ -183,13 +186,9 @@ BombUpdate::
     and PLAYER_FLAG_ALIVE_MASK
     jr z, .checkHitByBullet
     ; Check hit player cactus
-    ld bc, wOAM
-    ldh a, [hEnemyOAM]
-    ADD_A_TO_BC
-    ld hl, wPlayerCactusOAM
-    ld d, PLAYER_CACTUS_WIDTH
-    ld e, PLAYER_CACTUS_HEIGHT
-    call CollisionCheck
+    ld d, BOMB_WIDTH
+    ld e, BOMB_HEIGHT
+    call CheckEnemyCollisionWithPlayerCactus
     jr z, .checkHitByBullet
     call CollisionWithPlayer
     jr .deathOfBomb

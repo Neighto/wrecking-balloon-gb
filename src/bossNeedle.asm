@@ -149,27 +149,19 @@ BossNeedleUpdate::
     and PLAYER_FLAG_ALIVE_MASK
     jr z, .endCollision
     ; Check hit player balloon
-    ld bc, wPlayerBalloonOAM
-    ld hl, wOAM
-    ldh a, [hEnemyOAM]
-    ADD_A_TO_HL
     ld d, BOSS_NEEDLE_WIDTH
     ld e, BOSS_NEEDLE_HEIGHT
-    call CollisionCheck
+    call CheckEnemyCollisionWithPlayerBalloon
     jr z, .checkHitCactus
     call CollisionWithPlayer
     jr .deathOfBossNeedle
     ; Check hit player cactus
 .checkHitCactus:
-    ld bc, wPlayerCactusOAM
-    ld hl, wOAM
-    ldh a, [hEnemyOAM]
-    ADD_A_TO_HL
     ld d, BOSS_NEEDLE_WIDTH
     ld e, BOSS_NEEDLE_HEIGHT
-    call CollisionCheck
+    call CheckEnemyCollisionWithPlayerCactus
     jr z, .endCollision
-    call CollisionWithPlayerCactus
+    call StunPlayer
     ; jr .deathOfBossNeedle
 .deathOfBossNeedle:
     ld bc, BOSS_NEEDLE_OAM_BYTES

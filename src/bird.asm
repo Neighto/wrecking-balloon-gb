@@ -333,27 +333,18 @@ BirdUpdate::
     and PLAYER_FLAG_ALIVE_MASK
     jr z, .endCollision
     ; Check hit player balloon
-    ld bc, wPlayerBalloonOAM
-    ld hl, wOAM
-    ldh a, [hEnemyOAM]
-    ADD_A_TO_HL
     ld d, BIRD_WIDTH
     ld e, BIRD_HEIGHT
-    call CollisionCheck
+    call CheckEnemyCollisionWithPlayerBalloon
     jr z, .checkHitCactus
     call CollisionWithPlayer
     jr .endCollision
     ; Check hit player cactus
 .checkHitCactus:
-    ld bc, wPlayerCactusOAM
-    ld hl, wOAM
-    ldh a, [hEnemyOAM]
-    ADD_A_TO_HL
     ld d, BIRD_WIDTH
     ld e, BIRD_HEIGHT
-    call CollisionCheck
-    jr z, .endCollision
-    call CollisionWithPlayerCactus
+    call CheckEnemyCollisionWithPlayerCactus
+    call nz, StunPlayer
     ; jr .endCollision
 .endCollision:
 

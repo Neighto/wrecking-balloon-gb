@@ -15,6 +15,9 @@ PROJECTILE_RESPAWN_TIME EQU 54
 PROJECTILE_RESPAWN_TIME_SPAWN EQU PROJECTILE_RESPAWN_TIME / 2
 PROJECTILE_RESPAWN_FLICKER_TIME EQU 40
 
+BALLOON_CARRIER_WIDTH EQU 16
+BALLOON_CARRIER_HEIGHT EQU 12
+
 BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_MASK EQU ENEMY_FLAG_PARAM1_MASK
 BALLOON_CARRIER_FLAG_TRIGGER_SPAWN_BIT EQU ENEMY_FLAG_PARAM1_BIT
 
@@ -507,22 +510,17 @@ BalloonCarrierUpdate::
     jr z, .checkHitByBullet
     ; Check hit player balloon
     ld bc, wPlayerBalloonOAM
-    ld hl, wOAM+8
+    ld hl, wOAM + 8
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
-    ld d, 16
-    ld e, 12
+    ld d, BALLOON_CARRIER_WIDTH
+    ld e, BALLOON_CARRIER_HEIGHT
     call CollisionCheck
     call nz, CollisionWithPlayer
     ; Check hit player cactus
-    ld hl, wOAM
-    ldh a, [hEnemyOAM]
-    ADD_A_TO_HL
-    LD_BC_HL
-    ld hl, wPlayerCactusOAM
-    ld d, 16
-    ld e, 12
-    call CollisionCheck
+    ld d, BALLOON_CARRIER_WIDTH
+    ld e, BALLOON_CARRIER_HEIGHT
+    call CheckEnemyCollisionWithPlayerCactus
     jr z, .checkHitByBullet
     ; Check hit bomb variant
     ldh a, [hEnemyVariant]
