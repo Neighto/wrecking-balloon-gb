@@ -604,15 +604,23 @@ BossUpdate::
     ; jr nz, .bossDamaged
 	; ===============
 .checkHitPlayer:
-    ld bc, wPlayerBalloonOAM
     ld hl, wOAM
     ldh a, [hBossOAM]
     ADD_A_TO_HL
     ld d, 32
     ld e, d
-    call CollisionCheck
-    call nz, CollisionWithPlayer
-    ret ; jr .endCollision ; Just return because end of update
+    call CheckEnemyCollisionWithPlayerBalloon.colliderAlreadySet
+    jr z, .checkHitCactus
+    jp CollisionWithPlayer ; Just jp because end of update
+.checkHitCactus:
+    ld hl, wOAM
+    ldh a, [hBossOAM]
+    ADD_A_TO_HL
+    ld d, 32
+    ld e, d
+    call CheckEnemyCollisionWithPlayerCactus.colliderAlreadySet
+    ret z ; Just return because end of update
+    jp StunPlayer ; Just jp because end of update
 .bossDamaged:
     ; Points
     ld a, PORCUPINE_POINTS

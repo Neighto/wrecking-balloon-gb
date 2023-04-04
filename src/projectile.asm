@@ -259,13 +259,14 @@ ProjectileUpdate::
     and PLAYER_FLAG_ALIVE_MASK
     jr z, .endCollision
 
-.checkHitPlayer:
+    ; Check hit player
     ld d, PROJECTILE_WIDTH
     ld e, PROJECTILE_HEIGHT
     call CheckEnemyCollisionWithPlayerBalloon
     jr z, .checkHitCactus
     call CollisionWithPlayer
     jr .deathOfProjectile
+    ; Check hit cactus
 .checkHitCactus:
     ld d, PROJECTILE_WIDTH
     ld e, PROJECTILE_HEIGHT

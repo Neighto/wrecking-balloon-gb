@@ -604,10 +604,11 @@ PopPlayerBalloonAnimation:
 ; Arg: E = Height collider
 ; Ret: Z/NZ = No collision / collision respectively
 CheckEnemyCollisionWithPlayerBalloon::
-  ld bc, wPlayerBalloonOAM
   ld hl, wOAM
   ldh a, [hEnemyOAM]
   ADD_A_TO_HL
+.colliderAlreadySet::
+  ld bc, wPlayerBalloonOAM
   jp CollisionCheck
 
 CollisionWithPlayer::
@@ -642,11 +643,12 @@ CollisionWithPlayer::
 ; Arg: E = Height collider
 ; Ret: Z/NZ = No collision / collision respectively
 CheckEnemyCollisionWithPlayerCactus::
-  ld bc, wPlayerCactusOAM
   ld hl, wOAM
   ldh a, [hEnemyOAM]
   ADD_A_TO_HL
-  jp CollisionCheck ; TODO we also want player cactus to be a bit shorter...
+.colliderAlreadySet::
+  ld bc, wPlayerCactusOAM
+  jp CollisionCheck
 
 StunPlayer::
   ; Check if player is invincible
