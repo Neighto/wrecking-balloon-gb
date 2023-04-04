@@ -4,7 +4,24 @@ INCLUDE "macro.inc"
 
 COLLISION_UPDATE_TIME EQU %00000011
 
+SECTION "collision vars", HRAM
+hColliderY:: DB
+hColliderX:: DB
+hColliderHeight:: DB
+hColliderWidth:: DB
+
 SECTION "collision", ROM0
+
+; CollisionCheckReset::
+;     xor a ; ld a, 0
+;     ldh [hColliderY], a
+;     ldh [hColliderX], a
+
+; ConventionalCollisionCheck::
+;     ld a, 16
+;     ldh [hColliderHeight], a
+;     ldh [hColliderWidth], a
+
 
 ; Arg: BC = Colliding target (16x16 pixels)
 ; Arg: HL = Collider

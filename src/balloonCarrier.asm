@@ -509,13 +509,12 @@ BalloonCarrierUpdate::
     and PLAYER_FLAG_ALIVE_MASK
     jr z, .checkHitByBullet
     ; Check hit player balloon
-    ld bc, wPlayerBalloonOAM
     ld hl, wOAM + 8
     ldh a, [hEnemyOAM]
     ADD_A_TO_HL
     ld d, BALLOON_CARRIER_WIDTH
     ld e, BALLOON_CARRIER_HEIGHT
-    call CollisionCheck
+    call CheckEnemyCollisionWithPlayerBalloon.colliderAlreadySet
     call nz, CollisionWithPlayer
     ; Check hit player cactus
     ld d, BALLOON_CARRIER_WIDTH
