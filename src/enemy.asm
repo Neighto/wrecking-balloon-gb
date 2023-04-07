@@ -247,15 +247,12 @@ EnemyInterCollision::
     ld e, d
 .checkCollision:
     ; Get collision OAM addresses
-    inc hl
-    inc hl
+    ld a, [hli]
+    ld b, a
     ld a, [hl]
-    ld hl, wOAM
-    LD_BC_HL ; ld bc, wOAM
-    ADD_A_TO_HL ; OAM address stored in hl
-    ldh a, [hEnemyOAM]
-    ADD_A_TO_BC ; OAM address stored in bc
-    ; Check collision
+    ld c, a
+    SETUP_COLLIDER wColliderB, b, c, 0, e, 0, d
+    SETUP_ENEMY_COLLIDER 0, 16, 1, 14 ; Anvil
     call CollisionCheck
     jr nz, .hitEnemy
 .checkLoop:
@@ -289,13 +286,8 @@ EnemyHitBullet::
     and PLAYER_BULLET_FLAG_ACTIVE_MASK
     jr z, .notHitByBullet
     ; Collision check
-    ld bc, wOAM
-    ldh a, [hEnemyOAM]
-    ADD_A_TO_BC
-    ld hl, wPlayerBulletOAM
-    ld d, PLAYER_BULLET_WIDTH
-    ld e, PLAYER_BULLET_HEIGHT
-    call CollisionCheck
+    SETUP_ENEMY_COLLIDER 0, 16, 0, 16 ; Just assume they are a 16x16 entity
+    call CollisionCheckBullet
 .notHitByBullet:
     ; z flag set
     ret z

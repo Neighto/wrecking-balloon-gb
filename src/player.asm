@@ -600,17 +600,6 @@ PopPlayerBalloonAnimation:
   ldh [hPlayerPoppingFrame], a
   ret
 
-; Arg: D = Width collider
-; Arg: E = Height collider
-; Ret: Z/NZ = No collision / collision respectively
-CheckEnemyCollisionWithPlayerBalloon::
-  ld hl, wOAM
-  ldh a, [hEnemyOAM]
-  ADD_A_TO_HL
-.colliderAlreadySet::
-  ld bc, wPlayerBalloonOAM
-  jp CollisionCheck
-
 CollisionWithPlayer::
   ; Check if player is invincible
   ldh a, [hPlayerInvincible]
@@ -638,17 +627,6 @@ CollisionWithPlayer::
   ; Sound
   call PopSound
   jp FallingSound
-
-; Arg: D = Width collider
-; Arg: E = Height collider
-; Ret: Z/NZ = No collision / collision respectively
-CheckEnemyCollisionWithPlayerCactus::
-  ld hl, wOAM
-  ldh a, [hEnemyOAM]
-  ADD_A_TO_HL
-.colliderAlreadySet::
-  ld bc, wPlayerCactusOAM
-  jp CollisionCheck
 
 StunPlayer::
   ; Check if player is invincible

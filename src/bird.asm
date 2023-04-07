@@ -16,8 +16,10 @@ BIRD_VERTICAL_SPEED EQU 1
 BIRD_FLAP_UP_SPEED EQU 3
 BIRD_FALLING_SPEED EQU 2
 
-BIRD_WIDTH EQU 24
-BIRD_HEIGHT EQU 8
+BIRD_COLLISION_Y EQU 0
+BIRD_COLLISION_X EQU 0
+BIRD_COLLISION_HEIGHT EQU 9
+BIRD_COLLISION_WIDTH EQU 24
 
 ; hEnemyParam1 = Animation Frame
 
@@ -333,17 +335,15 @@ BirdUpdate::
     and PLAYER_FLAG_ALIVE_MASK
     jr z, .endCollision
     ; Check hit player balloon
-    ld d, BIRD_WIDTH
-    ld e, BIRD_HEIGHT
-    call CheckEnemyCollisionWithPlayerBalloon
+    SETUP_ENEMY_COLLIDER BIRD_COLLISION_Y, BIRD_COLLISION_HEIGHT, BIRD_COLLISION_X, BIRD_COLLISION_WIDTH
+    call CollisionCheckPlayerBalloon
     jr z, .checkHitCactus
     call CollisionWithPlayer
     jr .endCollision
     ; Check hit player cactus
 .checkHitCactus:
-    ld d, BIRD_WIDTH
-    ld e, BIRD_HEIGHT
-    call CheckEnemyCollisionWithPlayerCactus
+    ; SETUP_ENEMY_COLLIDER BIRD_COLLISION_Y, BIRD_COLLISION_HEIGHT, BIRD_COLLISION_X, BIRD_COLLISION_WIDTH
+    call CollisionCheckPlayerCactus
     call nz, StunPlayer
     ; jr .endCollision
 .endCollision:
