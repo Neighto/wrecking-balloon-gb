@@ -470,3 +470,81 @@ MACRO RESET_GLOBAL_TIMER
     xor a ; ld a, 0
     ldh [hGlobalTimer], a
 ENDM
+
+; *************************************************************
+; COLLISION MACROS
+; *************************************************************
+
+
+; Arg: 1 = Which collider
+; Arg: 2 = Y Pos Var
+; Arg: 3 = X Pos Var
+; Arg: 4 = Y1
+; Arg: 5 = Y2
+; Arg: 6 = X1
+; Arg: 7 = X2
+MACRO SETUP_COLLIDER
+    ld hl, \1
+    ; Y1
+    ld a, \2
+IF \4 == 1
+    inc a
+ELIF \4 != 0
+    add \4
+ENDC
+    ld [hli], a
+    ; Y2
+    add \5
+    ld [hli], a
+    ; X1
+    ld a, \3
+IF \6 == 1
+    inc a
+ELIF \6 != 0
+    add \6
+ENDC
+    ld [hli], a
+    ; X2
+    add \7
+    ld [hl], a
+ENDM
+
+; Arg: 1 = Y1
+; Arg: 2 = Y2
+; Arg: 3 = X1
+; Arg: 4 = X2
+MACRO SETUP_ENEMY_COLLIDER
+    SETUP_COLLIDER wColliderA, [hEnemyY], [hEnemyX], \1, \2, \3, \4
+ENDM
+
+; Arg: 1 = Y1
+; Arg: 2 = Y2
+; Arg: 3 = X1
+; Arg: 4 = X2
+MACRO SETUP_PLAYER_BALLOON_COLLIDER
+    SETUP_COLLIDER wColliderB, [hPlayerY], [hPlayerX], \1, \2, \3, \4
+ENDM
+
+; Arg: 1 = Y1
+; Arg: 2 = Y2
+; Arg: 3 = X1
+; Arg: 4 = X2
+MACRO SETUP_PLAYER_CACTUS_COLLIDER
+    SETUP_COLLIDER wColliderB, [hPlayerY2], [hPlayerX2], \1, \2, \3, \4
+ENDM
+
+; Arg: 1 = Y1
+; Arg: 2 = Y2
+; Arg: 3 = X1
+; Arg: 4 = X2
+MACRO SETUP_BULLET_COLLIDER
+    SETUP_COLLIDER wColliderB, [hPlayerBulletY], [hPlayerBulletX], \1, \2, \3, \4
+ENDM
+
+; Arg: 1 = Y1
+; Arg: 2 = Y2
+; Arg: 3 = X1
+; Arg: 4 = X2
+MACRO SETUP_BOSS_COLLIDER
+    SETUP_COLLIDER wColliderB, [hBossY], [hBossX], \1, \2, \3, \4
+ENDM

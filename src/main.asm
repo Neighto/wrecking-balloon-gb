@@ -116,10 +116,10 @@ OpeningCutscene:
 	call LCD_ON_NO_WINDOW
 	; Comment out OpeningCutsceneLoop to skip cutscene
 OpeningCutsceneLoop:
-	call WaitVBlank
-	call OAMDMA
-	call UpdateOpeningCutscene
-	jp OpeningCutsceneLoop
+	; call WaitVBlank
+	; call OAMDMA
+	; call UpdateOpeningCutscene
+	; jp OpeningCutsceneLoop
 
 ; *************************************************************
 ; SETUPNEXTLEVEL
@@ -138,8 +138,8 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; === testing ===
-	ld a, 6
-	ldh [hLevel], a
+	; ld a, 6
+	; ldh [hLevel], a
 	; ===============
 
 .levelSelect:

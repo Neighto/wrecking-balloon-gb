@@ -10,8 +10,10 @@ BOSS_NEEDLE_OAM_BYTES EQU BOSS_NEEDLE_OAM_SPRITES * 4
 BOSS_NEEDLE_COLLISION_TIME EQU %00000011
 BOSS_NEEDLE_VERTICAL_MOVEMENT_TIME EQU 6
 
-BOSS_NEEDLE_WIDTH EQU 8
-BOSS_NEEDLE_HEIGHT EQU 16
+BOSS_NEEDLE_COLLISION_Y EQU 0
+BOSS_NEEDLE_COLLISION_X EQU 0
+BOSS_NEEDLE_COLLISION_HEIGHT EQU 16
+BOSS_NEEDLE_COLLISION_WIDTH EQU 8
 
 BOSS_NEEDLE_SPEED EQU 4
 
@@ -149,17 +151,15 @@ BossNeedleUpdate::
     and PLAYER_FLAG_ALIVE_MASK
     jr z, .endCollision
     ; Check hit player balloon
-    ld d, BOSS_NEEDLE_WIDTH
-    ld e, BOSS_NEEDLE_HEIGHT
-    call CheckEnemyCollisionWithPlayerBalloon
+    SETUP_ENEMY_COLLIDER BOSS_NEEDLE_COLLISION_Y, BOSS_NEEDLE_COLLISION_HEIGHT, BOSS_NEEDLE_COLLISION_X, BOSS_NEEDLE_COLLISION_WIDTH
+    call CollisionCheckPlayerBalloon
     jr z, .checkHitCactus
     call CollisionWithPlayer
     jr .deathOfBossNeedle
     ; Check hit player cactus
 .checkHitCactus:
-    ld d, BOSS_NEEDLE_WIDTH
-    ld e, BOSS_NEEDLE_HEIGHT
-    call CheckEnemyCollisionWithPlayerCactus
+    ; SETUP_ENEMY_COLLIDER BOSS_NEEDLE_COLLISION_Y, BOSS_NEEDLE_COLLISION_HEIGHT, BOSS_NEEDLE_COLLISION_X, BOSS_NEEDLE_COLLISION_WIDTH
+    call CollisionCheckPlayerCactus
     jr z, .endCollision
     call StunPlayer
     ; jr .deathOfBossNeedle

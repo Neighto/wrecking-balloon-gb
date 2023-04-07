@@ -1,78 +1,82 @@
 INCLUDE "hardware.inc"
 INCLUDE "constants.inc"
 INCLUDE "macro.inc"
+INCLUDE "playerConstants.inc"
 
 COLLISION_UPDATE_TIME EQU %00000011
 
-SECTION "collision vars", HRAM
-hColliderY:: DB
-hColliderX:: DB
-hColliderHeight:: DB
-hColliderWidth:: DB
+SECTION "collision vars", WRAM0[COLLISION_VAR_ADDRESS]
+wColliderA:: DS 4
+wColliderB:: DS 4
 
 SECTION "collision", ROM0
 
-; CollisionCheckReset::
-;     xor a ; ld a, 0
-;     ldh [hColliderY], a
-;     ldh [hColliderX], a
+InitializeCollision:: ; Call it somewhere TODO
+    ld bc, wColliderA
+    call ResetHLInRange
+    ld bc, wColliderB
+    jp ResetHLInRange
 
-; ConventionalCollisionCheck::
-;     ld a, 16
-;     ldh [hColliderHeight], a
-;     ldh [hColliderWidth], a
+CollisionCheckBoss::
+    SETUP_BOSS_COLLIDER 0, 32, 2, 28
+    jr CollisionCheck
 
+CollisionCheckBullet::
+    SETUP_BULLET_COLLIDER BULLET_COLLISION_Y, BULLET_COLLISION_HEIGHT, BULLET_COLLISION_X, BULLET_COLLISION_WIDTH
+    jr CollisionCheck
 
-; Arg: BC = Colliding target (16x16 pixels)
-; Arg: HL = Collider
-; Arg: D = X size check (ex: 8 for 8 pixels long collider)
-; Arg: E = Y size check (ex: 16 for 16 pixels high collider)
+CollisionCheckPlayerCactus::
+    SETUP_PLAYER_CACTUS_COLLIDER 1, 14, 1, 14
+    jr CollisionCheck
+
+CollisionCheckPlayerBalloon::
+    SETUP_PLAYER_BALLOON_COLLIDER 1, 12, 1, 14
+    ; jr CollisionCheck
+
+; Must set collider vars before calling
 ; Ret: Z/NZ = No collision / collision respectively
 CollisionCheck::
+    ld hl, wColliderA
+    ld bc, wColliderB
 
 .checkY:
     ld a, [bc]
-    cp a, [hl]
-    jr nc, .tryColliderY
-    ; Target y < collider y
-    add 16
-    cp a, [hl]
-    jr nc, .checkX
-    ; Target y' < collider y
-    jr .noCollision
-
-.tryColliderY:
-    ld a, [hl]
-    add a, e ; e no longer needed for Y size check after this
-    ld e, a
-
+    cp a, [hl] ; cp C_A_Y1, C_B_Y1
+    jr c, .tryAY2
+.tryBY2:
+    inc l
     ld a, [bc]
-    cp a, e
+    cp a, [hl] ; cp C_A_Y1, C_B_Y2
     jr nc, .noCollision
-    ; Target y < collider y'
+    inc c
+    jr .checkX
+.tryAY2:
+    inc c
+    ld a, [bc]
+    cp a, [hl] ; cp C_A_Y2, C_B_Y1
+    inc l
+    jr c, .noCollision
+    ; jr .checkX
 
 .checkX:
-    inc l ; collider+1
-    inc c ; target+1
+    inc c
+    inc l
     ld a, [bc]
-    cp a, [hl]
-    jr nc, .tryColliderX
-    ; Target x < collider x
-    add 16
-    cp a, [hl]
-    jr nc, .collision
-    ; Target x' < collider x
-    jr .noCollision
-
-.tryColliderX:
-    ld a, [hl]
-    add a, d ; d no longer needed for X size check after this
-    ld d, a
-
+    cp a, [hl] ; cp C_A_X1, C_B_X1
+    jr c, .tryAX2
+.tryBX2:
+    inc l
     ld a, [bc]
-    cp a, d
+    cp a, [hl] ; cp C_A_X1, C_B_X2
     jr nc, .noCollision
-    ; Target x < collider x'
+    jr .collision
+.tryAX2:
+    inc c
+    ld a, [bc]
+    cp a, [hl] ; cp C_A_X2, C_B_X1
+    inc l
+    jr c, .noCollision
+    ; jr .collision
 
 .collision:
     or a, 1 ; Success

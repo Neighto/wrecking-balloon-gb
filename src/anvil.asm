@@ -15,8 +15,10 @@ ANVIL_INITIAL_SPEED EQU 4
 CACTUS_INITIAL_SPEED EQU 1
 ANVIL_WAIT_TO_KILL_DURATION EQU 6
 
-ANVIL_WIDTH EQU 16
-ANVIL_HEIGHT EQU 16
+ANVIL_COLLISION_Y EQU 0
+ANVIL_COLLISION_X EQU 1
+ANVIL_COLLISION_HEIGHT EQU 16
+ANVIL_COLLISION_WIDTH EQU 14
 
 ; hEnemyParam1 = Speed
 ; hEnemyParam2 = Can Kill Timer / Animation Timer
@@ -235,14 +237,14 @@ AnvilUpdate::
     ldh [hEnemyParam2], a
     jr .endCollision
 .checkCollisionContinue:
+    SETUP_ENEMY_COLLIDER ANVIL_COLLISION_Y, ANVIL_COLLISION_HEIGHT, ANVIL_COLLISION_X, ANVIL_COLLISION_WIDTH
     ; Is player alive
     ldh a, [hPlayerFlags]
     and PLAYER_FLAG_ALIVE_MASK
     jr z, .checkHitAnotherEnemy
     ; Check hit player balloon
-    ld d, ANVIL_WIDTH
-    ld e, ANVIL_HEIGHT
-    call CheckEnemyCollisionWithPlayerBalloon
+    ; SETUP_ENEMY_COLLIDER ANVIL_COLLISION_Y, ANVIL_COLLISION_HEIGHT, ANVIL_COLLISION_X, ANVIL_COLLISION_WIDTH
+    call CollisionCheckPlayerBalloon
     jr z, .checkHitAnotherEnemy
     call CollisionWithPlayer
     jr .hitSomething
@@ -255,18 +257,13 @@ AnvilUpdate::
     ldh a, [hBossFlags]
     and ENEMY_FLAG_ALIVE_MASK
     jr z, .endCollision
+    ; Is normal variant
     ldh a, [hEnemyVariant]
     cp a, ANVIL_NORMAL_VARIANT
     jr nz, .endCollision
-    ld hl, wOAM
-    LD_BC_HL ; ld bc, wOAM
-    ldh a, [hBossOAM]
-    ADD_A_TO_HL
-    ldh a, [hEnemyOAM]
-    ADD_A_TO_BC
-    ld d, 32
-    ld e, 24
-    call CollisionCheck
+    ; Check
+    ; SETUP_ENEMY_COLLIDER ANVIL_COLLISION_Y, ANVIL_COLLISION_HEIGHT, ANVIL_COLLISION_X, ANVIL_COLLISION_WIDTH
+    call CollisionCheckBoss
     jr z, .endCollision
     call CollisionWithBoss
 .hitSomething:

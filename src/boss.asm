@@ -53,6 +53,12 @@ PORCUPINE_FLAG_HEALTH_BIT2 EQU ENEMY_FLAG_PARAM3_BIT
 
 PORCUPINE_OAM_OFFSET EQU 26 * OAM_ATTRIBUTES_COUNT 
 
+PORCUPINE_COLLISION_Y EQU 0
+PORCUPINE_COLLISION_X EQU 2
+PORCUPINE_COLLISION_HEIGHT EQU 32
+PORCUPINE_COLLISION_WIDTH EQU 28
+
+
 PORCUPINE_DYING_VOICE_TIME EQU %00010111
 
 BOSS_KILLER_START_TIME EQU %00111100
@@ -604,21 +610,13 @@ BossUpdate::
     ; jr nz, .bossDamaged
 	; ===============
 .checkHitPlayer:
-    ld hl, wOAM
-    ldh a, [hBossOAM]
-    ADD_A_TO_HL
-    ld d, 32
-    ld e, d
-    call CheckEnemyCollisionWithPlayerBalloon.colliderAlreadySet
+    SETUP_COLLIDER wColliderA, [hBossY], [hBossX], PORCUPINE_COLLISION_Y, PORCUPINE_COLLISION_HEIGHT, PORCUPINE_COLLISION_X, PORCUPINE_COLLISION_WIDTH
+    call CollisionCheckPlayerBalloon
     jr z, .checkHitCactus
     jp CollisionWithPlayer ; Just jp because end of update
 .checkHitCactus:
-    ld hl, wOAM
-    ldh a, [hBossOAM]
-    ADD_A_TO_HL
-    ld d, 32
-    ld e, d
-    call CheckEnemyCollisionWithPlayerCactus.colliderAlreadySet
+    ; SETUP_COLLIDER wColliderA, [hBossY], [hBossX], 0, 32, 2, 24
+    call CollisionCheckPlayerCactus
     ret z ; Just return because end of update
     jp StunPlayer ; Just jp because end of update
 .bossDamaged:
