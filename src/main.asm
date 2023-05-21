@@ -5,7 +5,12 @@ INCLUDE "macro.inc"
 
 SECTION "rom", ROM0
 
-Common::
+WaitAndLCDOffAndCommon:
+	; Wait VBlank
+	call WaitVBlank
+	; LCD Off
+	call LCD_OFF
+	; Common
 	call ClearMap
 	call ClearOAM
 	call ClearVRAM9000
@@ -24,9 +29,7 @@ Start::
 	call InitializeTopScores
 	ei
 Restart::
-	call WaitVBlank
-	call LCD_OFF
-	call Common
+	call WaitAndLCDOffAndCommon
 	call ClearWindow
 	call ClearHRAM
 	call ClearVRAM8000
@@ -53,13 +56,10 @@ MenuLoopOpening:
 	call UpdateMenuOpening
 	jp MenuLoopOpening
 StartMenu::
-	call WaitVBlank
-	call LCD_OFF
+	call WaitAndLCDOffAndCommon
 	call TitleSplashSound
-	call InitializeScroll
 	call StopSweepSound
 	call SetMenuInterrupts
-	call ResetFading
 	call LoadMenuGraphics
 	call SpawnMenuCursor
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
@@ -93,10 +93,7 @@ StartGame::
 ; OPENINGCUTSCENE
 ; *************************************************************
 OpeningCutscene:
-	call WaitVBlank
-	call LCD_OFF
-	call Common
-	call InitializeEnemies
+	call WaitAndLCDOffAndCommon
 	call SetCutsceneInterrupts
 	call LoadOpeningCutsceneGraphics
 	call InitializeSequence
@@ -104,6 +101,7 @@ OpeningCutscene:
 	call InitializeEnemyStructVars
 	call InitializePlayer
 	call InitializeBullet
+	call InitializeEnemies
 	call SpawnPlayer
 	call SetPlayerPositionAndSpeedOpeningCutscene
 	call SpawnHandWave
@@ -125,9 +123,7 @@ OpeningCutsceneLoop:
 ; SETUPNEXTLEVEL
 ; *************************************************************
 SetupNextLevel::
-	call WaitVBlank
-	call LCD_OFF
-	call Common
+	call WaitAndLCDOffAndCommon
 	call InitializeEnemies
 	call InitializePlayer
 	call InitializeBullet
@@ -245,9 +241,7 @@ SetupNextLevelEndless::
 ; STAGECLEAR
 ; *************************************************************
 StageClear::
-	call WaitVBlank
-	call LCD_OFF
-	call Common
+	call WaitAndLCDOffAndCommon
 	call InitializeInterrupts
 	call InitializeSound
 	call SetWaveRAMToSquareWave
@@ -287,10 +281,7 @@ GameOverLoop:
 ; GAMEWON
 ; *************************************************************
 GameWon::
-	call WaitVBlank
-	call LCD_OFF
-	call Common
-	call InitializeEnemies
+	call WaitAndLCDOffAndCommon
 	call SetCutsceneInterrupts
 	call LoadEndingCutsceneGraphics
 	call AddScoreToTotal
@@ -299,6 +290,7 @@ GameWon::
 	call InitializeEndingCutscene
 	call InitializeSound
 	call InitializePlayer
+	call InitializeEnemies
 	call SpawnPlayer
 	call SetPlayerCactusHappy
 	call SetPlayerPositionAndSpeedEndingCutscene
