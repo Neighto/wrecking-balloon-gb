@@ -250,6 +250,7 @@ AnvilUpdate::
     jr .hitSomething
     ; Check hit another enemy
 .checkHitAnotherEnemy:
+    ; SETUP_ENEMY_COLLIDER ANVIL_COLLISION_Y, ANVIL_COLLISION_HEIGHT, ANVIL_COLLISION_X, ANVIL_COLLISION_WIDTH
     call EnemyInterCollision
     jr nz, .hitSomething
     ; Check hit boss
