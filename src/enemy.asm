@@ -204,6 +204,7 @@ FindRAMAndOAMForEnemy::
     pop hl
     ret
 
+; Must set collision A before calling
 ; Ret: Z/NZ = Failed / succeeded respectively
 EnemyInterCollision::
     ld a, NUMBER_OF_ENEMIES
@@ -225,34 +226,32 @@ EnemyInterCollision::
 .pointBalloon:
     cp a, POINT_BALLOON
     jr nz, .bird
-    ld d, 16
-    ld e, d
+    ld d, 14 ; POINT_BALLOON_COLLISION_WIDTH
+    ld e, 12 ; POINT_BALLOON_COLLISION_HEIGHT
     jr .checkCollision
 .bird:
     cp a, BIRD
     jr nz, .bomb
-    ld d, 24
-    ld e, 8
+    ld d, 24 ; BIRD_COLLISION_WIDTH
+    ld e, 9 ; BIRD_COLLISION_HEIGHT
     jr .checkCollision
 .bomb:
     cp a, BOMB
     jr nz, .carrier
-    ld d, 16
-    ld e, d
+    ld d, 16 ; BOMB_COLLISION_WIDTH
+    ld e, 14 ; BOMB_COLLISION_HEIGHT
     jr .checkCollision
 .carrier:
     cp a, BALLOON_CARRIER
     jr nz, .checkLoop
-    ld d, 16
-    ld e, d
+    ld d, 16 ; BALLOON_CARRIER_CACTUS_COLLISION_HEIGHT - 2
+    ld e, 14 ; BALLOON_CARRIER_CACTUS_COLLISION_WIDTH
 .checkCollision:
-    ; Get collision OAM addresses
     ld a, [hli]
     ld b, a
     ld a, [hl]
     ld c, a
     SETUP_COLLIDER wColliderB, b, c, 0, e, 0, d
-    SETUP_ENEMY_COLLIDER 0, 16, 1, 14 ; Anvil
     call CollisionCheck
     jr nz, .hitEnemy
 .checkLoop:
