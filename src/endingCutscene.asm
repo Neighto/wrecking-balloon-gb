@@ -31,7 +31,7 @@ InitializeEndingCutscene::
     ld [wHandClappingFrame], a
 
     ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
-	call RefreshTotal
+	call RefreshScore.total
 
     ld hl, hSequenceDataAddress
     ld bc, EndingCutsceneSequenceData

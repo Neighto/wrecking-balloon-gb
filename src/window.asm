@@ -29,65 +29,59 @@ SetupWindow::
 	ldh [rWX], a
     ret
 
-; Arg: BC = Score address
 ; Arg: HL = Index one address to update
-RefreshScoreCommon:
+RefreshScore::
+.topClassic::
+	ld bc, wTopClassic
+	jr .refresh
+.topEndless::
+	ld bc, wTopEndless
+	jr .refresh
+.total::
+	ld bc, wTotal
+	jr .refresh
+.score::
+	ld bc, wScore
+	; jr .refresh
+.refresh:
+	ld d, LOW_HALF_BYTE_MASK
+	ld e, NUMBERS_TILE_OFFSET
 	; First digit
 	ld a, [bc]
-	and LOW_HALF_BYTE_MASK
-	add NUMBERS_TILE_OFFSET
+	and d
+	add e
 	ld [hld], a
 	; Second digit
     ld a, [bc]
     swap a
-	and LOW_HALF_BYTE_MASK
-	add NUMBERS_TILE_OFFSET
+	and d
+	add e
 	ld [hld], a
 	; Third digit
 	inc bc ; Move up score
 	ld a, [bc]
-    and LOW_HALF_BYTE_MASK
-	add NUMBERS_TILE_OFFSET
+    and d
+	add e
 	ld [hld], a
 	; Fourth digit
 	ld a, [bc]
 	swap a
-    and LOW_HALF_BYTE_MASK
-	add NUMBERS_TILE_OFFSET
+    and d
+	add e
 	ld [hld], a
 	; Fifth digit
 	inc bc ; Move up score
 	ld a, [bc]
-	and LOW_HALF_BYTE_MASK
-	add NUMBERS_TILE_OFFSET
+	and d
+	add e
 	ld [hld], a
 	; Sixth digit
 	ld a, [bc]
 	swap a
-    and LOW_HALF_BYTE_MASK
-	add NUMBERS_TILE_OFFSET
+    and d
+	add e
 	ld [hl], a
 	ret
-
-; Arg: HL = Index one address to update
-RefreshScore::
-	ld bc, wScore
-	jp RefreshScoreCommon
-
-; Arg: HL = Index one address to update
-RefreshTotal::
-	ld bc, wTotal
-	jp RefreshScoreCommon
-
-; Arg: HL = Index one address to update
-RefreshTopClassic::
-	ld bc, wTopClassic
-	jp RefreshScoreCommon
-
-; Arg: HL = Index one address to update
-RefreshTopEndless::
-	ld bc, wTopEndless
-	jp RefreshScoreCommon
 
 LoadWindowTiles::
 	; TILES
@@ -192,7 +186,7 @@ RefreshWindow::
     ret nz
 	; SCORE
 	ld hl, SCORE_INDEX_ONE_ADDRESS
-	call RefreshScore
+	call RefreshScore.score
 	; LIVES
 	ldh a, [hPlayerLives]
 	add NUMBERS_TILE_OFFSET
@@ -223,7 +217,7 @@ RefreshGameOverWindow::
     call MEMCPY_WITH_OFFSET
 	; Score
 	ld hl, TOTAL_GAME_OVER_INDEX_ONE_ADDRESS
-	jp RefreshTotal
+	jp RefreshScore.total
 
 ; *************************************************************
 ; REFRESHTOPSCOREWINDOW
@@ -245,8 +239,8 @@ LoadTopScoreWindow::
 	ld hl, TOP_SCORE_INDEX_ONE_ADDRESS
 	ld a, [wSelectedMode]
 	cp a, CLASSIC_MODE
-	jp z, RefreshTopClassic
-	jp RefreshTopEndless
+	jp z, RefreshScore.topClassic
+	jp RefreshScore.topEndless
 
 ; *************************************************************
 ; PAUSEWINDOW
