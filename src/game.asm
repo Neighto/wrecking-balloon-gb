@@ -22,7 +22,11 @@ COUNTDOWN_FRAME_6 EQU 6 ; Clear
 CITY_TILES_OFFSET EQU 1 ; So first tile is empty
 ROAD_TILES_OFFSET EQU 1 ; So first tile is empty
 HYDRANT_TILE_OFFSET EQU $26
+LAMP_OFFSET EQU $20
 
+RAIN_HEIGHT_IN_TILES EQU 14
+
+SHOWDOWN_MOUNTAIN_ADDRESS EQU $9B60
 SUN_ADDRESS EQU $9848
 
 SECTION "game vars", WRAM0
@@ -74,7 +78,7 @@ LoadLevelCityGraphicsCommon:
     
 ; Arg: HL = Destination address
 LoadLamp::
-    ld a, $20 ; LAMP_OFFSET
+    ld a, LAMP_OFFSET
     ld [wMemcpyTileOffset], a
     ld bc, LampMap
     ld d, 6
@@ -227,17 +231,17 @@ LoadLevelShowdownGraphics::
     ; Add in rain layer 1
 	ld bc, LevelShowdownMap
 	ld hl, _SCRN0
-    ld d, 14 ; height of rain
+    ld d, RAIN_HEIGHT_IN_TILES
     ld e, SCRN_X_B
 	call MEMCPY_SINGLE_SCREEN
     ; Add in rain layer 2
     ld bc, LevelShowdownMap
-    ld d, 14 ; height of rain
+    ld d, RAIN_HEIGHT_IN_TILES
     ld e, SCRN_X_B
 	call MEMCPY_SINGLE_SCREEN
     ; Fill in dark clouds space
     ld hl, _SCRN0
-    ld bc, $60
+    ld bc, SCRN_VX_B * 3
     ld d, DARK_GREY_BKG_TILE
     call SetInRange
     ; Add scrolling rain clouds
@@ -247,7 +251,7 @@ LoadLevelShowdownGraphics::
 	call MEMCPY_PATTERN_CLOUDS
     ; Add scrolling mountains
     ld bc, ShowdownMountainsMap
-	ld hl, $9B60
+	ld hl, SHOWDOWN_MOUNTAIN_ADDRESS
     ld de, ShowdownMountainsMapEnd - ShowdownMountainsMap
     ld a, SHOWDOWN_MOUTAINS_OFFSET
 	call MEMCPY_WITH_OFFSET
@@ -331,7 +335,7 @@ Countdown::
 .frame3:
     cp a, COUNTDOWN_FRAME_3
     jr nz, .frame4
-    ld hl, wOAM+7
+    ld hl, wOAM + 7
     ADD_TO_HL [wCountdownOAM]
     ld a, OAMF_XFLIP
     ld [hl], a
@@ -356,7 +360,6 @@ Countdown::
     jr nz, .hasFinished
     ; Clear
     ld hl, wOAM
-    ld a, [wCountdownOAM]
     ADD_TO_HL [wCountdownOAM]
     ld bc, COUNTDOWN_OAM_BYTES
     call ResetHLInRange
@@ -414,7 +417,7 @@ UpdateGame::
 	jr z, .isNotPaused
     cp a, PAUSE_ON
     jr z, .isPaused
-.pauseToggled:
+    ; Pause transition state PAUSE_TOGGLED
     ld a, PAUSE_ON
     ldh [hPaused], a
     call ClearSound
