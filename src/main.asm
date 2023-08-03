@@ -103,7 +103,8 @@ OpeningCutscene:
 	call InitializeBullet
 	call InitializeEnemies
 	call SpawnPlayer
-	call SetPlayerPositionAndSpeedOpeningCutscene
+	call SetPlayerPosition.opening
+	call SetPlayerSpeedSlow
 	call SpawnHandWave
 	call SpawnCartBalloons
 	ld hl, menuTheme
@@ -134,8 +135,8 @@ SetupNextLevel::
 	call SpawnPlayer
 
 	; === testing ===
-	ld a, 6
-	ldh [hLevel], a
+	; ld a, 6
+	; ldh [hLevel], a
 	; ===============
 
 .levelSelect:
@@ -191,7 +192,7 @@ SetupNextLevel::
 	call InitializeBoss
 	call InitializeBossMiscellaneous
 	call SpawnBoss
-	call SetPlayerPositionBoss
+	call SetPlayerPosition.boss
 	jr .endLevelSetup
 .endless:
 	; cp a, LEVEL_ENDLESS
@@ -293,7 +294,8 @@ GameWon::
 	call InitializeEnemies
 	call SpawnPlayer
 	call SetPlayerCactusHappy
-	call SetPlayerPositionAndSpeedEndingCutscene
+	call SetPlayerPosition.ending
+	call SetPlayerSpeedSlow
 	call SpawnHandClap
 	call SpawnCartBalloons
 	ld hl, menuThemeShort
