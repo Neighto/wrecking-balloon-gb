@@ -35,11 +35,11 @@ InitializeEnemyStructVars::
     ldh [hEnemyParam3], a
     ret
 
-
 SetEnemyStruct::
     ld hl, wEnemies
     ldh a, [hEnemyOffset]
     ADD_A_TO_HL
+    ; jp SetEnemyStructWithHL
 
     ; Arg: HL = Start of free enemy struct
 SetEnemyStructWithHL::

@@ -180,10 +180,10 @@ SpawnExtraLifeBalloon::
 RefreshStageClear:
 	; Score
 	ld hl, SCORE_SC_INDEX_ONE_ADDRESS
-	call RefreshScore
+	call RefreshScore.score
 	; Total
 	ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
-	jp RefreshTotal
+	jp RefreshScore.total
 
 RefreshLives:
 	ld hl, EXTRA_LIFE_ADDRESS
