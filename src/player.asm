@@ -62,7 +62,7 @@ InitializePlayer::
   ldh [hPlayerSpeed], a
 
   ; POSITION
-  call SetPlayerPositionOpeningDefault
+  call SetPlayerPosition.default
 
   ; TILES
   ld a, [wSecret]
@@ -131,42 +131,37 @@ UpdateCactusPosition:
   ld [hl], a
   ret
 
-; Arg: B = Start X
-; Arg: C = Start Y
-SetPlayerPosition:
-  ld a, b
+SetPlayerPosition::
+.boss::
+  ld a, PLAYER_START_X - 40
+  ld b, PLAYER_START_Y
+  jr .setPos
+.opening::
+  ld a, PLAYER_START_X
+  ld b, 52
+  jr .setPos
+.ending::
+  ld a, PLAYER_START_X
+  ld b, 38
+  jr .setPos
+.default::
+  ld a, PLAYER_START_X
+  ld b, PLAYER_START_Y
+  ; jr .setPos
+.setPos:
   ldh [hPlayerX], a
   ldh [hPlayerX2], a
-  ld a, c
+  ld a, b
   ldh [hPlayerY], a
   add a, 16
   ldh [hPlayerY2], a
   call UpdateBalloonPosition
   jp UpdateCactusPosition
 
-SetPlayerPositionOpeningDefault:
-  ld b, PLAYER_START_X
-  ld c, PLAYER_START_Y
-  jp SetPlayerPosition
-
-SetPlayerPositionBoss::
-  ld b, PLAYER_START_X - 40
-  ld c, PLAYER_START_Y
-  jp SetPlayerPosition
-
-SetPlayerPositionAndSpeedOpeningCutscene::
+SetPlayerSpeedSlow::
   ld a, 1
   ldh [hPlayerSpeed], a
-  ld b, PLAYER_START_X
-  ld c, 52
-  jp SetPlayerPosition
-
-SetPlayerPositionAndSpeedEndingCutscene::
-  ld a, 1
-  ldh [hPlayerSpeed], a
-  ld b, PLAYER_START_X
-  ld c, 38
-  jp SetPlayerPosition
+  ret
 
 SetPlayerCactusHappy::
   ld a, PLAYER_CACTUS_HAPPY_TILE
