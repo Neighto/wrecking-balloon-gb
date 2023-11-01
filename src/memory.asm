@@ -26,6 +26,29 @@ MEMCPY::
 ; Arg: DE = Block size
 ; Arg: BC = Source address
 ; Arg: HL = Destination address
+MEMCPY_VBLANK_SAFE::
+.loop:
+    ; Wait for VRAM to be accessible
+    push hl
+    ld hl, rSTAT
+.wait:
+    bit 1, [hl]
+    jr nz, .wait
+    pop hl
+    ; Continue
+    ld a, [bc]
+    ld [hli], a
+    inc bc
+    dec de
+    ; Check
+	ld a, d
+	or a, e
+	jr nz, .loop
+    ret
+
+; Arg: DE = Block size
+; Arg: BC = Source address
+; Arg: HL = Destination address
 ; Should be of format: DB TILE, ATTRIBUTES
 MEMCPY_OAM_TILE_AND_ATTRIBUTES_DATA::
 .loop:

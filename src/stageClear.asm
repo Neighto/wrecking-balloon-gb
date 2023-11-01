@@ -99,7 +99,7 @@ LoadStageClearGraphics::
 	ld d, LIGHT_GREY_BKG_TILE
 	call SetInRange
 	; Draw scoreboard
-	ld bc, ScoreboardsMap + 16 * 5
+	ld bc, ScoreboardsMap + 16 * 3
 	ld hl, $9862
 	ld d, 9
 	ld e, 16

@@ -3,6 +3,7 @@ INCLUDE "macro.inc"
 INCLUDE "constants.inc"
 INCLUDE "tileConstants.inc"
 
+; Cutscene
 CUTSCENE_DISTANCE_FROM_TOP_IN_TILES EQU 10
 HAND_CLAP_SPEED EQU %00000111
 LEFT_HAND_CLAP_START_X EQU 58
@@ -10,17 +11,23 @@ LEFT_HAND_CLAP_START_Y EQU 110
 RIGHT_HAND_CLAP_START_X EQU LEFT_HAND_CLAP_START_X + 5
 RIGHT_HAND_CLAP_START_Y EQU LEFT_HAND_CLAP_START_Y
 HAND_CLAP_SPRITES EQU 2
-TOTAL_SC_INDEX_ONE_ADDRESS EQU $98CF
 
+; Victory
+VICTORY_TEXT_SWAP_TIME EQU %01111111
 VICTORY_DISTANCE_FROM_TOP_IN_TILES EQU 5
-VICTORY_TEXT_ADDRESS EQU $9886
 VICTORY_TEXT_TILES EQU 8
-TOTAL_TEXT_ADDRESS EQU $98C4
+VICTORY_ADDRESS EQU $98C4
+VICTORY_TILES EQU 12
+VICTORY_TEXT_BUFFER_ADDRESS EQU $9A44
+TOTAL_TEXT_BUFFER_ADDRESS EQU $9A64
+TOTAL_SC_INDEX_ONE_TEMP_ADDRESS EQU TOTAL_TEXT_BUFFER_ADDRESS + VICTORY_TILES - 1
 
+; Offset
 SCOREBOARD_OFFSET EQU $2D
 MAN_FOR_ENDING_OFFSET EQU $0B
 
 SECTION "ending cutscene vars", WRAM0
+wVictoryTextSwapFrame:: DB
 wHandClappingFrame:: DB
 wHandClapOAM:: DB
 
@@ -29,9 +36,7 @@ SECTION "ending cutscene", ROMX
 InitializeEndingCutscene::
     xor a ; ld a, 0
     ld [wHandClappingFrame], a
-
-    ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
-	call RefreshScore.total
+    ld [wVictoryTextSwapFrame], a
 
     ld hl, hSequenceDataAddress
     ld bc, EndingCutsceneSequenceData
@@ -67,25 +72,37 @@ LoadEndingCutsceneGraphics::
     ; TILEMAP
     ; Draw scoreboard
     ld bc, ScoreboardsMap
-    ld hl, $9862
-    ld d, 5
+    ld hl, $98A2
+    ld d, 3
     ld e, 16
     ld a, SCOREBOARD_OFFSET
     ld [wMemcpyTileOffset], a
     call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
-    ; Draw VICTORY text
+
+    ; Reuse the opening cutscene
+    call LoadOpeningCutsceneGraphics
+    ; Draw VICTORY text buffer
+    ld hl, VICTORY_TEXT_BUFFER_ADDRESS
+    ld bc, VICTORY_TILES
+    ld d, DARK_GREY_BKG_TILE
+    call SetInRange
     ld bc, WindowMap + SCRN_X_B * VICTORY_DISTANCE_FROM_TOP_IN_TILES
-	ld hl, VICTORY_TEXT_ADDRESS
+	ld hl, VICTORY_TEXT_BUFFER_ADDRESS + 2
 	ld de, VICTORY_TEXT_TILES
 	ld a, WINDOW_TILES_8800_OFFSET
 	call MEMCPY_WITH_OFFSET
-    ; Draw TOTAL text
+    ; Draw VICTORY text
+    ld bc, VICTORY_TEXT_BUFFER_ADDRESS
+	ld hl, VICTORY_ADDRESS
+	ld de, VICTORY_TILES
+	call MEMCPY
+    ; Draw TOTAL text buffer
     ld bc, TotalTextMap
-	ld hl, TOTAL_TEXT_ADDRESS
+	ld hl, TOTAL_TEXT_BUFFER_ADDRESS
 	ld de, TotalTextMapEnd - TotalTextMap
 	call MEMCPY
-    ; Reuse the opening cutscene
-    call LoadOpeningCutsceneGraphics.cloudless
+    ld hl, TOTAL_SC_INDEX_ONE_TEMP_ADDRESS
+    call RefreshScore.total
     ; Draw over man for ending cutscene
     ld bc, ManForEndingMap + 2
 	ld hl, $9966
@@ -129,7 +146,7 @@ UpdateEndingCutscene::
     ; Timer
     UPDATE_GLOBAL_TIMER
 
-    ; call IncrementScrollOffset
+    call IncrementScrollOffset
 
     ; Play song
     ldh a, [hSequencePlaySong]
@@ -214,5 +231,31 @@ UpdateEndingCutscene::
     ld hl, wHandClappingFrame
     ld [hl], 0
 .endCheckAnimateHands:
+
+    ; Check animate victory / total score
+    ldh a, [hGlobalTimer]
+    and VICTORY_TEXT_SWAP_TIME
+    jr nz, .endCheckAnimateVictory
+    ; Can swap text
+    ld a, [wVictoryTextSwapFrame]
+    cp a, 0
+    jr nz, .swapToVictoryText
+.swapToTotalScoreText:
+    ld a, 1
+    ld [wVictoryTextSwapFrame], a
+    ld bc, TOTAL_TEXT_BUFFER_ADDRESS
+	ld de, VICTORY_TILES
+	ld hl, VICTORY_ADDRESS
+	call MEMCPY_VBLANK_SAFE
+    jr .endCheckAnimateVictory
+.swapToVictoryText:
+    xor a ; ld a, 0
+    ld [wVictoryTextSwapFrame], a
+    ld bc, VICTORY_TEXT_BUFFER_ADDRESS
+	ld hl, VICTORY_ADDRESS
+	ld de, VICTORY_TILES
+	call MEMCPY_VBLANK_SAFE
+.endCheckAnimateVictory:
+    
 
     jp SequenceDataUpdate
