@@ -138,7 +138,7 @@ SetPlayerPosition::
   jr .setPos
 .opening::
   ld a, PLAYER_START_X
-  ld b, 52
+  ld b, 58
   jr .setPos
 .ending::
   ld a, PLAYER_START_X

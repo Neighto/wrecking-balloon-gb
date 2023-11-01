@@ -36,10 +36,10 @@ OpeningCutsceneSequenceData:
     SEQUENCE_WAIT 5
     SEQUENCE_PLAY_SONG
     SEQUENCE_FADE_IN_PALETTE
-    SEQUENCE_WAIT 95
+    SEQUENCE_WAIT 120
     SEQUENCE_INCREASE_PHASE ; Hand up
     SEQUENCE_INCREASE_PHASE ; Wave and fly away
-    SEQUENCE_WAIT 120
+    SEQUENCE_WAIT 105
 SkipOpeningSequence:
     SEQUENCE_HIDE_PALETTE
     SEQUENCE_WAIT 5
@@ -50,6 +50,8 @@ LoadOpeningCutsceneGraphics::
     ld bc, CloudsMap + CLOUDS_THIN_OFFSET
     ld hl, $9880
     call MEMCPY_PATTERN_CLOUDS
+    ; ld bc, CloudsMap + CLOUDS_LIGHT_INV_OFFSET
+    ; call MEMCPY_PATTERN_CLOUDS
 .cloudless::
     ; Road
     ld hl, $9900
@@ -148,7 +150,7 @@ UpdateOpeningCutscene::
     ; Timer
     UPDATE_GLOBAL_TIMER
 
-    ; call IncrementScrollOffset
+    call IncrementScrollOffset
 
     ; Play song
     ldh a, [hSequencePlaySong]
