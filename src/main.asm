@@ -27,6 +27,7 @@ Start::
 	ld sp, $E000 ; Stack pointer to WRAM ; Default: $FFFE
 	call InitializeInterrupts
 	call InitializeTopScores
+	call InitializeSongDataCommon
 	ei
 Restart::
 	call WaitAndLCDOffAndCommon

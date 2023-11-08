@@ -1,75 +1,25 @@
 include "src/include/hUGE.inc"
 
-SECTION "Song Data Common", ROMX
+SECTION "song data common vars", WRAM0
 
-PE::
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
-    dn ___,0,$000
+wPE:: ds PATTERN_SIZE * dn_SIZE
+
+SECTION "song data common", ROMX
+
+; Empty Pattern
+PE:: dn ___,0,$000
+
+InitializeSongDataCommon::
+    ; Initialize PE
+    ld d, PATTERN_SIZE * dn_SIZE
+    ld e, dn_SIZE
+    ld bc, PE
+    ld hl, wPE
+
+    jp MEMCPY_SIMPLE_PATTERN
 
 ; May need to make larger if a song exceeds this length
-outOfOrder:: dw PE,PE,PE,PE,PE,PE,PE,PE,PE,PE,PE,PE
+outOfOrder:: dw wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE
    
 duty_instruments::
 itSquareinst1:

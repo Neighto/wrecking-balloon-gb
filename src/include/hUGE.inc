@@ -4,6 +4,9 @@ MACRO dn ;; (note, instr, effect)
     db LOW(\3)
 ENDM
 
+dn_SIZE EQU 3
+PATTERN_SIZE EQU 64
+
 C_3 EQU 0
 C#3 EQU 1
 D_3 EQU 2

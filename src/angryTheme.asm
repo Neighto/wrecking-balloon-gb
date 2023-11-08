@@ -12,7 +12,7 @@ dw waves
 
 order_cnt: db 14
 order2: dw P1,P2,P4,P6,P8,P5,P9
-order3: dw PE,P3,P5,P7,P5,P8,P10
+order3: dw wPE,P3,P5,P7,P5,P8,P10
 
 P1:
  dn G_4,1,$C0A

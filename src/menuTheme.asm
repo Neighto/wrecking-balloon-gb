@@ -11,7 +11,7 @@ dw routines
 dw waves
 
 order_cnt: db 8
-order1: dw P3,PE,PE,PE
+order1: dw P3,wPE,wPE,wPE
 order2: dw P1,P2,P1,P1
 order3: dw P2,P1,P3,P2
 
@@ -228,5 +228,5 @@ menuThemeShort::
 
     order_cntShort: db 4
     order1Short: dw P1,P4
-    order2Short: dw P3,PE
+    order2Short: dw P3,wPE
     order3Short: dw P2,P4
