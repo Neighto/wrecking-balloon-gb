@@ -200,7 +200,7 @@ SetupNextLevel::
 	; jr nz, .endLevelSetup
 	call SetEndlessInterrupts
 	call LoadEndlessGraphics
-	ld hl, angryTheme
+	ld hl, endlessTheme
 	call hUGE_init_game_song
 	; Clean this
 	ld a, [hEndlessLevelSwitchSkip]
