@@ -11,11 +11,12 @@ wColliderB:: DS 4
 
 SECTION "collision", ROM0
 
-InitializeCollision:: ; Call it somewhere TODO
-    ld bc, wColliderA
-    call ResetHLInRange
-    ld bc, wColliderB
-    jp ResetHLInRange
+; TODO: Call it somewhere
+; InitializeCollision:: 
+;     ld bc, wColliderA
+;     call ResetHLInRange
+;     ld bc, wColliderB
+;     jp ResetHLInRange
 
 CollisionCheckBoss::
     SETUP_BOSS_COLLIDER 0, 32, 2, 28

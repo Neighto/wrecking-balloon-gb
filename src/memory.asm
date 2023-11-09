@@ -180,17 +180,10 @@ MEMCPY_SINGLE_SCREEN_WITH_OFFSET::
     pop af
     ret
 
+; Arg: HL = Starting address
 ; Arg: BC = Distance
 ResetHLInRange::
-.loop:
-    xor a ; ld a, 0
-    ld [hli], a
-    dec bc
-    ld a, b
-    or c
-    jr nz, .loop
-    ret
-
+    ld d, 0
 ; Arg: HL = Starting address
 ; Arg: BC = Distance
 ; Arg: D = Value
