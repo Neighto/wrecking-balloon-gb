@@ -6,7 +6,7 @@ INCLUDE "tileConstants.inc"
 SECTION "memory vars", WRAM0 
 wMemcpyTileOffset:: DB
 
-SECTION "memory", ROMX
+SECTION "memory", ROM0
 
 ; Arg: DE = Block size
 ; Arg: BC = Source address

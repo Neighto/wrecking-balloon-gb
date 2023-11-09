@@ -441,7 +441,8 @@ update_channel_freq:
     dec c
     jr z, .update_channel3
     dec c
-    jr z, .update_channel4
+    ; <<Commented out to save ROM space; CH4 not in use>>
+    ; jr z, .update_channel4
 
 .update_channel1:
     retMute 0
@@ -479,26 +480,28 @@ update_channel_freq:
     ldh [rAUD3HIGH], a
     ret
 
-.update_channel4:
-    retMute 3
+    ; <<Commented out to save ROM space; CH4 not in use>>
+; .update_channel4:
+;     retMute 3
 
-    ld d, h
-    ld a, e
-    call get_note_poly
-    ld hl, step_width4
-    or [hl]
-    ldh [rAUD4POLY], a
+;     ld d, h
+;     ld a, e
+;     call get_note_poly
+;     ld hl, step_width4
+;     or [hl]
+;     ldh [rAUD4POLY], a
 
-    ld a, d
-    ldh [rAUD4GO], a
-    ret
+;     ld a, d
+;     ldh [rAUD4GO], a
+;     ret
 
 
 play_note_routines:
     jr play_ch1_note
     jr play_ch2_note
     jr play_ch3_note
-    jr play_ch4_note
+    ; <<Commented out to save ROM space; CH4 not in use>>
+    ; jr play_ch4_note
 
 play_ch1_note:
     ld a, [mute_channels]
@@ -554,19 +557,20 @@ play_ch3_note:
     ldh [rAUD3HIGH], a
     ret
 
-play_ch4_note:
-    ld a, [mute_channels]
-    retMute 3
+    ; <<Commented out to save ROM space; CH4 not in use>>
+; play_ch4_note:
+;     ld a, [mute_channels]
+;     retMute 3
 
-    ;; Play a "note" on channel 4 (noise)
-    ld a, [channel_period4]
-    ldh [rAUD4POLY], a
+;     ;; Play a "note" on channel 4 (noise)
+;     ld a, [channel_period4]
+;     ldh [rAUD4POLY], a
 
-    ;; Get the highmask and apply it.
-    ld a, [highmask4]
-    ldh [rAUD4GO], a
+;     ;; Get the highmask and apply it.
+;     ld a, [highmask4]
+;     ldh [rAUD4GO], a
 
-    ret
+;     ret
 
 ;;; Executes a row of a table.
 ;;; Param: BC = Pointer to which table to run
@@ -943,7 +947,8 @@ fx_set_volume:
     dec b
     jr z, .set_chn_3_vol
     dec b
-    jr z, .set_chn_4_vol
+    ; <<Commented out to save ROM space; CH4 not in use>>
+    ; jr z, .set_chn_4_vol
 
 .set_chn_1_vol:
     retMute 0
@@ -986,12 +991,13 @@ fx_set_volume:
     ldh [rAUD3LEVEL], a
     ret
 
-.set_chn_4_vol:
-    retMute 3
+    ; <<Commented out to save ROM space; CH4 not in use>>
+; .set_chn_4_vol:
+;     retMute 3
 
-    ld a, c
-    ldh [rAUD4ENV], a
-    jp play_ch4_note
+;     ld a, c
+;     ldh [rAUD4ENV], a
+;     jp play_ch4_note
 
 
 ;;; Processes effect 4, "vibrato".
@@ -1588,80 +1594,81 @@ process_ch3:
     ld e, 2
     call nz, do_table
 
-process_ch4:
-    ld hl, pattern4
-    ld a, [hl+]
-    ld c, a
-    ld b, [hl]
-    call get_current_row
-    cp LAST_NOTE
+    ; <<Commented out to save ROM space; CH4 not in use>>
+; process_ch4:
+;     ld hl, pattern4
+;     ld a, [hl+]
+;     ld c, a
+;     ld b, [hl]
+;     call get_current_row
+;     cp LAST_NOTE
 
-    push af ; Save carry for conditonally calling note
-    jr nc, .do_setvol4
+;     push af ; Save carry for conditonally calling note
+;     jr nc, .do_setvol4
 
-    ld [channel_note4], a
+;     ld [channel_note4], a
 
-    ;; No toneporta check because it's not supported for CH4 anyway
+;     ;; No toneporta check because it's not supported for CH4 anyway
 
-    call get_note_poly
-    ld [channel_period4], a
+;     call get_note_poly
+;     ld [channel_period4], a
 
-    ld hl, noise_instruments
-    ld a, [hl+]
-    ld h, [hl]
-    ld l, a
-    call setup_instrument_pointer
+;     ld hl, noise_instruments
+;     ld a, [hl+]
+;     ld h, [hl]
+;     ld l, a
+;     call setup_instrument_pointer
 
-    ld a, [highmask4]
-    res 7, a ; Turn off the "initial" flag
-    jr z, .write_mask4
+;     ld a, [highmask4]
+;     res 7, a ; Turn off the "initial" flag
+;     jr z, .write_mask4
 
-    checkMute 3, .do_setvol4
+;     checkMute 3, .do_setvol4
 
-    ld a, [hl+]
-    ldh [rAUD4ENV], a
+;     ld a, [hl+]
+;     ldh [rAUD4ENV], a
 
-    ld a, [hl+]
-    ld [table4], a
-    ld a, [hl+]
-    ld [table4+1], a
-    xor a
-    ld [table_row4], a
+;     ld a, [hl+]
+;     ld [table4], a
+;     ld a, [hl+]
+;     ld [table4+1], a
+;     xor a
+;     ld [table_row4], a
 
-    ld a, [hl]
-    and %00111111
-    ldh [rAUD4LEN], a
+;     ld a, [hl]
+;     and %00111111
+;     ldh [rAUD4LEN], a
 
-    ld a, [channel_period4]
-    ld d, a
-    ld a, [hl]
-    and %10000000
-    swap a
-    ld [step_width4], a
-    or d
-    ld [channel_period4], a
+;     ld a, [channel_period4]
+;     ld d, a
+;     ld a, [hl]
+;     and %10000000
+;     swap a
+;     ld [step_width4], a
+;     or d
+;     ld [channel_period4], a
 
-    ld a, [hl]
-    and %01000000
-    or  %10000000
-.write_mask4:
-    ld [highmask4], a
+;     ld a, [hl]
+;     and %01000000
+;     or  %10000000
+; .write_mask4:
+;     ld [highmask4], a
 
-.do_setvol4:
-    ld e, 3
-    call do_effect
+; .do_setvol4:
+;     ld e, 3
+;     call do_effect
 
-    pop af
-    call c, play_ch4_note
+;     pop af
+;     call c, play_ch4_note
 
-    ld a, [table4]
-    ld c, a
-    ld a, [table4+1]
-    ld b, a
-    or c
-    ld hl, table_row4
-    ld e, 3
-    call nz, do_table
+;     ld a, [table4]
+;     ld c, a
+;     ld a, [table4+1]
+;     ld b, a
+;     or c
+;     ld hl, table_row4
+;     ld e, 3
+;     call nz, do_table
 
     ;; finally just update the tick/order/row values
     jp tick_time
@@ -1746,31 +1753,32 @@ process_effects:
     ld e, 2
     call nz, do_table
 
-.process_ch4:
-    checkMute 3, .after_effect4
+    ; <<Commented out to save ROM space; CH4 not in use>>
+; .process_ch4:
+;     checkMute 3, .after_effect4
 
-    ld hl, pattern4
-    ld a, [hl+]
-    ld c, a
-    ld b, [hl]
-    call get_current_row
+;     ld hl, pattern4
+;     ld a, [hl+]
+;     ld c, a
+;     ld b, [hl]
+;     call get_current_row
 
-    ld a, c
-    or a
-    jr z, .after_effect4
+;     ld a, c
+;     or a
+;     jr z, .after_effect4
 
-    ld e, 3
-    call do_effect      ; make sure we never return with ret_dont_play_note!!
+;     ld e, 3
+;     call do_effect      ; make sure we never return with ret_dont_play_note!!
 
-.after_effect4:
-    ld a, [table4]
-    ld c, a
-    ld a, [table4+1]
-    ld b, a
-    or c
-    ld hl, table_row4
-    ld e, 3
-    call nz, do_table
+; .after_effect4:
+;     ld a, [table4]
+;     ld c, a
+;     ld a, [table4+1]
+;     ld b, a
+;     or c
+;     ld hl, table_row4
+;     ld e, 3
+;     call nz, do_table
 
 tick_time:
 IF DEF(PREVIEW_MODE)

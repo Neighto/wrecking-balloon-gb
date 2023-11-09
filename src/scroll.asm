@@ -12,7 +12,7 @@ hParallaxMiddle:: DB
 hParallaxFar:: DB
 hRain:: DB
 
-SECTION "scroll", ROM0
+SECTION "scroll", ROMX
 
 InitializeScroll::
     xor a ; ld a, 0
