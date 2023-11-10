@@ -19,7 +19,7 @@ InitializeSongDataCommon::
     jp MEMCPY_SIMPLE_PATTERN
 
 ; May need to make larger if a song exceeds this length
-outOfOrder:: dw wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE
+outOfOrder:: dw wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE
    
 duty_instruments::
 itSquareinst1:

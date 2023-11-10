@@ -14,7 +14,7 @@ WaitAndLCDOffAndCommon:
 	call ClearMap
 	call ClearOAM
 	call ClearVRAM9000
-	call ClearSound
+	call ChDACs.mute
 	call InitializeScroll
 	RESET_GLOBAL_TIMER
 	jp ResetFading
@@ -63,6 +63,7 @@ StartMenu::
 	call SetMenuInterrupts
 	call LoadMenuGraphics
 	call SpawnMenuCursor
+	call ChDACs.unmute
 	call LCD_ON_NO_WINDOW_8_SPR_MODE
 	; Comment out MenuLoop to skip menu
 MenuLoop:
@@ -231,7 +232,7 @@ GameLoop::
 	jp GameLoop
 
 SetupNextLevelEndless::
-	call ClearSound
+	call ChDACs.mute
 	call WaitVBlank
 	call LCD_OFF
 	call ClearMap
@@ -266,7 +267,7 @@ StageClearLoop:
 GameOver::
 	call WaitVBlank
 	call LCD_OFF
-	call ClearSound
+	call ChDACs.mute
 	call ClearOAM
 	call AddScoreToTotal
 	call SetTopScore

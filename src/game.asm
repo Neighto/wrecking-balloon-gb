@@ -420,7 +420,7 @@ UpdateGame::
     ; Pause transition state PAUSE_TOGGLED
     ld a, PAUSE_ON
     ldh [hPaused], a
-    call ClearSound
+    call ChDACs.mute
     jp ShowPauseWindow
 .isPaused:
     call ShowPauseWindow.skipResetTimer
@@ -430,6 +430,7 @@ UpdateGame::
     ret z
 	ld a, PAUSE_OFF
 	ldh [hPaused], a
+    call ChDACs.unmute
     jp ToggleWindow.winon
 .isNotPaused:
 

@@ -33,34 +33,27 @@ InitializeSound::
   ldh [hStopMusic], a
   ret
 
-ClearSound::
-  ; Handle obscure case toggling C3 DAC
-  ; C3
-  xor a ; ld a, 0
-  ldh [rNR30], a
-  cpl
-  ldh [rNR30], a
-  ; Silence channel
-  ld a, $08
-  ; C1
-  ldh [rNR12], a
-  ; C2
-  ldh [rNR22], a
-  ; C3
-  ldh [rNR32], a
-  ; C4
-  ldh [rNR42], a
-  ; Retrigger channel and reload NRx2
-  ld a, $80
-  ; C1
-  ldh [rNR14], a
-  ; C2
-  ldh [rNR24], a
-  ; C3
-  ldh [rNR34], a
-  ; C4
-  ldh [rNR44], a
-  ret
+; Mute or unmute all channels' DACs
+; Arg: D = Mute (1) or Unmute (0)
+ChDACs::
+.unmute::
+  ld d, 0
+  jr .toggle
+.mute::
+  ld d, 1
+.toggle:
+  ld b, 0 ; Channel 1
+	ld c, d
+	call hUGE_mute_channel
+  ld b, 1 ; Channel 2
+	ld c, d
+	call hUGE_mute_channel
+  ld b, 2 ; Channel 3
+	ld c, d
+	call hUGE_mute_channel
+  ld b, 3 ; Channel 4
+	ld c, d
+	jp hUGE_mute_channel
 
 SetWaveRAMToSquareWave::
   xor a

@@ -10,17 +10,17 @@ dw duty_instruments, wave_instruments, noise_instruments
 dw routines
 dw waves
 
-order_cnt: db 36
-order2: dw P1,P2,P12,P1,P3,P12,P9,P9,P4,P5,P6,P11,P5,P8,P11,P10,P10,P7
-order3: dw P5,P6,P11,P5,P8,P11,P10,P10,P7,P5,P6,P11,P5,P8,P11,P9,P9,wPE
+order_cnt: db 38
+order2: dw P1,P2,P12,P1,P3,P12,P1,P4,P9,P9,P5,P6,P11,P5,P8,P11,P10,P10,P7
+order3: dw P5,P6,P11,P5,P8,P11,P5,P7,P10,P10,P5,P6,P11,P5,P8,P11,P9,P9,wPE
 
 P1:
  dn D_5,2,$C0C
- dn ___,0,$A04
+ dn ___,0,$000
  dn ___,0,$E00
  dn ___,0,$000
  dn E_5,2,$C0C
- dn ___,0,$A04
+ dn ___,0,$000
  dn ___,0,$E00
  dn ___,0,$000
  dn F#5,2,$C0C
@@ -33,16 +33,18 @@ P1:
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
- dn ___,0,$208
- dn ___,0,$000
- dn A_5,2,$C0C
+ dn ___,0,$207
  dn ___,0,$B00
 
 P2:
+ dn A_5,2,$C0C
+ dn ___,0,$000
  dn E_5,2,$C0C
  dn ___,0,$B00
 
 P3:
+ dn A_5,2,$C0C
+ dn ___,0,$000
  dn D_5,2,$C0C
  dn ___,0,$B00
 
@@ -100,12 +102,12 @@ P5:
  dn D_5,1,$C08
  dn ___,0,$C04
  dn D_5,1,$C08
- dn ___,0,$000
- dn A_5,3,$C08
  dn ___,0,$B00
 
 P6:
- dn E_5,3,$C08
+ dn A_5,3,$C0A
+ dn ___,0,$C04
+ dn E_5,3,$C09
  dn ___,0,$B00
 
 P7:
@@ -143,7 +145,9 @@ P7:
  dn ___,0,$B00
 
 P8:
- dn D_5,3,$C08
+ dn A_5,3,$C0A
+ dn ___,0,$C04
+ dn D_5,3,$C09
  dn ___,0,$B00
 
 P9:
@@ -159,8 +163,8 @@ P9:
  dn ___,0,$C08
  dn F#5,2,$C0C
  dn ___,0,$E00
- dn ___,0,$000
- dn ___,0,$000
+ dn D_5,2,$C0C
+ dn ___,0,$E00
  dn ___,0,$000
  dn ___,0,$B00
 
@@ -177,9 +181,9 @@ P10:
  dn ___,0,$C04
  dn F#5,3,$C0A
  dn ___,0,$C04
- dn E_5,1,$C08
+ dn D_5,1,$C08
  dn ___,0,$C04
- dn E_5,1,$C08
+ dn D_5,1,$C08
  dn ___,0,$C04
 
 P11:

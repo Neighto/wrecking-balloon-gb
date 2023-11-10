@@ -163,7 +163,7 @@ UpdateOpeningCutscene::
     ; Skip
     xor a ; ld a, 0
     ldh [hSequencePlaySong], a
-    call ClearSound
+    call ChDACs.mute
     ld hl, hSequenceDataAddress
     ld bc, SkipOpeningSequence
     ld a, LOW(bc)

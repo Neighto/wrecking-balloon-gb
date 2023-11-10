@@ -322,7 +322,7 @@ EndlessUpdate::
     ; Stop music
     ld a, 1 
     ldh [hStopMusic], a
-    call ClearSound
+    call ChDACs.mute
 .checkEndlessLevelCommon:
     ; Check if it's time to stop enemy spawns
     ld a, [hl]
