@@ -1,8 +1,8 @@
 include "src/include/hUGE.inc"
 
-SECTION "song data common vars", WRAM0
+SECTION "song data common vars", WRAMX
 
-wPE:: ds PATTERN_SIZE * dn_SIZE
+wPE:: DS PATTERN_SIZE * dn_SIZE
 
 SECTION "song data common", ROMX
 

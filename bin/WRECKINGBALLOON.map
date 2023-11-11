@@ -586,287 +586,287 @@ ROM0 bank #0:
 	         $340b = EndlessLCDInterrupt.close
 	         $341a = EndlessLCDInterrupt.bottom
 	         $342d = SetEndlessInterrupts
-	SECTION: $343b-$36b3 ($0279 bytes) ["rom"]
+	SECTION: $343b-$36a3 ($0269 bytes) ["rom"]
 	         $343b = WaitAndLCDOffAndCommon
 	         $3456 = Start
-	         $3464 = Restart
+	         $3461 = Restart
 	         $34a0 = MenuLoopOpening
-	         $34a9 = StartMenu
-	         $34c1 = MenuLoop
-	         $34cd = StartGame
-	         $34d4 = StartGame.enteringEndless
-	         $34dc = StartGame.enteringClassic
-	         $34e2 = OpeningCutscene
-	         $351c = OpeningCutsceneLoop
-	         $3528 = SetupNextLevel
-	         $3543 = SetupNextLevel.levelSelect
-	         $3545 = SetupNextLevel.level1
-	         $3558 = SetupNextLevel.level2
-	         $356b = SetupNextLevel.level3
-	         $357d = SetupNextLevel.level4
-	         $3592 = SetupNextLevel.level5
-	         $35a4 = SetupNextLevel.level6
-	         $35c2 = SetupNextLevel.endless
-	         $35d8 = SetupNextLevel.endLevelSetup
-	         $35ee = GameCountdownLoop
-	         $35fa = GameLoop
-	         $3606 = SetupNextLevelEndless
-	         $361b = StageClear
-	         $363c = StageClearLoop
-	         $3648 = GameOver
-	         $3666 = GameOverLoop
-	         $366f = GameWon
-	         $36a8 = GameWonLoop
-	SECTION: $36b4-$3850 ($019d bytes) ["enemy"]
-	         $36b4 = InitializeEnemies
-	         $36bd = EnemyUpdate.handleEnemiesHalf
-	         $36bd = EnemyUpdate
-	         $36c3 = EnemyUpdate.firstHalf
-	         $36c6 = EnemyUpdate.secondHalf
-	         $36c8 = EnemyUpdate.setOffsetAndLoopIndex
-	         $36ce = EnemyUpdate.loop
-	         $36ce = EnemyUpdate.endHandleEnemiesHalf
-	         $36fb = EnemyUpdate.pointBalloon
-	         $3704 = EnemyUpdate.balloonCarrier
-	         $370d = EnemyUpdate.bird
-	         $3716 = EnemyUpdate.bomb
-	         $371f = EnemyUpdate.projectile
-	         $3728 = EnemyUpdate.bossNeedle
-	         $3731 = EnemyUpdate.anvil
-	         $373a = EnemyUpdate.explosion
-	         $3741 = EnemyUpdate.checkLoop
-	         $3752 = FindRAMAndOAMForEnemy
-	         $3763 = EnemyInterCollision
-	         $376a = EnemyInterCollision.loop
-	         $377b = EnemyInterCollision.pointBalloon
-	         $3785 = EnemyInterCollision.bird
-	         $378f = EnemyInterCollision.bomb
-	         $3799 = EnemyInterCollision.carrier
-	         $37a1 = EnemyInterCollision.checkCollision
-	         $37b5 = EnemyInterCollision.checkLoop
-	         $37c6 = EnemyInterCollision.hitEnemy
-	         $37d6 = SetEnemyHitForEnemy1
-	         $37dc = EnemyHitBullet
-	         $37f6 = EnemyHitBullet.notHitByBullet
-	         $37f7 = EnemyHitBullet.hitByBullet
-	         $37fd = FindBalloonCarrier
-	         $3804 = FindBalloonCarrier.loop
-	         $3817 = FindBalloonCarrier.checkLoop
-	         $3827 = HandleEnemyOffscreenHorizontal
-	         $3835 = HandleEnemyOffscreenVertical
-	         $3840 = ClearEnemy
-	SECTION: $3851-$39c6 ($0176 bytes) ["sound"]
-	         $3851 = InitializeSound
-	         $385b = ChDACs.unmute
-	         $385b = ChDACs
-	         $385f = ChDACs.mute
-	         $3861 = ChDACs.toggle
-	         $3879 = SetWaveRAMToSquareWave
-	         $3894 = FastBulletSound
-	         $38a9 = OwVoiceSound
-	         $38be = HelpVoiceSound
-	         $38d3 = LifeUpSound
-	         $38e8 = FallingSound
-	         $38fd = StopSweepSound
-	         $3901 = PopSound
-	         $390e = HitSound
-	         $391b = ExplosionSound
-	         $3928 = FireworkSound
-	         $3935 = ProjectileSound
-	         $3946 = BulletSound
-	         $3957 = BossNeedleSound
-	         $3968 = BoostSound
-	         $3975 = CountdownSound
-	         $3982 = TitleSplashSound
-	         $398f = RisingSound
-	         $39a4 = BassSoundCommon
-	         $39b9 = BassSoundA
-	         $39c0 = BassSoundB
-	SECTION: $39c7-$3b18 ($0152 bytes) ["window"]
-	         $39c7 = SetupWindow
-	         $39d0 = RefreshScore.topClassic
-	         $39d0 = RefreshScore
-	         $39d5 = RefreshScore.topEndless
-	         $39da = RefreshScore.total
-	         $39df = RefreshScore.score
-	         $39e2 = RefreshScore.refresh
-	         $3a07 = LoadWindowTiles
-	         $3a13 = LoadWindow
-	         $3a3f = RefreshBar
-	         $3a40 = RefreshBar.special_1_100
-	         $3a48 = RefreshBar.special_1_75
-	         $3a50 = RefreshBar.special_1_50
-	         $3a58 = RefreshBar.special_1_25
-	         $3a60 = RefreshBar.special_1_0
-	         $3a62 = RefreshBar.endBlock1
-	         $3a64 = RefreshBar.special_2_100
-	         $3a6c = RefreshBar.special_2_75
-	         $3a74 = RefreshBar.special_2_50
-	         $3a7c = RefreshBar.special_2_25
-	         $3a84 = RefreshBar.special_2_0
-	         $3a86 = RefreshBar.endBlock2
-	         $3a88 = RefreshWindow
-	         $3aaa = RefreshGameOverWindow
-	         $3ac9 = LoadTopScoreWindow
-	         $3ae0 = LoadTopScoreWindow.refresh
-	         $3af1 = ShowPauseWindow
-	         $3af5 = ShowPauseWindow.skipResetTimer
-	         $3b00 = LoadPauseWindow
-	SECTION: $3b19-$3c39 ($0121 bytes) ["memory"]
-	         $3b19 = MEMCPY
-	         $3b19 = MEMCPY.loop
-	         $3b22 = MEMCPY_VBLANK_SAFE
-	         $3b22 = MEMCPY_VBLANK_SAFE.loop
-	         $3b26 = MEMCPY_VBLANK_SAFE.wait
-	         $3b34 = MEMCPY_OAM_TILE_AND_ATTRIBUTES_DATA
-	         $3b34 = MEMCPY_OAM_TILE_AND_ATTRIBUTES_DATA.loop
-	         $3b43 = MEMCPY_WITH_OFFSET
-	         $3b44 = MEMCPY_WITH_OFFSET.loop
-	         $3b4f = MEMCPY_WITH_OFFSET.checkLoop
-	         $3b55 = MEMCPY_SIMPLE_PATTERN
-	         $3b59 = MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
-	         $3b5b = MEMCPY_SIMPLE_PATTERN_WITH_OFFSET.loop
-	         $3b70 = MEMCPY_SIMPLE_PATTERN_WITH_OFFSET.resetPattern
-	         $3b7c = MEMCPY_SIMPLE_PATTERN_WITH_OFFSET.end
-	         $3b7e = MEMCPY_PATTERN_CLOUDS
-	         $3b8a = MEMCPY_SINGLE_SCREEN
-	         $3b8e = MEMCPY_SINGLE_SCREEN_WITH_OFFSET
-	         $3b90 = MEMCPY_SINGLE_SCREEN_WITH_OFFSET.loop
-	         $3bad = MEMCPY_SINGLE_SCREEN_WITH_OFFSET.checkLoop
-	         $3bb4 = ResetHLInRange
-	         $3bb6 = SetInRange
-	         $3bb6 = SetInRange.loop
-	         $3bbe = ClearOAM
-	         $3bd0 = ClearHRAM
-	         $3bd9 = RequestOAMSpace
-	         $3be0 = RequestOAMSpace.loop
-	         $3bef = RequestOAMSpace.freeSpriteSpace
-	         $3c03 = RequestOAMSpace.isNotZero3
-	         $3c04 = RequestOAMSpace.isNotZero2
-	         $3c05 = RequestOAMSpace.isNotZero1
-	         $3c07 = RequestOAMSpace.notEnoughSprites
-	         $3c0f = RequestRAMSpace
-	         $3c0f = RequestRAMSpace.loop
-	         $3c17 = RequestRAMSpace.checkLoop
-	         $3c26 = RequestOAMAndSetOAMOffset
-	SECTION: $3c3a-$3d2c ($00f3 bytes) ["score"]
-	         $3c3a = InitializeScore
-	         $3c43 = InitializeTotal
-	         $3c4c = InitializeTopScores
-	         $3c5e = AddPoints
-	         $3c66 = AddPoints.carry
-	         $3c74 = DecrementPoints
-	         $3c7c = DecrementPoints.carry
-	         $3c8e = AddTotal
-	         $3c94 = AddTotal.carry
-	         $3c9d = IsScoreZeroCommon
-	         $3ca9 = IsScoreZero
-	         $3caf = IsTotalZero
-	         $3cb5 = AddScoreToTotal
-	         $3cca = AddScoreToTotal.isNotZeroTotal
-	         $3cda = AddScoreToTotal.loop
-	         $3cea = SetTopScore
-	         $3cf1 = SetTopScore.setTopEndless
-	         $3cf6 = SetTopScore.setTopClassic
-	         $3cf9 = SetTopScore.setTop
-	         $3d04 = SetTopScore.loop_u1
-	         $3d0e = SetTopScore.compare_u1
-	         $3d1b = SetTopScore.bigger_u1
-	         $3d1f = SetTopScore.done_u1
-	SECTION: $3d2d-$3dea ($00be bytes) ["palettes"]
-	         $3d2d = ResetFading
-	         $3d3b = InitializePalettes
-	         $3d48 = InitializeStageClearPalettes
-	         $3d50 = InitializeNightSpritePalettes
-	         $3d59 = InitializeEmptyPalettes
-	         $3d61 = FadeOutPalettes
-	         $3d68 = FadeOutPalettes.hasFadedOut
-	         $3d6b = FadeOutPalettes.fadeOut
-	         $3d74 = FadeOutPalettes.fade1
-	         $3d7e = FadeOutPalettes.fade2
-	         $3d88 = FadeOutPalettes.fade3
-	         $3d92 = FadeOutPalettes.fade4
-	         $3d96 = FadeOutPalettes.fadePalettes
-	         $3d9d = FadeOutPalettes.increaseFrame
-	         $3da4 = FadeOutPalettes.isStillFadingOut
-	         $3da6 = FadeInPalettes
-	         $3dad = FadeInPalettes.hasFadedIn
-	         $3db0 = FadeInPalettes.fadeIn
-	         $3db9 = FadeInPalettes.fade1
-	         $3dc3 = FadeInPalettes.fade2
-	         $3dcd = FadeInPalettes.fade3
-	         $3dd7 = FadeInPalettes.fade4
-	         $3ddb = FadeInPalettes.fadePalettes
-	         $3de2 = FadeInPalettes.increaseFrame
-	         $3de9 = FadeInPalettes.isStillFadingIn
-	SECTION: $3deb-$3e72 ($0088 bytes) ["bullet"]
-	         $3deb = InitializeBullet
-	         $3df5 = SpawnBullet
-	         $3e01 = SpawnBullet.superBullet
-	         $3e0a = SpawnBullet.normalBullet
-	         $3e0e = SpawnBullet.updateSpeed
-	         $3e18 = SpawnBullet.spawnBulletRight
-	         $3e1a = SpawnBullet.updateFlags
-	         $3e25 = SpawnBullet.spawnFromLeft
-	         $3e2f = SpawnBullet.spawnFromRight
-	         $3e33 = SpawnBullet.updateOAM
-	         $3e41 = ClearBullet
-	         $3e4d = BulletUpdate
-	         $3e52 = BulletUpdate.isAlive
-	         $3e69 = BulletUpdate.moveLeft
-	         $3e6c = BulletUpdate.moveRight
-	         $3e6d = BulletUpdate.updateMove
-	SECTION: $3e73-$3ef2 ($0080 bytes) ["collision"]
-	         $3e73 = CollisionCheckBoss
-	         $3e88 = CollisionCheckBullet
-	         $3e9b = CollisionCheckPlayerCactus
-	         $3eb0 = CollisionCheckPlayerBalloon
-	         $3ec3 = CollisionCheck
-	         $3ec9 = CollisionCheck.checkY
-	         $3ecd = CollisionCheck.tryBY2
-	         $3ed5 = CollisionCheck.tryAY2
-	         $3edb = CollisionCheck.checkX
-	         $3ee1 = CollisionCheck.tryBX2
-	         $3ee8 = CollisionCheck.tryAX2
-	         $3eee = CollisionCheck.collision
-	         $3ef1 = CollisionCheck.noCollision
-	SECTION: $3ef3-$3f2c ($003a bytes) ["lcd"]
-	         $3ef3 = LCD_OFF
-	         $3ef7 = LCD_ON
-	         $3efc = LCD_ON_NO_WINDOW
-	         $3f01 = LCD_ON_NO_WINDOW_8_SPR_MODE
-	         $3f06 = WaitVBlank
-	         $3f0a = WaitVBlank.loop
-	         $3f12 = WaitVRAMAccessible
-	         $3f15 = WaitVRAMAccessible.wait
-	         $3f1a = ToggleWindow
-	         $3f21 = ToggleWindow.winoff
-	         $3f27 = ToggleWindow.winon
-	SECTION: $3f2d-$3f64 ($0038 bytes) ["math"]
-	         $3f2d = MODULO
-	         $3f2f = MODULO.loop
-	         $3f34 = DIVISION
-	         $3f39 = DIVISION.loop
-	         $3f3e = DIVISION.end
-	         $3f40 = ToBCD
-	         $3f56 = MULTIPLY
-	         $3f58 = MULTIPLY.loop
-	         $3f63 = MULTIPLY.end
-	SECTION: $3f65-$3f97 ($0033 bytes) ["enemy struct"]
-	         $3f65 = InitializeEnemyStructVars
-	         $3f71 = SetEnemyStruct
-	         $3f7c = SetEnemyStructWithHL
-	SECTION: $3f98-$3fc6 ($002f bytes) ["controller"]
-	         $3f98 = InitializeController
-	         $3fa2 = ReadController
-	SECTION: $3fc7-$3ff3 ($002d bytes) ["graphics"]
-	         $3fc7 = ClearVRAM8000
-	         $3fd0 = ClearVRAM8800
-	         $3fd9 = ClearVRAM9000
-	         $3fe2 = ClearMap
-	         $3feb = ClearWindow
-	EMPTY: $3ff4-$3fff ($000c bytes)
-	TOTAL EMPTY: $0021 bytes
+	         $34a0 = StartMenu
+	         $34b8 = MenuLoop
+	         $34c4 = StartGame
+	         $34d0 = StartGame.enteringEndless
+	         $34d8 = StartGame.enteringClassic
+	         $34de = OpeningCutscene
+	         $3518 = SetupNextLevel
+	         $3518 = OpeningCutsceneLoop
+	         $3533 = SetupNextLevel.levelSelect
+	         $3535 = SetupNextLevel.level1
+	         $3548 = SetupNextLevel.level2
+	         $355b = SetupNextLevel.level3
+	         $356d = SetupNextLevel.level4
+	         $3582 = SetupNextLevel.level5
+	         $3594 = SetupNextLevel.level6
+	         $35b2 = SetupNextLevel.endless
+	         $35c8 = SetupNextLevel.endLevelSetup
+	         $35de = GameCountdownLoop
+	         $35ea = GameLoop
+	         $35f6 = SetupNextLevelEndless
+	         $360b = StageClear
+	         $362c = StageClearLoop
+	         $3638 = GameOver
+	         $3656 = GameOverLoop
+	         $365f = GameWon
+	         $3698 = GameWonLoop
+	SECTION: $36a4-$3840 ($019d bytes) ["enemy"]
+	         $36a4 = InitializeEnemies
+	         $36ad = EnemyUpdate.handleEnemiesHalf
+	         $36ad = EnemyUpdate
+	         $36b3 = EnemyUpdate.firstHalf
+	         $36b6 = EnemyUpdate.secondHalf
+	         $36b8 = EnemyUpdate.setOffsetAndLoopIndex
+	         $36be = EnemyUpdate.loop
+	         $36be = EnemyUpdate.endHandleEnemiesHalf
+	         $36eb = EnemyUpdate.pointBalloon
+	         $36f4 = EnemyUpdate.balloonCarrier
+	         $36fd = EnemyUpdate.bird
+	         $3706 = EnemyUpdate.bomb
+	         $370f = EnemyUpdate.projectile
+	         $3718 = EnemyUpdate.bossNeedle
+	         $3721 = EnemyUpdate.anvil
+	         $372a = EnemyUpdate.explosion
+	         $3731 = EnemyUpdate.checkLoop
+	         $3742 = FindRAMAndOAMForEnemy
+	         $3753 = EnemyInterCollision
+	         $375a = EnemyInterCollision.loop
+	         $376b = EnemyInterCollision.pointBalloon
+	         $3775 = EnemyInterCollision.bird
+	         $377f = EnemyInterCollision.bomb
+	         $3789 = EnemyInterCollision.carrier
+	         $3791 = EnemyInterCollision.checkCollision
+	         $37a5 = EnemyInterCollision.checkLoop
+	         $37b6 = EnemyInterCollision.hitEnemy
+	         $37c6 = SetEnemyHitForEnemy1
+	         $37cc = EnemyHitBullet
+	         $37e6 = EnemyHitBullet.notHitByBullet
+	         $37e7 = EnemyHitBullet.hitByBullet
+	         $37ed = FindBalloonCarrier
+	         $37f4 = FindBalloonCarrier.loop
+	         $3807 = FindBalloonCarrier.checkLoop
+	         $3817 = HandleEnemyOffscreenHorizontal
+	         $3825 = HandleEnemyOffscreenVertical
+	         $3830 = ClearEnemy
+	SECTION: $3841-$39b6 ($0176 bytes) ["sound"]
+	         $3841 = InitializeSound
+	         $384b = ChDACs.unmute
+	         $384b = ChDACs
+	         $384f = ChDACs.mute
+	         $3851 = ChDACs.toggle
+	         $3869 = SetWaveRAMToSquareWave
+	         $3884 = FastBulletSound
+	         $3899 = OwVoiceSound
+	         $38ae = HelpVoiceSound
+	         $38c3 = LifeUpSound
+	         $38d8 = FallingSound
+	         $38ed = StopSweepSound
+	         $38f1 = PopSound
+	         $38fe = HitSound
+	         $390b = ExplosionSound
+	         $3918 = FireworkSound
+	         $3925 = ProjectileSound
+	         $3936 = BulletSound
+	         $3947 = BossNeedleSound
+	         $3958 = BoostSound
+	         $3965 = CountdownSound
+	         $3972 = TitleSplashSound
+	         $397f = RisingSound
+	         $3994 = BassSoundCommon
+	         $39a9 = BassSoundA
+	         $39b0 = BassSoundB
+	SECTION: $39b7-$3b08 ($0152 bytes) ["window"]
+	         $39b7 = SetupWindow
+	         $39c0 = RefreshScore.topClassic
+	         $39c0 = RefreshScore
+	         $39c5 = RefreshScore.topEndless
+	         $39ca = RefreshScore.total
+	         $39cf = RefreshScore.score
+	         $39d2 = RefreshScore.refresh
+	         $39f7 = LoadWindowTiles
+	         $3a03 = LoadWindow
+	         $3a2f = RefreshBar
+	         $3a30 = RefreshBar.special_1_100
+	         $3a38 = RefreshBar.special_1_75
+	         $3a40 = RefreshBar.special_1_50
+	         $3a48 = RefreshBar.special_1_25
+	         $3a50 = RefreshBar.special_1_0
+	         $3a52 = RefreshBar.endBlock1
+	         $3a54 = RefreshBar.special_2_100
+	         $3a5c = RefreshBar.special_2_75
+	         $3a64 = RefreshBar.special_2_50
+	         $3a6c = RefreshBar.special_2_25
+	         $3a74 = RefreshBar.special_2_0
+	         $3a76 = RefreshBar.endBlock2
+	         $3a78 = RefreshWindow
+	         $3a9a = RefreshGameOverWindow
+	         $3ab9 = LoadTopScoreWindow
+	         $3ad0 = LoadTopScoreWindow.refresh
+	         $3ae1 = ShowPauseWindow
+	         $3ae5 = ShowPauseWindow.skipResetTimer
+	         $3af0 = LoadPauseWindow
+	SECTION: $3b09-$3c29 ($0121 bytes) ["memory"]
+	         $3b09 = MEMCPY
+	         $3b09 = MEMCPY.loop
+	         $3b12 = MEMCPY_VBLANK_SAFE
+	         $3b12 = MEMCPY_VBLANK_SAFE.loop
+	         $3b16 = MEMCPY_VBLANK_SAFE.wait
+	         $3b24 = MEMCPY_OAM_TILE_AND_ATTRIBUTES_DATA
+	         $3b24 = MEMCPY_OAM_TILE_AND_ATTRIBUTES_DATA.loop
+	         $3b33 = MEMCPY_WITH_OFFSET
+	         $3b34 = MEMCPY_WITH_OFFSET.loop
+	         $3b3f = MEMCPY_WITH_OFFSET.checkLoop
+	         $3b45 = MEMCPY_SIMPLE_PATTERN
+	         $3b49 = MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+	         $3b4b = MEMCPY_SIMPLE_PATTERN_WITH_OFFSET.loop
+	         $3b60 = MEMCPY_SIMPLE_PATTERN_WITH_OFFSET.resetPattern
+	         $3b6c = MEMCPY_SIMPLE_PATTERN_WITH_OFFSET.end
+	         $3b6e = MEMCPY_PATTERN_CLOUDS
+	         $3b7a = MEMCPY_SINGLE_SCREEN
+	         $3b7e = MEMCPY_SINGLE_SCREEN_WITH_OFFSET
+	         $3b80 = MEMCPY_SINGLE_SCREEN_WITH_OFFSET.loop
+	         $3b9d = MEMCPY_SINGLE_SCREEN_WITH_OFFSET.checkLoop
+	         $3ba4 = ResetHLInRange
+	         $3ba6 = SetInRange
+	         $3ba6 = SetInRange.loop
+	         $3bae = ClearOAM
+	         $3bc0 = ClearHRAM
+	         $3bc9 = RequestOAMSpace
+	         $3bd0 = RequestOAMSpace.loop
+	         $3bdf = RequestOAMSpace.freeSpriteSpace
+	         $3bf3 = RequestOAMSpace.isNotZero3
+	         $3bf4 = RequestOAMSpace.isNotZero2
+	         $3bf5 = RequestOAMSpace.isNotZero1
+	         $3bf7 = RequestOAMSpace.notEnoughSprites
+	         $3bff = RequestRAMSpace
+	         $3bff = RequestRAMSpace.loop
+	         $3c07 = RequestRAMSpace.checkLoop
+	         $3c16 = RequestOAMAndSetOAMOffset
+	SECTION: $3c2a-$3d1c ($00f3 bytes) ["score"]
+	         $3c2a = InitializeScore
+	         $3c33 = InitializeTotal
+	         $3c3c = InitializeTopScores
+	         $3c4e = AddPoints
+	         $3c56 = AddPoints.carry
+	         $3c64 = DecrementPoints
+	         $3c6c = DecrementPoints.carry
+	         $3c7e = AddTotal
+	         $3c84 = AddTotal.carry
+	         $3c8d = IsScoreZeroCommon
+	         $3c99 = IsScoreZero
+	         $3c9f = IsTotalZero
+	         $3ca5 = AddScoreToTotal
+	         $3cba = AddScoreToTotal.isNotZeroTotal
+	         $3cca = AddScoreToTotal.loop
+	         $3cda = SetTopScore
+	         $3ce1 = SetTopScore.setTopEndless
+	         $3ce6 = SetTopScore.setTopClassic
+	         $3ce9 = SetTopScore.setTop
+	         $3cf4 = SetTopScore.loop_u1
+	         $3cfe = SetTopScore.compare_u1
+	         $3d0b = SetTopScore.bigger_u1
+	         $3d0f = SetTopScore.done_u1
+	SECTION: $3d1d-$3dda ($00be bytes) ["palettes"]
+	         $3d1d = ResetFading
+	         $3d2b = InitializePalettes
+	         $3d38 = InitializeStageClearPalettes
+	         $3d40 = InitializeNightSpritePalettes
+	         $3d49 = InitializeEmptyPalettes
+	         $3d51 = FadeOutPalettes
+	         $3d58 = FadeOutPalettes.hasFadedOut
+	         $3d5b = FadeOutPalettes.fadeOut
+	         $3d64 = FadeOutPalettes.fade1
+	         $3d6e = FadeOutPalettes.fade2
+	         $3d78 = FadeOutPalettes.fade3
+	         $3d82 = FadeOutPalettes.fade4
+	         $3d86 = FadeOutPalettes.fadePalettes
+	         $3d8d = FadeOutPalettes.increaseFrame
+	         $3d94 = FadeOutPalettes.isStillFadingOut
+	         $3d96 = FadeInPalettes
+	         $3d9d = FadeInPalettes.hasFadedIn
+	         $3da0 = FadeInPalettes.fadeIn
+	         $3da9 = FadeInPalettes.fade1
+	         $3db3 = FadeInPalettes.fade2
+	         $3dbd = FadeInPalettes.fade3
+	         $3dc7 = FadeInPalettes.fade4
+	         $3dcb = FadeInPalettes.fadePalettes
+	         $3dd2 = FadeInPalettes.increaseFrame
+	         $3dd9 = FadeInPalettes.isStillFadingIn
+	SECTION: $3ddb-$3e62 ($0088 bytes) ["bullet"]
+	         $3ddb = InitializeBullet
+	         $3de5 = SpawnBullet
+	         $3df1 = SpawnBullet.superBullet
+	         $3dfa = SpawnBullet.normalBullet
+	         $3dfe = SpawnBullet.updateSpeed
+	         $3e08 = SpawnBullet.spawnBulletRight
+	         $3e0a = SpawnBullet.updateFlags
+	         $3e15 = SpawnBullet.spawnFromLeft
+	         $3e1f = SpawnBullet.spawnFromRight
+	         $3e23 = SpawnBullet.updateOAM
+	         $3e31 = ClearBullet
+	         $3e3d = BulletUpdate
+	         $3e42 = BulletUpdate.isAlive
+	         $3e59 = BulletUpdate.moveLeft
+	         $3e5c = BulletUpdate.moveRight
+	         $3e5d = BulletUpdate.updateMove
+	SECTION: $3e63-$3ee2 ($0080 bytes) ["collision"]
+	         $3e63 = CollisionCheckBoss
+	         $3e78 = CollisionCheckBullet
+	         $3e8b = CollisionCheckPlayerCactus
+	         $3ea0 = CollisionCheckPlayerBalloon
+	         $3eb3 = CollisionCheck
+	         $3eb9 = CollisionCheck.checkY
+	         $3ebd = CollisionCheck.tryBY2
+	         $3ec5 = CollisionCheck.tryAY2
+	         $3ecb = CollisionCheck.checkX
+	         $3ed1 = CollisionCheck.tryBX2
+	         $3ed8 = CollisionCheck.tryAX2
+	         $3ede = CollisionCheck.collision
+	         $3ee1 = CollisionCheck.noCollision
+	SECTION: $3ee3-$3f1c ($003a bytes) ["lcd"]
+	         $3ee3 = LCD_OFF
+	         $3ee7 = LCD_ON
+	         $3eec = LCD_ON_NO_WINDOW
+	         $3ef1 = LCD_ON_NO_WINDOW_8_SPR_MODE
+	         $3ef6 = WaitVBlank
+	         $3efa = WaitVBlank.loop
+	         $3f02 = WaitVRAMAccessible
+	         $3f05 = WaitVRAMAccessible.wait
+	         $3f0a = ToggleWindow
+	         $3f11 = ToggleWindow.winoff
+	         $3f17 = ToggleWindow.winon
+	SECTION: $3f1d-$3f54 ($0038 bytes) ["math"]
+	         $3f1d = MODULO
+	         $3f1f = MODULO.loop
+	         $3f24 = DIVISION
+	         $3f29 = DIVISION.loop
+	         $3f2e = DIVISION.end
+	         $3f30 = ToBCD
+	         $3f46 = MULTIPLY
+	         $3f48 = MULTIPLY.loop
+	         $3f53 = MULTIPLY.end
+	SECTION: $3f55-$3f87 ($0033 bytes) ["enemy struct"]
+	         $3f55 = InitializeEnemyStructVars
+	         $3f61 = SetEnemyStruct
+	         $3f6c = SetEnemyStructWithHL
+	SECTION: $3f88-$3fb6 ($002f bytes) ["controller"]
+	         $3f88 = InitializeController
+	         $3f92 = ReadController
+	SECTION: $3fb7-$3fe3 ($002d bytes) ["graphics"]
+	         $3fb7 = ClearVRAM8000
+	         $3fc0 = ClearVRAM8800
+	         $3fc9 = ClearVRAM9000
+	         $3fd2 = ClearMap
+	         $3fdb = ClearWindow
+	EMPTY: $3fe4-$3fff ($001c bytes)
+	TOTAL EMPTY: $0031 bytes
 
 ROMX bank #1:
 	SECTION: $4000-$508f ($1090 bytes) ["tilesets 2"]
@@ -1482,50 +1482,119 @@ ROMX bank #1:
 	TOTAL EMPTY: $000d bytes
 
 WRAM0 bank #0:
-	SECTION: $c000-$c0bf ($00c0 bytes) ["song data common vars"]
-	         $c000 = wPE
-	SECTION: $c0c0-$c0cb ($000c bytes) ["score vars"]
-	         $c0c0 = wScore
-	         $c0c3 = wTotal
-	         $c0c6 = wTopClassic
-	         $c0c9 = wTopEndless
-	SECTION: $c0cc-$c0d1 ($0006 bytes) ["menu vars"]
-	         $c0cc = wMenuFrame
-	         $c0cd = wSelectedMode
-	         $c0ce = wMenuCursorOAM
-	         $c0cf = wMenuCursorTimer
-	         $c0d0 = wSunglassesOAM
-	         $c0d1 = wSecret
-	SECTION: $c0d2-$c0d6 ($0005 bytes) ["stage clear vars"]
-	         $c0d2 = wPointSound
-	         $c0d3 = wStageNumberOAM
-	         $c0d4 = wExtraLife
-	         $c0d5 = wExtraLifeScoreMeter
-	         $c0d6 = wExtraLifeScorePhase
-	SECTION: $c0d7-$c0db ($0005 bytes) ["palettes vars"]
-	         $c0d7 = wFadeInFrame
-	         $c0d8 = wFadeOutFrame
-	         $c0d9 = wTriggerFadeIn
-	         $c0da = wTriggerFadeOut
-	         $c0db = wFlickerTimer
-	SECTION: $c0dc-$c0de ($0003 bytes) ["interrupts vars"]
-	         $c0dc = wVBlankFlag
-	         $c0dd = wLCDInterrupt
-	SECTION: $c0df-$c0e1 ($0003 bytes) ["ending cutscene vars"]
-	         $c0df = wVictoryTextSwapFrame
-	         $c0e0 = wHandClappingFrame
-	         $c0e1 = wHandClapOAM
-	SECTION: $c0e2-$c0e3 ($0002 bytes) ["game vars"]
-	         $c0e2 = wCountdownFrame
-	         $c0e3 = wCountdownOAM
-	SECTION: $c0e4-$c0e5 ($0002 bytes) ["opening cutscene vars"]
-	         $c0e4 = wHandWavingFrame
-	         $c0e5 = wHandWaveOAM
-	SECTION: $c0e6-$c0e6 ($0001 byte) ["boss miscellaneous vars"]
-	         $c0e6 = wWaitBossTimer
-	SECTION: $c0e7-$c0e7 ($0001 byte) ["memory vars"]
-	         $c0e7 = wMemcpyTileOffset
-	EMPTY: $c0e8-$c0ff ($0018 bytes)
+	SECTION: $c000-$c063 ($0064 bytes) ["Playback variables"]
+	         $c000 = order_cnt
+	         $c001 = order1
+	         $c001 = _start_song_descriptor_pointers
+	         $c003 = order2
+	         $c005 = order3
+	         $c007 = order4
+	         $c009 = duty_instruments
+	         $c00b = wave_instruments
+	         $c00d = noise_instruments
+	         $c00f = routines
+	         $c011 = waves
+	         $c013 = pattern1
+	         $c013 = _end_song_descriptor_pointers
+	         $c015 = pattern2
+	         $c017 = pattern3
+	         $c019 = pattern4
+	         $c01b = ticks_per_row
+	         $c01c = current_wave
+	         $c01c = _hUGE_current_wave
+	         $c01c = hUGE_current_wave
+	         $c01d = start_zero
+	         $c01d = mute_channels
+	         $c01d = _hUGE_mute_mask
+	         $c01e = counter
+	         $c01f = tick
+	         $c020 = row_break
+	         $c021 = next_order
+	         $c022 = row
+	         $c023 = current_order
+	         $c024 = channels
+	         $c024 = channel_period1
+	         $c024 = channel1
+	         $c026 = toneporta_target1
+	         $c028 = channel_note1
+	         $c029 = highmask1
+	         $c02a = vibrato_tremolo_phase1
+	         $c02b = envelope1
+	         $c02c = table1
+	         $c02e = table_row1
+	         $c034 = channel_period2
+	         $c034 = channel2
+	         $c036 = toneporta_target2
+	         $c038 = channel_note2
+	         $c039 = highmask2
+	         $c03a = vibrato_tremolo_phase2
+	         $c03b = envelope2
+	         $c03c = table2
+	         $c03e = table_row2
+	         $c044 = channel_period3
+	         $c044 = channel3
+	         $c046 = toneporta_target3
+	         $c048 = channel_note3
+	         $c049 = highmask3
+	         $c04a = vibrato_tremolo_phase3
+	         $c04b = envelope3
+	         $c04c = table3
+	         $c04e = table_row3
+	         $c054 = channel_period4
+	         $c054 = channel4
+	         $c056 = toneporta_target4
+	         $c058 = channel_note4
+	         $c059 = highmask4
+	         $c05a = step_width4
+	         $c05b = vibrato_tremolo_phase4
+	         $c05c = envelope4
+	         $c05d = table4
+	         $c05f = table_row4
+	         $c064 = end_zero
+	SECTION: $c064-$c0bd ($005a bytes) ["enemy data vars (wram)"]
+	         $c064 = wEnemies
+	SECTION: $c0be-$c0c9 ($000c bytes) ["score vars"]
+	         $c0be = wScore
+	         $c0c1 = wTotal
+	         $c0c4 = wTopClassic
+	         $c0c7 = wTopEndless
+	SECTION: $c0ca-$c0cf ($0006 bytes) ["menu vars"]
+	         $c0ca = wMenuFrame
+	         $c0cb = wSelectedMode
+	         $c0cc = wMenuCursorOAM
+	         $c0cd = wMenuCursorTimer
+	         $c0ce = wSunglassesOAM
+	         $c0cf = wSecret
+	SECTION: $c0d0-$c0d4 ($0005 bytes) ["stage clear vars"]
+	         $c0d0 = wPointSound
+	         $c0d1 = wStageNumberOAM
+	         $c0d2 = wExtraLife
+	         $c0d3 = wExtraLifeScoreMeter
+	         $c0d4 = wExtraLifeScorePhase
+	SECTION: $c0d5-$c0d9 ($0005 bytes) ["palettes vars"]
+	         $c0d5 = wFadeInFrame
+	         $c0d6 = wFadeOutFrame
+	         $c0d7 = wTriggerFadeIn
+	         $c0d8 = wTriggerFadeOut
+	         $c0d9 = wFlickerTimer
+	SECTION: $c0da-$c0dc ($0003 bytes) ["interrupts vars"]
+	         $c0da = wVBlankFlag
+	         $c0db = wLCDInterrupt
+	SECTION: $c0dd-$c0df ($0003 bytes) ["ending cutscene vars"]
+	         $c0dd = wVictoryTextSwapFrame
+	         $c0de = wHandClappingFrame
+	         $c0df = wHandClapOAM
+	SECTION: $c0e0-$c0e1 ($0002 bytes) ["game vars"]
+	         $c0e0 = wCountdownFrame
+	         $c0e1 = wCountdownOAM
+	SECTION: $c0e2-$c0e3 ($0002 bytes) ["opening cutscene vars"]
+	         $c0e2 = wHandWavingFrame
+	         $c0e3 = wHandWaveOAM
+	SECTION: $c0e4-$c0e4 ($0001 byte) ["boss miscellaneous vars"]
+	         $c0e4 = wWaitBossTimer
+	SECTION: $c0e5-$c0e5 ($0001 byte) ["memory vars"]
+	         $c0e5 = wMemcpyTileOffset
+	EMPTY: $c0e6-$c0ff ($001a bytes)
 	SECTION: $c100-$c19f ($00a0 bytes) ["OAM vars"]
 	         $c100 = wPlayerCactusOAM
 	         $c108 = wPlayerBalloonOAM
@@ -1533,83 +1602,18 @@ WRAM0 bank #0:
 	         $c114 = OAMVars
 	         $c114 = wOAM
 	         $c1a0 = OAMVarsEnd
-	SECTION: $c1a0-$c203 ($0064 bytes) ["Playback variables"]
-	         $c1a0 = order_cnt
-	         $c1a1 = order1
-	         $c1a1 = _start_song_descriptor_pointers
-	         $c1a3 = order2
-	         $c1a5 = order3
-	         $c1a7 = order4
-	         $c1a9 = duty_instruments
-	         $c1ab = wave_instruments
-	         $c1ad = noise_instruments
-	         $c1af = routines
-	         $c1b1 = waves
-	         $c1b3 = pattern1
-	         $c1b3 = _end_song_descriptor_pointers
-	         $c1b5 = pattern2
-	         $c1b7 = pattern3
-	         $c1b9 = pattern4
-	         $c1bb = ticks_per_row
-	         $c1bc = current_wave
-	         $c1bc = _hUGE_current_wave
-	         $c1bc = hUGE_current_wave
-	         $c1bd = start_zero
-	         $c1bd = mute_channels
-	         $c1bd = _hUGE_mute_mask
-	         $c1be = counter
-	         $c1bf = tick
-	         $c1c0 = row_break
-	         $c1c1 = next_order
-	         $c1c2 = row
-	         $c1c3 = current_order
-	         $c1c4 = channels
-	         $c1c4 = channel_period1
-	         $c1c4 = channel1
-	         $c1c6 = toneporta_target1
-	         $c1c8 = channel_note1
-	         $c1c9 = highmask1
-	         $c1ca = vibrato_tremolo_phase1
-	         $c1cb = envelope1
-	         $c1cc = table1
-	         $c1ce = table_row1
-	         $c1d4 = channel_period2
-	         $c1d4 = channel2
-	         $c1d6 = toneporta_target2
-	         $c1d8 = channel_note2
-	         $c1d9 = highmask2
-	         $c1da = vibrato_tremolo_phase2
-	         $c1db = envelope2
-	         $c1dc = table2
-	         $c1de = table_row2
-	         $c1e4 = channel_period3
-	         $c1e4 = channel3
-	         $c1e6 = toneporta_target3
-	         $c1e8 = channel_note3
-	         $c1e9 = highmask3
-	         $c1ea = vibrato_tremolo_phase3
-	         $c1eb = envelope3
-	         $c1ec = table3
-	         $c1ee = table_row3
-	         $c1f4 = channel_period4
-	         $c1f4 = channel4
-	         $c1f6 = toneporta_target4
-	         $c1f8 = channel_note4
-	         $c1f9 = highmask4
-	         $c1fa = step_width4
-	         $c1fb = vibrato_tremolo_phase4
-	         $c1fc = envelope4
-	         $c1fd = table4
-	         $c1ff = table_row4
-	         $c204 = end_zero
-	SECTION: $c204-$c25d ($005a bytes) ["enemy data vars (wram)"]
-	         $c204 = wEnemies
-	EMPTY: $c25e-$c2ff ($00a2 bytes)
+	EMPTY: $c1a0-$c2ff ($0160 bytes)
 	SECTION: $c300-$c307 ($0008 bytes) ["collision vars"]
 	         $c300 = wColliderA
 	         $c304 = wColliderB
 	EMPTY: $c308-$cfff ($0cf8 bytes)
-	TOTAL EMPTY: $0db2 bytes
+	TOTAL EMPTY: $0e72 bytes
+
+WRAMX bank #1:
+	SECTION: $d000-$d0bf ($00c0 bytes) ["song data common vars"]
+	         $d000 = wPE
+	EMPTY: $d0c0-$dfff ($0f40 bytes)
+	TOTAL EMPTY: $0f40 bytes
 
 HRAM bank #0:
 	SECTION: $ff80-$ff99 ($001a bytes) ["endless vars"]
@@ -1719,7 +1723,8 @@ HRAM bank #0:
 	TOTAL EMPTY: $0017 bytes
 
 SUMMARY:
-	ROM0: 16351 bytes used / 33 free
+	ROM0: 16335 bytes used / 49 free
 	ROMX: 16371 bytes used / 13 free in 1 bank
-	WRAM0: 590 bytes used / 3506 free
+	WRAM0: 398 bytes used / 3698 free
+	WRAMX: 192 bytes used / 3904 free in 1 bank
 	HRAM: 104 bytes used / 23 free
