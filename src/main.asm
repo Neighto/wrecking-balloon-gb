@@ -286,9 +286,9 @@ GameOverLoop:
 GameWon::
 	call WaitAndLCDOffAndCommon
 	call SetCutsceneInterrupts
-	call LoadEndingCutsceneGraphics
 	call AddScoreToTotal
 	call SetTopScore
+	call LoadEndingCutsceneGraphics
 	call InitializeSequence
 	call InitializeEndingCutscene
 	call InitializeSound

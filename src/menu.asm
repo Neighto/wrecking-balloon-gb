@@ -302,7 +302,5 @@ UpdateMenu::
 	; START
 	ld a, 1 
 	ld [wTriggerFadeOut], a
-	ld b, 0 ; Channel 1
-	ld c, 1 ; Mute
-	call hUGE_mute_channel
+	call ChDACs.mute
 	jp LifeUpSound

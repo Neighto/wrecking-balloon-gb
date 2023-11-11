@@ -31,8 +31,6 @@ SECTION "level data", ROM0
 
 ; Level 1
 Level1:
-    LVL__REPT 1, LevelOutro
-
 .intro:
     LVL__POINT_BALLOON_EASY______________ SPAWN_X_C
     LVL__WAIT 8

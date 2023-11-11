@@ -319,9 +319,7 @@ EndlessUpdate::
     ; Initiate countdown for level switch
     call InitializeGame
     call SpawnCountdown
-    ; Stop music
-    ld a, 1 
-    ldh [hStopMusic], a
+    ; Mute music
     call ChDACs.mute
 .checkEndlessLevelCommon:
     ; Check if it's time to stop enemy spawns
