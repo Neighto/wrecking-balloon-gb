@@ -221,7 +221,7 @@ ClearHRAM::
 RequestOAMSpace::
     ld c, 0 ; c = how many sprites we've found free so far
     ld hl, wOAM
-    ld d, OAMVarsEnd - OAMVars
+    ld d, GENERAL_OAM_COUNT
 .loop:
     ; Check sprite attribute: Y
     ld a, [hli]
@@ -243,7 +243,7 @@ RequestOAMSpace::
     cp a, c
     jr nz, .notEnoughSprites
     ; Has sufficient space to spawn
-    ld a, OAMVarsEnd - OAMVars
+    ld a, GENERAL_OAM_COUNT
     sub a, d
     sub a, c
     inc a
