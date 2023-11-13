@@ -252,6 +252,7 @@ StageClear::
 	call InitializeEmptyPalettes
 	call InitializeSequence
 	call InitializeStageClear
+	call ResetPlayerFlags
 	call SpawnStageNumber
 	call SpawnExtraLifeBalloon
 	call LCD_ON_NO_WINDOW

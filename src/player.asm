@@ -89,6 +89,11 @@ InitializePlayer::
   ldh [hPlayerBalloonTurningTile2], a
   ret
 
+ResetPlayerFlags::
+  xor a ; ld a, 0
+  ldh [hPlayerFlags], a
+  ret
+
 UpdateBalloonPosition:
   ld hl, wPlayerBalloonOAM
   ldh a, [hPlayerX]
