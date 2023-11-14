@@ -34,7 +34,7 @@ ENDM
 ;; Maximum pattern length
 PATTERN_LENGTH EQU 64
 
-SECTION "Playback variables", WRAM0
+SECTION "Playback variables", WRAMX
 ;; Active song descriptor
 order_cnt: db
 _start_song_descriptor_pointers:

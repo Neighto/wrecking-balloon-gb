@@ -79,11 +79,11 @@ dw 0
 db 128
 
 itSquareinst9:
-db 8
-db 128
-db 240
+db 23
+db 142
+db 241
 dw 0
-db 128
+db 192
 
 itSquareinst10:
 db 8

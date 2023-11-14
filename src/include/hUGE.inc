@@ -83,4 +83,4 @@ LAST_NOTE EQU 72
 ___ EQU 90 ; the default "no note" value
 NO_NOTE EQU ___
 
-STOP_SONG EQU 100
+STOP_SONG EQU 500

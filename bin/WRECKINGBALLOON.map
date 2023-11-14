@@ -1483,119 +1483,50 @@ ROMX bank #1:
 	TOTAL EMPTY: $000d bytes
 
 WRAM0 bank #0:
-	SECTION: $c000-$c063 ($0064 bytes) ["Playback variables"]
-	         $c000 = order_cnt
-	         $c001 = order1
-	         $c001 = _start_song_descriptor_pointers
-	         $c003 = order2
-	         $c005 = order3
-	         $c007 = order4
-	         $c009 = duty_instruments
-	         $c00b = wave_instruments
-	         $c00d = noise_instruments
-	         $c00f = routines
-	         $c011 = waves
-	         $c013 = pattern1
-	         $c013 = _end_song_descriptor_pointers
-	         $c015 = pattern2
-	         $c017 = pattern3
-	         $c019 = pattern4
-	         $c01b = ticks_per_row
-	         $c01c = current_wave
-	         $c01c = _hUGE_current_wave
-	         $c01c = hUGE_current_wave
-	         $c01d = start_zero
-	         $c01d = mute_channels
-	         $c01d = _hUGE_mute_mask
-	         $c01e = counter
-	         $c01f = tick
-	         $c020 = row_break
-	         $c021 = next_order
-	         $c022 = row
-	         $c023 = current_order
-	         $c024 = channels
-	         $c024 = channel_period1
-	         $c024 = channel1
-	         $c026 = toneporta_target1
-	         $c028 = channel_note1
-	         $c029 = highmask1
-	         $c02a = vibrato_tremolo_phase1
-	         $c02b = envelope1
-	         $c02c = table1
-	         $c02e = table_row1
-	         $c034 = channel_period2
-	         $c034 = channel2
-	         $c036 = toneporta_target2
-	         $c038 = channel_note2
-	         $c039 = highmask2
-	         $c03a = vibrato_tremolo_phase2
-	         $c03b = envelope2
-	         $c03c = table2
-	         $c03e = table_row2
-	         $c044 = channel_period3
-	         $c044 = channel3
-	         $c046 = toneporta_target3
-	         $c048 = channel_note3
-	         $c049 = highmask3
-	         $c04a = vibrato_tremolo_phase3
-	         $c04b = envelope3
-	         $c04c = table3
-	         $c04e = table_row3
-	         $c054 = channel_period4
-	         $c054 = channel4
-	         $c056 = toneporta_target4
-	         $c058 = channel_note4
-	         $c059 = highmask4
-	         $c05a = step_width4
-	         $c05b = vibrato_tremolo_phase4
-	         $c05c = envelope4
-	         $c05d = table4
-	         $c05f = table_row4
-	         $c064 = end_zero
-	SECTION: $c064-$c0bd ($005a bytes) ["enemy data vars (wram)"]
-	         $c064 = wEnemies
-	SECTION: $c0be-$c0c9 ($000c bytes) ["score vars"]
-	         $c0be = wScore
-	         $c0c1 = wTotal
-	         $c0c4 = wTopClassic
-	         $c0c7 = wTopEndless
-	SECTION: $c0ca-$c0cf ($0006 bytes) ["menu vars"]
-	         $c0ca = wMenuFrame
-	         $c0cb = wSelectedMode
-	         $c0cc = wMenuCursorOAM
-	         $c0cd = wMenuCursorTimer
-	         $c0ce = wSunglassesOAM
-	         $c0cf = wSecret
-	SECTION: $c0d0-$c0d4 ($0005 bytes) ["stage clear vars"]
-	         $c0d0 = wPointSound
-	         $c0d1 = wStageNumberOAM
-	         $c0d2 = wExtraLife
-	         $c0d3 = wExtraLifeScoreMeter
-	         $c0d4 = wExtraLifeScorePhase
-	SECTION: $c0d5-$c0d9 ($0005 bytes) ["palettes vars"]
-	         $c0d5 = wFadeInFrame
-	         $c0d6 = wFadeOutFrame
-	         $c0d7 = wTriggerFadeIn
-	         $c0d8 = wTriggerFadeOut
-	         $c0d9 = wFlickerTimer
-	SECTION: $c0da-$c0dc ($0003 bytes) ["interrupts vars"]
-	         $c0da = wVBlankFlag
-	         $c0db = wLCDInterrupt
-	SECTION: $c0dd-$c0df ($0003 bytes) ["ending cutscene vars"]
-	         $c0dd = wVictoryTextSwapFrame
-	         $c0de = wHandClappingFrame
-	         $c0df = wHandClapOAM
-	SECTION: $c0e0-$c0e1 ($0002 bytes) ["game vars"]
-	         $c0e0 = wCountdownFrame
-	         $c0e1 = wCountdownOAM
-	SECTION: $c0e2-$c0e3 ($0002 bytes) ["opening cutscene vars"]
-	         $c0e2 = wHandWavingFrame
-	         $c0e3 = wHandWaveOAM
-	SECTION: $c0e4-$c0e4 ($0001 byte) ["boss miscellaneous vars"]
-	         $c0e4 = wWaitBossTimer
-	SECTION: $c0e5-$c0e5 ($0001 byte) ["memory vars"]
-	         $c0e5 = wMemcpyTileOffset
-	EMPTY: $c0e6-$c0ff ($001a bytes)
+	SECTION: $c000-$c059 ($005a bytes) ["enemy data vars (wram)"]
+	         $c000 = wEnemies
+	SECTION: $c05a-$c065 ($000c bytes) ["score vars"]
+	         $c05a = wScore
+	         $c05d = wTotal
+	         $c060 = wTopClassic
+	         $c063 = wTopEndless
+	SECTION: $c066-$c06b ($0006 bytes) ["menu vars"]
+	         $c066 = wMenuFrame
+	         $c067 = wSelectedMode
+	         $c068 = wMenuCursorOAM
+	         $c069 = wMenuCursorTimer
+	         $c06a = wSunglassesOAM
+	         $c06b = wSecret
+	SECTION: $c06c-$c070 ($0005 bytes) ["stage clear vars"]
+	         $c06c = wPointSound
+	         $c06d = wStageNumberOAM
+	         $c06e = wExtraLife
+	         $c06f = wExtraLifeScoreMeter
+	         $c070 = wExtraLifeScorePhase
+	SECTION: $c071-$c075 ($0005 bytes) ["palettes vars"]
+	         $c071 = wFadeInFrame
+	         $c072 = wFadeOutFrame
+	         $c073 = wTriggerFadeIn
+	         $c074 = wTriggerFadeOut
+	         $c075 = wFlickerTimer
+	SECTION: $c076-$c078 ($0003 bytes) ["interrupts vars"]
+	         $c076 = wVBlankFlag
+	         $c077 = wLCDInterrupt
+	SECTION: $c079-$c07b ($0003 bytes) ["ending cutscene vars"]
+	         $c079 = wVictoryTextSwapFrame
+	         $c07a = wHandClappingFrame
+	         $c07b = wHandClapOAM
+	SECTION: $c07c-$c07d ($0002 bytes) ["game vars"]
+	         $c07c = wCountdownFrame
+	         $c07d = wCountdownOAM
+	SECTION: $c07e-$c07f ($0002 bytes) ["opening cutscene vars"]
+	         $c07e = wHandWavingFrame
+	         $c07f = wHandWaveOAM
+	SECTION: $c080-$c080 ($0001 byte) ["boss miscellaneous vars"]
+	         $c080 = wWaitBossTimer
+	SECTION: $c081-$c081 ($0001 byte) ["memory vars"]
+	         $c081 = wMemcpyTileOffset
+	EMPTY: $c082-$c0ff ($007e bytes)
 	SECTION: $c100-$c19f ($00a0 bytes) ["OAM vars"]
 	         $c100 = wPlayerCactusOAM
 	         $c108 = wPlayerBalloonOAM
@@ -1606,13 +1537,82 @@ WRAM0 bank #0:
 	         $c300 = wColliderA
 	         $c304 = wColliderB
 	EMPTY: $c308-$cfff ($0cf8 bytes)
-	TOTAL EMPTY: $0e72 bytes
+	TOTAL EMPTY: $0ed6 bytes
 
 WRAMX bank #1:
 	SECTION: $d000-$d0bf ($00c0 bytes) ["song data common vars"]
 	         $d000 = wPE
-	EMPTY: $d0c0-$dfff ($0f40 bytes)
-	TOTAL EMPTY: $0f40 bytes
+	SECTION: $d0c0-$d123 ($0064 bytes) ["Playback variables"]
+	         $d0c0 = order_cnt
+	         $d0c1 = order1
+	         $d0c1 = _start_song_descriptor_pointers
+	         $d0c3 = order2
+	         $d0c5 = order3
+	         $d0c7 = order4
+	         $d0c9 = duty_instruments
+	         $d0cb = wave_instruments
+	         $d0cd = noise_instruments
+	         $d0cf = routines
+	         $d0d1 = waves
+	         $d0d3 = pattern1
+	         $d0d3 = _end_song_descriptor_pointers
+	         $d0d5 = pattern2
+	         $d0d7 = pattern3
+	         $d0d9 = pattern4
+	         $d0db = ticks_per_row
+	         $d0dc = current_wave
+	         $d0dc = _hUGE_current_wave
+	         $d0dc = hUGE_current_wave
+	         $d0dd = start_zero
+	         $d0dd = mute_channels
+	         $d0dd = _hUGE_mute_mask
+	         $d0de = counter
+	         $d0df = tick
+	         $d0e0 = row_break
+	         $d0e1 = next_order
+	         $d0e2 = row
+	         $d0e3 = current_order
+	         $d0e4 = channels
+	         $d0e4 = channel_period1
+	         $d0e4 = channel1
+	         $d0e6 = toneporta_target1
+	         $d0e8 = channel_note1
+	         $d0e9 = highmask1
+	         $d0ea = vibrato_tremolo_phase1
+	         $d0eb = envelope1
+	         $d0ec = table1
+	         $d0ee = table_row1
+	         $d0f4 = channel_period2
+	         $d0f4 = channel2
+	         $d0f6 = toneporta_target2
+	         $d0f8 = channel_note2
+	         $d0f9 = highmask2
+	         $d0fa = vibrato_tremolo_phase2
+	         $d0fb = envelope2
+	         $d0fc = table2
+	         $d0fe = table_row2
+	         $d104 = channel_period3
+	         $d104 = channel3
+	         $d106 = toneporta_target3
+	         $d108 = channel_note3
+	         $d109 = highmask3
+	         $d10a = vibrato_tremolo_phase3
+	         $d10b = envelope3
+	         $d10c = table3
+	         $d10e = table_row3
+	         $d114 = channel_period4
+	         $d114 = channel4
+	         $d116 = toneporta_target4
+	         $d118 = channel_note4
+	         $d119 = highmask4
+	         $d11a = step_width4
+	         $d11b = vibrato_tremolo_phase4
+	         $d11c = envelope4
+	         $d11d = table4
+	         $d11f = table_row4
+	         $d124 = end_zero
+	EMPTY: $d124-$dfff ($0edc bytes)
+	TOTAL EMPTY: $0edc bytes
 
 HRAM bank #0:
 	SECTION: $ff80-$ff99 ($001a bytes) ["endless vars"]
@@ -1724,6 +1724,6 @@ HRAM bank #0:
 SUMMARY:
 	ROM0: 16358 bytes used / 26 free
 	ROMX: 16371 bytes used / 13 free in 1 bank
-	WRAM0: 398 bytes used / 3698 free
-	WRAMX: 192 bytes used / 3904 free in 1 bank
+	WRAM0: 298 bytes used / 3798 free
+	WRAMX: 292 bytes used / 3804 free in 1 bank
 	HRAM: 104 bytes used / 23 free
