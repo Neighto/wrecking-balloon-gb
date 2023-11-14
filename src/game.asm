@@ -434,6 +434,8 @@ UpdateGame::
     jp ToggleWindow.winon
 .isNotPaused:
 
+    call _hUGE_dosound
+
     ; Update sprites
     call PlayerUpdate
     call EnemyUpdate
@@ -458,5 +460,4 @@ UpdateGame::
 
     ; Handle common
     call RefreshWindow
-    call IncrementScrollOffset
-    jp _hUGE_dosound
+    jp IncrementScrollOffset

@@ -320,7 +320,10 @@ EndlessUpdate::
     call InitializeGame
     call SpawnCountdown
     ; Mute music
+    ld a, 1 
+    ldh [hStopMusic], a
     call ChDACs.mute
+
 .checkEndlessLevelCommon:
     ; Check if it's time to stop enemy spawns
     ld a, [hl]
