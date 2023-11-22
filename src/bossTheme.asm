@@ -10,44 +10,41 @@ dw duty_instruments, wave_instruments, noise_instruments
 dw routines
 dw waves
 
-order_cnt: db 4
-order2: dw P1,P3
-order3: dw P2,P2
+order_cnt: db 8
+order2: dw P4,P1,P4,P3
+order3: dw P5,P2,P5,P2
 
 P1:
- dn B_4,3,$C0C
- dn ___,0,$000
- dn ___,0,$A04
- dn G#4,4,$C0C
+ dn G#4,2,$C0C
  dn ___,0,$A03
- dn B_4,4,$C0C
+ dn B_4,2,$C0C
  dn ___,0,$E00
  dn ___,0,$000
- dn G#4,4,$C0C
- dn B_4,4,$C0C
+ dn G#4,2,$C0C
+ dn B_4,2,$C0C
  dn ___,0,$E00
- dn C#5,4,$10A
- dn C#5,4,$C0C
+ dn C#5,2,$10A
+ dn C#5,2,$C0C
  dn ___,0,$000
  dn ___,0,$000
- dn B_4,4,$C0C
+ dn B_4,2,$C0C
  dn ___,0,$E00
  dn ___,0,$000
- dn G#4,4,$C0C
+ dn G#4,2,$C0C
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$101
  dn ___,0,$110
- dn G#4,4,$C0C
+ dn G#4,2,$C0C
  dn ___,0,$A03
- dn B_4,4,$C0C
+ dn B_4,2,$C0C
  dn ___,0,$E00
  dn ___,0,$000
- dn G#4,4,$C0C
- dn B_4,4,$C0C
+ dn G#4,2,$C0C
+ dn B_4,2,$C0C
  dn ___,0,$E00
  dn ___,0,$000
- dn G#4,4,$C0C
+ dn G#4,2,$C0C
  dn ___,0,$001
  dn ___,0,$010
  dn ___,0,$A04
@@ -81,9 +78,6 @@ P1:
  dn ___,0,$A04
 
 P2:
- dn G#4,1,$C08
- dn G#4,2,$C08
- dn G#4,1,$C08
  dn G#4,2,$C08
  dn G#4,1,$C08
  dn G#4,2,$C08
@@ -144,36 +138,33 @@ P2:
  dn G#4,2,$C08
  dn G#4,1,$C08
  dn G#4,2,$C08
- dn ___,0,$000
+ dn ___,0,$B00
 
 P3:
- dn B_4,3,$C0C
- dn ___,0,$000
- dn ___,0,$A04
  dn ___,0,$E00
- dn C#5,4,$C0C
+ dn C#5,2,$C0C
  dn ___,0,$A03
  dn ___,0,$000
- dn C#5,4,$C0C
+ dn C#5,2,$C0C
  dn ___,0,$E00
  dn ___,0,$000
- dn C#5,4,$C0C
+ dn C#5,2,$C0C
  dn ___,0,$000
- dn D#5,4,$C0C
- dn ___,0,$000
- dn ___,0,$000
+ dn D#5,2,$C0C
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
- dn G#4,4,$C0C
+ dn ___,0,$000
+ dn ___,0,$000
+ dn G#4,2,$C0C
  dn ___,0,$A03
- dn G#4,4,$C0C
+ dn G#4,2,$C0C
  dn ___,0,$E00
  dn ___,0,$000
  dn ___,0,$000
- dn G#4,4,$C0C
+ dn G#4,2,$C0C
  dn ___,0,$A03
- dn G#4,4,$C0C
+ dn G#4,2,$C0C
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
@@ -184,19 +175,19 @@ P3:
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$A04
- dn B_4,4,$C0C
+ dn B_4,2,$C0C
  dn ___,0,$000
  dn ___,0,$A04
  dn ___,0,$E00
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
- dn A_4,4,$C0C
+ dn A_4,2,$C0C
  dn ___,0,$000
- dn B_4,4,$C0C
+ dn B_4,2,$C0C
  dn ___,0,$000
  dn ___,0,$000
- dn G#4,4,$C0C
+ dn G#4,2,$C0C
  dn ___,0,$000
  dn ___,0,$000
  dn ___,0,$000
@@ -211,3 +202,13 @@ P3:
  dn G#4,3,$C0C
  dn ___,0,$000
  dn ___,0,$A04
+
+P4:
+ dn B_4,3,$C0C
+ dn ___,0,$A04
+ dn ___,0,$B00
+
+P5:
+ dn G#4,1,$C08
+ dn G#4,2,$C08
+ dn G#4,1,$C08
