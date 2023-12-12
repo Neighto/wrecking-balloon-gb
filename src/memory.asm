@@ -32,7 +32,7 @@ MEMCPY_VBLANK_SAFE::
     push hl
     ld hl, rSTAT
 .wait:
-    bit 1, [hl]
+    bit 6, [hl]
     jr nz, .wait
     pop hl
     ; Continue

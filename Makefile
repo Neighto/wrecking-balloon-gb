@@ -24,11 +24,11 @@ WINDOW_FILES := $(foreach file, $(wildcard $(WINDOW_DIR)/*.png), $(basename $(su
 all: fix
 
 fix: build
-	rgbfix -p0 -v $(OUTPUT).gb
+	rgbfix -p0 -v $(OUTPUT).pocket
 	@echo "Ran rgbfix - header utility and checksum fixer"
 
 build: $(BIN_DIR)/$(OBJ_DIR) $(OBJ_FILES)
-	rgblink -m $(OUTPUT).map -n $(OUTPUT).sym -o $(OUTPUT).gb $(OBJ_FILES)
+	rgblink -m $(OUTPUT).map -n $(OUTPUT).sym -o $(OUTPUT).pocket $(OBJ_FILES)
 	@echo "Ran rgblink - gameboy linker"
 
 # Create the obj directory if it doesn’t exist

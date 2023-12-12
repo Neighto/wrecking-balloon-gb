@@ -90,7 +90,7 @@ WindowLCDInterrupt:
     ld a, 112
     ldh [rSCY], a
     ld hl, rLCDC
-    res 1, [hl]
+    res 6, [hl]
     jp LCDInterruptEnd
 
 SetInterruptsCommon:
@@ -159,7 +159,7 @@ CutsceneLCDInterrupt:
     ld a, OPENING_CUTSCENE_SHOW
     ldh [rLYC], a
     ld hl, rLCDC
-    res 1, [hl]
+    res 6, [hl]
     jr .end
 .show:
     cp a, OPENING_CUTSCENE_SHOW
@@ -167,7 +167,7 @@ CutsceneLCDInterrupt:
     ld a, OPENING_CUTSCENE_TOP
     ldh [rLYC], a
     ld hl, rLCDC
-    set 1, [hl]
+    set 6, [hl]
     ldh a, [hParallaxFar]
     ldh [rSCX], a
     jr .end

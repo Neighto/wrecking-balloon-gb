@@ -50,7 +50,7 @@ WaitVRAMAccessible::
     ; If there is an untimely LCD interrupt, it is possible to enter Mode 3 before VRAM is accessed
     ld hl, rSTAT
 .wait:
-    bit 1, [hl]
+    bit 6, [hl]
     jr nz, .wait
     ret
 
@@ -70,13 +70,13 @@ WaitVRAMAccessible::
 
 ToggleWindow::
     ld hl, rLCDC
-    bit 5, [hl]
+    bit 2, [hl]
     jr z, .winon
 .winoff::
     ld hl, rLCDC ; Must be set for .winoff to be called on its own
-    res 5, [hl]
+    res 2, [hl]
     ret
 .winon::
     ld hl, rLCDC ; Must be set for .winon to be called on its own
-    set 5, [hl]
+    set 2, [hl]
     ret

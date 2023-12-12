@@ -415,24 +415,24 @@ DEF AUDENA_OFF   EQU %00000000  ; sets all audio regs to 0!
 ; -- LCDC ($FF40)
 ; -- LCD Control (R/W)
 ; --
-DEF rLCDC EQU $FF40
+DEF rLCDC EQU $FF4E
 
 DEF LCDCF_OFF     EQU %00000000 ; LCD Control Operation
-DEF LCDCF_ON      EQU %10000000 ; LCD Control Operation
+DEF LCDCF_ON      EQU %00000001 ; LCD Control Operation
 DEF LCDCF_WIN9800 EQU %00000000 ; Window Tile Map Display Select
-DEF LCDCF_WIN9C00 EQU %01000000 ; Window Tile Map Display Select
+DEF LCDCF_WIN9C00 EQU %00000010 ; Window Tile Map Display Select
 DEF LCDCF_WINOFF  EQU %00000000 ; Window Display
-DEF LCDCF_WINON   EQU %00100000 ; Window Display
+DEF LCDCF_WINON   EQU %00000100 ; Window Display
 DEF LCDCF_BG8800  EQU %00000000 ; BG & Window Tile Data Select
-DEF LCDCF_BG8000  EQU %00010000 ; BG & Window Tile Data Select
+DEF LCDCF_BG8000  EQU %00001000 ; BG & Window Tile Data Select
 DEF LCDCF_BG9800  EQU %00000000 ; BG Tile Map Display Select
-DEF LCDCF_BG9C00  EQU %00001000 ; BG Tile Map Display Select
+DEF LCDCF_BG9C00  EQU %00010000 ; BG Tile Map Display Select
 DEF LCDCF_OBJ8    EQU %00000000 ; OBJ Construction
-DEF LCDCF_OBJ16   EQU %00000100 ; OBJ Construction
+DEF LCDCF_OBJ16   EQU %00100000 ; OBJ Construction
 DEF LCDCF_OBJOFF  EQU %00000000 ; OBJ Display
-DEF LCDCF_OBJON   EQU %00000010 ; OBJ Display
+DEF LCDCF_OBJON   EQU %01000000 ; OBJ Display
 DEF LCDCF_BGOFF   EQU %00000000 ; BG Display
-DEF LCDCF_BGON    EQU %00000001 ; BG Display
+DEF LCDCF_BGON    EQU %10000000 ; BG Display
 ; "Window Character Data Select" follows BG
 
 
@@ -442,7 +442,7 @@ DEF LCDCF_BGON    EQU %00000001 ; BG Display
 ; --
 DEF rSTAT EQU $FF41
 
-DEF STATF_LYC     EQU  %01000000 ; LYC=LY Coincidence (Selectable)
+DEF STATF_LYC     EQU  %00000010 ; LYC=LY Coincidence (Selectable)
 DEF STATF_MODE10  EQU  %00100000 ; Mode 10
 DEF STATF_MODE01  EQU  %00010000 ; Mode 01 (V-Blank)
 DEF STATF_MODE00  EQU  %00001000 ; Mode 00 (H-Blank)
