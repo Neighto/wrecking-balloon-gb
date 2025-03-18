@@ -224,7 +224,7 @@ menuThemeShort::
     dw order1Short, order2Short, order3Short, outOfOrder
     dw duty_instruments, wave_instruments, noise_instruments
     dw routines
-    dw waves 
+    dw waves
 
     order_cntShort: db 4
     order1Short: dw P1,P4

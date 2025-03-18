@@ -47,10 +47,10 @@ InitializeStageClear::
     xor a ; ld a, 0
     ld [wPointSound], a
     ld [wStageNumberOAM], a
-	ld [wExtraLife], a
-	ld [wExtraLifeScorePhase], a
-	ld a, METER_INITIAL_OFFSET
-	ld [wExtraLifeScoreMeter], a
+    ld [wExtraLife], a
+    ld [wExtraLifeScorePhase], a
+    ld a, METER_INITIAL_OFFSET
+    ld [wExtraLifeScoreMeter], a
     ld hl, hSequenceDataAddress
     ld bc, StageClearSequenceData
     ld a, LOW(bc)
@@ -63,108 +63,108 @@ StageClearSequenceData:
     SEQUENCE_WAIT 5
     SEQUENCE_SHOW_PALETTE_2
     SEQUENCE_WAIT 40
-	SEQUENCE_INCREASE_PHASE ;SEQUENCE_COPY_SCORE_TO_TOTAL
-	SEQUENCE_WAIT_UNTIL IsScoreZero
+    SEQUENCE_INCREASE_PHASE ;SEQUENCE_COPY_SCORE_TO_TOTAL
+    SEQUENCE_WAIT_UNTIL IsScoreZero
     SEQUENCE_WAIT 40
-	SEQUENCE_INCREASE_PHASE ;SEQUENCE_REPLACE_BAR_WITH_LIVES
-	SEQUENCE_WAIT 12
-	SEQUENCE_INCREASE_PHASE ;SEQUENCE_ADD_SCORE_LIVES
+    SEQUENCE_INCREASE_PHASE ;SEQUENCE_REPLACE_BAR_WITH_LIVES
+    SEQUENCE_WAIT 12
+    SEQUENCE_INCREASE_PHASE ;SEQUENCE_ADD_SCORE_LIVES
     SEQUENCE_WAIT 72
     SEQUENCE_HIDE_PALETTE
     SEQUENCE_WAIT 6
     SEQUENCE_END SetupNextLevel
 
 LoadStageClearGraphics::
-	; TILES
-	; Scoreboard tiles
-	ld bc, ScoreboardsTiles
-	ld hl, _VRAM9000
-	ld de, ScoreboardsTilesEnd - ScoreboardsTiles
-	call MEMCPY
-	; Number tile (for stage number sprite)
-	ldh a, [hLevel]
+    ; TILES
+    ; Scoreboard tiles
+    ld bc, ScoreboardsTiles
+    ld hl, _VRAM9000
+    ld de, ScoreboardsTilesEnd - ScoreboardsTiles
+    call MEMCPY
+    ; Number tile (for stage number sprite)
+    ldh a, [hLevel]
     dec a
-	ld b, a
-	ld c, TILE_BYTES
-	call MULTIPLY
-	ld bc, NUMBERS_TILE_ADDRESS
-	ADD_A_TO_BC ; Source address of stage number in VRAM
-	ld hl, STAGE_NUMBER_ADDRESS ; Destination
-	ld de, TILE_BYTES ; 1
-	call MEMCPY
-	; TILEMAP
-	; Fill light grey
-	ld hl, _SCRN0
-	ld bc, SCRN0_SIZE
-	ld d, LIGHT_GREY_BKG_TILE
-	call SetInRange
-	; Draw scoreboard
-	ld bc, ScoreboardsMap + 16 * 3
-	ld hl, $9862
-	ld d, 9
-	ld e, 16
-	call MEMCPY_SINGLE_SCREEN
-	; Draw STAGE CLEAR text
-	ld bc, WindowMap + SCRN_X_B * STAGE_CLEAR_DISTANCE_FROM_TOP_IN_TILES + 8
-	ld hl, STAGE_TEXT_ADDRESS
-	ld de, STAGE_TEXT_TILES
-	ld a, WINDOW_TILES_8800_OFFSET
-	call MEMCPY_WITH_OFFSET
-	ld hl, CLEAR_TEXT_ADDRESS
-	ld de, CLEAR_TEXT_TILES
-	ld a, WINDOW_TILES_8800_OFFSET
-	call MEMCPY_WITH_OFFSET
-	; Draw SCORE text
-	ld bc, ScoreTextMap
-	ld hl, SCORE_TEXT_ADDRESS
-	ld de, ScoreTextMapEnd - ScoreTextMap
-	call MEMCPY
-	; Draw TOTAL text
-	ld bc, TotalTextMap
-	ld hl, TOTAL_TEXT_ADDRESS
-	ld de, TotalTextMapEnd - TotalTextMap
-	call MEMCPY
-	; Draw footer
-	; Row 1
-	ld bc, CloudsMap + CLOUDS_STAGE_CLEAR_1_OFFSET
-	ld hl, $99C0
-	call MEMCPY_PATTERN_CLOUDS
-	; Row 2
-	ld bc, CloudsMap + CLOUDS_STAGE_CLEAR_2_OFFSET
-	call MEMCPY_PATTERN_CLOUDS
-	; Row 3
-	ld bc, CloudsMap + CLOUDS_STAGE_CLEAR_3_OFFSET
-	call MEMCPY_PATTERN_CLOUDS
-	; Row 4
-	ld bc, CloudsMap + CLOUDS_STAGE_CLEAR_4_OFFSET
-	call MEMCPY_PATTERN_CLOUDS
-	; Draw meter
-	ld hl, METER_SC_INDEX_ONE_ADDRESS - 1
-	ld a, BAR_LEFT_EDGE
-	ld [hli], a
-	ld d, BAR_0
-	ld bc, METER_BLOCKS
-	call SetInRange
-	ld a, BAR_100
-	ld [hli], a
-	ld a, BAR_RIGHT_EDGE
-	ld [hl], a
-	ret
+    ld b, a
+    ld c, TILE_BYTES
+    call MULTIPLY
+    ld bc, NUMBERS_TILE_ADDRESS
+    ADD_A_TO_BC ; Source address of stage number in VRAM
+    ld hl, STAGE_NUMBER_ADDRESS ; Destination
+    ld de, TILE_BYTES ; 1
+    call MEMCPY
+    ; TILEMAP
+    ; Fill light grey
+    ld hl, _SCRN0
+    ld bc, SCRN0_SIZE
+    ld d, LIGHT_GREY_BKG_TILE
+    call SetInRange
+    ; Draw scoreboard
+    ld bc, ScoreboardsMap + 16 * 3
+    ld hl, $9862
+    ld d, 9
+    ld e, 16
+    call MEMCPY_SINGLE_SCREEN
+    ; Draw STAGE CLEAR text
+    ld bc, WindowMap + SCRN_X_B * STAGE_CLEAR_DISTANCE_FROM_TOP_IN_TILES + 8
+    ld hl, STAGE_TEXT_ADDRESS
+    ld de, STAGE_TEXT_TILES
+    ld a, WINDOW_TILES_8800_OFFSET
+    call MEMCPY_WITH_OFFSET
+    ld hl, CLEAR_TEXT_ADDRESS
+    ld de, CLEAR_TEXT_TILES
+    ld a, WINDOW_TILES_8800_OFFSET
+    call MEMCPY_WITH_OFFSET
+    ; Draw SCORE text
+    ld bc, ScoreTextMap
+    ld hl, SCORE_TEXT_ADDRESS
+    ld de, ScoreTextMapEnd - ScoreTextMap
+    call MEMCPY
+    ; Draw TOTAL text
+    ld bc, TotalTextMap
+    ld hl, TOTAL_TEXT_ADDRESS
+    ld de, TotalTextMapEnd - TotalTextMap
+    call MEMCPY
+    ; Draw footer
+    ; Row 1
+    ld bc, CloudsMap + CLOUDS_STAGE_CLEAR_1_OFFSET
+    ld hl, $99C0
+    call MEMCPY_PATTERN_CLOUDS
+    ; Row 2
+    ld bc, CloudsMap + CLOUDS_STAGE_CLEAR_2_OFFSET
+    call MEMCPY_PATTERN_CLOUDS
+    ; Row 3
+    ld bc, CloudsMap + CLOUDS_STAGE_CLEAR_3_OFFSET
+    call MEMCPY_PATTERN_CLOUDS
+    ; Row 4
+    ld bc, CloudsMap + CLOUDS_STAGE_CLEAR_4_OFFSET
+    call MEMCPY_PATTERN_CLOUDS
+    ; Draw meter
+    ld hl, METER_SC_INDEX_ONE_ADDRESS - 1
+    ld a, BAR_LEFT_EDGE
+    ld [hli], a
+    ld d, BAR_0
+    ld bc, METER_BLOCKS
+    call SetInRange
+    ld a, BAR_100
+    ld [hli], a
+    ld a, BAR_RIGHT_EDGE
+    ld [hl], a
+    ret
 
 SpawnStageNumber::
-	ld b, STAGE_NUMBER_SPRITES
-	ld hl, wStageNumberOAM
-	call RequestOAMAndSetOAMOffset
-	ret z
-	; Has available space
-	ld a, 48 ; y
-	ld [hli], a
-	ld a, 84 ; x
-	ld [hli], a
-	ld a, STAGE_CLEAR_NUMBER_TILE
-	ld [hli], a
-	ld [hl], OAMF_PAL0
-	ret
+    ld b, STAGE_NUMBER_SPRITES
+    ld hl, wStageNumberOAM
+    call RequestOAMAndSetOAMOffset
+    ret z
+    ; Has available space
+    ld a, 48 ; y
+    ld [hli], a
+    ld a, 84 ; x
+    ld [hli], a
+    ld a, STAGE_CLEAR_NUMBER_TILE
+    ld [hli], a
+    ld [hl], OAMF_PAL0
+    ret
 
 SpawnExtraLifeBalloon::
     ld a, POINT_BALLOON
@@ -178,210 +178,210 @@ SpawnExtraLifeBalloon::
     jp SpawnPointBalloon
 
 RefreshStageClear:
-	; Score
-	ld hl, SCORE_SC_INDEX_ONE_ADDRESS
-	call RefreshScore.score
-	; Total
-	ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
-	jp RefreshScore.total
+    ; Score
+    ld hl, SCORE_SC_INDEX_ONE_ADDRESS
+    call RefreshScore.score
+    ; Total
+    ld hl, TOTAL_SC_INDEX_ONE_ADDRESS
+    jp RefreshScore.total
 
 RefreshLives:
-	ld hl, EXTRA_LIFE_ADDRESS
-	ld a, LIVES_CACTUS
-	ld [hli], a
-	ld a, X_AMOUNT
-	ld [hli], a
-	ldh a, [hPlayerLives]
-	add NUMBERS_TILE_OFFSET
-	ld [hl], a
-	ret
+    ld hl, EXTRA_LIFE_ADDRESS
+    ld a, LIVES_CACTUS
+    ld [hli], a
+    ld a, X_AMOUNT
+    ld [hli], a
+    ldh a, [hPlayerLives]
+    add NUMBERS_TILE_OFFSET
+    ld [hl], a
+    ret
 
 FillMeter:
-	; a = Points to fill
-	ld d, a
-	; Is full
-	ld a, [wExtraLifeScorePhase]
-	cp a, METER_TOTAL_PHASES
-	ret z
-	; Add points from score to our meter
-	ld a, [wExtraLifeScoreMeter]
-	add d
-	ld [wExtraLifeScoreMeter], a
-	; Check if enough score to bump progress
-	sub METER_PROGRESS_SCORE
-	ret c
-	ld [wExtraLifeScoreMeter], a
-	; Step 1: Get meter address based on phase
-	ld hl, METER_SC_INDEX_ONE_ADDRESS
-	ld a, [wExtraLifeScorePhase]
-	ld b, METER_PHASES
-	call DIVISION
-	add l
-	ld l, a
-	; Step 2: Get % full based on phase
-	ld a, [wExtraLifeScorePhase]
-	ld d, METER_PHASES
-	call MODULO
+    ; a = Points to fill
+    ld d, a
+    ; Is full
+    ld a, [wExtraLifeScorePhase]
+    cp a, METER_TOTAL_PHASES
+    ret z
+    ; Add points from score to our meter
+    ld a, [wExtraLifeScoreMeter]
+    add d
+    ld [wExtraLifeScoreMeter], a
+    ; Check if enough score to bump progress
+    sub METER_PROGRESS_SCORE
+    ret c
+    ld [wExtraLifeScoreMeter], a
+    ; Step 1: Get meter address based on phase
+    ld hl, METER_SC_INDEX_ONE_ADDRESS
+    ld a, [wExtraLifeScorePhase]
+    ld b, METER_PHASES
+    call DIVISION
+    add l
+    ld l, a
+    ; Step 2: Get % full based on phase
+    ld a, [wExtraLifeScorePhase]
+    ld d, METER_PHASES
+    call MODULO
 .phase1:
-	cp a, 0
-	jr nz, .phase2
-	ld a, BAR_25
-	jr .next
+    cp a, 0
+    jr nz, .phase2
+    ld a, BAR_25
+    jr .next
 .phase2:
-	cp a, 1
-	jr nz, .phase3
-	ld a, BAR_50
-	jr .next
+    cp a, 1
+    jr nz, .phase3
+    ld a, BAR_50
+    jr .next
 .phase3:
-	cp a, 2
-	jr nz, .phase4
-	ld a, BAR_75
-	jr .next
+    cp a, 2
+    jr nz, .phase4
+    ld a, BAR_75
+    jr .next
 .phase4:
-	; cp a, 3
-	; jr nz, .phase5
-	ld a, BAR_100
-	; jr .next
+    ; cp a, 3
+    ; jr nz, .phase5
+    ld a, BAR_100
+    ; jr .next
 .next:
-	ld [hl], a
-	; Increment phase so we know which chunk we are adding progress to
-	ld a, [wExtraLifeScorePhase]
-	inc a
-	ld [wExtraLifeScorePhase], a
-	; Flag we have life to add if full
-	ld a, [wExtraLifeScorePhase]
-	cp a, METER_TOTAL_PHASES
-	ret nz
-	ld a, [wExtraLife]
-	inc a
-	ld [wExtraLife], a
-	; Pop balloon
-	jp SetEnemyHitForEnemy1
+    ld [hl], a
+    ; Increment phase so we know which chunk we are adding progress to
+    ld a, [wExtraLifeScorePhase]
+    inc a
+    ld [wExtraLifeScorePhase], a
+    ; Flag we have life to add if full
+    ld a, [wExtraLifeScorePhase]
+    cp a, METER_TOTAL_PHASES
+    ret nz
+    ld a, [wExtraLife]
+    inc a
+    ld [wExtraLife], a
+    ; Pop balloon
+    jp SetEnemyHitForEnemy1
 
 ; *************************************************************
 ; UPDATE
 ; *************************************************************
 UpdateStageClear::
 
-	; Timer
+    ; Timer
     UPDATE_GLOBAL_TIMER
 
-	; Check phase
+    ; Check phase
     ldh a, [hSequencePhase]
 ; PHASE 0
 .phase0:
     cp a, 0
     jr nz, .phase1
-	; Nothing
-	jp .endCheckPhase
+    ; Nothing
+    jp .endCheckPhase
 ; PHASE 1
 .phase1:
     cp a, 1
     jr nz, .phase2
-	; Copy score to total
-	ldh a, [hGlobalTimer]
-	and %00000001
-	jp nz, .endCheckPhase
-	call IsScoreZero
+    ; Copy score to total
+    ldh a, [hGlobalTimer]
+    and %00000001
+    jp nz, .endCheckPhase
+    call IsScoreZero
     jr nz, .copyingScoreToTotal
-	; Done copying score to total
-	ld a, 1
-	ldh [hSequenceWaitUntilCheck], a
-	jp .endCheckPhase
+    ; Done copying score to total
+    ld a, 1
+    ldh [hSequenceWaitUntilCheck], a
+    jp .endCheckPhase
 .copyingScoreToTotal:
-	; Copy over score at 0th (does not fill meter)
+    ; Copy over score at 0th (does not fill meter)
     ld a, [wScore]
     and LOW_HALF_BYTE_MASK
     call AddTotal
     ld a, [wScore]
     and LOW_HALF_BYTE_MASK
     call DecrementPoints
-	; Copy over score by 10s
+    ; Copy over score by 10s
     ld a, STAGE_CLEAR_MOVE_POINTS
     call AddTotal
     ld a, STAGE_CLEAR_MOVE_POINTS
     call DecrementPoints
-	ld a, STAGE_CLEAR_MOVE_POINTS
-	call FillMeter
+    ld a, STAGE_CLEAR_MOVE_POINTS
+    call FillMeter
 .checkPointSound
-	ld a, [wPointSound]
-	cp a, POINT_SOUND_PLAY_A
-	jr nz, .soundB
+    ld a, [wPointSound]
+    cp a, POINT_SOUND_PLAY_A
+    jr nz, .soundB
 .soundA:
-	call BassSoundA
-	ld a, POINT_SOUND_PLAY_B
-	jr .endPointSound
+    call BassSoundA
+    ld a, POINT_SOUND_PLAY_B
+    jr .endPointSound
 .soundB:
-	call BassSoundB
-	ld a, POINT_SOUND_PLAY_A
+    call BassSoundB
+    ld a, POINT_SOUND_PLAY_A
 .endPointSound:
-	ld [wPointSound], a
-	jr .endCheckPhase
+    ld [wPointSound], a
+    jr .endCheckPhase
 ; PHASE 2
 .phase2:
-	cp a, 2
+    cp a, 2
     jr nz, .phase3
-	; If meter is full, continue
-	ld a, [wExtraLifeScorePhase]
-	cp a, METER_TOTAL_PHASES
-	jr nz, .endCheckPhase
-	; Animate emptying bar then refresh lives
-	ld hl, METER_SC_INDEX_ONE_ADDRESS
-	ld a, [hl]
-	ld d, DARK_GREY_BKG_TILE
-	cp a, d
-	jr z, .endCheckPhase
-	; Empty bar
-	ld e, BAR_RIGHT_EDGE
+    ; If meter is full, continue
+    ld a, [wExtraLifeScorePhase]
+    cp a, METER_TOTAL_PHASES
+    jr nz, .endCheckPhase
+    ; Animate emptying bar then refresh lives
+    ld hl, METER_SC_INDEX_ONE_ADDRESS
+    ld a, [hl]
+    ld d, DARK_GREY_BKG_TILE
+    cp a, d
+    jr z, .endCheckPhase
+    ; Empty bar
+    ld e, BAR_RIGHT_EDGE
 .emptyBarLoop:
-	ld a, [hli]
-	cp a, e
-	jr nz, .emptyBarLoop
-	dec hl
-	ld a, d
-	LD_BC_HL
-	call WaitVRAMAccessible
-	LD_HL_BC
-	ld [hld], a
-	ld a, e
-	ld [hl], a
-	; Check if we are done removing bar
-	ld hl, METER_SC_INDEX_ONE_ADDRESS - 1
-	ld a, [hl]
-	cp a, e
-	jr nz, .endCheckPhase
-	; Finish removing bar and refresh lives
-	ld a, d
-	call WaitVRAMAccessible
-	ld hl, METER_SC_INDEX_ONE_ADDRESS - 1
-	ld [hl], a
-	call RefreshLives
-	jr .endCheckPhase
+    ld a, [hli]
+    cp a, e
+    jr nz, .emptyBarLoop
+    dec hl
+    ld a, d
+    LD_BC_HL
+    call WaitVRAMAccessible
+    LD_HL_BC
+    ld [hld], a
+    ld a, e
+    ld [hl], a
+    ; Check if we are done removing bar
+    ld hl, METER_SC_INDEX_ONE_ADDRESS - 1
+    ld a, [hl]
+    cp a, e
+    jr nz, .endCheckPhase
+    ; Finish removing bar and refresh lives
+    ld a, d
+    call WaitVRAMAccessible
+    ld hl, METER_SC_INDEX_ONE_ADDRESS - 1
+    ld [hl], a
+    call RefreshLives
+    jr .endCheckPhase
 ; PHASE 3
 .phase3:
-	; cp a, 3
-	; jr nz, .phase4
-	; Skip if no extra life
-	ld a, [wExtraLife]
-	cp a, 0
-	jr z, .endCheckPhase
-	; Flag off extra life
-	xor a ; ld a, 0
-	ld [wExtraLife], a
-	call LifeUpSound
-	; Confirm we are not at max lives
-	ldh a, [hPlayerLives]
-	cp a, PLAYER_MAX_LIVES
-	jr nc, .endCheckPhase
-	; Add life
-	inc a
-	ldh [hPlayerLives], a
-	call RefreshLives
-	; jr .endCheckPhase
+    ; cp a, 3
+    ; jr nz, .phase4
+    ; Skip if no extra life
+    ld a, [wExtraLife]
+    cp a, 0
+    jr z, .endCheckPhase
+    ; Flag off extra life
+    xor a ; ld a, 0
+    ld [wExtraLife], a
+    call LifeUpSound
+    ; Confirm we are not at max lives
+    ldh a, [hPlayerLives]
+    cp a, PLAYER_MAX_LIVES
+    jr nc, .endCheckPhase
+    ; Add life
+    inc a
+    ldh [hPlayerLives], a
+    call RefreshLives
+    ; jr .endCheckPhase
 .endCheckPhase:
 
-	; Handle common
+    ; Handle common
     call RefreshStageClear
-	call EnemyUpdate
-	
+    call EnemyUpdate
+
     jp SequenceDataUpdate

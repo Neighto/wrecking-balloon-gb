@@ -110,7 +110,7 @@ SECTION "endless", ROM0
 ; INITIALIZE
 ; *************************************************************
 InitializeEndless::
-	xor a ; ld a, 0
+    xor a ; ld a, 0
     ldh [hEndlessTimer], a
 
     ldh [hEndlessVerticalLane], a
@@ -214,7 +214,7 @@ LoadEndlessGraphics::
     ; Add scrolling white clouds
     ld hl, $99C0
     ld bc, CloudsMap + CLOUDS_CUTSCENE_8_OFFSET
-	call MEMCPY_PATTERN_CLOUDS
+    call MEMCPY_PATTERN_CLOUDS
     ; Fill in while clouds space
     ld bc, SCRN_VX_B
     ld d, WHITE_BKG_TILE
@@ -259,7 +259,7 @@ EndlessUpdate::
 .updateResetTime:
     ldh [hEndlessResetTime], a
     ; Set level switch skip
-    ld a, 1 
+    ld a, 1
     ldh [hEndlessLevelSwitchSkip], a
     ; Reset level switch timer
     xor a ; ld a, 0
@@ -277,7 +277,7 @@ EndlessUpdate::
     jr .findCurrentLevelLoop
     ; Get next level
 .getNextLevel:
-    ld a, b 
+    ld a, b
     cp a, ENDLESS_LEVEL_SWITCH_TOTAL - 1
     ld a, [hl]
     jr nz, .updateLevel
@@ -320,7 +320,7 @@ EndlessUpdate::
     call InitializeGame
     call SpawnCountdown
     ; Mute music
-    ld a, 1 
+    ld a, 1
     ldh [hStopMusic], a
     call ChDACs.mute
 
@@ -509,7 +509,7 @@ EndlessUpdate::
     jr z, .endCooldownVerticalLanes
     dec a
     ldh [hEndlessVertical_D_Cooldown], a
-.endCooldownVerticalLanes: 
+.endCooldownVerticalLanes:
 
     ; 3 - TRY TO SPAWN
     ldh a, [hEndlessTimer]
@@ -733,7 +733,7 @@ EndlessUpdate::
     jr z, .endCooldownHorizontalLanes
     dec a
     ldh [hEndlessHorizontal_D_Cooldown], a
-.endCooldownHorizontalLanes: 
+.endCooldownHorizontalLanes:
 
     ; 3 - TRY TO SPAWN
     ldh a, [hEndlessTimer]

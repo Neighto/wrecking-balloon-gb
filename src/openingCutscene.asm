@@ -21,8 +21,8 @@ wHandWaveOAM:: DB
 SECTION "opening cutscene", ROMX
 
 InitializeOpeningCutscene::
-	xor a ; ld a, 0
-	ld [wHandWavingFrame], a
+    xor a ; ld a, 0
+    ld [wHandWavingFrame], a
 
     ld hl, hSequenceDataAddress
     ld bc, OpeningCutsceneSequenceData
@@ -95,9 +95,9 @@ LoadOpeningCutsceneGraphics::
     jp SetInRange
 
 SpawnHandWave::
-	ld b, HAND_WAVE_SPRITES
+    ld b, HAND_WAVE_SPRITES
     ld hl, wHandWaveOAM
-	call RequestOAMAndSetOAMOffset
+    call RequestOAMAndSetOAMOffset
     ret z
     ; Has available space
     ld a, HAND_DOWN_START_Y
@@ -107,7 +107,7 @@ SpawnHandWave::
     ld a, HAND_WAVE_TILE_1
     ld [hli], a
     ld [hl], OAMF_PAL0 | OAMF_XFLIP | OAMF_YFLIP
-	ret
+    ret
 
 SpawnCartBalloons::
     ; MEDIUM
@@ -156,8 +156,8 @@ UpdateOpeningCutscene::
     call nz, _hUGE_dosound
 
     ; Check skip
-	call ReadController
-	ldh a, [hControllerDown]
+    call ReadController
+    ldh a, [hControllerDown]
     and PADF_START | PADF_A
     jr z, .endSkip
     ; Skip

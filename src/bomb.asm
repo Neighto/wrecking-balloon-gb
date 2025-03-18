@@ -140,7 +140,7 @@ BombUpdate::
     ; Vertical movement
     ldh a, [hEnemyY]
     sub a, BOMB_DEFAULT_SPEED
-    ldh [hEnemyY], a    
+    ldh [hEnemyY], a
     ; Check special variant
     ldh a, [hEnemyVariant]
     cp a, BOMB_FOLLOW_VARIANT
@@ -177,7 +177,7 @@ BombUpdate::
     ; Is time to check collision
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
-    and	BOMB_COLLISION_TIME
+    and BOMB_COLLISION_TIME
     jr nz, .endCollision
     ; Hit by enemy
     ldh a, [hEnemyFlags]

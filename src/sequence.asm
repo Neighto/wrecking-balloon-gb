@@ -26,7 +26,7 @@ InitializeSequence::
 ; UPDATE
 ; *************************************************************
 SequenceDataUpdate::
-    ; Frequency we read 
+    ; Frequency we read
     ldh a, [hGlobalTimer]
     and SEQUENCE_UPDATE_REFRESH_TIME
     ret nz

@@ -185,7 +185,7 @@ BirdUpdate::
     ;
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
-    and	BIRD_MOVE_TIME
+    and BIRD_MOVE_TIME
     jp nz, .endMove
     ; Can move
     ldh a, [hEnemyFlags]
@@ -212,9 +212,9 @@ BirdUpdate::
     and BIRD_VERTICAL_MOVE_TIME
     jr nz, .endVerticalMovement
 .variantMove:
-    ldh a, [hEnemyVariant]    
+    ldh a, [hEnemyVariant]
 .moveEasy:
-    cp a, BIRD_EASY_VARIANT 
+    cp a, BIRD_EASY_VARIANT
     jr nz, .moveHard
     ld b, BIRD_VERTICAL_SPEED
     ld c, BIRD_FLAP_UP_SPEED
@@ -230,7 +230,7 @@ BirdUpdate::
     ldh [hEnemyParam1], a
     jr .endVerticalMovement
 .moveHard:
-    cp a, BIRD_HARD_VARIANT 
+    cp a, BIRD_HARD_VARIANT
     jr nz, .endVerticalMovement
     ld b, BIRD_VERTICAL_SPEED * 2
     ld c, BIRD_FLAP_UP_SPEED * 2
@@ -328,7 +328,7 @@ BirdUpdate::
     ; Is time to check collision
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
-    and	BIRD_COLLISION_TIME
+    and BIRD_COLLISION_TIME
     jr nz, .endCollision
     ; Is player alive
     ldh a, [hPlayerFlags]

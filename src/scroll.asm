@@ -18,9 +18,9 @@ InitializeScroll::
     xor a ; ld a, 0
     ldh [rSCX], a
     ldh [rSCY], a
-	ldh [hParallaxClose], a
-	ldh [hParallaxMiddle], a
-	ldh [hParallaxFar], a
+    ldh [hParallaxClose], a
+    ldh [hParallaxMiddle], a
+    ldh [hParallaxFar], a
     ldh [hRain], a
     ret
 

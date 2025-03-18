@@ -273,7 +273,7 @@ BalloonCarrierUpdate::
     ret
 
 .endCheckSpawnCarry:
-    
+
     ld a, b
     and ENEMY_FLAG_DYING_MASK
     jr z, .clearPopping
@@ -291,7 +291,7 @@ BalloonCarrierUpdate::
     ;
     ldh a, [hEnemyVariant]
 .projectileVariant:
-    cp a, CARRIER_PROJECTILE_VARIANT 
+    cp a, CARRIER_PROJECTILE_VARIANT
     jr nz, .endProjectileVariant
     ldh a, [hEnemyParam3]
     cp a, PROJECTILE_RESPAWN_TIME
@@ -351,7 +351,7 @@ BalloonCarrierUpdate::
     ;
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
-    and	BALLOON_CARRIER_MOVE_TIME
+    and BALLOON_CARRIER_MOVE_TIME
     jp nz, .endMove
     ; Can move
 
@@ -505,7 +505,7 @@ BalloonCarrierUpdate::
     ; Is time to check collision
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
-    and	BALLOON_CARRIER_COLLISION_TIME
+    and BALLOON_CARRIER_COLLISION_TIME
     jp nz, .endCollision
     ; Hit by enemy
     ldh a, [hEnemyFlags]
@@ -527,7 +527,7 @@ BalloonCarrierUpdate::
     jr z, .checkHitByBullet
     ; Check hit bomb variant
     ldh a, [hEnemyVariant]
-    cp a, CARRIER_BOMB_VARIANT 
+    cp a, CARRIER_BOMB_VARIANT
     call z, CollisionWithPlayer
     jr .deathOfBalloonCarrier
     ; Check hit bullet
@@ -560,7 +560,7 @@ BalloonCarrierUpdate::
 .updatePoints:
     call AddPoints
 .endVariantPoints:
-    ; Only set the dying bit if not bomb carrier 
+    ; Only set the dying bit if not bomb carrier
     ; It sets the dying animation and we spawn explosion instead
     ldh a, [hEnemyVariant]
     cp a, CARRIER_BOMB_VARIANT

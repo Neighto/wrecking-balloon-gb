@@ -78,14 +78,14 @@ SpawnBullet::
     ld [hl], a
     ; Sound
     jp BulletSound
-  
+
 ClearBullet::
     xor a ; ld a, 0
     ldh [hPlayerBulletFlags], a
     ld hl, wPlayerBulletOAM
     ld bc, 4
     jp ResetHLInRange
-  
+
 ; *************************************************************
 ; UPDATE
 ; *************************************************************

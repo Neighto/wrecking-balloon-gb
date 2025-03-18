@@ -36,20 +36,20 @@ wCountdownOAM:: DB
 SECTION "game", ROM0
 
 InitializeGame::
-	xor a ; ld a, 0
-	ld [wHandWavingFrame], a
-	ld [wCountdownFrame], a
+    xor a ; ld a, 0
+    ld [wHandWavingFrame], a
+    ld [wCountdownFrame], a
     ret
 
 LoadGameSpriteAndMiscellaneousTiles::
-	ld bc, GameSpriteTiles
-	ld hl, _VRAM8000 + TILE_BYTES * 2 ; Offset first 2 tiles as empty
-	ld de, GameSpriteTilesEnd - GameSpriteTiles
+    ld bc, GameSpriteTiles
+    ld hl, _VRAM8000 + TILE_BYTES * 2 ; Offset first 2 tiles as empty
+    ld de, GameSpriteTilesEnd - GameSpriteTiles
     call MEMCPY
     ld bc, MiscellaneousTiles
-	ld hl, _VRAM8800
-	ld de, MiscellaneousTilesEnd - MiscellaneousTiles
-	jp MEMCPY
+    ld hl, _VRAM8800
+    ld de, MiscellaneousTilesEnd - MiscellaneousTiles
+    jp MEMCPY
 
 ; Arg: HL = Destination address
 LoadLevelClouds:
@@ -75,7 +75,7 @@ LoadLevelCityGraphicsCommon:
     ; Add scrolling clouds
     ld hl, $99C0
     jp LoadLevelClouds
-    
+
 ; Arg: HL = Destination address
 LoadLamp::
     ld a, LAMP_OFFSET
@@ -106,19 +106,19 @@ LoadRoadCommon::
     ; Add road
     pop hl
     ld bc, CloudsMap + CLOUDS_CUTSCENE_1_OFFSET
-	call MEMCPY_PATTERN_CLOUDS
+    call MEMCPY_PATTERN_CLOUDS
     ld bc, CloudsMap + CLOUDS_CUTSCENE_2_OFFSET
-	call MEMCPY_PATTERN_CLOUDS
+    call MEMCPY_PATTERN_CLOUDS
     ld bc, CloudsMap + CLOUDS_CUTSCENE_3_OFFSET
-	call MEMCPY_PATTERN_CLOUDS
+    call MEMCPY_PATTERN_CLOUDS
     ld bc, CloudsMap + CLOUDS_CUTSCENE_4_OFFSET
-	call MEMCPY_PATTERN_CLOUDS
+    call MEMCPY_PATTERN_CLOUDS
     ld bc, CloudsMap + CLOUDS_CUTSCENE_5_OFFSET
-	call MEMCPY_PATTERN_CLOUDS
+    call MEMCPY_PATTERN_CLOUDS
     ld bc, CloudsMap + CLOUDS_CUTSCENE_6_OFFSET
-	call MEMCPY_PATTERN_CLOUDS
+    call MEMCPY_PATTERN_CLOUDS
     ld bc, CloudsMap + CLOUDS_CUTSCENE_7_OFFSET
-	jp MEMCPY_PATTERN_CLOUDS
+    jp MEMCPY_PATTERN_CLOUDS
 
 ; *************************************************************
 ; LoadLevelCityGraphics
@@ -127,20 +127,20 @@ LoadLevelCityGraphics::
     call LoadLevelCityGraphicsCommon
     ; City Planes
     ld bc, CityPlaneMap
-	ld hl, $9831 ; City Plane address
+    ld hl, $9831 ; City Plane address
     ld de, 3
     ld a, PLANE_TILE_OFFSET
-	call MEMCPY_WITH_OFFSET
+    call MEMCPY_WITH_OFFSET
     ld bc, CityPlaneMap
-	ld hl, $9886 ; City Plane address
+    ld hl, $9886 ; City Plane address
     ld de, 3
     ld a, PLANE_TILE_OFFSET
-	call MEMCPY_WITH_OFFSET
+    call MEMCPY_WITH_OFFSET
     ld bc, CityPlaneMap
     ld hl, $987B ; City Plane address
     ld de, 5
     ld a, PLANE_TILE_OFFSET
-	jp MEMCPY_WITH_OFFSET
+    jp MEMCPY_WITH_OFFSET
 
 ; *************************************************************
 ; LoadLevelNightCityGraphics
@@ -168,7 +168,7 @@ LoadLevelNightCityGraphics::
     ld hl, $9897
     ld de, 2
     ld a, UFO_TILE_OFFSET
-	jp MEMCPY_WITH_OFFSET
+    jp MEMCPY_WITH_OFFSET
 
 ; *************************************************************
 ; LoadLevelDesertGraphics
@@ -223,22 +223,22 @@ LoadLevelNightDesertGraphics::
 ; *************************************************************
 LoadLevelShowdownGraphics::
     ; TILES
-	ld bc, LevelShowdownTiles
-	ld hl, _VRAM9000
-	ld de, LevelShowdownTilesEnd - LevelShowdownTiles
-	call MEMCPY
+    ld bc, LevelShowdownTiles
+    ld hl, _VRAM9000
+    ld de, LevelShowdownTilesEnd - LevelShowdownTiles
+    call MEMCPY
     ; TILEMAP
     ; Add in rain layer 1
-	ld bc, LevelShowdownMap
-	ld hl, _SCRN0
+    ld bc, LevelShowdownMap
+    ld hl, _SCRN0
     ld d, RAIN_HEIGHT_IN_TILES
     ld e, SCRN_X_B
-	call MEMCPY_SINGLE_SCREEN
+    call MEMCPY_SINGLE_SCREEN
     ; Add in rain layer 2
     ld bc, LevelShowdownMap
     ld d, RAIN_HEIGHT_IN_TILES
     ld e, SCRN_X_B
-	call MEMCPY_SINGLE_SCREEN
+    call MEMCPY_SINGLE_SCREEN
     ; Fill in dark clouds space
     ld hl, _SCRN0
     ld bc, SCRN_VX_B * 3
@@ -246,15 +246,15 @@ LoadLevelShowdownGraphics::
     call SetInRange
     ; Add scrolling rain clouds
     ld bc, CloudsMap + CLOUDS_DARK_INV_OFFSET
-	call MEMCPY_PATTERN_CLOUDS
+    call MEMCPY_PATTERN_CLOUDS
     ld bc, CloudsMap + CLOUDS_LIGHT_INV_OFFSET
-	call MEMCPY_PATTERN_CLOUDS
+    call MEMCPY_PATTERN_CLOUDS
     ; Add scrolling mountains
     ld bc, ShowdownMountainsMap
-	ld hl, SHOWDOWN_MOUNTAIN_ADDRESS
+    ld hl, SHOWDOWN_MOUNTAIN_ADDRESS
     ld de, ShowdownMountainsMapEnd - ShowdownMountainsMap
     ld a, SHOWDOWN_MOUTAINS_OFFSET
-	call MEMCPY_WITH_OFFSET
+    call MEMCPY_WITH_OFFSET
     ; Add scrolling clouds
     jp LoadLevelClouds
 
@@ -262,9 +262,9 @@ LoadLevelShowdownGraphics::
 ; SPAWNCOUNTDOWN
 ; *************************************************************
 SpawnCountdown::
-	ld b, COUNTDOWN_OAM_SPRITES
+    ld b, COUNTDOWN_OAM_SPRITES
     ld hl, wCountdownOAM
-	call RequestOAMAndSetOAMOffset
+    call RequestOAMAndSetOAMOffset
     ret z
     ; Has available space
     ld b, COUNTDOWN_START_Y
@@ -283,7 +283,7 @@ SpawnCountdown::
     ld [hli], a
     ld a, WHITE_SPR_TILE
     ld [hl], a
-	ret
+    ret
 
 ; Ret: Z/NZ = Failed / succeeded respectively
 IsCountdownAtBalloonPop::
@@ -376,7 +376,7 @@ Countdown::
     ld [hl], a
 .nextFrame:
     ld a, [wCountdownFrame]
-    inc a 
+    inc a
     ld [wCountdownFrame], a
 .hasNotFinished:
     xor a ; ld a, 0
@@ -413,8 +413,8 @@ UpdateGameCountdown::
 UpdateGame::
     ; Check paused
     ldh a, [hPaused]
-	cp a, PAUSE_OFF
-	jr z, .isNotPaused
+    cp a, PAUSE_OFF
+    jr z, .isNotPaused
     cp a, PAUSE_ON
     jr z, .isPaused
     ; Pause transition state PAUSE_TOGGLED
@@ -424,12 +424,12 @@ UpdateGame::
     jp ShowPauseWindow
 .isPaused:
     call ShowPauseWindow.skipResetTimer
-	call ReadController
-	ldh a, [hControllerPressed]
+    call ReadController
+    ldh a, [hControllerPressed]
     and PADF_START
     ret z
-	ld a, PAUSE_OFF
-	ldh [hPaused], a
+    ld a, PAUSE_OFF
+    ldh [hPaused], a
     call ChDACs.unmute
     jp ToggleWindow.winon
 .isNotPaused:

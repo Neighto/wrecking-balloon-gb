@@ -144,7 +144,7 @@ AddScoreToTotal::
 SetTopScore::
     ld a, [wSelectedMode]
     cp a, CLASSIC_MODE
-	jr z, .setTopClassic
+    jr z, .setTopClassic
 .setTopEndless:
     ld bc, wTopEndless
     jr .setTop
@@ -168,5 +168,5 @@ SetTopScore::
     ld [bc], a
     inc bc
     ld a, [hl]
-    ld [bc], a   
+    ld [bc], a
     ret

@@ -21,7 +21,7 @@ MACRO LD_DE_HL
 ENDM
 
 MACRO LD_HL_BC
-    ld h, b 
+    ld h, b
     ld l, c
 ENDM
 
@@ -403,7 +403,7 @@ ENDM
 ; *************************************************************
 
 ; Sequence Instructions
-SEQUENCE_WAIT_KEY EQU 0 
+SEQUENCE_WAIT_KEY EQU 0
 SEQUENCE_WAIT_UNTIL_KEY EQU 1
 SEQUENCE_PALETTE_FADE_IN_KEY EQU 2
 SEQUENCE_PALETTE_FADE_OUT_KEY EQU 3
@@ -462,7 +462,7 @@ ENDM
 
 MACRO UPDATE_GLOBAL_TIMER
     ldh a, [hGlobalTimer]
-    inc	a
+    inc a
     ldh [hGlobalTimer], a
 ENDM
 

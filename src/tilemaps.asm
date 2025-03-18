@@ -27,7 +27,7 @@ ScoreboardsMap::
     INCBIN "incbin/background/Scoreboards.tilemap"
 ScoreboardsMapEnd::
 
-LevelCityMap:: 
+LevelCityMap::
     INCBIN "incbin/background/City.tilemap"
 LevelCityMapEnd::
 
@@ -74,11 +74,11 @@ SunMap::
     INCBIN "incbin/background/Sun.tilemap"
 SunMapEnd::
 
-CityPlaneMap:: 
+CityPlaneMap::
     INCBIN "incbin/background/CityPlane.tilemap"
 CityPlaneMapEnd::
 
-UFOMap:: 
+UFOMap::
     INCBIN "incbin/background/UFO.tilemap"
 UFOMapEnd::
 

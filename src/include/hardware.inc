@@ -1,5 +1,6 @@
 ;*
 ;* Gameboy Hardware definitions
+;* https://github.com/gbdev/hardware.inc
 ;*
 ;* Based on Jones' hardware.inc
 ;* And based on Carsten Sorensen's ideas.

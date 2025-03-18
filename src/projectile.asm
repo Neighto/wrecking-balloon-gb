@@ -174,7 +174,7 @@ ProjectileUpdate::
     ;
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
-    and	PROJECTILE_FLICKER_TIME
+    and PROJECTILE_FLICKER_TIME
     jr nz, .endFlicker
 .canFlicker:
     ld hl, wOAM+3
@@ -253,7 +253,7 @@ ProjectileUpdate::
     ; Is time to check collision
     ldh a, [hGlobalTimer]
     rrca ; Ignore first bit of timer that may always be 0 or 1 from EnemyUpdate
-    and	PROJECTILE_COLLISION_TIME
+    and PROJECTILE_COLLISION_TIME
     jr nz, .endCollision
 
     ; Is player alive
@@ -293,7 +293,7 @@ ProjectileUpdate::
 .checkVertical:
     call HandleEnemyOffscreenVertical
     ; Enemy may be cleared, must do setStruct next
-    
+
     ;
     ; Set struct
     ;

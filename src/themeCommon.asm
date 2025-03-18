@@ -20,7 +20,7 @@ InitializeSongDataCommon::
 
 ; May need to make larger if a song exceeds this length
 outOfOrder:: dw wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE,wPE
-   
+
 duty_instruments::
 itSquareinst1:
 db 8
@@ -126,7 +126,7 @@ db 128
 db 240
 dw 0
 db 128
-   
+
 wave_instruments::
 itWaveinst1:
 db 0
@@ -232,13 +232,13 @@ db 32
 db 14
 dw 0
 db 128
-   
+
 noise_instruments::
     ; Noise channel never used
 
 routines::
     ; Removed for space (I don't use routines)
-   
+
 waves::
 wave0: db 0,0,255,255,255,255,255,255,255,255,255,255,255,255,255,255
 wave1: db 0,0,0,0,255,255,255,255,255,255,255,255,255,255,255,255
@@ -255,4 +255,4 @@ wave11: db 123,91,6,51,46,93,173,180,213,226,186,104,34,68,139,177
 wave12: db 151,217,154,203,22,30,132,21,164,236,12,182,149,50,119,126
 wave13: db 124,102,214,40,21,14,12,204,115,113,131,39,89,157,56,237
 wave14: db 162,231,165,129,167,122,237,43,154,80,197,198,172,104,33,201
-wave15: db 237,135,35,65,156,100,123,20,88,10,181,236,73,156,190,154   
+wave15: db 237,135,35,65,156,100,123,20,88,10,181,236,73,156,190,154

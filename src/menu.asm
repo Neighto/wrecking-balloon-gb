@@ -33,274 +33,274 @@ wSecret:: DB
 SECTION "menu", ROMX
 
 InitializeMenu::
-	xor a ; ld a, 0
-	ld [wMenuFrame], a
-	ld [wSelectedMode], a
-	ld [wMenuCursorTimer], a
-	ld [wSecret], a
-	ld a, 140
-	ld [rSCY], a
-	ret
+    xor a ; ld a, 0
+    ld [wMenuFrame], a
+    ld [wSelectedMode], a
+    ld [wMenuCursorTimer], a
+    ld [wSecret], a
+    ld a, 140
+    ld [rSCY], a
+    ret
 
 LoadMenuOpeningGraphics::
 .tiles:
-	ld bc, MenuTiles
-	ld hl, _VRAM9000
-	ld de, MenuTilesEnd - MenuTiles
-	call MEMCPY
+    ld bc, MenuTiles
+    ld hl, _VRAM9000
+    ld de, MenuTilesEnd - MenuTiles
+    call MEMCPY
 .tilemap:
-	; Add WRECKING BALLOON title
-	ld bc, TitleMap
-	ld hl, TITLE_ADDRESS
-	ld d, TITLE_HEIGHT_IN_TILES
-	ld e, SCRN_X_B
-	jp MEMCPY_SINGLE_SCREEN
+    ; Add WRECKING BALLOON title
+    ld bc, TitleMap
+    ld hl, TITLE_ADDRESS
+    ld d, TITLE_HEIGHT_IN_TILES
+    ld e, SCRN_X_B
+    jp MEMCPY_SINGLE_SCREEN
 
 LoadMenuGraphics::
 .tiles:
-	ld bc, MenuTiles
-	ld hl, _VRAM9000
-	ld de, MenuTilesEnd - MenuTiles
-	call MEMCPY
+    ld bc, MenuTiles
+    ld hl, _VRAM9000
+    ld de, MenuTilesEnd - MenuTiles
+    call MEMCPY
 .tilemap:
-	; Add WRECKING BALLOON title
-	ld bc, TitleMap
-	ld hl, TITLE_ADDRESS
-	ld d, TITLE_HEIGHT_IN_TILES
-	ld e, SCRN_X_B
-	call MEMCPY_SINGLE_SCREEN
-	; Add scrolling light clouds
-	ld bc, CloudsMap + CLOUDS_LIGHT_OFFSET
-	ld hl, $99C0
-	call MEMCPY_PATTERN_CLOUDS
-	; Add scrolling dark clouds
-	ld bc, CloudsMap + CLOUDS_DARK_OFFSET
-	call MEMCPY_PATTERN_CLOUDS
-	; Fill in dark clouds space
-	ld hl, $9A00
+    ; Add WRECKING BALLOON title
+    ld bc, TitleMap
+    ld hl, TITLE_ADDRESS
+    ld d, TITLE_HEIGHT_IN_TILES
+    ld e, SCRN_X_B
+    call MEMCPY_SINGLE_SCREEN
+    ; Add scrolling light clouds
+    ld bc, CloudsMap + CLOUDS_LIGHT_OFFSET
+    ld hl, $99C0
+    call MEMCPY_PATTERN_CLOUDS
+    ; Add scrolling dark clouds
+    ld bc, CloudsMap + CLOUDS_DARK_OFFSET
+    call MEMCPY_PATTERN_CLOUDS
+    ; Fill in dark clouds space
+    ld hl, $9A00
     ld bc, $40
     ld d, DARK_GREY_BKG_TILE
     call SetInRange
-	; Add texts
-	ld bc, ModesMap
-	ld hl, MODES_ADDRESS
-	ld de, 7
-	ld a, MODES_OFFSET
-	call MEMCPY_WITH_OFFSET
-	ld hl, MODES_ADDRESS + $40
-	ld de, 7
-	call MEMCPY_WITH_OFFSET
-	; Year + name row
-	ld bc, WindowMap + SCRN_X_B * YEAR_NAME_DISTANCE_FROM_TOP_IN_TILES
-	ld hl, YEAR_NAME_ADDRESS
-	ld de, SCRN_X_B
-	ld a, WINDOW_TILES_8800_OFFSET
-	jp MEMCPY_WITH_OFFSET
+    ; Add texts
+    ld bc, ModesMap
+    ld hl, MODES_ADDRESS
+    ld de, 7
+    ld a, MODES_OFFSET
+    call MEMCPY_WITH_OFFSET
+    ld hl, MODES_ADDRESS + $40
+    ld de, 7
+    call MEMCPY_WITH_OFFSET
+    ; Year + name row
+    ld bc, WindowMap + SCRN_X_B * YEAR_NAME_DISTANCE_FROM_TOP_IN_TILES
+    ld hl, YEAR_NAME_ADDRESS
+    ld de, SCRN_X_B
+    ld a, WINDOW_TILES_8800_OFFSET
+    jp MEMCPY_WITH_OFFSET
 
 SpawnMenuCursor::
-	ld b, MENU_SPRITE_SPRITES
-	ld hl, wMenuCursorOAM
-	call RequestOAMAndSetOAMOffset
-	ret z
-	; Has available space
-	ld a, MENU_SPRITE_CLASSIC_Y
-	ld [hli], a
-	ld a, MENU_SPRITE_X
-	ld [hli], a
-	ld a, MENU_CURSOR_TILE
-	ld [hli], a
-	ld a, OAMF_PAL0
-	ld [hl], a
-	ret
+    ld b, MENU_SPRITE_SPRITES
+    ld hl, wMenuCursorOAM
+    call RequestOAMAndSetOAMOffset
+    ret z
+    ; Has available space
+    ld a, MENU_SPRITE_CLASSIC_Y
+    ld [hli], a
+    ld a, MENU_SPRITE_X
+    ld [hli], a
+    ld a, MENU_CURSOR_TILE
+    ld [hli], a
+    ld a, OAMF_PAL0
+    ld [hl], a
+    ret
 
 ; *************************************************************
 ; UPDATEMENUOPENING
 ; *************************************************************
 UpdateMenuOpening::
-	; Timer
-	UPDATE_GLOBAL_TIMER
+    ; Timer
+    UPDATE_GLOBAL_TIMER
 
-	; Check skip
-	call ReadController
-	ldh a, [hControllerDown]
+    ; Check skip
+    call ReadController
+    ldh a, [hControllerDown]
     and PADF_START | PADF_A
-	jr z, .endSkip
-	ld a, 5
-	ld [wMenuFrame], a
+    jr z, .endSkip
+    ld a, 5
+    ld [wMenuFrame], a
 .endSkip:
 
-	; Check frame
-	ld a, [wMenuFrame]
+    ; Check frame
+    ld a, [wMenuFrame]
 .startSound:
-	cp a, 0
-	jr nz, .scrollUpTitle
-	call RisingSound
-	jr .endFrame
+    cp a, 0
+    jr nz, .scrollUpTitle
+    call RisingSound
+    jr .endFrame
 .scrollUpTitle:
-	cp a, 1
-	jr nz, .endSound
-	ldh a, [rSCY]
-	cp a, 0
-	jr z, .endFrame
+    cp a, 1
+    jr nz, .endSound
+    ldh a, [rSCY]
+    cp a, 0
+    jr z, .endFrame
     inc a
     ldh [rSCY], a
-	ret
+    ret
 .endSound:
-	cp a, 2
-	jr nz, .scrollDownTitle
-	call StopSweepSound
-	jr .endFrame
+    cp a, 2
+    jr nz, .scrollDownTitle
+    call StopSweepSound
+    jr .endFrame
 .scrollDownTitle:
-	cp a, 3
-	jr nz, .scrollUpTitle2
-	ldh a, [rSCY]
-	cp a, 252
-	jr z, .endFrame
-	dec a
+    cp a, 3
+    jr nz, .scrollUpTitle2
+    ldh a, [rSCY]
+    cp a, 252
+    jr z, .endFrame
+    dec a
     ldh [rSCY], a
-	ret
+    ret
 .scrollUpTitle2:
-	cp a, 4
-	jr nz, .fadeOut
-	ld a, [rSCY]
-	cp a, 0
-	jr z, .endFrame
+    cp a, 4
+    jr nz, .fadeOut
+    ld a, [rSCY]
+    cp a, 0
+    jr z, .endFrame
     inc a
     ldh [rSCY], a
-	ret
+    ret
 .fadeOut:
-	cp a, 5
-	jp nz, StartMenu
-	call FadeOutPalettes
-	ret z
-	; jr .endFrame
+    cp a, 5
+    jp nz, StartMenu
+    call FadeOutPalettes
+    ret z
+    ; jr .endFrame
 .endFrame:
-	ld a, [wMenuFrame]
-	inc a 
-	ld [wMenuFrame], a
-	ret
+    ld a, [wMenuFrame]
+    inc a
+    ld [wMenuFrame], a
+    ret
 
 ; *************************************************************
 ; UPDATEMENU
 ; *************************************************************
 UpdateMenu::
-	; Timer
-	UPDATE_GLOBAL_TIMER
+    ; Timer
+    UPDATE_GLOBAL_TIMER
 
-	; Fade in
-	call FadeInPalettes
-	ret z
-	; Has faded in
+    ; Fade in
+    call FadeInPalettes
+    ret z
+    ; Has faded in
 
-	; Handle common
-	call _hUGE_dosound
-	call IncrementScrollOffset
+    ; Handle common
+    call _hUGE_dosound
+    call IncrementScrollOffset
 
-	; Fade out
-	ld a, [wTriggerFadeOut]
-	cp a, 0
-	jr z, .checkFadeOutEnd
-	call FadeOutPalettes
-	ret z
-	jp StartGame
-	; Not fading out yet
+    ; Fade out
+    ld a, [wTriggerFadeOut]
+    cp a, 0
+    jr z, .checkFadeOutEnd
+    call FadeOutPalettes
+    ret z
+    jp StartGame
+    ; Not fading out yet
 .checkFadeOutEnd:
 
-	; Blink menu cursor
-	ld a, [wMenuCursorTimer]
-	inc a
-	ld [wMenuCursorTimer], a
-	and MENU_SPRITE_BLINK_TIMER
-	jr nz, .blinkMenuCursorEnd
-	; Can blink
-	ld hl, wOAM + 2
-	ADD_A_TO_HL [wMenuCursorOAM]
-	ld a, [hl]
-	cp a, WHITE_SPR_TILE
-	jr nz, .empty
+    ; Blink menu cursor
+    ld a, [wMenuCursorTimer]
+    inc a
+    ld [wMenuCursorTimer], a
+    and MENU_SPRITE_BLINK_TIMER
+    jr nz, .blinkMenuCursorEnd
+    ; Can blink
+    ld hl, wOAM + 2
+    ADD_A_TO_HL [wMenuCursorOAM]
+    ld a, [hl]
+    cp a, WHITE_SPR_TILE
+    jr nz, .empty
 .show:
-	ld a, MENU_CURSOR_TILE
-	ld [hl], a
-	jr .blinkMenuCursorEnd
+    ld a, MENU_CURSOR_TILE
+    ld [hl], a
+    jr .blinkMenuCursorEnd
 .empty:
-	ld a, WHITE_SPR_TILE
-	ld [hl], a
+    ld a, WHITE_SPR_TILE
+    ld [hl], a
 .blinkMenuCursorEnd:
 
-	; Blink top score
-	call LoadTopScoreWindow.refresh
+    ; Blink top score
+    call LoadTopScoreWindow.refresh
     ; Check if we can toggle
-	ldh a, [hPausedTimer]
+    ldh a, [hPausedTimer]
     inc	a
     ldh [hPausedTimer], a
     and %01111111
     call z, ToggleWindow
 
-	; Menu input
-	call ReadController
-	ldh a, [hControllerPressed]
-	; Select
-	and PADF_SELECT
-	jr z, .checkMode
-	; SUNGLASSES TOGGLED
-	call BoostSound
-	ld hl, SUNGLASSES_ADDRESS
-	ld a, [wSecret]
-	cp a, 0 
-	jr nz, .sunglassesModeOff
+    ; Menu input
+    call ReadController
+    ldh a, [hControllerPressed]
+    ; Select
+    and PADF_SELECT
+    jr z, .checkMode
+    ; SUNGLASSES TOGGLED
+    call BoostSound
+    ld hl, SUNGLASSES_ADDRESS
+    ld a, [wSecret]
+    cp a, 0
+    jr nz, .sunglassesModeOff
 .sunglassesModeOn:
-	ld a, 1 
-	ld [wSecret], a
-	ld a, SUNGLASSES_TILE
-	jr .updateSunglassesMode
+    ld a, 1
+    ld [wSecret], a
+    ld a, SUNGLASSES_TILE
+    jr .updateSunglassesMode
 .sunglassesModeOff:
-	xor a ; ld a, 0
-	ld [wSecret], a
-	ld a, WHITE_SPR_TILE
-	; jr .updateSunglassesMode
+    xor a ; ld a, 0
+    ld [wSecret], a
+    ld a, WHITE_SPR_TILE
+    ; jr .updateSunglassesMode
 .updateSunglassesMode:
-	LD_BC_HL
-	call WaitVRAMAccessible
-	LD_HL_BC
-	ld [hli], a
-	ld [hl], a
-	ret
+    LD_BC_HL
+    call WaitVRAMAccessible
+    LD_HL_BC
+    ld [hli], a
+    ld [hl], a
+    ret
 .checkMode:
-	ldh a, [hControllerPressed]
-	and PADF_UP | PADF_DOWN
-	jr z, .checkStart
-	; MODE
-	call BulletSound
-	; Reset cursor blink
-	xor a ; ld a, 0
-	ld [wMenuCursorTimer], a
-	; Move cursor and select mode
-	ld hl, wOAM + 2
-	ADD_TO_HL [wMenuCursorOAM]
-	ld a, MENU_CURSOR_TILE
-	ld [hld], a
-	dec hl ; Now pointing to Y
-	ld a, [wSelectedMode]
-	cp a, CLASSIC_MODE
-	jr z, .selectEndless
+    ldh a, [hControllerPressed]
+    and PADF_UP | PADF_DOWN
+    jr z, .checkStart
+    ; MODE
+    call BulletSound
+    ; Reset cursor blink
+    xor a ; ld a, 0
+    ld [wMenuCursorTimer], a
+    ; Move cursor and select mode
+    ld hl, wOAM + 2
+    ADD_TO_HL [wMenuCursorOAM]
+    ld a, MENU_CURSOR_TILE
+    ld [hld], a
+    dec hl ; Now pointing to Y
+    ld a, [wSelectedMode]
+    cp a, CLASSIC_MODE
+    jr z, .selectEndless
 .selectClassic:
-	ld a, CLASSIC_MODE
-	ld [wSelectedMode], a
-	ld a, MENU_SPRITE_CLASSIC_Y
-	ld [hl], a
-	ret
+    ld a, CLASSIC_MODE
+    ld [wSelectedMode], a
+    ld a, MENU_SPRITE_CLASSIC_Y
+    ld [hl], a
+    ret
 .selectEndless:
-	ld a, ENDLESS_MODE
-	ld [wSelectedMode], a
-	ld a, MENU_SPRITE_ENDLESS_Y
-	ld [hl], a
-	ret
+    ld a, ENDLESS_MODE
+    ld [wSelectedMode], a
+    ld a, MENU_SPRITE_ENDLESS_Y
+    ld [hl], a
+    ret
 .checkStart:
-	ldh a, [hControllerDown]
-	and PADF_START | PADF_A
-	ret z
-	; START
-	ld a, 1 
-	ld [wTriggerFadeOut], a
-	call ChDACs.mute
-	jp LifeUpSound
+    ldh a, [hControllerDown]
+    and PADF_START | PADF_A
+    ret z
+    ; START
+    ld a, 1
+    ld [wTriggerFadeOut], a
+    call ChDACs.mute
+    jp LifeUpSound

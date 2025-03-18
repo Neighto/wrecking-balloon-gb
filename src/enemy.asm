@@ -30,7 +30,7 @@ InitializeEnemyStructVars::
     ; ldh [hEnemyX], a
     ldh [hEnemyOAM], a
     ; ldh [hEnemyVariant], a ; Do not clear
-    ldh [hEnemyParam1], a 
+    ldh [hEnemyParam1], a
     ldh [hEnemyParam2], a
     ldh [hEnemyParam3], a
     ret
@@ -179,7 +179,7 @@ EnemyUpdate::
 .checkLoop:
     ldh a, [hEnemyOffset]
     add a, ENEMY_STRUCT_SIZE
-    ldh [hEnemyOffset], a 
+    ldh [hEnemyOffset], a
     ldh a, [hEnemyLoopIndex]
     dec a
     ldh [hEnemyLoopIndex], a
@@ -200,7 +200,7 @@ FindRAMAndOAMForEnemy::
     ret z
     ; Check OAM
     push hl
-	call RequestOAMSpace ; b now contains OAM address
+    call RequestOAMSpace ; b now contains OAM address
     pop hl
     ret
 
@@ -257,7 +257,7 @@ EnemyInterCollision::
 .checkLoop:
     ldh a, [hEnemyOffset2]
     add a, ENEMY_STRUCT_SIZE
-    ldh [hEnemyOffset2], a    
+    ldh [hEnemyOffset2], a
     ldh a, [hEnemyLoopIndex2]
     dec a
     ldh [hEnemyLoopIndex2], a
@@ -408,6 +408,6 @@ PopBalloonAnimation::
     ld [hl], a
     ; Next frame
     ldh a, [hEnemyParam1]
-    inc a 
+    inc a
     ldh [hEnemyParam1], a
     ret

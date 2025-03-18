@@ -35,7 +35,7 @@ WaitVBlank::
     ld hl, wVBlankFlag
     xor a ; ld a, 0
 .loop:
-    halt 
+    halt
     nop
     cp a, [hl]
     jr z, .loop
@@ -69,14 +69,14 @@ WaitVRAMAccessible::
 ;     ret
 
 ToggleWindow::
-	ld hl, rLCDC
-	bit 5, [hl]
-	jr z, .winon
+    ld hl, rLCDC
+    bit 5, [hl]
+    jr z, .winon
 .winoff::
-	ld hl, rLCDC ; Must be set for .winoff to be called on its own
-	res 5, [hl]
-	ret
+    ld hl, rLCDC ; Must be set for .winoff to be called on its own
+    res 5, [hl]
+    ret
 .winon::
-	ld hl, rLCDC ; Must be set for .winon to be called on its own
-	set 5, [hl]
+    ld hl, rLCDC ; Must be set for .winon to be called on its own
+    set 5, [hl]
     ret

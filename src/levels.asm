@@ -164,7 +164,7 @@ Level1:
     LVL__POINT_BALLOON_HARD______________ MIDDLE_SCREEN
 .outro:
     LVL__REPT 1, LevelOutro
-    
+
 ; Level 2
 Level2:
 .intro:
@@ -883,9 +883,9 @@ SpawnDataHandler:
     ; Update enemy Y/X
 .random:
     ld a, [hli] ; y1
-    ld e, a 
+    ld e, a
     ld a, [hli] ; x1
-    ld c, a 
+    ld c, a
     ld a, [hli] ; y2
     sub a, e
     inc a
@@ -957,13 +957,13 @@ SpawnDataHandler:
     jr nz, .anvil
     call SpawnBomb
     jr .end
-.anvil: 
-    cp a, ANVIL 
+.anvil:
+    cp a, ANVIL
     jr nz, .explosion
     call SpawnAnvil
     jr .end
 .explosion:
-    cp a, EXPLOSION 
+    cp a, EXPLOSION
     jr nz, .projectile
     call SpawnExplosion
     jr .end
@@ -982,7 +982,7 @@ SpawnDataHandler:
     ret
 
 LevelDataHandler::
-    ; Frequency we read 
+    ; Frequency we read
     ldh a, [hGlobalTimer]
     and LEVEL_UPDATE_REFRESH_TIME
     ret nz
@@ -1075,7 +1075,7 @@ LevelDataHandler::
     push hl
     call ChDACs.mute
     ld hl, levelWonTheme
-	call hUGE_init
+    call hUGE_init
     pop hl
     jr .incrementLevelDataAddress
 .pointsForLives:
@@ -1106,18 +1106,18 @@ LevelDataHandler::
     ldh a, [hPlayerFlags]
     and PLAYER_FLAG_ALIVE_MASK
     ret z
-    ldh a, [hLevel] 
+    ldh a, [hLevel]
     inc a
-    ldh [hLevel], a 
+    ldh [hLevel], a
 ;     ld b, 33
 ; .doMore:
 ;     push bc
 ;     ld a, 62
 ;     call AddPoints
 ;     pop bc
-;     dec b 
-;     ld a, b 
-;     cp a, 0 
+;     dec b
+;     ld a, b
+;     cp a, 0
 ;     jr nz, .doMore
     jp StageClear
 .won:

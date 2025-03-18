@@ -12,7 +12,7 @@ wColliderB:: DS 4
 SECTION "collision", ROM0
 
 ; TODO: Call it somewhere
-; InitializeCollision:: 
+; InitializeCollision::
 ;     ld bc, wColliderA
 ;     call ResetHLInRange
 ;     ld bc, wColliderB

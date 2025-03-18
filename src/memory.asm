@@ -3,7 +3,7 @@ INCLUDE "macro.inc"
 INCLUDE "constants.inc"
 INCLUDE "tileConstants.inc"
 
-SECTION "memory vars", WRAM0 
+SECTION "memory vars", WRAM0
 wMemcpyTileOffset:: DB
 
 SECTION "memory", ROM0
@@ -18,9 +18,9 @@ MEMCPY::
     inc bc
     dec de
     ; Check
-	ld a, d
-	or a, e
-	jr nz, .loop
+    ld a, d
+    or a, e
+    jr nz, .loop
     ret
 
 ; Arg: DE = Block size
@@ -41,9 +41,9 @@ MEMCPY_VBLANK_SAFE::
     inc bc
     dec de
     ; Check
-	ld a, d
-	or a, e
-	jr nz, .loop
+    ld a, d
+    or a, e
+    jr nz, .loop
     ret
 
 ; Arg: DE = Block size
@@ -87,9 +87,9 @@ MEMCPY_WITH_OFFSET::
     inc bc
     dec de
 .checkLoop:
-	ld a, d
-	or a, e
-	jr nz, .loop
+    ld a, d
+    or a, e
+    jr nz, .loop
     pop af
     ret
 
@@ -138,11 +138,11 @@ MEMCPY_SIMPLE_PATTERN_WITH_OFFSET::
 ; Arg: HL = Destination address
 ; Arg: BC = Source address
 MEMCPY_PATTERN_CLOUDS::
-	ld d, SCRN_VX_B
-	ld e, CLOUDS_TILE_AMOUNT
-	ld a, CLOUDS_TILE_OFFSET
-	ld [wMemcpyTileOffset], a
-	jp MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
+    ld d, SCRN_VX_B
+    ld e, CLOUDS_TILE_AMOUNT
+    ld a, CLOUDS_TILE_OFFSET
+    ld [wMemcpyTileOffset], a
+    jp MEMCPY_SIMPLE_PATTERN_WITH_OFFSET
 
 ; Arg: BC = Source address
 ; Arg: HL = Destination address
@@ -174,9 +174,9 @@ MEMCPY_SINGLE_SCREEN_WITH_OFFSET::
     sub e
     ADD_TO_HL a
 .checkLoop:
-	ld a, d
+    ld a, d
     cp a, 0
-	jr nz, .loop
+    jr nz, .loop
     pop af
     ret
 
@@ -267,7 +267,7 @@ RequestOAMSpace::
     inc l
     dec d
     ld a, d
-	cp a, 0
+    cp a, 0
     jr nz, .loop
     ; Fail (no free space)
     ; z already set
@@ -289,7 +289,7 @@ RequestRAMSpace::
 .checkLoop:
     ADD_TO_HL e
     dec d
-    ld a, d 
+    ld a, d
     cp a, 0
     jr nz, .loop
     ; Fail (no free space)
@@ -302,13 +302,13 @@ RequestRAMSpace::
 ; Ret: Z/NZ = Failed / succeeded respectively
 RequestOAMAndSetOAMOffset::
     push hl
-	call RequestOAMSpace
+    call RequestOAMSpace
     pop hl
-	ret z
-	; Has available space
-	ld a, b
-	ld [hl], a
-	ld hl, wOAM
-	ADD_A_TO_HL
+    ret z
+    ; Has available space
+    ld a, b
+    ld [hl], a
+    ld hl, wOAM
+    ADD_A_TO_HL
     or a, 1 ; Force return nz
     ret

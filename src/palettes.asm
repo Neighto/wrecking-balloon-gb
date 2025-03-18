@@ -25,137 +25,137 @@ wFlickerTimer:: DB
 SECTION "palettes", ROM0
 
 ResetFading::
-	xor a ; ld a, 0
-	ld [wFadeInFrame], a
-	ld [wFadeOutFrame], a
-	ld [wTriggerFadeIn], a
-	ld [wTriggerFadeOut], a
-	ret
+    xor a ; ld a, 0
+    ld [wFadeInFrame], a
+    ld [wFadeOutFrame], a
+    ld [wTriggerFadeIn], a
+    ld [wTriggerFadeOut], a
+    ret
 
 InitializePalettes::
-	ld a, MAIN_PAL0
-	ldh [rBGP], a
-	ldh [rOBP0], a
-	ld a, MAIN_PAL1
-	ldh [rOBP1], a
-	jp ResetFading
+    ld a, MAIN_PAL0
+    ldh [rBGP], a
+    ldh [rOBP0], a
+    ld a, MAIN_PAL1
+    ldh [rOBP1], a
+    jp ResetFading
 
 InitializeStageClearPalettes::
-	call InitializePalettes
-	ld a, MAIN_PAL1_2
-	ldh [rOBP1], a
-	ret
+    call InitializePalettes
+    ld a, MAIN_PAL1_2
+    ldh [rOBP1], a
+    ret
 
 InitializeNightSpritePalettes::
-	ld a, NIGHT_SPRITE_PAL0
+    ld a, NIGHT_SPRITE_PAL0
     ldh [rOBP0], a
     ld a, NIGHT_SPRITE_PAL1
     ldh [rOBP1], a
-	ret
-	
+    ret
+
 InitializeEmptyPalettes::
-	xor a ; ld a, 0
-	ldh [rBGP], a
-	ldh [rOBP0], a
-	ldh [rOBP1], a
-	ret
+    xor a ; ld a, 0
+    ldh [rBGP], a
+    ldh [rOBP0], a
+    ldh [rOBP1], a
+    ret
 
 ; Ret: Z/NZ = Not faded / faded respectively
 FadeOutPalettes::
-	ld a, [wFadeOutFrame]
-	cp a, 5
-	jr c, .fadeOut
+    ld a, [wFadeOutFrame]
+    cp a, 5
+    jr c, .fadeOut
 .hasFadedOut:
-	or a, 1
-	ret
+    or a, 1
+    ret
 .fadeOut:
-	ldh a, [hGlobalTimer]
-	and FADE_SPEED
-	jr nz, .isStillFadingOut
-	ld a, [wFadeOutFrame]
+    ldh a, [hGlobalTimer]
+    and FADE_SPEED
+    jr nz, .isStillFadingOut
+    ld a, [wFadeOutFrame]
 .fade1:
-	cp a, 0
-	jr nz, .fade2
+    cp a, 0
+    jr nz, .fade2
     ld a, FADE_PALETTE_1
-	ld b, FADE_PALETTE2_1
-	jr .fadePalettes
+    ld b, FADE_PALETTE2_1
+    jr .fadePalettes
 .fade2:
-	cp a, 1
-	jr nz, .fade3
-	ld a, FADE_PALETTE_2
-	ld b, FADE_PALETTE2_2
-	jr .fadePalettes
+    cp a, 1
+    jr nz, .fade3
+    ld a, FADE_PALETTE_2
+    ld b, FADE_PALETTE2_2
+    jr .fadePalettes
 .fade3:
-	cp a, 2
-	jr nz, .fade4
-	ld a, FADE_PALETTE_3
-	ld b, FADE_PALETTE2_3
-	jr .fadePalettes
+    cp a, 2
+    jr nz, .fade4
+    ld a, FADE_PALETTE_3
+    ld b, FADE_PALETTE2_3
+    jr .fadePalettes
 .fade4:
-	; cp a, 3
-	; jr nz, .fade5
-	ld a, FADE_PALETTE_4
-	ld b, FADE_PALETTE2_4
-	; jr .fadePalettes
+    ; cp a, 3
+    ; jr nz, .fade5
+    ld a, FADE_PALETTE_4
+    ld b, FADE_PALETTE2_4
+    ; jr .fadePalettes
 .fadePalettes:
-	ldh [rBGP], a
-	ldh [rOBP0], a
-	ld a, b
-	ldh [rOBP1], a
+    ldh [rBGP], a
+    ldh [rOBP0], a
+    ld a, b
+    ldh [rOBP1], a
 .increaseFrame:
-	ld a, [wFadeOutFrame]
-	inc a
-	ld [wFadeOutFrame], a
+    ld a, [wFadeOutFrame]
+    inc a
+    ld [wFadeOutFrame], a
 .isStillFadingOut:
-	xor a ; ld a, 0
-	ret
+    xor a ; ld a, 0
+    ret
 
 ; Ret: Z/NZ = Not faded / faded respectively
 FadeInPalettes::
-	ld a, [wFadeInFrame]
-	cp a, 5
-	jr c, .fadeIn
+    ld a, [wFadeInFrame]
+    cp a, 5
+    jr c, .fadeIn
 .hasFadedIn:
-	or a, 1
-	ret
+    or a, 1
+    ret
 .fadeIn:
-	ldh a, [hGlobalTimer]
-	and FADE_SPEED
-	jr nz, .isStillFadingIn
-	ld a, [wFadeInFrame]
+    ldh a, [hGlobalTimer]
+    and FADE_SPEED
+    jr nz, .isStillFadingIn
+    ld a, [wFadeInFrame]
 .fade1:
-	cp a, 0
-	jr nz, .fade2
+    cp a, 0
+    jr nz, .fade2
     ld a, FADE_PALETTE_4
-	ld b, FADE_PALETTE2_4
-	jr .fadePalettes
+    ld b, FADE_PALETTE2_4
+    jr .fadePalettes
 .fade2:
-	cp a, 1
-	jr nz, .fade3
-	ld a, FADE_PALETTE_3
-	ld b, FADE_PALETTE2_3
-	jr .fadePalettes
+    cp a, 1
+    jr nz, .fade3
+    ld a, FADE_PALETTE_3
+    ld b, FADE_PALETTE2_3
+    jr .fadePalettes
 .fade3:
-	cp a, 2
-	jr nz, .fade4
-	ld a, FADE_PALETTE_2
-	ld b, FADE_PALETTE2_2
-	jr .fadePalettes
+    cp a, 2
+    jr nz, .fade4
+    ld a, FADE_PALETTE_2
+    ld b, FADE_PALETTE2_2
+    jr .fadePalettes
 .fade4:
-	; cp a, 3
-	; jr nz, .fade5
-	ld a, FADE_PALETTE_1
-	ld b, FADE_PALETTE2_1
-	; jr .fadePalettes
+    ; cp a, 3
+    ; jr nz, .fade5
+    ld a, FADE_PALETTE_1
+    ld b, FADE_PALETTE2_1
+    ; jr .fadePalettes
 .fadePalettes:
-	ldh [rBGP], a
-	ldh [rOBP0], a
-	ld a, b
-	ldh [rOBP1], a
+    ldh [rBGP], a
+    ldh [rOBP0], a
+    ld a, b
+    ldh [rOBP1], a
 .increaseFrame:
-	ld a, [wFadeInFrame]
-	inc a
-	ld [wFadeInFrame], a
+    ld a, [wFadeInFrame]
+    inc a
+    ld [wFadeInFrame], a
 .isStillFadingIn:
-	xor a ; ld a, 0
-	ret
+    xor a ; ld a, 0
+    ret

@@ -212,7 +212,7 @@ AnvilUpdate::
     ;
     ; Fall faster
     ldh a, [hEnemyParam1]
-    inc a 
+    inc a
     ldh [hEnemyParam1], a
     ld b, ANVIL_FALLING_SPEED_DELAY
     call DIVISION

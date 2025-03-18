@@ -66,8 +66,8 @@ LoadEndingCutsceneGraphics::
     ; TILES
     ; Scoreboard tiles
     ld bc, ScoreboardsTiles
-	ld hl, _VRAM9000 + CutsceneTilesEnd - CutsceneTiles + 1 * TILE_BYTES
-	ld de, ScoreboardsTilesEnd - ScoreboardsTiles
+    ld hl, _VRAM9000 + CutsceneTilesEnd - CutsceneTiles + 1 * TILE_BYTES
+    ld de, ScoreboardsTilesEnd - ScoreboardsTiles
 	call MEMCPY
     ; TILEMAP
     ; Draw scoreboard
@@ -87,35 +87,35 @@ LoadEndingCutsceneGraphics::
     ld d, DARK_GREY_BKG_TILE
     call SetInRange
     ld bc, WindowMap + SCRN_X_B * VICTORY_DISTANCE_FROM_TOP_IN_TILES
-	ld hl, VICTORY_TEXT_BUFFER_ADDRESS + 2
-	ld de, VICTORY_TEXT_TILES
-	ld a, WINDOW_TILES_8800_OFFSET
-	call MEMCPY_WITH_OFFSET
+    ld hl, VICTORY_TEXT_BUFFER_ADDRESS + 2
+    ld de, VICTORY_TEXT_TILES
+    ld a, WINDOW_TILES_8800_OFFSET
+    call MEMCPY_WITH_OFFSET
     ; Draw VICTORY text
     ld bc, VICTORY_TEXT_BUFFER_ADDRESS
-	ld hl, VICTORY_ADDRESS
-	ld de, VICTORY_TILES
-	call MEMCPY
+    ld hl, VICTORY_ADDRESS
+    ld de, VICTORY_TILES
+    call MEMCPY
     ; Draw TOTAL text buffer
     ld bc, TotalTextMap
-	ld hl, TOTAL_TEXT_BUFFER_ADDRESS
-	ld de, TotalTextMapEnd - TotalTextMap
-	call MEMCPY
+    ld hl, TOTAL_TEXT_BUFFER_ADDRESS
+    ld de, TotalTextMapEnd - TotalTextMap
+    call MEMCPY
     ld hl, TOTAL_SC_INDEX_ONE_TEMP_ADDRESS
     call RefreshScore.total
     ; Draw over man for ending cutscene
     ld bc, ManForEndingMap + 2
-	ld hl, $9966
+    ld hl, $9966
     ld d, 2
     ld e, d
     ld a, MAN_FOR_ENDING_OFFSET
     ld [wMemcpyTileOffset], a
-	jp MEMCPY_SINGLE_SCREEN_WITH_OFFSET
+    jp MEMCPY_SINGLE_SCREEN_WITH_OFFSET
 
 SpawnHandClap::
-	ld b, HAND_CLAP_SPRITES
+    ld b, HAND_CLAP_SPRITES
     ld hl, wHandClapOAM
-	call RequestOAMAndSetOAMOffset
+    call RequestOAMAndSetOAMOffset
     ret z
     ; Has available space
     ; Left hand clap
@@ -136,7 +136,7 @@ SpawnHandClap::
     ld [hli], a
     ld a, OAMF_PAL0 | OAMF_XFLIP
     ld [hl], a
-	ret
+    ret
 
 ; *************************************************************
 ; UPDATEENDINGCUTSCENE
@@ -166,12 +166,12 @@ UpdateEndingCutscene::
     jr nz, .phase2
     ; Man look down
     ld bc, ManForEndingMap
-	ld hl, $9946
+    ld hl, $9946
     ld d, 1
     ld e, 2
     ld a, MAN_FOR_ENDING_OFFSET
     ld [wMemcpyTileOffset], a
-	call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
+    call MEMCPY_SINGLE_SCREEN_WITH_OFFSET
     jr .endCheckPhase
 .phase2:
     cp a, 2
@@ -189,8 +189,8 @@ UpdateEndingCutscene::
     ; jr nz, .endCheckPhase
     call BobPlayer
     ; Check skip
-	call ReadController
-	ldh a, [hControllerDown]
+    call ReadController
+    ldh a, [hControllerDown]
     and PADF_START | PADF_A
     jr z, .endSkip
     ; Skip
@@ -244,18 +244,18 @@ UpdateEndingCutscene::
     ld a, 1
     ld [wVictoryTextSwapFrame], a
     ld bc, TOTAL_TEXT_BUFFER_ADDRESS
-	ld de, VICTORY_TILES
-	ld hl, VICTORY_ADDRESS
-	call MEMCPY_VBLANK_SAFE
+    ld de, VICTORY_TILES
+    ld hl, VICTORY_ADDRESS
+    call MEMCPY_VBLANK_SAFE
     jr .endCheckAnimateVictory
 .swapToVictoryText:
     xor a ; ld a, 0
     ld [wVictoryTextSwapFrame], a
     ld bc, VICTORY_TEXT_BUFFER_ADDRESS
-	ld hl, VICTORY_ADDRESS
-	ld de, VICTORY_TILES
-	call MEMCPY_VBLANK_SAFE
+    ld hl, VICTORY_ADDRESS
+    ld de, VICTORY_TILES
+    call MEMCPY_VBLANK_SAFE
 .endCheckAnimateVictory:
-    
+
 
     jp SequenceDataUpdate

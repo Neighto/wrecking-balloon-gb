@@ -51,7 +51,7 @@ PORCUPINE_FLAG_HEALTH_MASK EQU ENEMY_FLAG_PARAM2_MASK | ENEMY_FLAG_PARAM3_MASK
 PORCUPINE_FLAG_HEALTH_BIT1 EQU ENEMY_FLAG_PARAM2_BIT
 PORCUPINE_FLAG_HEALTH_BIT2 EQU ENEMY_FLAG_PARAM3_BIT
 
-PORCUPINE_OAM_OFFSET EQU 26 * OAM_ATTRIBUTES_COUNT 
+PORCUPINE_OAM_OFFSET EQU 26 * OAM_ATTRIBUTES_COUNT
 
 PORCUPINE_COLLISION_Y EQU 0
 PORCUPINE_COLLISION_X EQU 2
@@ -131,10 +131,10 @@ SpawnBoss::
     set PORCUPINE_FLAG_HEALTH_BIT2, a ; Boss health + 2
     ldh [hBossFlags], a
     ; Position
-	ld a, PORCUPINE_SPAWN_Y
-	ldh [hBossY], a 
-	ld a, PORCUPINE_SPAWN_X
-	ldh [hBossX], a
+    ld a, PORCUPINE_SPAWN_Y
+    ldh [hBossY], a
+    ld a, PORCUPINE_SPAWN_X
+    ldh [hBossX], a
     ld a, PORCUPINE_POINT_Y3
     ldh [hBossToY], a
     call UpdateBossPosition
@@ -310,7 +310,7 @@ BossUpdate::
     ldh a, [hBossKnockedOutTimer]
     cp a, 0
     jr z, .endKnockedOut
-    dec a 
+    dec a
     ldh [hBossKnockedOutTimer], a
     cp a, 0
     ret nz
@@ -364,7 +364,7 @@ BossUpdate::
     ldh a, [hBossFlags]
     res ENEMY_FLAG_ACTIVE_BIT, a
     ldh [hBossFlags], a
-    ld a, 1 
+    ld a, 1
     ldh [hLevelWaitBoss], a
     ret
 .checkFalling:
@@ -373,7 +373,7 @@ BossUpdate::
     ret nz
     ; Can fall
     ldh a, [hBossSpeed]
-    inc a 
+    inc a
     ldh [hBossSpeed], a
     ld b, 5
     call DIVISION
@@ -395,7 +395,7 @@ BossUpdate::
     and %00000001
     jr nz, .endCheckDirection
     ldh a, [hBossDirectionChangeTimer]
-    inc a 
+    inc a
     ldh [hBossDirectionChangeTimer], a
     ld b, a
     ; -- Check direction X
@@ -459,7 +459,7 @@ BossUpdate::
     ; Check move
     ;
     ldh a, [hGlobalTimer]
-    and	PORCUPINE_MOVE_TIME
+    and PORCUPINE_MOVE_TIME
     jp nz, .endMove
 
     ;
@@ -593,7 +593,7 @@ BossUpdate::
     ; Check collision
     ;
     ldh a, [hGlobalTimer]
-    and	PORCUPINE_COLLISION_TIME
+    and PORCUPINE_COLLISION_TIME
     ret nz ; jp nz, .endCollision ; Just return because end of update
     ldh a, [hBossFlags]
     and ENEMY_FLAG_HIT_ENEMY_MASK
@@ -608,7 +608,7 @@ BossUpdate::
     ; ld e, 32
     ; call CollisionCheck
     ; jr nz, .bossDamaged
-	; ===============
+    ; ===============
 .checkHitPlayer:
     SETUP_COLLIDER wColliderA, [hBossY], [hBossX], PORCUPINE_COLLISION_Y, PORCUPINE_COLLISION_HEIGHT, PORCUPINE_COLLISION_X, PORCUPINE_COLLISION_WIDTH
     call CollisionCheckPlayerBalloon
@@ -690,7 +690,7 @@ WaitBossUpdate::
     ret nz
     call FindBalloonCarrier
     ret nz
-    
+
     ;
     ; Spawn balloon carrier
     ;

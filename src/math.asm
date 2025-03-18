@@ -33,12 +33,12 @@ DIVISION::
 
 ; Arg: A = Non-BCD number
 ; Ret: A = BCD number
-; Example: a = 32, 32 % 10 = 2, (32 % 100) / 10 = 3 => % 0011 0010 
+; Example: a = 32, 32 % 10 = 2, (32 % 100) / 10 = 3 => % 0011 0010
 ToBCD::
     ld h, a ; save a
     ld d, 10
     call MODULO
-    ld l, a ; 
+    ld l, a ;
     ld a, h ; refresh a
     ld d, 100
     call MODULO
