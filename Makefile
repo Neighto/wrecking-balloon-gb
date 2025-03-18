@@ -27,11 +27,17 @@ fix: build
 	rgbfix -p0 -v $(OUTPUT).gb
 	@echo "Ran rgbfix - header utility and checksum fixer"
 
-build: $(OBJ_FILES)
+build: $(BIN_DIR)/$(OBJ_DIR) $(OBJ_FILES)
 	rgblink -m $(OUTPUT).map -n $(OUTPUT).sym -o $(OUTPUT).gb $(OBJ_FILES)
 	@echo "Ran rgblink - gameboy linker"
 
-$(BIN_DIR)/$(OBJ_DIR)/%.o : $(SRC_DIR)/%.asm
+# Create the obj directory if it doesn’t exist
+$(BIN_DIR)/$(OBJ_DIR):
+	mkdir -p $@
+	@echo "Created $(BIN_DIR)/$(OBJ_DIR) directory"
+
+# Rule to assemble object files
+$(BIN_DIR)/$(OBJ_DIR)/%.o : $(SRC_DIR)/%.asm | $(BIN_DIR)/$(OBJ_DIR)
 	rgbasm -i $(INC_DIR) -o $@ $<
 	@echo "Ran rgbasm - gameboy assembler"
 
@@ -61,5 +67,5 @@ endif
 
 # Use clean if there are changes to the include files or incbin files
 clean:
-	rm -r $(BIN_DIR)/$(OBJ_DIR)/*
+	rm -rf $(BIN_DIR)/$(OBJ_DIR)/*
 	@echo "All clean!"
